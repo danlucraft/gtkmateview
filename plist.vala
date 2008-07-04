@@ -13,52 +13,55 @@ public errordomain XmlError {
 }
 
 namespace PList {
-	public class Node {
+	public class Node : Object {
+		public static Node? parse_xml_node(Xml.Node* node) {
+			if (node->name == "string") {
+				var string_node = new String();
+				string_node.str = node->get_content();
+				return string_node;
+			}
+			if (node->name == "dict") {
+				return Dict.parse_dict(node);
+			}
+			if (node->name == "array") {
+				return Array.parse_array(node);
+			}
+			return null;
+		}
 	}
 
 	public class String : Node {
 		public string str;
 	}
 
-	public class Array : ArrayList<Node> {
-	}
+	public class Array : Node {
+		public ArrayList<Node> array;
 
-	public class Dict : HashMap<string, Node> {
-		public string filename {get; set;}
-		
-		public void parse() throws XmlError {
-			stdout.printf("filename: %s\n", this.filename);
-			Xml.Doc* xml_doc = Xml.Parser.parse_file (this.filename);
-			if (xml_doc == null) {
-				throw new XmlError.FILE_NOT_FOUND ("file "+ this.filename + " not found or permissions missing");
-			}
-
-			Xml.Node* root_node = xml_doc->get_root_element ();
-			if (root_node == null) {
-				//free the document manually before throwing because the garbage collector can't work on pointers
-				delete xml_doc;
-				throw new XmlError.XML_DOCUMENT_EMPTY ("the xml'"+ this.filename + "' is empty");
-			}
-			Xml.Node* top_node;
-
-			for (Xml.Node* iter = root_node->children; iter != null; iter = iter->next) {
-				stdout.printf("child node:  %s\n", iter->name);
-				if (iter->type != ElementType.ELEMENT_NODE)
-					continue;
-				top_node = iter;
-			}
-			stdout.printf("root node: %s\n", root_node->name);
-			stdout.printf("top node:  %s\n", top_node->name);
-			if (top_node->name != "dict") {
-				stdout.printf("error top node is not a dict");
-			}
-			PList.Dict.parse_dict(this, top_node);
-			//free the document
-			delete xml_doc;
+		construct {
+			this.array = new ArrayList<Node>();
 		}
 
-		public static void parse_dict(Dict dict, Xml.Node* node) {
-			stdout.printf("parsing dictionary\n");
+		public static Array parse_array(Xml.Node* node) {
+			var array = new Array();
+			String string_node;
+			for (Xml.Node* iter = node->children; iter != null; iter = iter->next) {
+				if (iter->type != ElementType.ELEMENT_NODE)
+					continue;
+				array.array.add(Node.parse_xml_node(iter));
+			}
+			return array;
+		}
+	}
+
+	public class Dict : Node {
+		public HashMap<string, Node> map;
+
+		construct {
+			this.map = new HashMap<string, Node>(str_hash, str_equal);
+		}
+		
+		public static Dict parse_dict(Xml.Node* node) {
+			var dict = new Dict();
 			string key;
 			String string_node;
 			for (Xml.Node* iter = node->children; iter != null; iter = iter->next) {
@@ -67,39 +70,82 @@ namespace PList {
 				if (key == null)
 					key = iter->get_content();
 				else {
-					stdout.printf("child node: %s -> %s\n", key, iter->name);
-					if (iter->name == "string") {
-						string_node = new String();
-						string_node.str = iter->get_content();
-						stdout.printf("set(%s, %s)", key);
-						dict.set(key, string_node);
-					}
-//					if (iter->name == "dict") {
-//						parse_dict(dict, iter);
-//					}
+					dict.map.set(key, Node.parse_xml_node(iter));
 					key = null;
 				}
 			}
+			return dict;
+		}
+	}
+
+	public static Dict parse(string filename) throws XmlError {
+		stdout.printf("Loading plist: %s\n", filename);
+		Xml.Doc* xml_doc = Xml.Parser.parse_file (filename);
+		if (xml_doc == null) {
+			throw new XmlError.FILE_NOT_FOUND ("file "+ filename + " not found or permissions missing");
 		}
 
-		public Dict(HashFunc f1, EqualFunc f2) {
-			
+		Xml.Node* root_node = xml_doc->get_root_element ();
+		if (root_node == null) {
+			//free the document manually before throwing because the garbage collector can't work on pointers
+			delete xml_doc;
+			throw new XmlError.XML_DOCUMENT_EMPTY ("the xml'"+ filename + "' is empty");
 		}
+		Xml.Node* top_node;
 
-		public static void main (string[] args) {
-			stdout.printf("%s\n", args[1]);
-			// HashMap<string, Node> foo = new HashMap<string, Node>(str_hash, str_equal);
-			// String string_node = new String();
-			// string_node.str = "barbar";
-			// stdout.printf("%s:%s\n", "foo", string_node.str);
-			// foo.set("foo", string_node);
-			// stdout.printf("out: %s\n", ((String) foo.get("foo")).str);
-			PList.Dict pl = new PList.Dict(str_hash, str_equal);
-			pl.filename = args[1];
-			try {
-				pl.parse();
+		for (Xml.Node* iter = root_node->children; iter != null; iter = iter->next) {
+			if (iter->type != ElementType.ELEMENT_NODE)
+				continue;
+			top_node = iter;
+		}
+		if (top_node->name != "dict") {
+			stdout.printf("error top node is not a dict");
+		}
+		var dict = PList.Dict.parse_dict(top_node);
+
+		//free the document
+		delete xml_doc;
+		return dict;
+	}
+
+	public static void print_plist(int indent, Node node) {
+        string str_indent = string.nfill(indent * 2, ' ');
+		if (node is String) {
+			stdout.printf("%s%s,\n", str_indent, ((String) node).str);
+		}
+		if (node is Dict) {
+			stdout.printf("%s{\n", str_indent);
+			str_indent = string.nfill((indent+1)*2, ' ');
+			foreach(string key in ((Dict) node).map.get_keys()) {
+				stdout.printf("%s%s => ", str_indent, key);
+				Node value = ((Dict) node).map.get(key);
+				if (value is String)
+					stdout.printf("\"%s\",\n", ((String) value).str);
+				else {
+					stdout.printf("\n");
+					print_plist(indent+1, value);
+				}
 			}
-			catch (XmlError e) {}
+			str_indent = string.nfill(indent*2, ' ');
+			stdout.printf("%s},\n", str_indent);
 		}
+		if (node is Array) {
+			stdout.printf("%s[\n", str_indent);
+			str_indent = string.nfill((indent+1)*2, ' ');
+			foreach(Node sub_node in ((Array) node).array) {
+				print_plist(indent+1, sub_node);
+			}
+			str_indent = string.nfill(indent*2, ' ');
+			stdout.printf("%s],\n", str_indent);
+		}
+	}
+
+	public static void main (string[] args) {
+		PList.Dict pl;
+		try {
+			pl = PList.parse(args[1]);
+		}
+		catch (XmlError e) {}
+		print_plist(0, pl);
 	}
 }
