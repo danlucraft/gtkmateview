@@ -41,6 +41,10 @@ namespace PList {
 			this.array = new ArrayList<Node>();
 		}
 
+		public Node get(int ix) {
+			return this.array.get(ix);
+		}
+
 		public static Array parse_array(Xml.Node* node) {
 			var array = new Array();
 			String string_node;
@@ -60,6 +64,25 @@ namespace PList {
 			this.map = new HashMap<string, Node>(str_hash, str_equal);
 		}
 		
+		public Node get(string key) {
+			return this.map.get(key);
+		}
+
+		public string[] keys() {
+			string[] ks = new string[this.map.get_keys().size];
+			int i = 0;
+			foreach(string s in this.map.get_keys()) {
+				ks[i] = s;
+				i += 1;
+			}
+			return ks;
+		}
+
+		public void print_keys() {
+			foreach(string s in this.keys())
+				stdout.printf("key: %s\n", s);
+		}
+
 		public static Dict parse_dict(Xml.Node* node) {
 			var dict = new Dict();
 			string key;
@@ -79,7 +102,6 @@ namespace PList {
 	}
 
 	public static Dict parse(string filename) throws XmlError {
-		stdout.printf("Loading plist: %s\n", filename);
 		Xml.Doc* xml_doc = Xml.Parser.parse_file (filename);
 		if (xml_doc == null) {
 			throw new XmlError.FILE_NOT_FOUND ("file "+ filename + " not found or permissions missing");

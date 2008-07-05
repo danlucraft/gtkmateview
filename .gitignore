@@ -1,0 +1,8 @@
+lib/Makefile
+lib/gtkmateview.gidl
+lib/gtkmateview.so
+lib/gtkmateview_rb.o
+lib/gtkmateview_rb.so
+lib/mkmf.log
+lib/plist.o
+lib/semantic.cache
