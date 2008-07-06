@@ -1,6 +1,5 @@
 
-require 'gtk2'
-require 'lib/gtkmateview_rb'
+require 'spec/spec_helper'
 
 describe PList do
   it "raises IO ValaError if file not found" do
