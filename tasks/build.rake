@@ -21,7 +21,7 @@ namespace :build do
   task :build_c do
     FileUtils.cd("lib") do
       puts "compiling gtkmateview..."
-      puts %x{valac -C --library gtkmateview --pkg libxml-2.0 --pkg gee-1.0 --vapidir=./../vapi/ --pkg=oniguruma plist.vala onig_wrap.vala gtkmateview.vala}
+      puts %x{valac -C --library gtkmateview --pkg gtksourceview-2.0 --pkg libxml-2.0 --pkg gee-1.0 --vapidir=./../vapi/ --pkg=oniguruma plist.vala onig_wrap.vala gtkmateview.vala}
       ["plist", "onig_wrap"].each do |name|
         fix_vala_c_file(name)
       end
@@ -35,7 +35,7 @@ namespace :build do
 #       puts %x{gcc --shared -fPIC -o gtkmateview.so $(pkg-config --cflags --libs gobject-2.0 gee-1.0 libxml-2.0) -lonig plist.c onig_test.c -I/usr/local/lib/ruby/1.8/i686-linux -I/usr/local/lib/}
     
       puts "running VALAR..."
-      puts %x{ruby ../../valar/bin/valar gtkmateview.vapi}
+      puts %x{ruby ../../valar/bin/valar gtkmateview.vapi --deps="gtk+-2.0"}
 
       puts 
       puts "compiling gtkmateview_rb..."

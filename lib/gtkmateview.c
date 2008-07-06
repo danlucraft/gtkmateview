@@ -16,7 +16,7 @@ static gpointer gtk_mate_view_parent_class = NULL;
 
 
 
-void gtk_mate_view_main (char** args, int args_length1) {
+void gtk_mate_view_test_regex (char** args, int args_length1) {
 	const char* _tmp0;
 	char* pattern;
 	const char* _tmp1;
@@ -41,7 +41,6 @@ void gtk_mate_view_main (char** args, int args_length1) {
 	if (rx == NULL) {
 		char* err_buf;
 		err_buf = g_strdup ("                                                                                                    ");
-		/*char* cerr_buf = err_buf;*/
 		onig_error_code_to_str (err_buf, err->code);
 		fprintf (stdout, "caught onigerror: %d, '%s'\n", err->code, err_buf);
 		err_buf = (g_free (err_buf), NULL);
@@ -55,16 +54,9 @@ void gtk_mate_view_main (char** args, int args_length1) {
 }
 
 
-int main (int argc, char ** argv) {
-	g_type_init ();
-	gtk_mate_view_main (argv, argc);
-	return 0;
-}
-
-
 GtkMateView* gtk_mate_view_new (void) {
 	GtkMateView * self;
-	self = g_object_newv (TYPE_GTK_MATE_VIEW, 0, NULL);
+	self = g_object_newv (GTK_TYPE_MATE_VIEW, 0, NULL);
 	return self;
 }
 
@@ -82,7 +74,7 @@ GType gtk_mate_view_get_type (void) {
 	static GType gtk_mate_view_type_id = 0;
 	if (G_UNLIKELY (gtk_mate_view_type_id == 0)) {
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateViewClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_view_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateView), 0, (GInstanceInitFunc) gtk_mate_view_instance_init };
-		gtk_mate_view_type_id = g_type_register_static (G_TYPE_OBJECT, "GtkMateView", &g_define_type_info, 0);
+		gtk_mate_view_type_id = g_type_register_static (GTK_TYPE_TEXT_VIEW, "GtkMateView", &g_define_type_info, 0);
 	}
 	return gtk_mate_view_type_id;
 }

@@ -1,9 +1,19 @@
 #include "ruby.h"
 #include "rbgtk.h"
+#include "gtkmateview.h"
 #include "onig_wrap.h"
 #include "plist.h"
-#include "gtkmateview.h"
-static VALUE rb_vala_error;
+static VALUE rb_vala_error, rbc_gtk;
+
+/****  Gtk wrapper *****/
+
+#define _GTK_SELF(s) GTK(RVAL2GOBJ(s))
+static VALUE rbc_gtk;
+
+/****  Gtk.MateView wrapper *****/
+
+#define _GTK_MATE_VIEW_SELF(s) GTK_MATE_VIEW(RVAL2GOBJ(s))
+static VALUE rbc_gtk_mate_view;
 
 /****  Oniguruma wrapper *****/
 
@@ -45,10 +55,37 @@ static VALUE rbc_plist_array;
 #define _PLIST_DICT_SELF(s) PLIST_DICT(RVAL2GOBJ(s))
 static VALUE rbc_plist_dict;
 
-/****  GtkMateView wrapper *****/
+/****  Gtk methods *****/
 
-#define _GTK_MATE_VIEW_SELF(s) GTK_MATE_VIEW(RVAL2GOBJ(s))
-static VALUE rbc_gtk_mate_view;
+
+/****  Gtk.MateView methods *****/
+
+
+static VALUE gtk_mate_view_initialize(VALUE self) {
+
+    RBGTK_INITIALIZE(self, gtk_mate_view_new ());
+    return Qnil;
+}
+
+static VALUE rb_gtk_mate_view_test_regex(VALUE self, VALUE args) {
+    if (TYPE(args) != T_ARRAY) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected an array of strings");
+    }
+    char** _c_args;
+              int _c_args__length = RARRAY_LEN(args);
+          _c_args = malloc(_c_args__length*sizeof(char*));
+          long valar__1;
+          for(valar__1 = 0; valar__1 < _c_args__length; valar__1++) {
+             *(_c_args+valar__1) = RSTRING_PTR(rb_ary_entry(args, (long) valar__1));
+          }
+
+    
+    gtk_mate_view_test_regex(_c_args, _c_args__length);
+
+    return Qnil;
+}
+
 
 /****  Oniguruma methods *****/
 
@@ -266,9 +303,9 @@ static VALUE rb_plist_dict_keys(VALUE self) {
     _c_return = plist_dict_keys(plist_dict, &_rb_return__length);
     VALUE _rb_return;
               _rb_return = rb_ary_new2(_rb_return__length);
-          long valar__1;
-          for(valar__1 = 0; valar__1 < _rb_return__length; valar__1++) {
-              rb_ary_store(_rb_return, valar__1, rb_str_new2(_c_return[valar__1]));
+          long valar__2;
+          for(valar__2 = 0; valar__2 < _rb_return__length; valar__2++) {
+              rb_ary_store(_rb_return, valar__2, rb_str_new2(_c_return[valar__2]));
           }
 
     return _rb_return;
@@ -284,54 +321,26 @@ static VALUE rb_plist_dict_print_keys(VALUE self) {
     return Qnil;
 }
 
-
-/****  GtkMateView methods *****/
-
-
-static VALUE gtk_mate_view_initialize(VALUE self) {
-
-    G_INITIALIZE(self, gtk_mate_view_new ());
-    return Qnil;
-}
-
-static VALUE rb_gtk_mate_view_main(VALUE self, VALUE args) {
-    if (TYPE(args) != T_ARRAY) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected an array of strings");
-    }
-    char** _c_args;
-              int _c_args__length = RARRAY_LEN(args);
-          _c_args = malloc(_c_args__length*sizeof(char*));
-          long valar__2;
-          for(valar__2 = 0; valar__2 < _c_args__length; valar__2++) {
-             *(_c_args+valar__2) = RSTRING_PTR(rb_ary_entry(args, (long) valar__2));
-          }
-
-    
-    gtk_mate_view_main(_c_args, _c_args__length);
-
-    return Qnil;
-}
-
 void Init_gtkmateview_rb() {
     rb_vala_error = rb_define_class("ValaError", rb_eval_string("Exception"));
+    rbc_gtk = rb_eval_string("Gtk");
     rbc_plist = rb_define_class("PList", rb_cObject);
     rb_define_singleton_method(rbc_plist, "parse", rb_plist_parse, 1);
     rb_define_singleton_method(rbc_plist, "print_plist", rb_plist_print_plist, 2);
     rbc_oniguruma = rb_define_class("Oniguruma", rb_cObject);
+    rbc_plist_node = G_DEF_CLASS(plist_node_get_type(), "Node", rbc_plist);
+    rb_define_method(rbc_plist_node, "initialize", plist_node_initialize, 0);
     rbc_plist_dict = G_DEF_CLASS(plist_dict_get_type(), "Dict", rbc_plist);
     rb_define_method(rbc_plist_dict, "initialize", plist_dict_initialize, 0);
     rb_define_method(rbc_plist_dict, "get", rb_plist_dict_get, 1);
     rb_define_method(rbc_plist_dict, "keys", rb_plist_dict_keys, 0);
     rb_define_method(rbc_plist_dict, "print_keys", rb_plist_dict_print_keys, 0);
-    rbc_plist_node = G_DEF_CLASS(plist_node_get_type(), "Node", rbc_plist);
-    rb_define_method(rbc_plist_node, "initialize", plist_node_initialize, 0);
-    rbc_gtk_mate_view = G_DEF_CLASS(gtk_mate_view_get_type(), "GtkMateView", rb_cObject);
-    rb_define_method(rbc_gtk_mate_view, "initialize", gtk_mate_view_initialize, 0);
-    rb_define_singleton_method(rbc_gtk_mate_view, "main", rb_gtk_mate_view_main, 1);
     rbc_plist_array = G_DEF_CLASS(plist_array_get_type(), "Array", rbc_plist);
     rb_define_method(rbc_plist_array, "initialize", plist_array_initialize, 0);
     rb_define_method(rbc_plist_array, "get", rb_plist_array_get, 1);
+    rbc_gtk_mate_view = G_DEF_CLASS(gtk_mate_view_get_type(), "MateView", rbc_gtk);
+    rb_define_method(rbc_gtk_mate_view, "initialize", gtk_mate_view_initialize, 0);
+    rb_define_singleton_method(rbc_gtk_mate_view, "test_regex", rb_gtk_mate_view_test_regex, 1);
     rbc_plist_string = G_DEF_CLASS(plist_string_get_type(), "String", rbc_plist);
     rb_define_method(rbc_plist_string, "initialize", plist_string_initialize, 0);
     rb_define_method(rbc_plist_string, "str", rb_plist_string_get_str, 0);
