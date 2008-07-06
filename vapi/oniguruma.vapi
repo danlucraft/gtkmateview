@@ -1,7 +1,16 @@
 
 namespace Oniguruma {
+
+	[CCode (cname = "onig_new", cheader_filename = "oniguruma.h")]
+	public static int onig_new(out RegexT regex, char* pattern, char* pattern_end,
+							   OnigOptionType option, int enc, OnigSyntaxType syntax,
+							   ref OnigErrorInfo err_info);
+
+	[CCode (cname = "onig_error_code_to_str", cheader_filename = "oniguruma.h")]
+	public static int error_code_to_string(char* err_buf, int err_code);
+
 	[CCode (cname = "regex_t", cheader_filename = "oniguruma.h", free_function = "onig_free", ref_function="", unref_function="")]
-	public class Regex {
+	public class RegexT {
 		[CCode (cname = "onig_search", cheader_filename = "oniguruma.h")]
 		public int search(char* str, char* end, char* start,
 						  char* range, Region region, OnigOptionType option);
@@ -108,9 +117,5 @@ namespace Oniguruma {
 		public UChar* par_end;
 	}
 
-	[CCode (cname = "onig_new", cheader_filename = "oniguruma.h")]
-	public static int onig_new(out Regex regex, char* pattern, char* pattern_end,
-							   OnigOptionType option, int enc, OnigSyntaxType syntax,
-							   ref OnigErrorInfo err_info);
 
 }

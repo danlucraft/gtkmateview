@@ -6,3 +6,5 @@ lib/gtkmateview_rb.so
 lib/mkmf.log
 lib/plist.o
 lib/semantic.cache
+*.o
+*.so

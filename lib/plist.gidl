@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<api version="1.0">
+<namespace name="PList">
+	<object name="Node" parent="GLib.Object" type-name="PListNode" get-type="plist_node_get_type">
+		<method name="parse_xml_node" symbol="plist_node_parse_xml_node">
+			<parameters>
+				<parameter name="node" type="xmlNode*"/>
+			</parameters>
+			<return-type type="PList.Node*" transfer="full"/>
+		</method>
+		<constructor name="new" symbol="plist_node_new">
+			<parameters>
+			</parameters>
+			<return-type type="PList.Node*"/>
+		</constructor>
+	</object>
+	<object name="String" parent="PList.Node" type-name="PListString" get-type="plist_string_get_type">
+		<field name="str"/>
+		<constructor name="new" symbol="plist_string_new">
+			<parameters>
+			</parameters>
+			<return-type type="PList.String*"/>
+		</constructor>
+	</object>
+	<object name="Array" parent="PList.Node" type-name="PListArray" get-type="plist_array_get_type">
+		<field name="array"/>
+		<method name="get" symbol="plist_array_get">
+			<parameters>
+				<parameter name="self" type="PList.Array*"/>
+				<parameter name="ix" type="int"/>
+			</parameters>
+			<return-type type="PList.Node*" transfer="full"/>
+		</method>
+		<method name="parse_array" symbol="plist_array_parse_array">
+			<parameters>
+				<parameter name="node" type="xmlNode*"/>
+			</parameters>
+			<return-type type="PList.Array*" transfer="full"/>
+		</method>
+		<constructor name="new" symbol="plist_array_new">
+			<parameters>
+			</parameters>
+			<return-type type="PList.Array*"/>
+		</constructor>
+	</object>
+	<object name="Dict" parent="PList.Node" type-name="PListDict" get-type="plist_dict_get_type">
+		<field name="map"/>
+		<method name="get" symbol="plist_dict_get">
+			<parameters>
+				<parameter name="self" type="PList.Dict*"/>
+				<parameter name="key" type="const char*"/>
+			</parameters>
+			<return-type type="PList.Node*" transfer="full"/>
+		</method>
+		<method name="keys" symbol="plist_dict_keys">
+			<parameters>
+				<parameter name="self" type="PList.Dict*"/>
+			</parameters>
+			<return-type type="char**" transfer="full"/>
+		</method>
+		<method name="print_keys" symbol="plist_dict_print_keys">
+			<parameters>
+				<parameter name="self" type="PList.Dict*"/>
+			</parameters>
+			<return-type type="void"/>
+		</method>
+		<method name="parse_dict" symbol="plist_dict_parse_dict">
+			<parameters>
+				<parameter name="node" type="xmlNode*"/>
+			</parameters>
+			<return-type type="PList.Dict*" transfer="full"/>
+		</method>
+		<constructor name="new" symbol="plist_dict_new">
+			<parameters>
+			</parameters>
+			<return-type type="PList.Dict*"/>
+		</constructor>
+	</object>
+	<method name="parse" symbol="plist_parse">
+		<parameters>
+			<parameter name="filename" type="const char*"/>
+		</parameters>
+		<return-type type="PList.Dict*" transfer="full"/>
+	</method>
+	<method name="print_plist" symbol="plist_print_plist">
+		<parameters>
+			<parameter name="indent" type="int"/>
+			<parameter name="node" type="PList.Node*"/>
+		</parameters>
+		<return-type type="void"/>
+	</method>
+</namespace>
+<errordomain name="XmlError">
+	<member name="XML_ERROR_FILE_NOT_FOUND"/>
+	<member name="XML_ERROR_XML_DOCUMENT_EMPTY"/>
+</errordomain>
+</api>

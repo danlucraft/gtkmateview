@@ -10,6 +10,7 @@ describe PList do
   it "parses a file and returns a Dict" do
     PList.parse("spec/fixtures/Ruby.plist").should be_an_instance_of(PList::Dict)
   end
+  
 end
 
 describe PList::Dict do

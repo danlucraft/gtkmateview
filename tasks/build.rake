@@ -3,6 +3,14 @@ require 'rubygems'
 require 'fileutils'
 require 'spec/rake/spectask'
 
+def fix_vala_c_file(name)
+  c_src = File.read("#{name}.c")
+  c_src.gsub!("#include <#{name}.h>", "#include \"#{name}.h\"")
+  File.open("#{name}.c", "w") do |f| 
+    f.puts c_src
+  end
+end
+
 namespace :build do
   task :clean do
     puts "cleaning..."
@@ -13,12 +21,9 @@ namespace :build do
   task :build_c do
     FileUtils.cd("lib") do
       puts "compiling gtkmateview..."
-      puts %x{valac -C --library gtkmateview --pkg libxml-2.0 --pkg gee-1.0 plist.vala}
-      
-      c_src = File.read("plist.c")
-      c_src.gsub!("#include <plist.h>", "#include \"plist.h\"")
-      File.open("plist.c", "w") do |f| 
-        f.puts c_src
+      puts %x{valac -C --library gtkmateview --pkg libxml-2.0 --pkg gee-1.0 --vapidir=./../vapi/ --pkg=oniguruma plist.vala onig_wrap.vala gtkmateview.vala}
+      ["plist", "onig_wrap"].each do |name|
+        fix_vala_c_file(name)
       end
     end
   end
@@ -26,8 +31,8 @@ namespace :build do
   desc "build project from scratch"
   task :all => [:clean, :build_c] do
     FileUtils.cd("lib") do
-      puts "linking vlib..."
-      puts %x{gcc --shared -fPIC -o gtkmateview.so $(pkg-config --cflags --libs gobject-2.0 gee-1.0 libxml-2.0) plist.c -I/usr/local/lib/ruby/1.8/i686-linux}
+#       puts "linking gtkmateview..."
+#       puts %x{gcc --shared -fPIC -o gtkmateview.so $(pkg-config --cflags --libs gobject-2.0 gee-1.0 libxml-2.0) -lonig plist.c onig_test.c -I/usr/local/lib/ruby/1.8/i686-linux -I/usr/local/lib/}
     
       puts "running VALAR..."
       puts %x{ruby ../../valar/bin/valar gtkmateview.vapi}

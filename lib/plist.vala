@@ -161,13 +161,4 @@ namespace PList {
 			stdout.printf("%s],\n", str_indent);
 		}
 	}
-
-	public static void main (string[] args) {
-		PList.Dict pl;
-		try {
-			pl = PList.parse(args[1]);
-		}
-		catch (XmlError e) {}
-		print_plist(0, pl);
-	}
 }

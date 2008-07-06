@@ -1,7 +1,24 @@
 #include "ruby.h"
 #include "rbgtk.h"
+#include "onig_wrap.h"
 #include "plist.h"
+#include "gtkmateview.h"
 static VALUE rb_vala_error;
+
+/****  Oniguruma wrapper *****/
+
+#define _ONIGURUMA_SELF(s) ONIGURUMA(RVAL2GOBJ(s))
+static VALUE rbc_oniguruma;
+
+/****  Oniguruma.OnigError wrapper *****/
+
+#define _ONIGURUMA_ONIG_ERROR_SELF(s) ONIGURUMA_ONIG_ERROR(RVAL2GOBJ(s))
+static VALUE rbc_oniguruma_onig_error;
+
+/****  Oniguruma.Regex wrapper *****/
+
+#define _ONIGURUMA_REGEX_SELF(s) ONIGURUMA_REGEX(RVAL2GOBJ(s))
+static VALUE rbc_oniguruma_regex;
 
 /****  PList wrapper *****/
 
@@ -27,6 +44,83 @@ static VALUE rbc_plist_array;
 
 #define _PLIST_DICT_SELF(s) PLIST_DICT(RVAL2GOBJ(s))
 static VALUE rbc_plist_dict;
+
+/****  GtkMateView wrapper *****/
+
+#define _GTK_MATE_VIEW_SELF(s) GTK_MATE_VIEW(RVAL2GOBJ(s))
+static VALUE rbc_gtk_mate_view;
+
+/****  Oniguruma methods *****/
+
+
+/****  Oniguruma.OnigError methods *****/
+
+
+static VALUE oniguruma_onig_error_initialize(VALUE self) {
+
+    G_INITIALIZE(self, oniguruma_onig_error_new ());
+    return Qnil;
+}
+
+static VALUE rb_oniguruma_onig_error_get_code(VALUE self) {
+    OnigurumaOnigError* oniguruma_onig_error = RVAL2GOBJ(self);
+
+
+    int _c_return = oniguruma_onig_error->code;
+    VALUE _rb_return;
+    _rb_return = INT2FIX(_c_return);
+    return _rb_return;
+}
+
+static VALUE rb_oniguruma_onig_error_set_code(VALUE self, VALUE code) {
+    OnigurumaOnigError* oniguruma_onig_error = RVAL2GOBJ(self);
+    if (TYPE(code) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    int _c_code;
+    _c_code = FIX2INT(code);
+    oniguruma_onig_error->code = _c_code;
+
+    return Qnil;
+}
+
+
+/****  Oniguruma.Regex methods *****/
+
+
+static VALUE oniguruma_regex_initialize(VALUE self) {
+
+    G_INITIALIZE(self, oniguruma_regex_new ());
+    return Qnil;
+}
+
+static VALUE rb_oniguruma_regex_search(VALUE self, VALUE target, VALUE start, VALUE end) {
+    OnigurumaRegex* oniguruma_regex = RVAL2GOBJ(self);
+    if (TYPE(target) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    if (TYPE(start) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    if (TYPE(end) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    char * _c_target;
+    _c_target = STR2CSTR(target);
+    int _c_start;
+    _c_start = FIX2INT(start);
+    int _c_end;
+    _c_end = FIX2INT(end);
+    
+    oniguruma_regex_search(oniguruma_regex, _c_target, _c_start, _c_end);
+
+    return Qnil;
+}
+
 
 /****  PList methods *****/
 
@@ -63,25 +157,6 @@ static VALUE rb_plist_print_plist(VALUE self, VALUE indent, VALUE node) {
     _c_node = _PLIST_NODE_SELF(node);
     
     plist_print_plist(_c_indent, _c_node);
-
-    return Qnil;
-}
-
-static VALUE rb_plist_main(VALUE self, VALUE args) {
-    if (TYPE(args) != T_ARRAY) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected an array of strings");
-    }
-    char** _c_args;
-              int _c_args__length = RARRAY_LEN(args);
-          _c_args = malloc(_c_args__length*sizeof(char*));
-          long valar__1;
-          for(valar__1 = 0; valar__1 < _c_args__length; valar__1++) {
-             *(_c_args+valar__1) = RSTRING_PTR(rb_ary_entry(args, (long) valar__1));
-          }
-
-    
-    plist_main(_c_args, _c_args__length);
 
     return Qnil;
 }
@@ -191,9 +266,9 @@ static VALUE rb_plist_dict_keys(VALUE self) {
     _c_return = plist_dict_keys(plist_dict, &_rb_return__length);
     VALUE _rb_return;
               _rb_return = rb_ary_new2(_rb_return__length);
-          long valar__2;
-          for(valar__2 = 0; valar__2 < _rb_return__length; valar__2++) {
-              rb_ary_store(_rb_return, valar__2, rb_str_new2(_c_return[valar__2]));
+          long valar__1;
+          for(valar__1 = 0; valar__1 < _rb_return__length; valar__1++) {
+              rb_ary_store(_rb_return, valar__1, rb_str_new2(_c_return[valar__1]));
           }
 
     return _rb_return;
@@ -209,19 +284,51 @@ static VALUE rb_plist_dict_print_keys(VALUE self) {
     return Qnil;
 }
 
+
+/****  GtkMateView methods *****/
+
+
+static VALUE gtk_mate_view_initialize(VALUE self) {
+
+    G_INITIALIZE(self, gtk_mate_view_new ());
+    return Qnil;
+}
+
+static VALUE rb_gtk_mate_view_main(VALUE self, VALUE args) {
+    if (TYPE(args) != T_ARRAY) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected an array of strings");
+    }
+    char** _c_args;
+              int _c_args__length = RARRAY_LEN(args);
+          _c_args = malloc(_c_args__length*sizeof(char*));
+          long valar__2;
+          for(valar__2 = 0; valar__2 < _c_args__length; valar__2++) {
+             *(_c_args+valar__2) = RSTRING_PTR(rb_ary_entry(args, (long) valar__2));
+          }
+
+    
+    gtk_mate_view_main(_c_args, _c_args__length);
+
+    return Qnil;
+}
+
 void Init_gtkmateview_rb() {
     rb_vala_error = rb_define_class("ValaError", rb_eval_string("Exception"));
     rbc_plist = rb_define_class("PList", rb_cObject);
     rb_define_singleton_method(rbc_plist, "parse", rb_plist_parse, 1);
     rb_define_singleton_method(rbc_plist, "print_plist", rb_plist_print_plist, 2);
-    rb_define_singleton_method(rbc_plist, "main", rb_plist_main, 1);
-    rbc_plist_node = G_DEF_CLASS(plist_node_get_type(), "Node", rbc_plist);
-    rb_define_method(rbc_plist_node, "initialize", plist_node_initialize, 0);
+    rbc_oniguruma = rb_define_class("Oniguruma", rb_cObject);
     rbc_plist_dict = G_DEF_CLASS(plist_dict_get_type(), "Dict", rbc_plist);
     rb_define_method(rbc_plist_dict, "initialize", plist_dict_initialize, 0);
     rb_define_method(rbc_plist_dict, "get", rb_plist_dict_get, 1);
     rb_define_method(rbc_plist_dict, "keys", rb_plist_dict_keys, 0);
     rb_define_method(rbc_plist_dict, "print_keys", rb_plist_dict_print_keys, 0);
+    rbc_plist_node = G_DEF_CLASS(plist_node_get_type(), "Node", rbc_plist);
+    rb_define_method(rbc_plist_node, "initialize", plist_node_initialize, 0);
+    rbc_gtk_mate_view = G_DEF_CLASS(gtk_mate_view_get_type(), "GtkMateView", rb_cObject);
+    rb_define_method(rbc_gtk_mate_view, "initialize", gtk_mate_view_initialize, 0);
+    rb_define_singleton_method(rbc_gtk_mate_view, "main", rb_gtk_mate_view_main, 1);
     rbc_plist_array = G_DEF_CLASS(plist_array_get_type(), "Array", rbc_plist);
     rb_define_method(rbc_plist_array, "initialize", plist_array_initialize, 0);
     rb_define_method(rbc_plist_array, "get", rb_plist_array_get, 1);
@@ -229,4 +336,11 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_plist_string, "initialize", plist_string_initialize, 0);
     rb_define_method(rbc_plist_string, "str", rb_plist_string_get_str, 0);
     rb_define_method(rbc_plist_string, "str=", rb_plist_string_set_str, 1);
+    rbc_oniguruma_regex = G_DEF_CLASS(oniguruma_regex_get_type(), "Regex", rbc_oniguruma);
+    rb_define_method(rbc_oniguruma_regex, "initialize", oniguruma_regex_initialize, 0);
+    rb_define_method(rbc_oniguruma_regex, "search", rb_oniguruma_regex_search, 3);
+    rbc_oniguruma_onig_error = G_DEF_CLASS(oniguruma_onig_error_get_type(), "OnigError", rbc_oniguruma);
+    rb_define_method(rbc_oniguruma_onig_error, "initialize", oniguruma_onig_error_initialize, 0);
+    rb_define_method(rbc_oniguruma_onig_error, "code", rb_oniguruma_onig_error_get_code, 0);
+    rb_define_method(rbc_oniguruma_onig_error, "code=", rb_oniguruma_onig_error_set_code, 1);
 }

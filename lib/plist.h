@@ -122,7 +122,6 @@ PListDict* plist_dict_new (void);
 GType plist_dict_get_type (void);
 PListDict* plist_parse (const char* filename, GError** error);
 void plist_print_plist (gint indent, PListNode* node);
-void plist_main (char** args, int args_length1);
 
 
 G_END_DECLS

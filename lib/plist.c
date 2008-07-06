@@ -493,47 +493,6 @@ void plist_print_plist (gint indent, PListNode* node) {
 }
 
 
-void plist_main (char** args, int args_length1) {
-	GError * inner_error;
-	PListDict* pl;
-	inner_error = NULL;
-	pl = NULL;
-	{
-		PListDict* _tmp0;
-		_tmp0 = NULL;
-		pl = (_tmp0 = plist_parse (args[1], &inner_error), (pl == NULL ? NULL : (pl = (g_object_unref (pl), NULL))), _tmp0);
-		if (inner_error != NULL) {
-			if (inner_error->domain == XML_ERROR) {
-				goto __catch0_xml_error;
-			}
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
-			g_clear_error (&inner_error);
-		}
-	}
-	goto __finally0;
-	__catch0_xml_error:
-	{
-		GError * e;
-		e = inner_error;
-		inner_error = NULL;
-		{
-			(e == NULL ? NULL : (e = (g_error_free (e), NULL)));
-		}
-	}
-	__finally0:
-	;
-	plist_print_plist (0, PLIST_NODE (pl));
-	(pl == NULL ? NULL : (pl = (g_object_unref (pl), NULL)));
-}
-
-
-int main (int argc, char ** argv) {
-	g_type_init ();
-	plist_main (argv, argc);
-	return 0;
-}
-
-
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
 	if (array != NULL && destroy_func != NULL) {
 		int i;
