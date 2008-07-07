@@ -45,7 +45,10 @@ void gtk_mate_view_test_regex (char** args, int args_length1) {
 		fprintf (stdout, "caught onigerror: %d, '%s'\n", err->code, err_buf);
 		err_buf = (g_free (err_buf), NULL);
 	} else {
-		oniguruma_regex_search (rx, target, 0, 11);
+		OnigurumaMatch* _tmp6;
+		_tmp6 = NULL;
+		_tmp6 = oniguruma_regex_search (rx, target, 0, 11);
+		(_tmp6 == NULL ? NULL : (_tmp6 = (g_object_unref (_tmp6), NULL)));
 	}
 	pattern = (g_free (pattern), NULL);
 	target = (g_free (target), NULL);

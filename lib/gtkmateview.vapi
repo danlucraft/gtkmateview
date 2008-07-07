@@ -17,9 +17,16 @@ namespace Oniguruma {
 		public OnigError ();
 	}
 	[CCode (cheader_filename = "onig_wrap.h")]
+	public class Match : GLib.Object {
+		public Match ();
+		public Oniguruma.RegexT rx { get; set; }
+		public Oniguruma.Region rg { get; set; }
+	}
+	[CCode (cheader_filename = "onig_wrap.h")]
 	public class Regex : GLib.Object {
-		public void search (string target, int start, int end);
+		public Oniguruma.Match? search (string target, int start, int end);
 		public static Oniguruma.Regex? make (string pattern, Oniguruma.OnigOptionType options, out Oniguruma.OnigError error);
+		public static Oniguruma.Regex? make1 (string pattern);
 		public Regex ();
 		public Oniguruma.RegexT rx { get; set; }
 	}

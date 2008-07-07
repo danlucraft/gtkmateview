@@ -25,6 +25,11 @@ static VALUE rbc_oniguruma;
 #define _ONIGURUMA_ONIG_ERROR_SELF(s) ONIGURUMA_ONIG_ERROR(RVAL2GOBJ(s))
 static VALUE rbc_oniguruma_onig_error;
 
+/****  Oniguruma.Match wrapper *****/
+
+#define _ONIGURUMA_MATCH_SELF(s) ONIGURUMA_MATCH(RVAL2GOBJ(s))
+static VALUE rbc_oniguruma_match;
+
 /****  Oniguruma.Regex wrapper *****/
 
 #define _ONIGURUMA_REGEX_SELF(s) ONIGURUMA_REGEX(RVAL2GOBJ(s))
@@ -123,6 +128,16 @@ static VALUE rb_oniguruma_onig_error_set_code(VALUE self, VALUE code) {
 }
 
 
+/****  Oniguruma.Match methods *****/
+
+
+static VALUE oniguruma_match_initialize(VALUE self) {
+
+    G_INITIALIZE(self, oniguruma_match_new ());
+    return Qnil;
+}
+
+
 /****  Oniguruma.Regex methods *****/
 
 
@@ -153,9 +168,34 @@ static VALUE rb_oniguruma_regex_search(VALUE self, VALUE target, VALUE start, VA
     int _c_end;
     _c_end = FIX2INT(end);
     
-    oniguruma_regex_search(oniguruma_regex, _c_target, _c_start, _c_end);
+    OnigurumaMatch* _c_return;
+    _c_return = oniguruma_regex_search(oniguruma_regex, _c_target, _c_start, _c_end);
+    VALUE _rb_return;
+    if (_c_return == NULL)
+        _rb_return = Qnil;
+    else {
+        _rb_return = GOBJ2RVAL(_c_return);
+    }
+    return _rb_return;
+}
 
-    return Qnil;
+static VALUE rb_oniguruma_regex_make1(VALUE self, VALUE pattern) {
+    if (TYPE(pattern) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    char * _c_pattern;
+    _c_pattern = STR2CSTR(pattern);
+    
+    OnigurumaRegex* _c_return;
+    _c_return = oniguruma_regex_make1(_c_pattern);
+    VALUE _rb_return;
+    if (_c_return == NULL)
+        _rb_return = Qnil;
+    else {
+        _rb_return = GOBJ2RVAL(_c_return);
+    }
+    return _rb_return;
 }
 
 
@@ -338,16 +378,19 @@ void Init_gtkmateview_rb() {
     rbc_plist_array = G_DEF_CLASS(plist_array_get_type(), "Array", rbc_plist);
     rb_define_method(rbc_plist_array, "initialize", plist_array_initialize, 0);
     rb_define_method(rbc_plist_array, "get", rb_plist_array_get, 1);
-    rbc_gtk_mate_view = G_DEF_CLASS(gtk_mate_view_get_type(), "MateView", rbc_gtk);
-    rb_define_method(rbc_gtk_mate_view, "initialize", gtk_mate_view_initialize, 0);
-    rb_define_singleton_method(rbc_gtk_mate_view, "test_regex", rb_gtk_mate_view_test_regex, 1);
     rbc_plist_string = G_DEF_CLASS(plist_string_get_type(), "String", rbc_plist);
     rb_define_method(rbc_plist_string, "initialize", plist_string_initialize, 0);
     rb_define_method(rbc_plist_string, "str", rb_plist_string_get_str, 0);
     rb_define_method(rbc_plist_string, "str=", rb_plist_string_set_str, 1);
+    rbc_gtk_mate_view = G_DEF_CLASS(gtk_mate_view_get_type(), "MateView", rbc_gtk);
+    rb_define_method(rbc_gtk_mate_view, "initialize", gtk_mate_view_initialize, 0);
+    rb_define_singleton_method(rbc_gtk_mate_view, "test_regex", rb_gtk_mate_view_test_regex, 1);
+    rbc_oniguruma_match = G_DEF_CLASS(oniguruma_match_get_type(), "Match", rbc_oniguruma);
+    rb_define_method(rbc_oniguruma_match, "initialize", oniguruma_match_initialize, 0);
     rbc_oniguruma_regex = G_DEF_CLASS(oniguruma_regex_get_type(), "Regex", rbc_oniguruma);
     rb_define_method(rbc_oniguruma_regex, "initialize", oniguruma_regex_initialize, 0);
     rb_define_method(rbc_oniguruma_regex, "search", rb_oniguruma_regex_search, 3);
+    rb_define_singleton_method(rbc_oniguruma_regex, "make1", rb_oniguruma_regex_make1, 1);
     rbc_oniguruma_onig_error = G_DEF_CLASS(oniguruma_onig_error_get_type(), "OnigError", rbc_oniguruma);
     rb_define_method(rbc_oniguruma_onig_error, "initialize", oniguruma_onig_error_initialize, 0);
     rb_define_method(rbc_oniguruma_onig_error, "code", rb_oniguruma_onig_error_get_code, 0);
