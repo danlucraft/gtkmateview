@@ -137,6 +137,38 @@ static VALUE oniguruma_match_initialize(VALUE self) {
     return Qnil;
 }
 
+static VALUE rb_oniguruma_match_begin(VALUE self, VALUE capture) {
+    OnigurumaMatch* oniguruma_match = RVAL2GOBJ(self);
+    if (TYPE(capture) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    int _c_capture;
+    _c_capture = FIX2INT(capture);
+    
+    int _c_return;
+    _c_return = oniguruma_match_begin(oniguruma_match, _c_capture);
+    VALUE _rb_return;
+    _rb_return = INT2FIX(_c_return);
+    return _rb_return;
+}
+
+static VALUE rb_oniguruma_match_end(VALUE self, VALUE capture) {
+    OnigurumaMatch* oniguruma_match = RVAL2GOBJ(self);
+    if (TYPE(capture) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    int _c_capture;
+    _c_capture = FIX2INT(capture);
+    
+    int _c_return;
+    _c_return = oniguruma_match_end(oniguruma_match, _c_capture);
+    VALUE _rb_return;
+    _rb_return = INT2FIX(_c_return);
+    return _rb_return;
+}
+
 
 /****  Oniguruma.Regex methods *****/
 
@@ -387,6 +419,8 @@ void Init_gtkmateview_rb() {
     rb_define_singleton_method(rbc_gtk_mate_view, "test_regex", rb_gtk_mate_view_test_regex, 1);
     rbc_oniguruma_match = G_DEF_CLASS(oniguruma_match_get_type(), "Match", rbc_oniguruma);
     rb_define_method(rbc_oniguruma_match, "initialize", oniguruma_match_initialize, 0);
+    rb_define_method(rbc_oniguruma_match, "begin", rb_oniguruma_match_begin, 1);
+    rb_define_method(rbc_oniguruma_match, "end", rb_oniguruma_match_end, 1);
     rbc_oniguruma_regex = G_DEF_CLASS(oniguruma_regex_get_type(), "Regex", rbc_oniguruma);
     rb_define_method(rbc_oniguruma_regex, "initialize", oniguruma_regex_initialize, 0);
     rb_define_method(rbc_oniguruma_regex, "search", rb_oniguruma_regex_search, 3);

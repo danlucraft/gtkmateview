@@ -16,6 +16,17 @@ namespace Oniguruma {
 		public RegexT rx {get; set;}
 		public Region rg {get; set;}
 
+		public int begin(int capture) {
+			if (capture >= this.rg.num_regs || capture < 0)
+				return -1;
+			return this.rg.beg[capture];
+		}
+
+		public int end(int capture) {
+			if (capture >= this.rg.num_regs || capture < 0)
+				return -1;
+			return this.rg.end[capture];
+		}
 	}
 
 	public class Regex : Object {
@@ -23,7 +34,6 @@ namespace Oniguruma {
 
 		public Match? search(string target, int start, int end) {
 			Region rg = new Region();
-			stdout.printf("allocated region\n");
 			char* ctarget = (char *) target;
 			int r = rx.search(ctarget, (ctarget+target.size()), ctarget+start, (ctarget+end), rg, Option.NONE);
 			if (r < 0) {
@@ -31,10 +41,8 @@ namespace Oniguruma {
 			}
 			else {
 				var md = new Match();
-				stdout.printf("count: %d\n", rg.num_regs);
-				for(int i = 0; i < rg.num_regs; i ++) {
-					stdout.printf("  %d begins at %d\n", i, rg.beg[i]); 
-				}
+				md.rg = rg;
+				md.rx = rx;
 				return md;
 			}
 		}

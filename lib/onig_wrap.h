@@ -76,6 +76,8 @@ struct _OnigurumaRegexClass {
 
 OnigurumaOnigError* oniguruma_onig_error_new (void);
 GType oniguruma_onig_error_get_type (void);
+gint oniguruma_match_begin (OnigurumaMatch* self, gint capture);
+gint oniguruma_match_end (OnigurumaMatch* self, gint capture);
 OnigurumaMatch* oniguruma_match_new (void);
 regex_t* oniguruma_match_get_rx (OnigurumaMatch* self);
 void oniguruma_match_set_rx (OnigurumaMatch* self, regex_t* value);

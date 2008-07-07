@@ -1,6 +1,5 @@
 
 #include "onig_wrap.h"
-#include <stdio.h>
 
 
 
@@ -68,6 +67,24 @@ GType oniguruma_onig_error_get_type (void) {
 		oniguruma_onig_error_type_id = g_type_register_static (G_TYPE_OBJECT, "OnigurumaOnigError", &g_define_type_info, 0);
 	}
 	return oniguruma_onig_error_type_id;
+}
+
+
+gint oniguruma_match_begin (OnigurumaMatch* self, gint capture) {
+	g_return_val_if_fail (ONIGURUMA_IS_MATCH (self), 0);
+	if (capture >= self->priv->_rg->num_regs || capture < 0) {
+		return -1;
+	}
+	return self->priv->_rg->beg[capture];
+}
+
+
+gint oniguruma_match_end (OnigurumaMatch* self, gint capture) {
+	g_return_val_if_fail (ONIGURUMA_IS_MATCH (self), 0);
+	if (capture >= self->priv->_rg->num_regs || capture < 0) {
+		return -1;
+	}
+	return self->priv->_rg->end[capture];
 }
 
 
@@ -186,7 +203,6 @@ OnigurumaMatch* oniguruma_regex_search (OnigurumaRegex* self, const char* target
 	g_return_val_if_fail (ONIGURUMA_IS_REGEX (self), NULL);
 	g_return_val_if_fail (target != NULL, NULL);
 	rg = onig_region_new ();
-	fprintf (stdout, "allocated region\n");
 	ctarget = ((gchar*) (target));
 	r = onig_search (self->priv->_rx, ctarget, (ctarget + strlen (target)), ctarget + start, (ctarget + end), rg, ONIG_OPTION_NONE);
 	if (r < 0) {
@@ -197,14 +213,8 @@ OnigurumaMatch* oniguruma_regex_search (OnigurumaRegex* self, const char* target
 		OnigurumaMatch* md;
 		OnigurumaMatch* _tmp1;
 		md = oniguruma_match_new ();
-		fprintf (stdout, "count: %d\n", rg->num_regs);
-		{
-			gint i;
-			i = 0;
-			for (; i < rg->num_regs; i++) {
-				fprintf (stdout, "  %d begins at %d\n", i, rg->beg[i]);
-			}
-		}
+		oniguruma_match_set_rg (md, rg);
+		oniguruma_match_set_rx (md, self->priv->_rx);
 		_tmp1 = NULL;
 		return (_tmp1 = md, (rg == NULL ? NULL : (rg = ( (rg), NULL))), _tmp1);
 	}

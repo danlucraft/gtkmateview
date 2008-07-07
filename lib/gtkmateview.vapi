@@ -18,6 +18,8 @@ namespace Oniguruma {
 	}
 	[CCode (cheader_filename = "onig_wrap.h")]
 	public class Match : GLib.Object {
+		public int begin (int capture);
+		public int end (int capture);
 		public Match ();
 		public Oniguruma.RegexT rx { get; set; }
 		public Oniguruma.Region rg { get; set; }
