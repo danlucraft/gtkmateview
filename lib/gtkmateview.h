@@ -4,7 +4,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gtk/gtk.h>
+#include <gtksourceview/gtksourceview.h>
 
 G_BEGIN_DECLS
 
@@ -21,16 +21,15 @@ typedef struct _GtkMateViewClass GtkMateViewClass;
 typedef struct _GtkMateViewPrivate GtkMateViewPrivate;
 
 struct _GtkMateView {
-	GtkTextView parent_instance;
+	GtkSourceView parent_instance;
 	GtkMateViewPrivate * priv;
 };
 
 struct _GtkMateViewClass {
-	GtkTextViewClass parent_class;
+	GtkSourceViewClass parent_class;
 };
 
 
-void gtk_mate_view_test_regex (char** args, int args_length1);
 GtkMateView* gtk_mate_view_new (void);
 GType gtk_mate_view_get_type (void);
 

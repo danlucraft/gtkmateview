@@ -72,25 +72,6 @@ static VALUE gtk_mate_view_initialize(VALUE self) {
     return Qnil;
 }
 
-static VALUE rb_gtk_mate_view_test_regex(VALUE self, VALUE args) {
-    if (TYPE(args) != T_ARRAY) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected an array of strings");
-    }
-    char** _c_args;
-              int _c_args__length = RARRAY_LEN(args);
-          _c_args = malloc(_c_args__length*sizeof(char*));
-          long valar__1;
-          for(valar__1 = 0; valar__1 < _c_args__length; valar__1++) {
-             *(_c_args+valar__1) = RSTRING_PTR(rb_ary_entry(args, (long) valar__1));
-          }
-
-    
-    gtk_mate_view_test_regex(_c_args, _c_args__length);
-
-    return Qnil;
-}
-
 
 /****  Oniguruma methods *****/
 
@@ -375,9 +356,9 @@ static VALUE rb_plist_dict_keys(VALUE self) {
     _c_return = plist_dict_keys(plist_dict, &_rb_return__length);
     VALUE _rb_return;
               _rb_return = rb_ary_new2(_rb_return__length);
-          long valar__2;
-          for(valar__2 = 0; valar__2 < _rb_return__length; valar__2++) {
-              rb_ary_store(_rb_return, valar__2, rb_str_new2(_c_return[valar__2]));
+          long valar__1;
+          for(valar__1 = 0; valar__1 < _rb_return__length; valar__1++) {
+              rb_ary_store(_rb_return, valar__1, rb_str_new2(_c_return[valar__1]));
           }
 
     return _rb_return;
@@ -416,7 +397,6 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_plist_string, "str=", rb_plist_string_set_str, 1);
     rbc_gtk_mate_view = G_DEF_CLASS(gtk_mate_view_get_type(), "MateView", rbc_gtk);
     rb_define_method(rbc_gtk_mate_view, "initialize", gtk_mate_view_initialize, 0);
-    rb_define_singleton_method(rbc_gtk_mate_view, "test_regex", rb_gtk_mate_view_test_regex, 1);
     rbc_oniguruma_match = G_DEF_CLASS(oniguruma_match_get_type(), "Match", rbc_oniguruma);
     rb_define_method(rbc_oniguruma_match, "initialize", oniguruma_match_initialize, 0);
     rb_define_method(rbc_oniguruma_match, "begin", rb_oniguruma_match_begin, 1);

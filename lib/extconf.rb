@@ -8,6 +8,7 @@ extension_name = 'gtkmateview_rb'
 PKGConfig.have_package('gtk+-2.0')
 PKGConfig.have_package('libxml-2.0')
 PKGConfig.have_package('gee-1.0')
+PKGConfig.have_package('gtksourceview-2.0')
 
 have_library("onig")
 

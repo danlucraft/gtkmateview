@@ -3,8 +3,7 @@
 [CCode (cprefix = "Gtk", lower_case_cprefix = "gtk_")]
 namespace Gtk {
 	[CCode (cheader_filename = "gtkmateview.h")]
-	public class MateView : Gtk.TextView {
-		public static void test_regex (string[] args);
+	public class MateView : Gtk.SourceView {
 		public MateView ();
 	}
 }
