@@ -18,26 +18,25 @@ namespace Gtk.Mate {
 
 		public void init_for_reference() {
 			PList.Node? nm = plist.get("name");
-			if (nm != null) {
+			if (nm != null)
 				name = ((PList.String) nm).str;
-			}
+
 			PList.Node? flm = plist.get("firstLineMatch");
-			if (flm != null) {
+			if (flm != null)
 				first_line_match = Oniguruma.Regex.make1(((PList.String) flm).str);
-			}
+
 			PList.Node? ke = plist.get("keyEquivalent");
-			if (ke != null) {
+			if (ke != null)
 				key_equivalent = ((PList.String) ke).str;
-			}
+
 			PList.Node? sn = plist.get("scopeName");
-			if (sn != null) {
+			if (sn != null)
 				scope_name = ((PList.String) sn).str;
-			}
+
 			PList.Node? cm = plist.get("comment");
-			if (cm != null) {
+			if (cm != null)
 				comment = ((PList.String) cm).str;
-			}
-			stdout.printf("%s     %s.\n", name, scope_name);
+
 			PList.Node? filetypes = plist.get("fileTypes");
 			if (filetypes != null) {
 				PList.Array fts = (PList.Array) filetypes;

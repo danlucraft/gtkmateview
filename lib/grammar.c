@@ -1,6 +1,5 @@
 
 #include "grammar.h"
-#include <stdio.h>
 #include <gee/collection.h>
 
 
@@ -76,7 +75,6 @@ void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self) {
 		_tmp5 = NULL;
 		self->comment = (_tmp6 = (_tmp5 = (PLIST_STRING (cm))->str, (_tmp5 == NULL ? NULL : g_strdup (_tmp5))), (self->comment = (g_free (self->comment), NULL)), _tmp6);
 	}
-	fprintf (stdout, "%s     %s.\n", self->priv->_name, self->scope_name);
 	filetypes = plist_dict_get (self->priv->_plist, "fileTypes");
 	if (filetypes != NULL) {
 		PListArray* _tmp7;
