@@ -10,6 +10,36 @@ static VALUE rb_vala_error, rbc_gtk;
 #define _GTK_SELF(s) GTK(RVAL2GOBJ(s))
 static VALUE rbc_gtk;
 
+/****  Gtk.Mate wrapper *****/
+
+#define _GTK_MATE_SELF(s) GTK_MATE(RVAL2GOBJ(s))
+static VALUE rbc_gtk_mate;
+
+/****  Gtk.Mate.Grammar wrapper *****/
+
+#define _GTK_MATE_GRAMMAR_SELF(s) GTK_MATE_GRAMMAR(RVAL2GOBJ(s))
+static VALUE rbc_gtk_mate_grammar;
+
+/****  Gtk.Mate.Pattern wrapper *****/
+
+#define _GTK_MATE_PATTERN_SELF(s) GTK_MATE_PATTERN(RVAL2GOBJ(s))
+static VALUE rbc_gtk_mate_pattern;
+
+/****  Gtk.Mate.Theme wrapper *****/
+
+#define _GTK_MATE_THEME_SELF(s) GTK_MATE_THEME(RVAL2GOBJ(s))
+static VALUE rbc_gtk_mate_theme;
+
+/****  Gtk.Mate.SinglePattern wrapper *****/
+
+#define _GTK_MATE_SINGLE_PATTERN_SELF(s) GTK_MATE_SINGLE_PATTERN(RVAL2GOBJ(s))
+static VALUE rbc_gtk_mate_single_pattern;
+
+/****  Gtk.Mate.DoublePattern wrapper *****/
+
+#define _GTK_MATE_DOUBLE_PATTERN_SELF(s) GTK_MATE_DOUBLE_PATTERN(RVAL2GOBJ(s))
+static VALUE rbc_gtk_mate_double_pattern;
+
 /****  Gtk.MateView wrapper *****/
 
 #define _GTK_MATE_VIEW_SELF(s) GTK_MATE_VIEW(RVAL2GOBJ(s))
@@ -63,6 +93,59 @@ static VALUE rbc_plist_dict;
 /****  Gtk methods *****/
 
 
+/****  Gtk.Mate methods *****/
+
+
+/****  Gtk.Mate.Grammar methods *****/
+
+
+static VALUE gtk_mate_grammar_initialize(VALUE self) {
+
+    RBGTK_INITIALIZE(self, gtk_mate_grammar_new ());
+    return Qnil;
+}
+
+
+/****  Gtk.Mate.Pattern methods *****/
+
+
+static VALUE gtk_mate_pattern_initialize(VALUE self) {
+
+    RBGTK_INITIALIZE(self, gtk_mate_pattern_new ());
+    return Qnil;
+}
+
+
+/****  Gtk.Mate.Theme methods *****/
+
+
+static VALUE gtk_mate_theme_initialize(VALUE self) {
+
+    RBGTK_INITIALIZE(self, gtk_mate_theme_new ());
+    return Qnil;
+}
+
+
+/****  Gtk.Mate.SinglePattern methods *****/
+
+
+static VALUE gtk_mate_single_pattern_initialize(VALUE self) {
+
+    RBGTK_INITIALIZE(self, gtk_mate_single_pattern_new ());
+    return Qnil;
+}
+
+
+/****  Gtk.Mate.DoublePattern methods *****/
+
+
+static VALUE gtk_mate_double_pattern_initialize(VALUE self) {
+
+    RBGTK_INITIALIZE(self, gtk_mate_double_pattern_new ());
+    return Qnil;
+}
+
+
 /****  Gtk.MateView methods *****/
 
 
@@ -70,6 +153,50 @@ static VALUE gtk_mate_view_initialize(VALUE self) {
 
     RBGTK_INITIALIZE(self, gtk_mate_view_new ());
     return Qnil;
+}
+
+static VALUE rb_gtk_mate_view_load_grammars(VALUE self) {
+
+
+    
+    int _c_return;
+    _c_return = gtk_mate_view_load_grammars();
+    VALUE _rb_return;
+    _rb_return = INT2FIX(_c_return);
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_view_textmate_share_dir(VALUE self) {
+
+
+    
+    char * _c_return;
+    _c_return = gtk_mate_view_textmate_share_dir();
+    VALUE _rb_return;
+    if (_c_return == NULL)
+        _rb_return = Qnil;
+    else {
+        _rb_return = rb_str_new2(_c_return);
+    }
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_view_bundle_dirs_rb(VALUE self) {
+
+
+              int _rb_return__length;
+
+    char** _c_return;
+    _c_return = gtk_mate_view_bundle_dirs_rb(&_rb_return__length);
+    VALUE _rb_return;
+              _rb_return = rb_ary_new2(_rb_return__length);
+          long valar__1;
+          for(valar__1 = 0; valar__1 < _rb_return__length; valar__1++) {
+              rb_ary_store(_rb_return, valar__1, rb_str_new2(_c_return[valar__1]));
+              g_free(_c_return[valar__1]);
+          }
+
+    return _rb_return;
 }
 
 
@@ -356,9 +483,10 @@ static VALUE rb_plist_dict_keys(VALUE self) {
     _c_return = plist_dict_keys(plist_dict, &_rb_return__length);
     VALUE _rb_return;
               _rb_return = rb_ary_new2(_rb_return__length);
-          long valar__1;
-          for(valar__1 = 0; valar__1 < _rb_return__length; valar__1++) {
-              rb_ary_store(_rb_return, valar__1, rb_str_new2(_c_return[valar__1]));
+          long valar__2;
+          for(valar__2 = 0; valar__2 < _rb_return__length; valar__2++) {
+              rb_ary_store(_rb_return, valar__2, rb_str_new2(_c_return[valar__2]));
+              g_free(_c_return[valar__2]);
           }
 
     return _rb_return;
@@ -380,23 +508,29 @@ void Init_gtkmateview_rb() {
     rbc_plist = rb_define_class("PList", rb_cObject);
     rb_define_singleton_method(rbc_plist, "parse", rb_plist_parse, 1);
     rb_define_singleton_method(rbc_plist, "print_plist", rb_plist_print_plist, 2);
+    rbc_gtk_mate = rb_define_class_under(rbc_gtk, "Mate", rb_cObject);
     rbc_oniguruma = rb_define_class("Oniguruma", rb_cObject);
-    rbc_plist_node = G_DEF_CLASS(plist_node_get_type(), "Node", rbc_plist);
-    rb_define_method(rbc_plist_node, "initialize", plist_node_initialize, 0);
     rbc_plist_dict = G_DEF_CLASS(plist_dict_get_type(), "Dict", rbc_plist);
     rb_define_method(rbc_plist_dict, "initialize", plist_dict_initialize, 0);
     rb_define_method(rbc_plist_dict, "get", rb_plist_dict_get, 1);
     rb_define_method(rbc_plist_dict, "keys", rb_plist_dict_keys, 0);
     rb_define_method(rbc_plist_dict, "print_keys", rb_plist_dict_print_keys, 0);
+    rbc_plist_node = G_DEF_CLASS(plist_node_get_type(), "Node", rbc_plist);
+    rb_define_method(rbc_plist_node, "initialize", plist_node_initialize, 0);
     rbc_plist_array = G_DEF_CLASS(plist_array_get_type(), "Array", rbc_plist);
     rb_define_method(rbc_plist_array, "initialize", plist_array_initialize, 0);
     rb_define_method(rbc_plist_array, "get", rb_plist_array_get, 1);
+    rbc_gtk_mate_view = G_DEF_CLASS(gtk_mate_view_get_type(), "MateView", rbc_gtk);
+    rb_define_method(rbc_gtk_mate_view, "initialize", gtk_mate_view_initialize, 0);
+    rb_define_singleton_method(rbc_gtk_mate_view, "load_grammars", rb_gtk_mate_view_load_grammars, 0);
+    rb_define_singleton_method(rbc_gtk_mate_view, "textmate_share_dir", rb_gtk_mate_view_textmate_share_dir, 0);
+    rb_define_singleton_method(rbc_gtk_mate_view, "bundle_dirs_rb", rb_gtk_mate_view_bundle_dirs_rb, 0);
     rbc_plist_string = G_DEF_CLASS(plist_string_get_type(), "String", rbc_plist);
     rb_define_method(rbc_plist_string, "initialize", plist_string_initialize, 0);
     rb_define_method(rbc_plist_string, "str", rb_plist_string_get_str, 0);
     rb_define_method(rbc_plist_string, "str=", rb_plist_string_set_str, 1);
-    rbc_gtk_mate_view = G_DEF_CLASS(gtk_mate_view_get_type(), "MateView", rbc_gtk);
-    rb_define_method(rbc_gtk_mate_view, "initialize", gtk_mate_view_initialize, 0);
+    rbc_gtk_mate_theme = G_DEF_CLASS(gtk_mate_theme_get_type(), "Theme", rbc_gtk_mate);
+    rb_define_method(rbc_gtk_mate_theme, "initialize", gtk_mate_theme_initialize, 0);
     rbc_oniguruma_match = G_DEF_CLASS(oniguruma_match_get_type(), "Match", rbc_oniguruma);
     rb_define_method(rbc_oniguruma_match, "initialize", oniguruma_match_initialize, 0);
     rb_define_method(rbc_oniguruma_match, "begin", rb_oniguruma_match_begin, 1);
@@ -405,8 +539,16 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_oniguruma_regex, "initialize", oniguruma_regex_initialize, 0);
     rb_define_method(rbc_oniguruma_regex, "search", rb_oniguruma_regex_search, 3);
     rb_define_singleton_method(rbc_oniguruma_regex, "make1", rb_oniguruma_regex_make1, 1);
+    rbc_gtk_mate_grammar = G_DEF_CLASS(gtk_mate_grammar_get_type(), "Grammar", rbc_gtk_mate);
+    rb_define_method(rbc_gtk_mate_grammar, "initialize", gtk_mate_grammar_initialize, 0);
+    rbc_gtk_mate_pattern = G_DEF_CLASS(gtk_mate_pattern_get_type(), "Pattern", rbc_gtk_mate);
+    rb_define_method(rbc_gtk_mate_pattern, "initialize", gtk_mate_pattern_initialize, 0);
     rbc_oniguruma_onig_error = G_DEF_CLASS(oniguruma_onig_error_get_type(), "OnigError", rbc_oniguruma);
     rb_define_method(rbc_oniguruma_onig_error, "initialize", oniguruma_onig_error_initialize, 0);
     rb_define_method(rbc_oniguruma_onig_error, "code", rb_oniguruma_onig_error_get_code, 0);
     rb_define_method(rbc_oniguruma_onig_error, "code=", rb_oniguruma_onig_error_set_code, 1);
+    rbc_gtk_mate_single_pattern = G_DEF_CLASS(gtk_mate_single_pattern_get_type(), "SinglePattern", rbc_gtk_mate);
+    rb_define_method(rbc_gtk_mate_single_pattern, "initialize", gtk_mate_single_pattern_initialize, 0);
+    rbc_gtk_mate_double_pattern = G_DEF_CLASS(gtk_mate_double_pattern_get_type(), "DoublePattern", rbc_gtk_mate);
+    rb_define_method(rbc_gtk_mate_double_pattern, "initialize", gtk_mate_double_pattern_initialize, 0);
 }

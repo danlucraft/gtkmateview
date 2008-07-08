@@ -2,8 +2,35 @@
 
 [CCode (cprefix = "Gtk", lower_case_cprefix = "gtk_")]
 namespace Gtk {
+	[CCode (cprefix = "GtkMate", lower_case_cprefix = "gtk_mate_")]
+	namespace Mate {
+		[CCode (cheader_filename = "gtkmateview.h")]
+		public class Grammar : Gtk.Object {
+			public Grammar ();
+		}
+		[CCode (cheader_filename = "gtkmateview.h")]
+		public class Pattern : Gtk.Object {
+			public Pattern ();
+		}
+		[CCode (cheader_filename = "gtkmateview.h")]
+		public class Theme : Gtk.Object {
+			public Theme ();
+		}
+		[CCode (cheader_filename = "gtkmateview.h")]
+		public class SinglePattern : Gtk.Mate.Pattern {
+			public SinglePattern ();
+		}
+		[CCode (cheader_filename = "gtkmateview.h")]
+		public class DoublePattern : Gtk.Mate.Pattern {
+			public DoublePattern ();
+		}
+	}
 	[CCode (cheader_filename = "gtkmateview.h")]
 	public class MateView : Gtk.SourceView {
+		public static int load_grammars ();
+		public static Gee.ArrayList<string>? bundle_dirs ();
+		public static string? textmate_share_dir ();
+		public static string[] bundle_dirs_rb ();
 		public MateView ();
 	}
 }
