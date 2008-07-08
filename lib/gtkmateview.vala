@@ -6,11 +6,52 @@ using Gee;
 
 namespace Gtk {
 	public class MateView : SourceView {
-		public static int load_grammars() {
-			foreach(string bundle_dir in bundle_dirs()) {
-				stdout.printf("%s\n", textmate_share_dir() + "/Bundles/" + bundle_dir);
+		public static ArrayList<Mate.Bundle> bundles;
+		public static ArrayList<Mate.Theme>  themes;
+
+		static construct {
+			MateView.bundles = new ArrayList<Mate.Bundle>();
+			MateView.themes  = new ArrayList<Mate.Theme>();
+		}
+
+		public static int load_bundles() {
+			string syntax_dir, name;
+			Mate.Bundle bundle;
+			Mate.Grammar grammar;
+			PList.Dict plist;
+			foreach (string bundle_dir in bundle_dirs()) {
+				bundle = new Mate.Bundle(bundle_dir.split(".")[0]);
+				MateView.bundles.add(bundle);
+				syntax_dir = textmate_share_dir() + "/Bundles/" + bundle_dir + "/Syntaxes";
+				if (FileUtils.test(syntax_dir, FileTest.EXISTS)) {
+					try {
+						var d = Dir.open(syntax_dir);
+						while ((name = d.read_name()) != null) {
+							if (name != ".svn" &&
+								(name.has_suffix(".tmLanguage") || 
+								 name.has_suffix(".plist"))
+								) {
+								try {
+									plist = PList.parse(syntax_dir + "/" + name);
+								}
+								catch (XmlError e) {
+									stdout.printf("error opening %s\n", syntax_dir + "/" + name);
+								}
+								grammar = new Mate.Grammar(plist);
+								bundle.grammars.add(grammar);
+							}
+						}
+					}
+					catch(FileError e) {
+						stdout.printf("error opening %s\n", syntax_dir);
+					}
+				}
 			}
-			return 1;
+			
+			foreach (var b in bundles)
+				foreach (var g in b.grammars)
+					g.init_for_reference();
+			return -1;
 		}
 
 		public static ArrayList<string>? bundle_dirs() {
@@ -19,8 +60,10 @@ namespace Gtk {
 			var names = new ArrayList<string>();
 			try {
 				var d = Dir.open(share_dir+"/Bundles");
-				while ((name = d.read_name()) != null && name.has_suffix(".tmbundle")) {
-					names.add(name);
+				while ((name = d.read_name()) != null) {
+					if(name.has_suffix(".tmbundle")) {
+						names.add(name);
+					}
 				}
 				return names;
 			}
@@ -69,10 +112,6 @@ namespace Gtk {
 		
 		errordomain MateError {
 			INIT_ERROR
-		}
-
-		public class Grammar : Object {
-
 		}
 
 		public class Pattern : Object {

@@ -11,7 +11,7 @@ describe Gtk::MateView, "initialization" do
     Gtk::MateView.bundle_dirs_rb.should_not include(".svn")
   end
 
-  it "sdf" do
-    Gtk::MateView.load_grammars
+  it "should load bundles" do
+    Gtk::MateView.load_bundles
   end
 end

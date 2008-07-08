@@ -4,9 +4,18 @@
 namespace Gtk {
 	[CCode (cprefix = "GtkMate", lower_case_cprefix = "gtk_mate_")]
 	namespace Mate {
-		[CCode (cheader_filename = "gtkmateview.h")]
+		[CCode (cheader_filename = "grammar.h")]
 		public class Grammar : Gtk.Object {
-			public Grammar ();
+			public string[] file_types;
+			public Oniguruma.Regex first_line_match;
+			public string key_equivalent;
+			public string scope_name;
+			public string comment;
+			public Grammar (PList.Dict plist);
+			public void init_for_reference ();
+			public void init_for_use ();
+			public string name { get; set; }
+			public PList.Dict plist { get; set; }
 		}
 		[CCode (cheader_filename = "gtkmateview.h")]
 		public class Pattern : Gtk.Object {
@@ -24,10 +33,18 @@ namespace Gtk {
 		public class DoublePattern : Gtk.Mate.Pattern {
 			public DoublePattern ();
 		}
+		[CCode (cheader_filename = "bundle.h")]
+		public class Bundle : Gtk.Object {
+			public Gee.ArrayList<Gtk.Mate.Grammar> grammars;
+			public Bundle (string name);
+			public string name { get; set; }
+		}
 	}
 	[CCode (cheader_filename = "gtkmateview.h")]
 	public class MateView : Gtk.SourceView {
-		public static int load_grammars ();
+		public Gee.ArrayList<Gtk.Mate.Bundle> bundles;
+		public Gee.ArrayList<Gtk.Mate.Theme> themes;
+		public static int load_bundles ();
 		public static Gee.ArrayList<string>? bundle_dirs ();
 		public static string? textmate_share_dir ();
 		public static string[] bundle_dirs_rb ();

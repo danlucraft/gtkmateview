@@ -24,17 +24,6 @@ typedef struct _GtkMateView GtkMateView;
 typedef struct _GtkMateViewClass GtkMateViewClass;
 typedef struct _GtkMateViewPrivate GtkMateViewPrivate;
 
-#define GTK_MATE_TYPE_GRAMMAR (gtk_mate_grammar_get_type ())
-#define GTK_MATE_GRAMMAR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_MATE_TYPE_GRAMMAR, GtkMateGrammar))
-#define GTK_MATE_GRAMMAR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_MATE_TYPE_GRAMMAR, GtkMateGrammarClass))
-#define GTK_MATE_IS_GRAMMAR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_MATE_TYPE_GRAMMAR))
-#define GTK_MATE_IS_GRAMMAR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_MATE_TYPE_GRAMMAR))
-#define GTK_MATE_GRAMMAR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_MATE_TYPE_GRAMMAR, GtkMateGrammarClass))
-
-typedef struct _GtkMateGrammar GtkMateGrammar;
-typedef struct _GtkMateGrammarClass GtkMateGrammarClass;
-typedef struct _GtkMateGrammarPrivate GtkMateGrammarPrivate;
-
 #define GTK_MATE_TYPE_PATTERN (gtk_mate_pattern_get_type ())
 #define GTK_MATE_PATTERN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_MATE_TYPE_PATTERN, GtkMatePattern))
 #define GTK_MATE_PATTERN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_MATE_TYPE_PATTERN, GtkMatePatternClass))
@@ -92,15 +81,6 @@ typedef enum  {
 	GTK_MATE_MATE_ERROR_INIT_ERROR
 } GtkMateMateError;
 #define GTK_MATE_MATE_ERROR gtk_mate_mate_error_quark ()
-struct _GtkMateGrammar {
-	GtkObject parent_instance;
-	GtkMateGrammarPrivate * priv;
-};
-
-struct _GtkMateGrammarClass {
-	GtkObjectClass parent_class;
-};
-
 struct _GtkMatePattern {
 	GtkObject parent_instance;
 	GtkMatePatternPrivate * priv;
@@ -138,15 +118,15 @@ struct _GtkMateDoublePatternClass {
 };
 
 
-gint gtk_mate_view_load_grammars (void);
+extern GeeArrayList* gtk_mate_view_bundles;
+extern GeeArrayList* gtk_mate_view_themes;
+gint gtk_mate_view_load_bundles (void);
 GeeArrayList* gtk_mate_view_bundle_dirs (void);
 char* gtk_mate_view_textmate_share_dir (void);
 char** gtk_mate_view_bundle_dirs_rb (int* result_length1);
 GtkMateView* gtk_mate_view_new (void);
 GType gtk_mate_view_get_type (void);
 GQuark gtk_mate_mate_error_quark (void);
-GtkMateGrammar* gtk_mate_grammar_new (void);
-GType gtk_mate_grammar_get_type (void);
 GtkMatePattern* gtk_mate_pattern_new (void);
 GType gtk_mate_pattern_get_type (void);
 GtkMateTheme* gtk_mate_theme_new (void);

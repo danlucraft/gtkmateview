@@ -380,6 +380,7 @@ PListDict* plist_parse (const char* filename, GError** error) {
 		GError* _tmp2;
 		_tmp1 = NULL;
 		_tmp0 = NULL;
+		_tmp2 = NULL;
 		inner_error = (_tmp2 = g_error_new (XML_ERROR, XML_ERROR_FILE_NOT_FOUND, (_tmp1 = g_strconcat ((_tmp0 = g_strconcat ("file ", filename, NULL)), " not found or permissions missing", NULL))), (_tmp1 = (g_free (_tmp1), NULL)), (_tmp0 = (g_free (_tmp0), NULL)), _tmp2);
 		if (inner_error != NULL) {
 			g_propagate_error (error, inner_error);
@@ -395,6 +396,7 @@ PListDict* plist_parse (const char* filename, GError** error) {
 		xmlFreeDoc (xml_doc);
 		_tmp4 = NULL;
 		_tmp3 = NULL;
+		_tmp5 = NULL;
 		inner_error = (_tmp5 = g_error_new (XML_ERROR, XML_ERROR_XML_DOCUMENT_EMPTY, (_tmp4 = g_strconcat ((_tmp3 = g_strconcat ("the xml'", filename, NULL)), "' is empty", NULL))), (_tmp4 = (g_free (_tmp4), NULL)), (_tmp3 = (g_free (_tmp3), NULL)), _tmp5);
 		if (inner_error != NULL) {
 			g_propagate_error (error, inner_error);

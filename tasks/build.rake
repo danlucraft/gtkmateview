@@ -3,6 +3,8 @@ require 'rubygems'
 require 'fileutils'
 require 'spec/rake/spectask'
 
+VALA_SOURCES = Dir["lib/*.vala"].map {|n| n =~ /lib\/(.*)\.vala/; $1}
+
 def fix_vala_c_file(name)
   c_src = File.read("#{name}.c")
   c_src.gsub!("#include <#{name}.h>", "#include \"#{name}.h\"")
@@ -21,8 +23,8 @@ namespace :build do
   task :build_c do
     FileUtils.cd("lib") do
       puts "compiling gtkmateview..."
-      puts %x{valac -C --library gtkmateview --pkg gtksourceview-2.0 --pkg libxml-2.0 --pkg gee-1.0 --pkg gtksourceview-2.0 --vapidir=./../vapi/ --pkg=oniguruma plist.vala onig_wrap.vala gtkmateview.vala}
-      ["plist", "onig_wrap"].each do |name|
+      puts %x{valac -C --library gtkmateview --pkg gtksourceview-2.0 --pkg libxml-2.0 --pkg gee-1.0 --pkg gtksourceview-2.0 --vapidir=./../vapi/ --pkg=oniguruma #{VALA_SOURCES.map{|n| n+".vala"}.join(" ")}} #plist.vala onig_wrap.vala gtkmateview.vala}
+      VALA_SOURCES.each do |name|
         fix_vala_c_file(name)
       end
     end
