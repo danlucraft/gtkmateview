@@ -109,19 +109,7 @@ namespace Gtk {
 			INIT_ERROR
 		}
 
-		public class Pattern : Object {
-
-		}
-
 		public class Theme : Object {
-
-		}
-
-		public class SinglePattern : Pattern {
-
-		}
-
-		public class DoublePattern : Pattern {
 
 		}
 

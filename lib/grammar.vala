@@ -5,6 +5,7 @@ using GLib;
 namespace Gtk.Mate {
 
 	public class Grammar : Object {
+		// reference properties
 		public string name {get; private set;}
 		public PList.Dict plist {get; private set;}
 		public string[] file_types;
@@ -12,8 +13,10 @@ namespace Gtk.Mate {
 		public string key_equivalent;
 		public string scope_name;
 		public string comment;
-		public bool loaded;
 
+		// rest of properties (loaded on demand)
+		public bool loaded;
+		
 		public Grammar(PList.Dict plist) {
 			this.plist = plist;
 		}
@@ -50,10 +53,86 @@ namespace Gtk.Mate {
 			}
 		}
 
+		public Oniguruma.Regex folding_start_marker;
+		public Oniguruma.Regex folding_stop_marker;
+		public ArrayList<Pattern> patterns;
+		public HashMap<string, ArrayList<Pattern>> repository;
+
 		public void init_for_use() {
-			if (!loaded)
-				stdout.printf("initializing grammar for use: %s\n", name);
+			if (loaded)
+				return;
+			stdout.printf("initializing grammar for use: %s\n", name);
+
+			PList.Node? fsm = plist.get("foldingStartMarker");
+			if (fsm != null)
+				folding_start_marker = Oniguruma.Regex.make1(((PList.String) fsm).str);
+
+			PList.Node? ftm = plist.get("foldingStopMarker");
+			if (ftm != null)
+				folding_stop_marker = Oniguruma.Regex.make1(((PList.String) ftm).str);
+			
+			patterns = new ArrayList<Pattern>();
+			PList.Node? ps = plist.get("patterns");
+			Pattern pattern;
+			if (ps != null)
+				foreach (var p in ((PList.Array) ps).array) {
+					pattern = Pattern.create_from_plist((PList.Dict) p);
+					if (pattern != null)
+						patterns.add(pattern);
+				}
+
+			repository = new HashMap<string, ArrayList<Pattern>>();
+			PList.Dict? pd = (PList.Dict?) plist.get("repository");
+			PList.Dict? pd1;
+			PList.Array? pa1;
+//			ArrayList<Pattern> repo_array;
+			if (pd != null) {
+//				stdout.printf("repository...\n");
+				foreach (string key in pd.map.get_keys()) {
+					var repo_array = new ArrayList<Pattern>();
+					// pd1 = (PList.Dict?) pd.get(key);
+					// pa1 = (PList.Array?) pd1.get("patterns");
+					// if (pa1 is PList.Array) {
+					// 	foreach (PList.Node ps1 in pa1.array) {
+					// 		pattern = Pattern.create_from_plist((PList.Dict) ps1);
+					// 		if (pattern != null)
+					// 			repo_array.add(pattern);
+					// 	}
+					// }
+					// else if (pa1 is PList.Dict) {
+					// 	pattern = Pattern.create_from_plist((PList.Dict) pa1);
+					// 	if (pattern != null)
+					// 		repo_array.add(pattern);
+					// }
+					repository.set(key, repo_array);
+					stdout.printf("key: %s, %d\n", key, repo_array.size);
+				}
+			}
+			// stdout.printf("replaceing %d\n", patterns.size);
+			// foreach (Pattern pt in patterns) {
+			// 	if (pt == null)
+			// 		stdout.printf("null!\n");
+			// 	else
+			// 		replace_include_patterns(pt);
+			// }
+
+			foreach (string key in repository.get_keys()) {
+				var al = repository.get(key);
+				stdout.printf("key: %s, %d\n", key, al.size);
+				if (al == null)
+					stdout.printf("key null: %s\n", key);
+				foreach (Pattern pt in repository.get(key)) {
+					replace_include_patterns(pt);
+				}
+			}
+			
+			// repository = null;
+
 			loaded = true;
+		}
+
+		public void replace_include_patterns(Pattern pattern) {
+			stdout.printf("replace include patterns for %s\n", pattern.name);
 		}
 	}
 

@@ -7,8 +7,11 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gee/arraylist.h>
+#include <gee/hashmap.h>
 #include <onig_wrap.h>
 #include <plist.h>
+#include <pattern.h>
 
 G_BEGIN_DECLS
 
@@ -34,6 +37,10 @@ struct _GtkMateGrammar {
 	char* scope_name;
 	char* comment;
 	gboolean loaded;
+	OnigurumaRegex* folding_start_marker;
+	OnigurumaRegex* folding_stop_marker;
+	GeeArrayList* patterns;
+	GeeHashMap* repository;
 };
 
 struct _GtkMateGrammarClass {
@@ -44,6 +51,7 @@ struct _GtkMateGrammarClass {
 GtkMateGrammar* gtk_mate_grammar_new (PListDict* plist);
 void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self);
 void gtk_mate_grammar_init_for_use (GtkMateGrammar* self);
+void gtk_mate_grammar_replace_include_patterns (GtkMateGrammar* self, GtkMatePattern* pattern);
 const char* gtk_mate_grammar_get_name (GtkMateGrammar* self);
 PListDict* gtk_mate_grammar_get_plist (GtkMateGrammar* self);
 GType gtk_mate_grammar_get_type (void);

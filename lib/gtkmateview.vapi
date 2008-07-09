@@ -4,6 +4,36 @@
 namespace Gtk {
 	[CCode (cprefix = "GtkMate", lower_case_cprefix = "gtk_mate_")]
 	namespace Mate {
+		[CCode (cheader_filename = "pattern.h")]
+		public class Pattern : Gtk.Object {
+			public string name;
+			public string comment;
+			public Gee.ArrayList<Gtk.Mate.Pattern> all_patterns;
+			public static Gtk.Mate.Pattern? create_from_plist (PList.Dict pd);
+			public Pattern ();
+		}
+		[CCode (cheader_filename = "pattern.h")]
+		public class SinglePattern : Gtk.Mate.Pattern {
+			public Oniguruma.Regex match;
+			public Gee.HashMap<int,string> captures;
+			public static Gtk.Mate.SinglePattern? create_from_plist (PList.Dict pd);
+			public SinglePattern ();
+		}
+		[CCode (cheader_filename = "pattern.h")]
+		public class DoublePattern : Gtk.Mate.Pattern {
+			public Oniguruma.Regex begin;
+			public Oniguruma.Regex end;
+			public Gee.HashMap<int,string> begin_captures;
+			public Gee.HashMap<int,string> end_captures;
+			public Gee.ArrayList<Gtk.Mate.Pattern> patterns;
+			public static Gtk.Mate.DoublePattern? create_from_plist (PList.Dict pd);
+			public DoublePattern ();
+		}
+		[CCode (cheader_filename = "pattern.h")]
+		public class IncludePattern : Gtk.Mate.Pattern {
+			public static Gtk.Mate.IncludePattern? create_from_plist (PList.Dict pd);
+			public IncludePattern ();
+		}
 		[CCode (cheader_filename = "grammar.h")]
 		public class Grammar : Gtk.Object {
 			public string[] file_types;
@@ -12,27 +42,20 @@ namespace Gtk {
 			public string scope_name;
 			public string comment;
 			public bool loaded;
+			public Oniguruma.Regex folding_start_marker;
+			public Oniguruma.Regex folding_stop_marker;
+			public Gee.ArrayList<Gtk.Mate.Pattern> patterns;
+			public Gee.HashMap<string,Gee.ArrayList<Gtk.Mate.Pattern>> repository;
 			public Grammar (PList.Dict plist);
 			public void init_for_reference ();
 			public void init_for_use ();
+			public void replace_include_patterns (Gtk.Mate.Pattern pattern);
 			public string name { get; set; }
 			public PList.Dict plist { get; set; }
 		}
 		[CCode (cheader_filename = "gtkmateview.h")]
-		public class Pattern : Gtk.Object {
-			public Pattern ();
-		}
-		[CCode (cheader_filename = "gtkmateview.h")]
 		public class Theme : Gtk.Object {
 			public Theme ();
-		}
-		[CCode (cheader_filename = "gtkmateview.h")]
-		public class SinglePattern : Gtk.Mate.Pattern {
-			public SinglePattern ();
-		}
-		[CCode (cheader_filename = "gtkmateview.h")]
-		public class DoublePattern : Gtk.Mate.Pattern {
-			public DoublePattern ();
 		}
 		[CCode (cheader_filename = "view.h")]
 		public class View : Gtk.SourceView {
