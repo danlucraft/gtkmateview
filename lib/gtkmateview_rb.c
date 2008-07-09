@@ -203,6 +203,37 @@ static VALUE rb_gtk_mate_grammar_set_comment(VALUE self, VALUE comment) {
     return Qnil;
 }
 
+static VALUE rb_gtk_mate_grammar_get_loaded(VALUE self) {
+    GtkMateGrammar* gtk_mate_grammar = RVAL2GOBJ(self);
+
+
+    gboolean _c_return = gtk_mate_grammar->loaded;
+    VALUE _rb_return;
+          if (_c_return == TRUE)
+          _rb_return = Qtrue;
+      else
+          _rb_return = Qfalse;
+
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_grammar_set_loaded(VALUE self, VALUE loaded) {
+    GtkMateGrammar* gtk_mate_grammar = RVAL2GOBJ(self);
+    if (TYPE(loaded) != T_TRUE && TYPE(loaded) != T_FALSE) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected true or false");
+    }
+    gboolean _c_loaded;
+          if (loaded == Qtrue)
+          _c_loaded = TRUE;
+      else
+          _c_loaded = FALSE;
+
+    gtk_mate_grammar->loaded = _c_loaded;
+
+    return Qnil;
+}
+
 static VALUE rb_gtk_mate_grammar_init_for_reference(VALUE self) {
     GtkMateGrammar* gtk_mate_grammar = RVAL2GOBJ(self);
 
@@ -702,6 +733,8 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_grammar, "scope_name=", rb_gtk_mate_grammar_set_scope_name, 1);
     rb_define_method(rbc_gtk_mate_grammar, "comment", rb_gtk_mate_grammar_get_comment, 0);
     rb_define_method(rbc_gtk_mate_grammar, "comment=", rb_gtk_mate_grammar_set_comment, 1);
+    rb_define_method(rbc_gtk_mate_grammar, "loaded", rb_gtk_mate_grammar_get_loaded, 0);
+    rb_define_method(rbc_gtk_mate_grammar, "loaded=", rb_gtk_mate_grammar_set_loaded, 1);
     rb_define_method(rbc_gtk_mate_grammar, "init_for_reference", rb_gtk_mate_grammar_init_for_reference, 0);
     rb_define_method(rbc_gtk_mate_grammar, "init_for_use", rb_gtk_mate_grammar_init_for_use, 0);
     rbc_gtk_mate_pattern = G_DEF_CLASS(gtk_mate_pattern_get_type(), "Pattern", rbc_gtk_mate);

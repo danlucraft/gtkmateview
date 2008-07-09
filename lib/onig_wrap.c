@@ -268,7 +268,7 @@ OnigurumaRegex* oniguruma_regex_make1 (const char* pattern) {
 	_tmp1 = NULL;
 	_tmp0 = NULL;
 	_tmp3 = NULL;
-	return (_tmp3 = (_tmp1 = oniguruma_regex_make (pattern, ONIG_OPTION_NONE, &_tmp0), e = (_tmp2 = _tmp0, (e == NULL ? NULL : (e = (g_object_unref (e), NULL))), _tmp2), _tmp1), (e == NULL ? NULL : (e = (g_object_unref (e), NULL))), _tmp3);
+	return (_tmp3 = (_tmp1 = oniguruma_regex_make (pattern, ONIG_OPTION_MULTILINE, &_tmp0), e = (_tmp2 = _tmp0, (e == NULL ? NULL : (e = (g_object_unref (e), NULL))), _tmp2), _tmp1), (e == NULL ? NULL : (e = (g_object_unref (e), NULL))), _tmp3);
 }
 
 

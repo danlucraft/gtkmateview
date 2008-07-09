@@ -1,5 +1,6 @@
 
 using Gee;
+using GLib;
 
 namespace Gtk.Mate {
 
@@ -11,6 +12,7 @@ namespace Gtk.Mate {
 		public string key_equivalent;
 		public string scope_name;
 		public string comment;
+		public bool loaded;
 
 		public Grammar(PList.Dict plist) {
 			this.plist = plist;
@@ -49,7 +51,9 @@ namespace Gtk.Mate {
 		}
 
 		public void init_for_use() {
-			
+			if (!loaded)
+				stdout.printf("initializing grammar for use: %s\n", name);
+			loaded = true;
 		}
 	}
 

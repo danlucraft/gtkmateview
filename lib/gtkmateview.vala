@@ -9,7 +9,16 @@ namespace Gtk {
 		public static ArrayList<Mate.Bundle> bundles;
 		public static ArrayList<Mate.Theme>  themes;
 
-		public static Mate.Grammar grammar {get; set;}
+		private static Mate.Grammar _grammar;
+		public static Mate.Grammar grammar {
+			get {
+				return this._grammar;
+			}
+			set {
+				value.init_for_use();
+				this._grammar = value;
+			}
+		}
 
 		// Sets the grammar with the file extension, then checks the
 		// first line for matches as a fallback. If unable to find

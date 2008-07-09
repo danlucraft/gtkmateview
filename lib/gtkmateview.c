@@ -10,17 +10,13 @@
 
 
 
-struct _GtkMateViewPrivate {
-	GtkMateGrammar* _grammar;
-};
-
-#define GTK_MATE_VIEW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GTK_TYPE_MATE_VIEW, GtkMateViewPrivate))
 enum  {
 	GTK_MATE_VIEW_DUMMY_PROPERTY,
 	GTK_MATE_VIEW_GRAMMAR
 };
 GeeArrayList* gtk_mate_view_bundles = NULL;
 GeeArrayList* gtk_mate_view_themes = NULL;
+static GtkMateGrammar* gtk_mate_view__grammar;
 static char** gtk_mate_view_get_string_array (GeeArrayList* al, int* result_length1);
 static gpointer gtk_mate_view_parent_class = NULL;
 static void gtk_mate_view_dispose (GObject * obj);
@@ -474,7 +470,7 @@ GtkMateView* gtk_mate_view_new (void) {
 
 GtkMateGrammar* gtk_mate_view_get_grammar (GtkMateView* self) {
 	g_return_val_if_fail (GTK_IS_MATE_VIEW (self), NULL);
-	return self->priv->_grammar;
+	return gtk_mate_view__grammar;
 }
 
 
@@ -482,9 +478,10 @@ void gtk_mate_view_set_grammar (GtkMateView* self, GtkMateGrammar* value) {
 	GtkMateGrammar* _tmp2;
 	GtkMateGrammar* _tmp1;
 	g_return_if_fail (GTK_IS_MATE_VIEW (self));
+	gtk_mate_grammar_init_for_use (value);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
-	self->priv->_grammar = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL ? NULL : g_object_ref (_tmp1))), (self->priv->_grammar == NULL ? NULL : (self->priv->_grammar = (g_object_unref (self->priv->_grammar), NULL))), _tmp2);
+	gtk_mate_view__grammar = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL ? NULL : g_object_ref (_tmp1))), (gtk_mate_view__grammar == NULL ? NULL : (gtk_mate_view__grammar = (g_object_unref (gtk_mate_view__grammar), NULL))), _tmp2);
 }
 
 
@@ -518,7 +515,6 @@ static void gtk_mate_view_set_property (GObject * object, guint property_id, con
 
 static void gtk_mate_view_class_init (GtkMateViewClass * klass) {
 	gtk_mate_view_parent_class = g_type_class_peek_parent (klass);
-	g_type_class_add_private (klass, sizeof (GtkMateViewPrivate));
 	G_OBJECT_CLASS (klass)->get_property = gtk_mate_view_get_property;
 	G_OBJECT_CLASS (klass)->set_property = gtk_mate_view_set_property;
 	G_OBJECT_CLASS (klass)->dispose = gtk_mate_view_dispose;
@@ -535,14 +531,12 @@ static void gtk_mate_view_class_init (GtkMateViewClass * klass) {
 
 
 static void gtk_mate_view_instance_init (GtkMateView * self) {
-	self->priv = GTK_MATE_VIEW_GET_PRIVATE (self);
 }
 
 
 static void gtk_mate_view_dispose (GObject * obj) {
 	GtkMateView * self;
 	self = GTK_MATE_VIEW (obj);
-	(self->priv->_grammar == NULL ? NULL : (self->priv->_grammar = (g_object_unref (self->priv->_grammar), NULL)));
 	G_OBJECT_CLASS (gtk_mate_view_parent_class)->dispose (obj);
 }
 

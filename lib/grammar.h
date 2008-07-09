@@ -33,6 +33,7 @@ struct _GtkMateGrammar {
 	char* key_equivalent;
 	char* scope_name;
 	char* comment;
+	gboolean loaded;
 };
 
 struct _GtkMateGrammarClass {

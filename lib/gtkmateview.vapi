@@ -11,6 +11,7 @@ namespace Gtk {
 			public string key_equivalent;
 			public string scope_name;
 			public string comment;
+			public bool loaded;
 			public Grammar (PList.Dict plist);
 			public void init_for_reference ();
 			public void init_for_use ();

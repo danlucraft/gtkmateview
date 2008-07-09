@@ -1,6 +1,7 @@
 
 #include "grammar.h"
 #include <gee/collection.h>
+#include <stdio.h>
 
 
 
@@ -119,6 +120,10 @@ void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self) {
 
 void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 	g_return_if_fail (GTK_MATE_IS_GRAMMAR (self));
+	if (!self->loaded) {
+		fprintf (stdout, "initializing grammar for use: %s\n", self->priv->_name);
+	}
+	self->loaded = TRUE;
 }
 
 

@@ -30,7 +30,10 @@ describe Gtk::MateView do
   it "sets the grammar by first line" do
     @mv.buffer.text = "#!/usr/bin/ruby\nfoo"
     @mv.set_grammar_by_extension("").should == "Ruby"
-    @mv.buffer.text = "#!/usr/bin/dmd \nfoo"
+    @mv.buffer.text = "#!/usr/bin/dmd\nfoo"
     @mv.set_grammar_by_extension("").should == "D"
+  end
+
+  it "loads a grammar for use" do
   end
 end

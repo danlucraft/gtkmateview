@@ -46,18 +46,30 @@ namespace Oniguruma {
         public const OnigOptionType IGNORECASE;
 		[CCode (cname = "ONIG_OPTION_EXTEND", cheader_filename = "oniguruma.h")]
 		public const OnigOptionType EXTEND;
-		// public const OnigOptionType OPTION_MULTILINE;
-		// public const OnigOptionType OPTION_SINGLELINE;
-		// public const OnigOptionType OPTION_FIND_LONGEST;
-		// public const OnigOptionType OPTION_FIND_NOT_EMPTY;
-		// public const OnigOptionType OPTION_NEGATE_SINGLELINE;
-		// public const OnigOptionType OPTION_DONT_CAPTURE_GROUP;
-		// public const OnigOptionType OPTION_CAPTURE_GROUP;
-		// public const OnigOptionType OPTION_NOTBOL;
-		// public const OnigOptionType OPTION_NOTEOL;
-		// public const OnigOptionType OPTION_POSIX_REGION;
-		// public const OnigOptionType OPTION_MAXBIT;
-		// public const OnigOptionType OPTION_DEFAULT;
+		[CCode (cname = "ONIG_OPTION_MULTILINE", cheader_filename = "oniguruma.h")]
+		public const OnigOptionType MULTILINE;
+		[CCode (cname = "ONIG_OPTION_SINGLELINE", cheader_filename = "oniguruma.h")]
+		public const OnigOptionType SINGLELINE;
+		[CCode (cname = "ONIG_OPTION_FIND_LONGEST", cheader_filename = "oniguruma.h")]
+		public const OnigOptionType FIND_LONGEST;
+		[CCode (cname = "ONIG_OPTION_FIND_NOT_EMPTY", cheader_filename = "oniguruma.h")]
+		public const OnigOptionType FIND_NOT_EMPTY;
+		[CCode (cname = "ONIG_OPTION_NEGATE_SINGLELINE", cheader_filename = "oniguruma.h")]
+		public const OnigOptionType NEGATE_SINGLELINE;
+		[CCode (cname = "ONIG_OPTION_DONT_CAPTURE_GROUP", cheader_filename = "oniguruma.h")]
+		public const OnigOptionType DONT_CAPTURE_GROUP;
+		[CCode (cname = "ONIG_OPTION_CAPTURE_GROUP", cheader_filename = "oniguruma.h")]
+		public const OnigOptionType CAPTURE_GROUP;
+		[CCode (cname = "ONIG_OPTION_NOTBOL", cheader_filename = "oniguruma.h")]
+		public const OnigOptionType NOTBOL;
+		[CCode (cname = "ONIG_OPTION_NOTEOL", cheader_filename = "oniguruma.h")]
+		public const OnigOptionType NOTEOL;
+		[CCode (cname = "ONIG_OPTION_POSIX_REGION", cheader_filename = "oniguruma.h")]
+		public const OnigOptionType POSIX_REGION;
+		[CCode (cname = "ONIG_OPTION_MAXBIT", cheader_filename = "oniguruma.h")]
+		public const OnigOptionType MAXBIT;
+		[CCode (cname = "ONIG_OPTION_DEFAULT", cheader_filename = "oniguruma.h")]
+		public const OnigOptionType DEFAULT;
 	}
 
 	namespace Encoding {

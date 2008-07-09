@@ -69,7 +69,7 @@ namespace Oniguruma {
 
 		public static Regex? make1(string pattern) {
 			OnigError e;
-			return make(pattern, Option.NONE, out e);
+			return make(pattern, Option.MULTILINE, out e);
 		}
 	}
 }
