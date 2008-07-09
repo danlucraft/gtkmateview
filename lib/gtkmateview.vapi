@@ -44,11 +44,15 @@ namespace Gtk {
 	public class MateView : Gtk.SourceView {
 		public Gee.ArrayList<Gtk.Mate.Bundle> bundles;
 		public Gee.ArrayList<Gtk.Mate.Theme> themes;
+		public string? set_grammar_by_extension (string extension);
+		public Gtk.TextIter iter_ (int offset);
+		public Gtk.TextIter iter_line_start (int line);
 		public static int load_bundles ();
 		public static Gee.ArrayList<string>? bundle_dirs ();
 		public static string? textmate_share_dir ();
 		public static string[] bundle_dirs_rb ();
 		public MateView ();
+		public Gtk.Mate.Grammar grammar { get; set; }
 	}
 }
 [CCode (cprefix = "Oniguruma", lower_case_cprefix = "oniguruma_")]

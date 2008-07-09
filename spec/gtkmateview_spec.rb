@@ -15,3 +15,22 @@ describe Gtk::MateView, "initialization" do
     Gtk::MateView.load_bundles
   end
 end
+
+describe Gtk::MateView do
+  before(:each) do
+    @mv = Gtk::MateView.new
+    @mv.buffer = Gtk::SourceBuffer.new
+  end
+
+  it "sets the grammar by extension" do
+    @mv.set_grammar_by_extension("rb").should == "Ruby"
+    @mv.set_grammar_by_extension("py").should == "Python"
+  end
+
+  it "sets the grammar by first line" do
+    @mv.buffer.text = "#!/usr/bin/ruby\nfoo"
+    @mv.set_grammar_by_extension("").should == "Ruby"
+    @mv.buffer.text = "#!/usr/bin/dmd \nfoo"
+    @mv.set_grammar_by_extension("").should == "D"
+  end
+end

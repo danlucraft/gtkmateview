@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
+#include <grammar.h>
 
 G_BEGIN_DECLS
 
@@ -120,11 +121,16 @@ struct _GtkMateDoublePatternClass {
 
 extern GeeArrayList* gtk_mate_view_bundles;
 extern GeeArrayList* gtk_mate_view_themes;
+char* gtk_mate_view_set_grammar_by_extension (GtkMateView* self, const char* extension);
+GtkTextIter gtk_mate_view_iter_ (GtkMateView* self, gint offset);
+GtkTextIter gtk_mate_view_iter_line_start (GtkMateView* self, gint line);
 gint gtk_mate_view_load_bundles (void);
 GeeArrayList* gtk_mate_view_bundle_dirs (void);
 char* gtk_mate_view_textmate_share_dir (void);
 char** gtk_mate_view_bundle_dirs_rb (int* result_length1);
 GtkMateView* gtk_mate_view_new (void);
+GtkMateGrammar* gtk_mate_view_get_grammar (GtkMateView* self);
+void gtk_mate_view_set_grammar (GtkMateView* self, GtkMateGrammar* value);
 GType gtk_mate_view_get_type (void);
 GQuark gtk_mate_mate_error_quark (void);
 GtkMatePattern* gtk_mate_pattern_new (void);

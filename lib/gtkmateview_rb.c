@@ -285,6 +285,26 @@ static VALUE gtk_mate_view_initialize(VALUE self) {
     return Qnil;
 }
 
+static VALUE rb_gtk_mate_view_set_grammar_by_extension(VALUE self, VALUE extension) {
+    GtkMateView* gtk_mate_view = RVAL2GOBJ(self);
+    if (TYPE(extension) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    char * _c_extension;
+    _c_extension = STR2CSTR(extension);
+    
+    char * _c_return;
+    _c_return = gtk_mate_view_set_grammar_by_extension(gtk_mate_view, _c_extension);
+    VALUE _rb_return;
+    if (_c_return == NULL)
+        _rb_return = Qnil;
+    else {
+        _rb_return = rb_str_new2(_c_return);
+    }
+    return _rb_return;
+}
+
 static VALUE rb_gtk_mate_view_load_bundles(VALUE self) {
 
 
@@ -656,6 +676,7 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_plist_string, "str=", rb_plist_string_set_str, 1);
     rbc_gtk_mate_view = G_DEF_CLASS(gtk_mate_view_get_type(), "MateView", rbc_gtk);
     rb_define_method(rbc_gtk_mate_view, "initialize", gtk_mate_view_initialize, 0);
+    rb_define_method(rbc_gtk_mate_view, "set_grammar_by_extension", rb_gtk_mate_view_set_grammar_by_extension, 1);
     rb_define_singleton_method(rbc_gtk_mate_view, "load_bundles", rb_gtk_mate_view_load_bundles, 0);
     rb_define_singleton_method(rbc_gtk_mate_view, "textmate_share_dir", rb_gtk_mate_view_textmate_share_dir, 0);
     rb_define_singleton_method(rbc_gtk_mate_view, "bundle_dirs_rb", rb_gtk_mate_view_bundle_dirs_rb, 0);
