@@ -34,26 +34,34 @@ namespace Gtk {
 		public class DoublePattern : Gtk.Mate.Pattern {
 			public DoublePattern ();
 		}
+		[CCode (cheader_filename = "view.h")]
+		public class View : Gtk.SourceView {
+			public View ();
+		}
+		[CCode (cheader_filename = "buffer.h")]
+		public class Buffer : Gtk.SourceBuffer {
+			public Gee.ArrayList<Gtk.Mate.Bundle> bundles;
+			public Gee.ArrayList<Gtk.Mate.Theme> themes;
+			public string? set_grammar_by_extension (string extension);
+			public Gtk.TextIter iter_ (int offset);
+			public Gtk.TextIter iter_line_start (int line);
+			public Buffer ();
+			public Gtk.Mate.Grammar grammar { get; set; }
+		}
 		[CCode (cheader_filename = "bundle.h")]
 		public class Bundle : Gtk.Object {
 			public Gee.ArrayList<Gtk.Mate.Grammar> grammars;
 			public Bundle (string name);
 			public string name { get; set; }
 		}
-	}
-	[CCode (cheader_filename = "gtkmateview.h")]
-	public class MateView : Gtk.SourceView {
-		public Gee.ArrayList<Gtk.Mate.Bundle> bundles;
-		public Gee.ArrayList<Gtk.Mate.Theme> themes;
-		public string? set_grammar_by_extension (string extension);
-		public Gtk.TextIter iter_ (int offset);
-		public Gtk.TextIter iter_line_start (int line);
+		[CCode (cheader_filename = "gtkmateview.h")]
 		public static int load_bundles ();
+		[CCode (cheader_filename = "gtkmateview.h")]
 		public static Gee.ArrayList<string>? bundle_dirs ();
+		[CCode (cheader_filename = "gtkmateview.h")]
 		public static string? textmate_share_dir ();
+		[CCode (cheader_filename = "gtkmateview.h")]
 		public static string[] bundle_dirs_rb ();
-		public MateView ();
-		public Gtk.Mate.Grammar grammar { get; set; }
 	}
 }
 [CCode (cprefix = "Oniguruma", lower_case_cprefix = "oniguruma_")]
