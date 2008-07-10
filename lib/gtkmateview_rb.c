@@ -1,9 +1,9 @@
 #include "ruby.h"
 #include "rbgtk.h"
 #include "pattern.h"
+#include "view.h"
 #include "grammar.h"
 #include "gtkmateview.h"
-#include "view.h"
 #include "buffer.h"
 #include "bundle.h"
 #include "onig_wrap.h"
@@ -40,6 +40,11 @@ static VALUE rbc_gtk_mate_double_pattern;
 #define _GTK_MATE_INCLUDE_PATTERN_SELF(s) GTK_MATE_INCLUDE_PATTERN(RVAL2GOBJ(s))
 static VALUE rbc_gtk_mate_include_pattern;
 
+/****  Gtk.Mate.View wrapper *****/
+
+#define _GTK_MATE_VIEW_SELF(s) GTK_MATE_VIEW(RVAL2GOBJ(s))
+static VALUE rbc_gtk_mate_view;
+
 /****  Gtk.Mate.Grammar wrapper *****/
 
 #define _GTK_MATE_GRAMMAR_SELF(s) GTK_MATE_GRAMMAR(RVAL2GOBJ(s))
@@ -49,11 +54,6 @@ static VALUE rbc_gtk_mate_grammar;
 
 #define _GTK_MATE_THEME_SELF(s) GTK_MATE_THEME(RVAL2GOBJ(s))
 static VALUE rbc_gtk_mate_theme;
-
-/****  Gtk.Mate.View wrapper *****/
-
-#define _GTK_MATE_VIEW_SELF(s) GTK_MATE_VIEW(RVAL2GOBJ(s))
-static VALUE rbc_gtk_mate_view;
 
 /****  Gtk.Mate.Buffer wrapper *****/
 
@@ -370,6 +370,16 @@ static VALUE rb_gtk_mate_include_pattern_create_from_plist(VALUE self, VALUE pd)
 }
 
 
+/****  Gtk.Mate.View methods *****/
+
+
+static VALUE gtk_mate_view_initialize(VALUE self) {
+
+    RBGTK_INITIALIZE(self, gtk_mate_view_new ());
+    return Qnil;
+}
+
+
 /****  Gtk.Mate.Grammar methods *****/
 
 
@@ -579,16 +589,6 @@ static VALUE rb_gtk_mate_grammar_replace_include_patterns(VALUE self, VALUE patt
 static VALUE gtk_mate_theme_initialize(VALUE self) {
 
     RBGTK_INITIALIZE(self, gtk_mate_theme_new ());
-    return Qnil;
-}
-
-
-/****  Gtk.Mate.View methods *****/
-
-
-static VALUE gtk_mate_view_initialize(VALUE self) {
-
-    RBGTK_INITIALIZE(self, gtk_mate_view_new ());
     return Qnil;
 }
 
@@ -966,19 +966,19 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_view, "initialize", gtk_mate_view_initialize, 0);
     rbc_gtk_mate_theme = G_DEF_CLASS(gtk_mate_theme_get_type(), "Theme", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_theme, "initialize", gtk_mate_theme_initialize, 0);
-    rbc_gtk_mate_buffer = G_DEF_CLASS(gtk_mate_buffer_get_type(), "Buffer", rbc_gtk_mate);
-    rb_define_method(rbc_gtk_mate_buffer, "initialize", gtk_mate_buffer_initialize, 0);
-    rb_define_method(rbc_gtk_mate_buffer, "set_grammar_by_extension", rb_gtk_mate_buffer_set_grammar_by_extension, 1);
-    rbc_gtk_mate_bundle = G_DEF_CLASS(gtk_mate_bundle_get_type(), "Bundle", rbc_gtk_mate);
-    rb_define_method(rbc_gtk_mate_bundle, "initialize", gtk_mate_bundle_initialize, 1);
-    rbc_oniguruma_regex = G_DEF_CLASS(oniguruma_regex_get_type(), "Regex", rbc_oniguruma);
-    rb_define_method(rbc_oniguruma_regex, "initialize", oniguruma_regex_initialize, 0);
-    rb_define_method(rbc_oniguruma_regex, "search", rb_oniguruma_regex_search, 3);
-    rb_define_singleton_method(rbc_oniguruma_regex, "make1", rb_oniguruma_regex_make1, 1);
     rbc_oniguruma_match = G_DEF_CLASS(oniguruma_match_get_type(), "Match", rbc_oniguruma);
     rb_define_method(rbc_oniguruma_match, "initialize", oniguruma_match_initialize, 0);
     rb_define_method(rbc_oniguruma_match, "begin", rb_oniguruma_match_begin, 1);
     rb_define_method(rbc_oniguruma_match, "end", rb_oniguruma_match_end, 1);
+    rbc_gtk_mate_bundle = G_DEF_CLASS(gtk_mate_bundle_get_type(), "Bundle", rbc_gtk_mate);
+    rb_define_method(rbc_gtk_mate_bundle, "initialize", gtk_mate_bundle_initialize, 1);
+    rbc_gtk_mate_buffer = G_DEF_CLASS(gtk_mate_buffer_get_type(), "Buffer", rbc_gtk_mate);
+    rb_define_method(rbc_gtk_mate_buffer, "initialize", gtk_mate_buffer_initialize, 0);
+    rb_define_method(rbc_gtk_mate_buffer, "set_grammar_by_extension", rb_gtk_mate_buffer_set_grammar_by_extension, 1);
+    rbc_oniguruma_regex = G_DEF_CLASS(oniguruma_regex_get_type(), "Regex", rbc_oniguruma);
+    rb_define_method(rbc_oniguruma_regex, "initialize", oniguruma_regex_initialize, 0);
+    rb_define_method(rbc_oniguruma_regex, "search", rb_oniguruma_regex_search, 3);
+    rb_define_singleton_method(rbc_oniguruma_regex, "make1", rb_oniguruma_regex_make1, 1);
     rbc_gtk_mate_grammar = G_DEF_CLASS(gtk_mate_grammar_get_type(), "Grammar", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_grammar, "initialize", gtk_mate_grammar_initialize, 1);
     rb_define_method(rbc_gtk_mate_grammar, "first_line_match", rb_gtk_mate_grammar_get_first_line_match, 0);

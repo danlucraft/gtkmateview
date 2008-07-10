@@ -81,40 +81,39 @@ namespace Gtk.Mate {
 						patterns.add(pattern);
 				}
 
-			repository = new HashMap<string, ArrayList<Pattern>>();
+			repository = new HashMap<string, ArrayList<Pattern>>(str_hash, str_equal);
 			PList.Dict? pd = (PList.Dict?) plist.get("repository");
 			PList.Dict? pd1;
-			PList.Array? pa1;
-//			ArrayList<Pattern> repo_array;
+			PList.Node? pa1;
+			ArrayList<Pattern> repo_array;
 			if (pd != null) {
-//				stdout.printf("repository...\n");
 				foreach (string key in pd.map.get_keys()) {
 					var repo_array = new ArrayList<Pattern>();
-					// pd1 = (PList.Dict?) pd.get(key);
-					// pa1 = (PList.Array?) pd1.get("patterns");
-					// if (pa1 is PList.Array) {
-					// 	foreach (PList.Node ps1 in pa1.array) {
-					// 		pattern = Pattern.create_from_plist((PList.Dict) ps1);
-					// 		if (pattern != null)
-					// 			repo_array.add(pattern);
-					// 	}
-					// }
-					// else if (pa1 is PList.Dict) {
-					// 	pattern = Pattern.create_from_plist((PList.Dict) pa1);
-					// 	if (pattern != null)
-					// 		repo_array.add(pattern);
-					// }
+					pd1 = (PList.Dict?) pd.get(key);
+					pa1 = pd1.get("patterns");
+					if (pa1 is PList.Array) {
+						foreach (PList.Node ps1 in ((PList.Array) pa1).array) {
+							pattern = Pattern.create_from_plist((PList.Dict) ps1);
+							if (pattern != null)
+								repo_array.add(pattern);
+						}
+					}
+					else if (pa1 == null) {
+						pattern = Pattern.create_from_plist((PList.Dict) pd1);
+						if (pattern != null)
+							repo_array.add(pattern);
+					}
 					repository.set(key, repo_array);
-					stdout.printf("key: %s, %d\n", key, repo_array.size);
 				}
 			}
-			// stdout.printf("replaceing %d\n", patterns.size);
-			// foreach (Pattern pt in patterns) {
-			// 	if (pt == null)
-			// 		stdout.printf("null!\n");
-			// 	else
-			// 		replace_include_patterns(pt);
-			// }
+
+			stdout.printf("replaceing %d\n", patterns.size);
+			foreach (Pattern pt in patterns) {
+				if (pt == null)
+					stdout.printf("null!\n");
+				else
+					replace_include_patterns(pt);
+			}
 
 			foreach (string key in repository.get_keys()) {
 				var al = repository.get(key);

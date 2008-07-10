@@ -128,7 +128,8 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 	GeeHashMap* _tmp4;
 	PListDict* pd;
 	PListDict* pd1;
-	PListArray* pa1;
+	PListNode* pa1;
+	GeeArrayList* repo_array;
 	g_return_if_fail (GTK_MATE_IS_GRAMMAR (self));
 	if (self->loaded) {
 		return;
@@ -171,13 +172,12 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 		}
 	}
 	_tmp4 = NULL;
-	self->repository = (_tmp4 = gee_hash_map_new (G_TYPE_STRING, ((GBoxedCopyFunc) (g_strdup)), g_free, GEE_TYPE_ARRAY_LIST, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_hash, g_direct_equal, g_direct_equal), (self->repository == NULL ? NULL : (self->repository = (g_object_unref (self->repository), NULL))), _tmp4);
+	self->repository = (_tmp4 = gee_hash_map_new (G_TYPE_STRING, ((GBoxedCopyFunc) (g_strdup)), g_free, GEE_TYPE_ARRAY_LIST, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_str_hash, g_str_equal, g_direct_equal), (self->repository == NULL ? NULL : (self->repository = (g_object_unref (self->repository), NULL))), _tmp4);
 	pd = PLIST_DICT (plist_dict_get (self->priv->_plist, "repository"));
 	pd1 = NULL;
 	pa1 = NULL;
-	/*ArrayList<Pattern> repo_array;*/
+	repo_array = NULL;
 	if (pd != NULL) {
-		/*stdout.printf("repository...\n");*/
 		{
 			GeeSet* key_collection;
 			GeeIterator* key_it;
@@ -188,23 +188,43 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 				key = ((char*) (gee_iterator_get (key_it)));
 				{
 					GeeArrayList* repo_array;
+					PListDict* _tmp5;
+					PListNode* _tmp6;
 					repo_array = gee_array_list_new (GTK_MATE_TYPE_PATTERN, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
-					/* pd1 = (PList.Dict?) pd.get(key);
-					 pa1 = (PList.Array?) pd1.get("patterns");
-					 if (pa1 is PList.Array) {
-					 foreach (PList.Node ps1 in pa1.array) {
-					 pattern = Pattern.create_from_plist((PList.Dict) ps1);
-					 if (pattern != null)
-					 repo_array.add(pattern);
-					 }
-					 }
-					 else if (pa1 is PList.Dict) {
-					 pattern = Pattern.create_from_plist((PList.Dict) pa1);
-					 if (pattern != null)
-					 repo_array.add(pattern);
-					 }*/
+					_tmp5 = NULL;
+					pd1 = (_tmp5 = PLIST_DICT (plist_dict_get (pd, key)), (pd1 == NULL ? NULL : (pd1 = (g_object_unref (pd1), NULL))), _tmp5);
+					_tmp6 = NULL;
+					pa1 = (_tmp6 = plist_dict_get (pd1, "patterns"), (pa1 == NULL ? NULL : (pa1 = (g_object_unref (pa1), NULL))), _tmp6);
+					if (PLIST_IS_ARRAY (pa1)) {
+						{
+							GeeArrayList* ps1_collection;
+							int ps1_it;
+							ps1_collection = (PLIST_ARRAY (pa1))->array;
+							for (ps1_it = 0; ps1_it < gee_collection_get_size (GEE_COLLECTION (ps1_collection)); ps1_it = ps1_it + 1) {
+								PListNode* ps1;
+								ps1 = ((PListNode*) (gee_list_get (GEE_LIST (ps1_collection), ps1_it)));
+								{
+									GtkMatePattern* _tmp7;
+									_tmp7 = NULL;
+									pattern = (_tmp7 = gtk_mate_pattern_create_from_plist (PLIST_DICT (ps1)), (pattern == NULL ? NULL : (pattern = (g_object_unref (pattern), NULL))), _tmp7);
+									if (pattern != NULL) {
+										gee_collection_add (GEE_COLLECTION (repo_array), pattern);
+									}
+									(ps1 == NULL ? NULL : (ps1 = (g_object_unref (ps1), NULL)));
+								}
+							}
+						}
+					} else {
+						if (pa1 == NULL) {
+							GtkMatePattern* _tmp8;
+							_tmp8 = NULL;
+							pattern = (_tmp8 = gtk_mate_pattern_create_from_plist (PLIST_DICT (pd1)), (pattern == NULL ? NULL : (pattern = (g_object_unref (pattern), NULL))), _tmp8);
+							if (pattern != NULL) {
+								gee_collection_add (GEE_COLLECTION (repo_array), pattern);
+							}
+						}
+					}
 					gee_map_set (GEE_MAP (self->repository), key, repo_array);
-					fprintf (stdout, "key: %s, %d\n", key, gee_collection_get_size (GEE_COLLECTION (repo_array)));
 					key = (g_free (key), NULL);
 					(repo_array == NULL ? NULL : (repo_array = (g_object_unref (repo_array), NULL)));
 				}
@@ -213,13 +233,24 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 			(key_collection == NULL ? NULL : (key_collection = (g_object_unref (key_collection), NULL)));
 		}
 	}
-	/* stdout.printf("replaceing %d\n", patterns.size);
-	 foreach (Pattern pt in patterns) {
-	 if (pt == null)
-	 stdout.printf("null!\n");
-	 else
-	 replace_include_patterns(pt);
-	 }*/
+	fprintf (stdout, "replaceing %d\n", gee_collection_get_size (GEE_COLLECTION (self->patterns)));
+	{
+		GeeArrayList* pt_collection;
+		int pt_it;
+		pt_collection = self->patterns;
+		for (pt_it = 0; pt_it < gee_collection_get_size (GEE_COLLECTION (pt_collection)); pt_it = pt_it + 1) {
+			GtkMatePattern* pt;
+			pt = ((GtkMatePattern*) (gee_list_get (GEE_LIST (pt_collection), pt_it)));
+			{
+				if (pt == NULL) {
+					fprintf (stdout, "null!\n");
+				} else {
+					gtk_mate_grammar_replace_include_patterns (self, pt);
+				}
+				(pt == NULL ? NULL : (pt = (g_object_unref (pt), NULL)));
+			}
+		}
+	}
 	{
 		GeeSet* key_collection;
 		GeeIterator* key_it;
@@ -265,6 +296,7 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 	(pd == NULL ? NULL : (pd = (g_object_unref (pd), NULL)));
 	(pd1 == NULL ? NULL : (pd1 = (g_object_unref (pd1), NULL)));
 	(pa1 == NULL ? NULL : (pa1 = (g_object_unref (pa1), NULL)));
+	(repo_array == NULL ? NULL : (repo_array = (g_object_unref (repo_array), NULL)));
 }
 
 
