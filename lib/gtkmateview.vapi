@@ -8,7 +8,7 @@ namespace Gtk {
 		public class Pattern : Gtk.Object {
 			public string name;
 			public string comment;
-			public Gee.ArrayList<Gtk.Mate.Pattern> all_patterns;
+			public static Gee.ArrayList<Gtk.Mate.Pattern> all_patterns;
 			public static Gtk.Mate.Pattern? create_from_plist (PList.Dict pd);
 			public Pattern ();
 		}
@@ -34,9 +34,13 @@ namespace Gtk {
 			public static Gtk.Mate.IncludePattern? create_from_plist (PList.Dict pd);
 			public IncludePattern ();
 		}
+		[CCode (cheader_filename = "view.h")]
+		public class View : Gtk.SourceView {
+			public View ();
+		}
 		[CCode (cheader_filename = "grammar.h")]
 		public class Grammar : Gtk.Object {
-			public string[] file_types;
+			public Gee.ArrayList<string> file_types;
 			public Oniguruma.Regex first_line_match;
 			public string key_equivalent;
 			public string scope_name;
@@ -48,7 +52,6 @@ namespace Gtk {
 			public Gee.HashMap<string,Gee.ArrayList<Gtk.Mate.Pattern>> repository;
 			public Grammar (PList.Dict plist);
 			public void init_for_reference ();
-			public Gee.ArrayList<Gtk.Mate.Pattern> all_patterns ();
 			public void init_for_use ();
 			public void replace_include_patterns (Gtk.Mate.DoublePattern? pattern, Gee.ArrayList<Gtk.Mate.Pattern> ps);
 			public string name { get; set; }
@@ -58,16 +61,10 @@ namespace Gtk {
 		public class Theme : Gtk.Object {
 			public Theme ();
 		}
-		[CCode (cheader_filename = "view.h")]
-		public class View : Gtk.SourceView {
-			public View ();
-		}
 		[CCode (cheader_filename = "buffer.h")]
 		public class Buffer : Gtk.SourceBuffer {
-			public Gee.ArrayList<Gtk.Mate.Bundle> bundles;
-			public Gee.ArrayList<Gtk.Mate.Theme> themes;
-			public Gee.ArrayList<Gtk.Mate.Bundle> all_bundles ();
-			public Gee.ArrayList<Gtk.Mate.Theme> all_themes ();
+			public static Gee.ArrayList<Gtk.Mate.Bundle> bundles;
+			public static Gee.ArrayList<Gtk.Mate.Theme> themes;
 			public string? set_grammar_by_extension (string extension);
 			public Gtk.TextIter iter_ (int offset);
 			public Gtk.TextIter iter_line_start (int line);
@@ -77,7 +74,6 @@ namespace Gtk {
 		[CCode (cheader_filename = "bundle.h")]
 		public class Bundle : Gtk.Object {
 			public Gee.ArrayList<Gtk.Mate.Grammar> grammars;
-			public Gee.ArrayList<Gtk.Mate.Grammar> all_grammars ();
 			public Bundle (string name);
 			public string name { get; set; }
 		}
@@ -87,8 +83,6 @@ namespace Gtk {
 		public static Gee.ArrayList<string>? bundle_dirs ();
 		[CCode (cheader_filename = "gtkmateview.h")]
 		public static string? textmate_share_dir ();
-		[CCode (cheader_filename = "gtkmateview.h")]
-		public static string[] bundle_dirs_rb ();
 	}
 }
 [CCode (cprefix = "Oniguruma", lower_case_cprefix = "oniguruma_")]

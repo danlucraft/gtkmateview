@@ -84,27 +84,6 @@ namespace Gtk {
 			return null;
 		}
 
-		public static string[]? bundle_dirs_rb() {
-			string[] arr_names;
-			ArrayList<string>? names = bundle_dirs();
-			if (names != null) {
-				arr_names = get_string_array(names);
-				return arr_names;
-			}
-			else
-				return null;
-		}
-
-		private static string[] get_string_array(ArrayList<string> al) {
-			var arr = new string[al.size];
-			int i = 0;
-			foreach(string n in al) {
-				arr[i] = n;
-				i++;
-			}
-			return arr;
-		}
-		
 		errordomain MateError {
 			INIT_ERROR
 		}

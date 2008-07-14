@@ -11,7 +11,6 @@
 
 
 
-static char** gtk_mate_get_string_array (GeeArrayList* al, int* result_length1);
 enum  {
 	GTK_MATE_THEME_DUMMY_PROPERTY
 };
@@ -258,67 +257,6 @@ char* gtk_mate_textmate_share_dir (void) {
 	fprintf (stdout, "couldn't find /usr/share/textmate or /usr/local/share/textmate\n");
 	_tmp3 = NULL;
 	return (_tmp3 = NULL, (share_dir = (g_free (share_dir), NULL)), _tmp3);
-}
-
-
-char** gtk_mate_bundle_dirs_rb (int* result_length1) {
-	gint arr_names_length1;
-	char** arr_names;
-	GeeArrayList* names;
-	arr_names = (arr_names_length1 = 0, NULL);
-	names = gtk_mate_bundle_dirs ();
-	if (names != NULL) {
-		char** _tmp1;
-		gint _tmp0;
-		char** _tmp2;
-		char** _tmp3;
-		_tmp1 = NULL;
-		arr_names = (_tmp1 = gtk_mate_get_string_array (names, &_tmp0), (arr_names = (_vala_array_free (arr_names, arr_names_length1, ((GDestroyNotify) (g_free))), NULL)), arr_names_length1 = _tmp0, _tmp1);
-		_tmp2 = NULL;
-		_tmp3 = NULL;
-		return (_tmp3 = (_tmp2 = arr_names, (*result_length1) = arr_names_length1, _tmp2), (names == NULL ? NULL : (names = (g_object_unref (names), NULL))), _tmp3);
-	} else {
-		gpointer _tmp4;
-		char** _tmp5;
-		_tmp5 = NULL;
-		return (_tmp5 = (_tmp4 = NULL, (*result_length1) = 0, _tmp4), (arr_names = (_vala_array_free (arr_names, arr_names_length1, ((GDestroyNotify) (g_free))), NULL)), (names == NULL ? NULL : (names = (g_object_unref (names), NULL))), _tmp5);
-	}
-	arr_names = (_vala_array_free (arr_names, arr_names_length1, ((GDestroyNotify) (g_free))), NULL);
-	(names == NULL ? NULL : (names = (g_object_unref (names), NULL)));
-}
-
-
-static char** gtk_mate_get_string_array (GeeArrayList* al, int* result_length1) {
-	char** _tmp1;
-	gint arr_length1;
-	gint _tmp0;
-	char** arr;
-	gint i;
-	char** _tmp4;
-	g_return_val_if_fail (GEE_IS_ARRAY_LIST (al), NULL);
-	_tmp1 = NULL;
-	arr = (_tmp1 = g_new0 (char*, (_tmp0 = gee_collection_get_size (GEE_COLLECTION (al))) + 1), arr_length1 = _tmp0, _tmp1);
-	i = 0;
-	{
-		GeeArrayList* n_collection;
-		int n_it;
-		n_collection = al;
-		for (n_it = 0; n_it < gee_collection_get_size (GEE_COLLECTION (n_collection)); n_it = n_it + 1) {
-			char* n;
-			n = ((char*) (gee_list_get (GEE_LIST (n_collection), n_it)));
-			{
-				char* _tmp3;
-				const char* _tmp2;
-				_tmp3 = NULL;
-				_tmp2 = NULL;
-				arr[i] = (_tmp3 = (_tmp2 = n, (_tmp2 == NULL ? NULL : g_strdup (_tmp2))), (arr[i] = (g_free (arr[i]), NULL)), _tmp3);
-				i++;
-				n = (g_free (n), NULL);
-			}
-		}
-	}
-	_tmp4 = NULL;
-	return (_tmp4 = arr, (*result_length1) = arr_length1, _tmp4);
 }
 
 

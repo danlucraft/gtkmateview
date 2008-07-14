@@ -34,7 +34,6 @@ struct _GtkMateBundleClass {
 };
 
 
-GeeArrayList* gtk_mate_bundle_all_grammars (GtkMateBundle* self);
 GtkMateBundle* gtk_mate_bundle_new (const char* name);
 const char* gtk_mate_bundle_get_name (GtkMateBundle* self);
 GType gtk_mate_bundle_get_type (void);

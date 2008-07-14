@@ -40,7 +40,6 @@ struct _GtkMateThemeClass {
 gint gtk_mate_load_bundles (void);
 GeeArrayList* gtk_mate_bundle_dirs (void);
 char* gtk_mate_textmate_share_dir (void);
-char** gtk_mate_bundle_dirs_rb (int* result_length1);
 GQuark gtk_mate_mate_error_quark (void);
 GtkMateTheme* gtk_mate_theme_new (void);
 GType gtk_mate_theme_get_type (void);

@@ -5,9 +5,9 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
+#include <gee/arraylist.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gee/arraylist.h>
 #include <gee/hashmap.h>
 #include <onig_wrap.h>
 #include <plist.h>
@@ -30,8 +30,7 @@ typedef struct _GtkMateGrammarPrivate GtkMateGrammarPrivate;
 struct _GtkMateGrammar {
 	GtkObject parent_instance;
 	GtkMateGrammarPrivate * priv;
-	char** file_types;
-	gint file_types_length1;
+	GeeArrayList* file_types;
 	OnigurumaRegex* first_line_match;
 	char* key_equivalent;
 	char* scope_name;
@@ -50,7 +49,6 @@ struct _GtkMateGrammarClass {
 
 GtkMateGrammar* gtk_mate_grammar_new (PListDict* plist);
 void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self);
-GeeArrayList* gtk_mate_grammar_all_patterns (GtkMateGrammar* self);
 void gtk_mate_grammar_init_for_use (GtkMateGrammar* self);
 void gtk_mate_grammar_replace_include_patterns (GtkMateGrammar* self, GtkMateDoublePattern* pattern, GeeArrayList* ps);
 const char* gtk_mate_grammar_get_name (GtkMateGrammar* self);

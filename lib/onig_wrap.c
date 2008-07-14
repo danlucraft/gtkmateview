@@ -108,6 +108,7 @@ void oniguruma_match_set_rx (OnigurumaMatch* self, regex_t* value) {
 	_tmp2 = NULL;
 	_tmp1 = NULL;
 	self->priv->_rx = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL ? NULL :  (_tmp1))), (self->priv->_rx == NULL ? NULL : (self->priv->_rx = ( (self->priv->_rx), NULL))), _tmp2);
+	g_object_notify (((GObject *) (self)), "rx");
 }
 
 
@@ -124,6 +125,7 @@ void oniguruma_match_set_rg (OnigurumaMatch* self, OnigRegion* value) {
 	_tmp2 = NULL;
 	_tmp1 = NULL;
 	self->priv->_rg = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL ? NULL :  (_tmp1))), (self->priv->_rg == NULL ? NULL : (self->priv->_rg = ( (self->priv->_rg), NULL))), _tmp2);
+	g_object_notify (((GObject *) (self)), "rg");
 }
 
 
@@ -292,6 +294,7 @@ void oniguruma_regex_set_rx (OnigurumaRegex* self, regex_t* value) {
 	_tmp2 = NULL;
 	_tmp1 = NULL;
 	self->priv->_rx = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL ? NULL :  (_tmp1))), (self->priv->_rx == NULL ? NULL : (self->priv->_rx = ( (self->priv->_rx), NULL))), _tmp2);
+	g_object_notify (((GObject *) (self)), "rx");
 }
 
 

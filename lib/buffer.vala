@@ -19,14 +19,6 @@ namespace Gtk.Mate {
 			}
 		}
 		
-		public ArrayList<Mate.Bundle> all_bundles() {
-			return this.bundles;
-		}
-
-		public ArrayList<Mate.Theme> all_themes() {
-			return this.themes;
-		}
-
 		// Sets the grammar with the file extension, then checks the
 		// first line for matches as a fallback. If unable to find
 		// a grammar, sets the grammar to null. Returns the grammar

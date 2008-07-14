@@ -6,9 +6,9 @@ describe Gtk::Mate::View, "initialization" do
   end
 
   it "returns a list of bundle_dirs" do
-    Gtk::Mate.bundle_dirs_rb.should include("Ruby.tmbundle")
-    Gtk::Mate.bundle_dirs_rb.should include("Python.tmbundle")
-    Gtk::Mate.bundle_dirs_rb.should_not include(".svn")
+    Gtk::Mate.bundle_dirs.should include("Ruby.tmbundle")
+    Gtk::Mate.bundle_dirs.should include("Python.tmbundle")
+    Gtk::Mate.bundle_dirs.should_not include(".svn")
   end
 
   it "should load bundles" do
