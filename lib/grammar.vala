@@ -58,6 +58,10 @@ namespace Gtk.Mate {
 		public ArrayList<Pattern> patterns;
 		public HashMap<string, ArrayList<Pattern>> repository;
 
+		public ArrayList<Pattern> all_patterns() {
+			return this.patterns;
+		}
+
 		public void init_for_use() {
 			if (loaded)
 				return;
@@ -88,50 +92,102 @@ namespace Gtk.Mate {
 			ArrayList<Pattern> repo_array;
 			if (pd != null) {
 				foreach (string key in pd.map.get_keys()) {
+					stdout.printf("convert repo name: %s\n", key);
 					var repo_array = new ArrayList<Pattern>();
 					pd1 = (PList.Dict?) pd.get(key);
-					pa1 = pd1.get("patterns");
-					if (pa1 is PList.Array) {
+					// repository name can go straight to a pattern
+					if (pd1.get("begin") != null || pd1.get("match") != null) {
+						pattern = Pattern.create_from_plist((PList.Dict) pd1);
+						if (pattern != null)
+							repo_array.add(pattern);
+					}
+					// or it can go to an array of patterns
+					else {
+						pa1 = pd1.get("patterns");
 						foreach (PList.Node ps1 in ((PList.Array) pa1).array) {
 							pattern = Pattern.create_from_plist((PList.Dict) ps1);
 							if (pattern != null)
 								repo_array.add(pattern);
 						}
 					}
-					else if (pa1 == null) {
-						pattern = Pattern.create_from_plist((PList.Dict) pd1);
-						if (pattern != null)
-							repo_array.add(pattern);
-					}
 					repository.set(key, repo_array);
 				}
 			}
 
-			stdout.printf("replaceing %d\n", patterns.size);
-			foreach (Pattern pt in patterns) {
-				if (pt == null)
-					stdout.printf("null!\n");
-				else
-					replace_include_patterns(pt);
-			}
+			stdout.printf("replaceing repository %d\n", repository.size);
 
 			foreach (string key in repository.get_keys()) {
 				var al = repository.get(key);
 				stdout.printf("key: %s, %d\n", key, al.size);
+				replace_include_patterns(null, repository.get(key));
 				if (al == null)
 					stdout.printf("key null: %s\n", key);
 				foreach (Pattern pt in repository.get(key)) {
-					replace_include_patterns(pt);
+					if (pt is DoublePattern)
+						replace_include_patterns((DoublePattern) pt, ((DoublePattern) pt).patterns);
 				}
 			}
+
+			stdout.printf("replaceing patterns %d\n", patterns.size);
+			foreach (Pattern pt in patterns) {
+				if (pt != null && pt is DoublePattern)
+//					stdout.printf("null!\n");
+//				else
+					replace_include_patterns((DoublePattern) pt, ((DoublePattern) pt).patterns);
+			}
+
 			
 			// repository = null;
 
 			loaded = true;
 		}
 
-		public void replace_include_patterns(Pattern pattern) {
-			stdout.printf("replace include patterns for %s\n", pattern.name);
+		public void replace_include_patterns(DoublePattern? pattern, ArrayList<Pattern> ps) {
+			if (pattern == null)
+				stdout.printf("replace include patterns for null\n");
+			else
+				stdout.printf("replace include patterns for %s\n", pattern.name);
+			var include_patterns = new ArrayList<IncludePattern>();
+			var patterns_to_include = new ArrayList<Pattern>();
+
+			// find include patterns (and deal with subpatterns)
+			foreach (Pattern p in ps) {
+				if (p is IncludePattern) {
+					include_patterns.add((IncludePattern) p);
+				}
+				else {
+					if (p is DoublePattern)
+						replace_include_patterns((DoublePattern) p, ((DoublePattern) p).patterns);
+				}
+			}
+
+			// remove include patterns
+			foreach (Pattern ip in include_patterns)
+				ps.remove(ip);
+			
+			// add referenced patterns
+			foreach (Pattern ip in include_patterns) {
+				stdout.printf("includename: %s\n", ip.name);
+				if (ip.name == "$self") {
+					foreach (var p in ps) {
+						patterns_to_include.add(p);
+					}
+				}
+				else if (ip.name == "$base") {
+					foreach (var p in this.patterns) {
+						patterns_to_include.add(p);
+					}
+				}
+				else if (ip.name.has_prefix("#")) {
+					// stdout.printf("get reponame: %s\n", ip.name.substring(1, ((int) ip.name.size())-1));
+// 					patterns_to_include = repository.get(ip.name.substring(1, ((int) ip.name.size())-1));
+				}
+				else {
+					// stdout.printf("get reponame: %s\n", ip.name);
+				}
+				
+				
+			}
 		}
 	}
 

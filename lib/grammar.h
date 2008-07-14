@@ -50,8 +50,9 @@ struct _GtkMateGrammarClass {
 
 GtkMateGrammar* gtk_mate_grammar_new (PListDict* plist);
 void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self);
+GeeArrayList* gtk_mate_grammar_all_patterns (GtkMateGrammar* self);
 void gtk_mate_grammar_init_for_use (GtkMateGrammar* self);
-void gtk_mate_grammar_replace_include_patterns (GtkMateGrammar* self, GtkMatePattern* pattern);
+void gtk_mate_grammar_replace_include_patterns (GtkMateGrammar* self, GtkMateDoublePattern* pattern, GeeArrayList* ps);
 const char* gtk_mate_grammar_get_name (GtkMateGrammar* self);
 PListDict* gtk_mate_grammar_get_plist (GtkMateGrammar* self);
 GType gtk_mate_grammar_get_type (void);

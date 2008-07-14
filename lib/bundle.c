@@ -21,6 +21,14 @@ static void gtk_mate_bundle_dispose (GObject * obj);
 
 
 
+GeeArrayList* gtk_mate_bundle_all_grammars (GtkMateBundle* self) {
+	GeeArrayList* _tmp0;
+	g_return_val_if_fail (GTK_MATE_IS_BUNDLE (self), NULL);
+	_tmp0 = NULL;
+	return (_tmp0 = self->grammars, (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
+}
+
+
 GtkMateBundle* gtk_mate_bundle_new (const char* name) {
 	GtkMateBundle * self;
 	g_return_val_if_fail (name != NULL, NULL);

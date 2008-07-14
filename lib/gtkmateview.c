@@ -121,6 +121,7 @@ gint gtk_mate_load_bundles (void) {
 										fprintf (stdout, "error opening %s\n", (_tmp15 = g_strconcat ((_tmp14 = g_strconcat (syntax_dir, "/", NULL)), name, NULL)));
 										_tmp15 = (g_free (_tmp15), NULL);
 										_tmp14 = (g_free (_tmp14), NULL);
+										(e == NULL ? NULL : (e = (g_error_free (e), NULL)));
 									}
 								}
 								__finally1:
@@ -143,6 +144,7 @@ gint gtk_mate_load_bundles (void) {
 						inner_error = NULL;
 						{
 							fprintf (stdout, "error opening %s\n", syntax_dir);
+							(e == NULL ? NULL : (e = (g_error_free (e), NULL)));
 						}
 					}
 					__finally0:
@@ -230,6 +232,7 @@ GeeArrayList* gtk_mate_bundle_dirs (void) {
 			_tmp5 = NULL;
 			fprintf (stdout, "couldn't open: %s\n", (_tmp5 = g_strconcat (share_dir, "/Bundles", NULL)));
 			_tmp5 = (g_free (_tmp5), NULL);
+			(e == NULL ? NULL : (e = (g_error_free (e), NULL)));
 		}
 	}
 	__finally2:

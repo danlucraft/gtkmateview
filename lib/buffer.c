@@ -21,6 +21,22 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
+GeeArrayList* gtk_mate_buffer_all_bundles (GtkMateBuffer* self) {
+	GeeArrayList* _tmp0;
+	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), NULL);
+	_tmp0 = NULL;
+	return (_tmp0 = gtk_mate_buffer_bundles, (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
+}
+
+
+GeeArrayList* gtk_mate_buffer_all_themes (GtkMateBuffer* self) {
+	GeeArrayList* _tmp0;
+	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), NULL);
+	_tmp0 = NULL;
+	return (_tmp0 = gtk_mate_buffer_themes, (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
+}
+
+
 /* Sets the grammar with the file extension, then checks the
  first line for matches as a fallback. If unable to find
  a grammar, sets the grammar to null. Returns the grammar

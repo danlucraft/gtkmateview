@@ -10,6 +10,10 @@ namespace Gtk.Mate {
 			this.grammars = new ArrayList<Grammar>();
 		}
 		
+		public ArrayList<Grammar> all_grammars() {
+			return this.grammars;
+		}
+
 		public Bundle(string name) {
 			this.name = name;
 		}

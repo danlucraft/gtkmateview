@@ -6,7 +6,7 @@ namespace Gtk.Mate {
 	public class Buffer : SourceBuffer {
 		public static ArrayList<Mate.Bundle> bundles;
 		public static ArrayList<Mate.Theme>  themes;
-
+		
 		private static Grammar _grammar;
 		public static Grammar grammar {
 			get {
@@ -17,6 +17,14 @@ namespace Gtk.Mate {
 					value.init_for_use();
 				this._grammar = value;
 			}
+		}
+		
+		public ArrayList<Mate.Bundle> all_bundles() {
+			return this.bundles;
+		}
+
+		public ArrayList<Mate.Theme> all_themes() {
+			return this.themes;
 		}
 
 		// Sets the grammar with the file extension, then checks the
