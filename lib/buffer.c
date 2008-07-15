@@ -27,11 +27,11 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
  name or null.*/
 char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char* extension) {
 	OnigurumaRegex* re;
-	const char* _tmp4;
+	const char* _tmp5;
+	GtkTextIter _tmp4 = {0};
 	GtkTextIter _tmp3 = {0};
-	GtkTextIter _tmp2 = {0};
 	char* first_line;
-	char* _tmp11;
+	char* _tmp12;
 	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), NULL);
 	g_return_val_if_fail (extension != NULL, NULL);
 	{
@@ -51,12 +51,16 @@ char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char*
 						gr = ((GtkMateGrammar*) (gee_list_get (GEE_LIST (gr_collection), gr_it)));
 						{
 							{
-								GeeArrayList* ext_collection;
+								char** ext_collection;
+								int ext_collection_length1;
 								int ext_it;
 								ext_collection = gr->file_types;
-								for (ext_it = 0; ext_it < gee_collection_get_size (GEE_COLLECTION (ext_collection)); ext_it = ext_it + 1) {
+								ext_collection_length1 = gr->file_types_length1;
+								for (ext_it = 0; (gr->file_types_length1 != -1 && ext_it < gr->file_types_length1) || (gr->file_types_length1 == -1 && ext_collection[ext_it] != NULL); ext_it = ext_it + 1) {
+									const char* _tmp2;
 									char* ext;
-									ext = ((char*) (gee_list_get (GEE_LIST (ext_collection), ext_it)));
+									_tmp2 = NULL;
+									ext = (_tmp2 = ext_collection[ext_it], (_tmp2 == NULL ? NULL : g_strdup (_tmp2)));
 									{
 										if (_vala_strcmp0 (ext, extension) == 0) {
 											const char* _tmp0;
@@ -79,8 +83,8 @@ char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char*
 		}
 	}
 	re = NULL;
-	_tmp4 = NULL;
-	first_line = (_tmp4 = gtk_text_buffer_get_text (GTK_TEXT_BUFFER (self), (_tmp2 = gtk_mate_buffer_iter_ (self, 0), &_tmp2), (_tmp3 = gtk_mate_buffer_iter_line_start (self, 1), &_tmp3), FALSE), (_tmp4 == NULL ? NULL : g_strdup (_tmp4)));
+	_tmp5 = NULL;
+	first_line = (_tmp5 = gtk_text_buffer_get_text (GTK_TEXT_BUFFER (self), (_tmp3 = gtk_mate_buffer_iter_ (self, 0), &_tmp3), (_tmp4 = gtk_mate_buffer_iter_line_start (self, 1), &_tmp4), FALSE), (_tmp5 == NULL ? NULL : g_strdup (_tmp5)));
 	{
 		GeeArrayList* bundle_collection;
 		int bundle_it;
@@ -97,21 +101,21 @@ char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char*
 						GtkMateGrammar* gr;
 						gr = ((GtkMateGrammar*) (gee_list_get (GEE_LIST (gr_collection), gr_it)));
 						{
+							OnigurumaRegex* _tmp7;
 							OnigurumaRegex* _tmp6;
-							OnigurumaRegex* _tmp5;
+							_tmp7 = NULL;
 							_tmp6 = NULL;
-							_tmp5 = NULL;
-							if ((re = (_tmp6 = (_tmp5 = gr->first_line_match, (_tmp5 == NULL ? NULL : g_object_ref (_tmp5))), (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), _tmp6)) != NULL) {
-								OnigurumaMatch* _tmp7;
-								gboolean _tmp8;
-								_tmp7 = NULL;
-								if ((_tmp8 = (_tmp7 = oniguruma_regex_search (re, first_line, 0, ((gint) (strlen (first_line))))) != NULL, (_tmp7 == NULL ? NULL : (_tmp7 = (g_object_unref (_tmp7), NULL))), _tmp8)) {
-									const char* _tmp9;
-									char* _tmp10;
+							if ((re = (_tmp7 = (_tmp6 = gr->first_line_match, (_tmp6 == NULL ? NULL : g_object_ref (_tmp6))), (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), _tmp7)) != NULL) {
+								OnigurumaMatch* _tmp8;
+								gboolean _tmp9;
+								_tmp8 = NULL;
+								if ((_tmp9 = (_tmp8 = oniguruma_regex_search (re, first_line, 0, ((gint) (strlen (first_line))))) != NULL, (_tmp8 == NULL ? NULL : (_tmp8 = (g_object_unref (_tmp8), NULL))), _tmp9)) {
+									const char* _tmp10;
+									char* _tmp11;
 									gtk_mate_buffer_set_grammar (self, gr);
-									_tmp9 = NULL;
 									_tmp10 = NULL;
-									return (_tmp10 = (_tmp9 = gtk_mate_grammar_get_name (gr), (_tmp9 == NULL ? NULL : g_strdup (_tmp9))), (gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL))), (bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL))), (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), (first_line = (g_free (first_line), NULL)), _tmp10);
+									_tmp11 = NULL;
+									return (_tmp11 = (_tmp10 = gtk_mate_grammar_get_name (gr), (_tmp10 == NULL ? NULL : g_strdup (_tmp10))), (gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL))), (bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL))), (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), (first_line = (g_free (first_line), NULL)), _tmp11);
 								}
 							}
 							(gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL)));
@@ -123,8 +127,8 @@ char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char*
 		}
 	}
 	gtk_mate_buffer_set_grammar (self, NULL);
-	_tmp11 = NULL;
-	return (_tmp11 = NULL, (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), (first_line = (g_free (first_line), NULL)), _tmp11);
+	_tmp12 = NULL;
+	return (_tmp12 = NULL, (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), (first_line = (g_free (first_line), NULL)), _tmp12);
 }
 
 

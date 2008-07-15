@@ -22,6 +22,7 @@ static void gtk_mate_grammar_set_name (GtkMateGrammar* self, const char* value);
 static void gtk_mate_grammar_set_plist (GtkMateGrammar* self, PListDict* value);
 static gpointer gtk_mate_grammar_parent_class = NULL;
 static void gtk_mate_grammar_dispose (GObject * obj);
+static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
@@ -81,11 +82,14 @@ void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self) {
 	if (filetypes != NULL) {
 		PListArray* _tmp7;
 		PListArray* fts;
-		GeeArrayList* _tmp8;
+		char** _tmp9;
+		gint _tmp8;
+		gint i;
 		_tmp7 = NULL;
 		fts = (_tmp7 = PLIST_ARRAY (filetypes), (_tmp7 == NULL ? NULL : g_object_ref (_tmp7)));
-		_tmp8 = NULL;
-		self->file_types = (_tmp8 = gee_array_list_new (G_TYPE_STRING, ((GBoxedCopyFunc) (g_strdup)), g_free, g_direct_equal), (self->file_types == NULL ? NULL : (self->file_types = (g_object_unref (self->file_types), NULL))), _tmp8);
+		_tmp9 = NULL;
+		self->file_types = (_tmp9 = g_new0 (char*, (_tmp8 = gee_collection_get_size (GEE_COLLECTION (fts->array))) + 1), (self->file_types = (_vala_array_free (self->file_types, self->file_types_length1, ((GDestroyNotify) (g_free))), NULL)), self->file_types_length1 = _tmp8, _tmp9);
+		i = 0;
 		{
 			GeeArrayList* n_collection;
 			int n_it;
@@ -94,7 +98,13 @@ void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self) {
 				PListNode* n;
 				n = ((PListNode*) (gee_list_get (GEE_LIST (n_collection), n_it)));
 				{
-					gee_collection_add (GEE_COLLECTION (self->file_types), (PLIST_STRING (n))->str);
+					gint _tmp12;
+					char* _tmp11;
+					const char* _tmp10;
+					_tmp11 = NULL;
+					_tmp10 = NULL;
+					_tmp12 = i++;
+					self->file_types[_tmp12] = (_tmp11 = (_tmp10 = (PLIST_STRING (n))->str, (_tmp10 == NULL ? NULL : g_strdup (_tmp10))), (self->file_types[_tmp12] = (g_free (self->file_types[_tmp12]), NULL)), _tmp11);
 					(n == NULL ? NULL : (n = (g_object_unref (n), NULL)));
 				}
 			}
@@ -494,7 +504,7 @@ static void gtk_mate_grammar_dispose (GObject * obj) {
 	self = GTK_MATE_GRAMMAR (obj);
 	self->priv->_name = (g_free (self->priv->_name), NULL);
 	(self->priv->_plist == NULL ? NULL : (self->priv->_plist = (g_object_unref (self->priv->_plist), NULL)));
-	(self->file_types == NULL ? NULL : (self->file_types = (g_object_unref (self->file_types), NULL)));
+	self->file_types = (_vala_array_free (self->file_types, self->file_types_length1, ((GDestroyNotify) (g_free))), NULL);
 	(self->first_line_match == NULL ? NULL : (self->first_line_match = (g_object_unref (self->first_line_match), NULL)));
 	self->key_equivalent = (g_free (self->key_equivalent), NULL);
 	self->scope_name = (g_free (self->scope_name), NULL);
@@ -514,6 +524,23 @@ GType gtk_mate_grammar_get_type (void) {
 		gtk_mate_grammar_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateGrammar", &g_define_type_info, 0);
 	}
 	return gtk_mate_grammar_type_id;
+}
+
+
+static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
+	if (array != NULL && destroy_func != NULL) {
+		int i;
+		if (array_length >= 0)
+		for (i = 0; i < array_length; i = i + 1) {
+			if (((gpointer*) (array))[i] != NULL)
+			destroy_func (((gpointer*) (array))[i]);
+		}
+		else
+		for (i = 0; ((gpointer*) (array))[i] != NULL; i = i + 1) {
+			destroy_func (((gpointer*) (array))[i]);
+		}
+	}
+	g_free (array);
 }
 
 

@@ -5,9 +5,9 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
-#include <gee/arraylist.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gee/arraylist.h>
 #include <gee/hashmap.h>
 #include <onig_wrap.h>
 #include <plist.h>
@@ -30,7 +30,8 @@ typedef struct _GtkMateGrammarPrivate GtkMateGrammarPrivate;
 struct _GtkMateGrammar {
 	GtkObject parent_instance;
 	GtkMateGrammarPrivate * priv;
-	GeeArrayList* file_types;
+	char** file_types;
+	gint file_types_length1;
 	OnigurumaRegex* first_line_match;
 	char* key_equivalent;
 	char* scope_name;

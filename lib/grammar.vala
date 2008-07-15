@@ -8,7 +8,7 @@ namespace Gtk.Mate {
 		// reference properties
 		public string name {get; private set;}
 		public PList.Dict plist {get; private set;}
-		public ArrayList<string> file_types;
+		public string[] file_types;
 		public Oniguruma.Regex first_line_match;
 		public string key_equivalent;
 		public string scope_name;
@@ -45,9 +45,10 @@ namespace Gtk.Mate {
 			PList.Node? filetypes = plist.get("fileTypes");
 			if (filetypes != null) {
 				PList.Array fts = (PList.Array) filetypes;
-				file_types = new ArrayList<string>();
+				file_types = new string[fts.array.size];
+				int i = 0;
 				foreach (var n in fts.array) {
-					file_types.add(((PList.String) n).str);
+					file_types[i++] = ((PList.String) n).str;
 				}
 			}
 		}
