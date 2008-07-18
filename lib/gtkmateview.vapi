@@ -10,6 +10,7 @@ namespace Gtk {
 			public string comment;
 			public static Gee.ArrayList<Gtk.Mate.Pattern> all_patterns;
 			public static Gtk.Mate.Pattern? create_from_plist (PList.Dict pd);
+			public static Gee.HashMap<int,string> make_captures_from_plist (PList.Dict pd);
 			public Pattern ();
 		}
 		[CCode (cheader_filename = "pattern.h")]
@@ -34,6 +35,10 @@ namespace Gtk {
 			public static Gtk.Mate.IncludePattern? create_from_plist (PList.Dict pd);
 			public IncludePattern ();
 		}
+		[CCode (cheader_filename = "view.h")]
+		public class View : Gtk.SourceView {
+			public View ();
+		}
 		[CCode (cheader_filename = "grammar.h")]
 		public class Grammar : Gtk.Object {
 			public string[] file_types;
@@ -56,10 +61,6 @@ namespace Gtk {
 		[CCode (cheader_filename = "gtkmateview.h")]
 		public class Theme : Gtk.Object {
 			public Theme ();
-		}
-		[CCode (cheader_filename = "view.h")]
-		public class View : Gtk.SourceView {
-			public View ();
 		}
 		[CCode (cheader_filename = "buffer.h")]
 		public class Buffer : Gtk.SourceBuffer {

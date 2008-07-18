@@ -88,7 +88,7 @@ namespace Gtk.Mate {
 			ArrayList<Pattern> repo_array;
 			if (pd != null) {
 				foreach (string key in pd.map.get_keys()) {
-					stdout.printf("convert repo name: %s\n", key);
+					// stdout.printf("convert repo name: %s\n", key);
 					var repo_array = new ArrayList<Pattern>();
 					pd1 = (PList.Dict?) pd.get(key);
 					// repository name can go straight to a pattern
@@ -110,21 +110,21 @@ namespace Gtk.Mate {
 				}
 			}
 
-			stdout.printf("replaceing repository %d\n", repository.size);
+			// stdout.printf("replaceing repository %d\n", repository.size);
 
 			foreach (string key in repository.get_keys()) {
 				var al = repository.get(key);
-				stdout.printf("key: %s, %d\n", key, al.size);
+				// stdout.printf("key: %s, %d\n", key, al.size);
 				replace_include_patterns(null, repository.get(key));
-				if (al == null)
-					stdout.printf("key null: %s\n", key);
+				// if (al == null)
+				// 	stdout.printf("key null: %s\n", key);
 				foreach (Pattern pt in repository.get(key)) {
 					if (pt is DoublePattern)
 						replace_include_patterns((DoublePattern) pt, ((DoublePattern) pt).patterns);
 				}
 			}
 
-			stdout.printf("replaceing patterns %d\n", patterns.size);
+			// stdout.printf("replaceing patterns %d\n", patterns.size);
 			foreach (Pattern pt in patterns) {
 				if (pt != null && pt is DoublePattern)
 //					stdout.printf("null!\n");
@@ -139,10 +139,10 @@ namespace Gtk.Mate {
 		}
 
 		public void replace_include_patterns(DoublePattern? pattern, ArrayList<Pattern> ps) {
-			if (pattern == null)
-				stdout.printf("replace include patterns for null\n");
-			else
-				stdout.printf("replace include patterns for %s\n", pattern.name);
+			// if (pattern == null)
+			// 	stdout.printf("replace include patterns for null\n");
+			// else
+			// 	stdout.printf("replace include patterns for %s\n", pattern.name);
 			var include_patterns = new ArrayList<IncludePattern>();
 			var patterns_to_include = new ArrayList<Pattern>();
 
@@ -163,7 +163,7 @@ namespace Gtk.Mate {
 			
 			// add referenced patterns
 			foreach (Pattern ip in include_patterns) {
-				stdout.printf("includename: %s\n", ip.name);
+				// stdout.printf("includename: %s\n", ip.name);
 				if (ip.name == "$self") {
 					foreach (var p in ps) {
 						patterns_to_include.add(p);
@@ -183,6 +183,10 @@ namespace Gtk.Mate {
 				}
 				
 				
+			}
+
+			foreach (Pattern p in patterns_to_include) {
+				ps.add(p);
 			}
 		}
 	}

@@ -107,6 +107,7 @@ struct _GtkMateIncludePatternClass {
 
 extern GeeArrayList* gtk_mate_pattern_all_patterns;
 GtkMatePattern* gtk_mate_pattern_create_from_plist (PListDict* pd);
+GeeHashMap* gtk_mate_pattern_make_captures_from_plist (PListDict* pd);
 GtkMatePattern* gtk_mate_pattern_new (void);
 GType gtk_mate_pattern_get_type (void);
 GtkMateSinglePattern* gtk_mate_single_pattern_create_from_plist (PListDict* pd);
