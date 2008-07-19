@@ -5,16 +5,13 @@
 #include <stdio.h>
 #include <buffer.h>
 #include <bundle.h>
+#include <theme.h>
 #include <grammar.h>
 #include <plist.h>
 
 
 
 
-enum  {
-	GTK_MATE_THEME_DUMMY_PROPERTY
-};
-static gpointer gtk_mate_theme_parent_class = NULL;
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
@@ -79,7 +76,7 @@ gint gtk_mate_load_bundles (void) {
 						d = g_dir_open (syntax_dir, 0, &inner_error);
 						if (inner_error != NULL) {
 							if (inner_error->domain == G_FILE_ERROR) {
-								goto __catch0_g_file_error;
+								goto __catch1_g_file_error;
 							}
 							g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
 							g_clear_error (&inner_error);
@@ -98,7 +95,7 @@ gint gtk_mate_load_bundles (void) {
 									plist = (_tmp13 = plist_parse ((_tmp12 = g_strconcat ((_tmp11 = g_strconcat (syntax_dir, "/", NULL)), name, NULL)), &inner_error), (plist == NULL ? NULL : (plist = (g_object_unref (plist), NULL))), _tmp13);
 									if (inner_error != NULL) {
 										if (inner_error->domain == XML_ERROR) {
-											goto __catch1_xml_error;
+											goto __catch2_xml_error;
 										}
 										g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
 										g_clear_error (&inner_error);
@@ -106,8 +103,8 @@ gint gtk_mate_load_bundles (void) {
 									_tmp12 = (g_free (_tmp12), NULL);
 									_tmp11 = (g_free (_tmp11), NULL);
 								}
-								goto __finally1;
-								__catch1_xml_error:
+								goto __finally2;
+								__catch2_xml_error:
 								{
 									GError * e;
 									e = inner_error;
@@ -123,7 +120,7 @@ gint gtk_mate_load_bundles (void) {
 										(e == NULL ? NULL : (e = (g_error_free (e), NULL)));
 									}
 								}
-								__finally1:
+								__finally2:
 								;
 								if (plist != NULL) {
 									GtkMateGrammar* _tmp16;
@@ -135,8 +132,8 @@ gint gtk_mate_load_bundles (void) {
 						}
 						(d == NULL ? NULL : (d = (g_dir_close (d), NULL)));
 					}
-					goto __finally0;
-					__catch0_g_file_error:
+					goto __finally1;
+					__catch1_g_file_error:
 					{
 						GError * e;
 						e = inner_error;
@@ -146,7 +143,7 @@ gint gtk_mate_load_bundles (void) {
 							(e == NULL ? NULL : (e = (g_error_free (e), NULL)));
 						}
 					}
-					__finally0:
+					__finally1:
 					;
 				}
 				bundle_dir = (g_free (bundle_dir), NULL);
@@ -183,6 +180,59 @@ gint gtk_mate_load_bundles (void) {
 }
 
 
+void gtk_mate_load_themes (void) {
+	GError * inner_error;
+	GeeArrayList* _tmp0;
+	inner_error = NULL;
+	_tmp0 = NULL;
+	gtk_mate_theme_themes = (_tmp0 = gee_array_list_new (GTK_MATE_TYPE_THEME, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal), (gtk_mate_theme_themes == NULL ? NULL : (gtk_mate_theme_themes = (g_object_unref (gtk_mate_theme_themes), NULL))), _tmp0);
+	{
+		GeeArrayList* fn_collection;
+		int fn_it;
+		fn_collection = gtk_mate_theme_theme_filenames ();
+		for (fn_it = 0; fn_it < gee_collection_get_size (GEE_COLLECTION (fn_collection)); fn_it = fn_it + 1) {
+			char* fn;
+			fn = ((char*) (gee_list_get (GEE_LIST (fn_collection), fn_it)));
+			{
+				{
+					PListDict* plist;
+					GtkMateTheme* theme;
+					plist = plist_parse (fn, &inner_error);
+					if (inner_error != NULL) {
+						if (inner_error->domain == XML_ERROR) {
+							goto __catch3_xml_error;
+						}
+						g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
+						g_clear_error (&inner_error);
+					}
+					theme = gtk_mate_theme_create_from_plist (PLIST_DICT (plist));
+					if (theme != NULL) {
+						gee_collection_add (GEE_COLLECTION (gtk_mate_theme_themes), theme);
+					}
+					(plist == NULL ? NULL : (plist = (g_object_unref (plist), NULL)));
+					(theme == NULL ? NULL : (theme = (g_object_unref (theme), NULL)));
+				}
+				goto __finally3;
+				__catch3_xml_error:
+				{
+					GError * e;
+					e = inner_error;
+					inner_error = NULL;
+					{
+						fprintf (stdout, "error opening %s\n", fn);
+						(e == NULL ? NULL : (e = (g_error_free (e), NULL)));
+					}
+				}
+				__finally3:
+				;
+				fn = (g_free (fn), NULL);
+			}
+		}
+		(fn_collection == NULL ? NULL : (fn_collection = (g_object_unref (fn_collection), NULL)));
+	}
+}
+
+
 GeeArrayList* gtk_mate_bundle_dirs (void) {
 	GError * inner_error;
 	char* name;
@@ -205,7 +255,7 @@ GeeArrayList* gtk_mate_bundle_dirs (void) {
 		d = (_tmp1 = g_dir_open ((_tmp0 = g_strconcat (share_dir, "/Bundles", NULL)), 0, &inner_error), (_tmp0 = (g_free (_tmp0), NULL)), _tmp1);
 		if (inner_error != NULL) {
 			if (inner_error->domain == G_FILE_ERROR) {
-				goto __catch2_g_file_error;
+				goto __catch4_g_file_error;
 			}
 			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
 			g_clear_error (&inner_error);
@@ -220,8 +270,8 @@ GeeArrayList* gtk_mate_bundle_dirs (void) {
 		_tmp4 = NULL;
 		return (_tmp4 = names, (d == NULL ? NULL : (d = (g_dir_close (d), NULL))), (name = (g_free (name), NULL)), (share_dir = (g_free (share_dir), NULL)), _tmp4);
 	}
-	goto __finally2;
-	__catch2_g_file_error:
+	goto __finally4;
+	__catch4_g_file_error:
 	{
 		GError * e;
 		e = inner_error;
@@ -234,7 +284,7 @@ GeeArrayList* gtk_mate_bundle_dirs (void) {
 			(e == NULL ? NULL : (e = (g_error_free (e), NULL)));
 		}
 	}
-	__finally2:
+	__finally4:
 	;
 	_tmp6 = NULL;
 	return (_tmp6 = NULL, (name = (g_free (name), NULL)), (share_dir = (g_free (share_dir), NULL)), (names == NULL ? NULL : (names = (g_object_unref (names), NULL))), _tmp6);
@@ -262,32 +312,6 @@ char* gtk_mate_textmate_share_dir (void) {
 
 GQuark gtk_mate_mate_error_quark (void) {
 	return g_quark_from_static_string ("gtk_mate_mate_error-quark");
-}
-
-
-GtkMateTheme* gtk_mate_theme_new (void) {
-	GtkMateTheme * self;
-	self = g_object_newv (GTK_MATE_TYPE_THEME, 0, NULL);
-	return self;
-}
-
-
-static void gtk_mate_theme_class_init (GtkMateThemeClass * klass) {
-	gtk_mate_theme_parent_class = g_type_class_peek_parent (klass);
-}
-
-
-static void gtk_mate_theme_instance_init (GtkMateTheme * self) {
-}
-
-
-GType gtk_mate_theme_get_type (void) {
-	static GType gtk_mate_theme_type_id = 0;
-	if (G_UNLIKELY (gtk_mate_theme_type_id == 0)) {
-		static const GTypeInfo g_define_type_info = { sizeof (GtkMateThemeClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_theme_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateTheme), 0, (GInstanceInitFunc) gtk_mate_theme_instance_init };
-		gtk_mate_theme_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateTheme", &g_define_type_info, 0);
-	}
-	return gtk_mate_theme_type_id;
 }
 
 

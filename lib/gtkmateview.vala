@@ -52,6 +52,21 @@ namespace Gtk {
 			return -1;
 		}
 
+		public static void load_themes() {
+			Theme.themes = new ArrayList<Theme>();
+			foreach (string fn in Theme.theme_filenames()) {
+				try {
+					var plist = PList.parse(fn);
+					var theme = Theme.create_from_plist((PList.Dict) plist);
+					if (theme != null)
+						Theme.themes.add(theme);
+				}
+				catch(XmlError e) {
+					stdout.printf("error opening %s\n", fn);
+				}
+			}
+		}
+
 		public static ArrayList<string>? bundle_dirs() {
 			string name;
 			var share_dir = textmate_share_dir();
@@ -86,10 +101,6 @@ namespace Gtk {
 
 		errordomain MateError {
 			INIT_ERROR
-		}
-
-		public class Theme : Object {
-
 		}
 
 	}

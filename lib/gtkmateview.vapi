@@ -4,6 +4,25 @@
 namespace Gtk {
 	[CCode (cprefix = "GtkMate", lower_case_cprefix = "gtk_mate_")]
 	namespace Mate {
+		[CCode (cheader_filename = "theme.h")]
+		public class ThemeSetting : Gtk.Object {
+			public string name;
+			public string scope;
+			public Gee.HashMap<string,string> settings;
+			public static Gtk.Mate.ThemeSetting create_from_plist (PList.Dict dict);
+			public ThemeSetting ();
+		}
+		[CCode (cheader_filename = "theme.h")]
+		public class Theme : Gtk.Object {
+			public static Gee.ArrayList<Gtk.Mate.Theme> themes;
+			public string author;
+			public string name;
+			public Gee.HashMap<string,string> global_settings;
+			public Gee.ArrayList<Gtk.Mate.ThemeSetting> settings;
+			public static Gtk.Mate.Theme create_from_plist (PList.Dict dict);
+			public static Gee.ArrayList<string>? theme_filenames ();
+			public Theme ();
+		}
 		[CCode (cheader_filename = "pattern.h")]
 		public class Pattern : Gtk.Object {
 			public string name;
@@ -58,10 +77,6 @@ namespace Gtk {
 			public string name { get; set; }
 			public PList.Dict plist { get; set; }
 		}
-		[CCode (cheader_filename = "gtkmateview.h")]
-		public class Theme : Gtk.Object {
-			public Theme ();
-		}
 		[CCode (cheader_filename = "view.h")]
 		public class View : Gtk.SourceView {
 			public View ();
@@ -84,6 +99,8 @@ namespace Gtk {
 		}
 		[CCode (cheader_filename = "gtkmateview.h")]
 		public static int load_bundles ();
+		[CCode (cheader_filename = "gtkmateview.h")]
+		public static void load_themes ();
 		[CCode (cheader_filename = "gtkmateview.h")]
 		public static Gee.ArrayList<string>? bundle_dirs ();
 		[CCode (cheader_filename = "gtkmateview.h")]
