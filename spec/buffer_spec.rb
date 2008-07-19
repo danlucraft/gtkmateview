@@ -11,10 +11,10 @@ describe Gtk::Mate::Buffer do
     @mb.set_grammar_by_extension("py").should == "Python"
   end
 
-  it "sets the grammar by first line" do
-    @mb.text = "#!/usr/bin/ruby\nfoo"
-    @mb.set_grammar_by_extension("").should == "Ruby"
-    @mb.text = "#!/usr/bin/dmd\nfoo"
-    @mb.set_grammar_by_extension("").should == "D"
-  end
+#   it "sets the grammar by first line" do
+#     @mb.text = "#!/usr/bin/ruby\nfoo"
+#     @mb.set_grammar_by_extension("").should == "Ruby"
+#     @mb.text = "#!/usr/bin/dmd\nfoo"
+#     @mb.set_grammar_by_extension("").should == "D"
+#   end
 end

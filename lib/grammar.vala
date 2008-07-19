@@ -13,6 +13,7 @@ namespace Gtk.Mate {
 		public string key_equivalent;
 		public string scope_name;
 		public string comment;
+		public ArrayList<Pattern> all_patterns;
 
 		// rest of properties (loaded on demand)
 		public bool loaded;
@@ -70,17 +71,21 @@ namespace Gtk.Mate {
 			PList.Node? ftm = plist.get("foldingStopMarker");
 			if (ftm != null)
 				folding_stop_marker = Oniguruma.Regex.make1(((PList.String) ftm).str);
-			
+
+			this.all_patterns = new ArrayList<Pattern>();
+
+			// stdout.printf("getting patterns\n");
 			patterns = new ArrayList<Pattern>();
 			PList.Node? ps = plist.get("patterns");
 			Pattern pattern;
 			if (ps != null)
 				foreach (var p in ((PList.Array) ps).array) {
-					pattern = Pattern.create_from_plist((PList.Dict) p);
+					pattern = Pattern.create_from_plist(this.all_patterns, (PList.Dict) p);
 					if (pattern != null)
 						patterns.add(pattern);
 				}
 
+			// stdout.printf("getting repository\n");
 			repository = new HashMap<string, ArrayList<Pattern>>(str_hash, str_equal);
 			PList.Dict? pd = (PList.Dict?) plist.get("repository");
 			PList.Dict? pd1;
@@ -93,7 +98,7 @@ namespace Gtk.Mate {
 					pd1 = (PList.Dict?) pd.get(key);
 					// repository name can go straight to a pattern
 					if (pd1.get("begin") != null || pd1.get("match") != null) {
-						pattern = Pattern.create_from_plist((PList.Dict) pd1);
+						pattern = Pattern.create_from_plist(this.all_patterns, (PList.Dict) pd1);
 						if (pattern != null)
 							repo_array.add(pattern);
 					}
@@ -101,7 +106,7 @@ namespace Gtk.Mate {
 					else {
 						pa1 = pd1.get("patterns");
 						foreach (PList.Node ps1 in ((PList.Array) pa1).array) {
-							pattern = Pattern.create_from_plist((PList.Dict) ps1);
+							pattern = Pattern.create_from_plist(this.all_patterns, (PList.Dict) ps1);
 							if (pattern != null)
 								repo_array.add(pattern);
 						}
@@ -109,86 +114,14 @@ namespace Gtk.Mate {
 					repository.set(key, repo_array);
 				}
 			}
-
-			// stdout.printf("replaceing repository %d\n", repository.size);
-
-			foreach (string key in repository.get_keys()) {
-				var al = repository.get(key);
-				// stdout.printf("key: %s, %d\n", key, al.size);
-				replace_include_patterns(null, repository.get(key));
-				// if (al == null)
-				// 	stdout.printf("key null: %s\n", key);
-				foreach (Pattern pt in repository.get(key)) {
-					if (pt is DoublePattern)
-						replace_include_patterns((DoublePattern) pt, ((DoublePattern) pt).patterns);
-				}
-			}
-
-			// stdout.printf("replaceing patterns %d\n", patterns.size);
-			foreach (Pattern pt in patterns) {
-				if (pt != null && pt is DoublePattern)
-//					stdout.printf("null!\n");
-//				else
-					replace_include_patterns((DoublePattern) pt, ((DoublePattern) pt).patterns);
-			}
-
-			
-			// repository = null;
+			// stdout.printf("all_patterns: %d\n", all_patterns.size);
+			foreach (var p in all_patterns)
+				if (p is DoublePattern)
+					((DoublePattern) p).replace_include_patterns(this);
 
 			loaded = true;
 		}
 
-		public void replace_include_patterns(DoublePattern? pattern, ArrayList<Pattern> ps) {
-			// if (pattern == null)
-			// 	stdout.printf("replace include patterns for null\n");
-			// else
-			// 	stdout.printf("replace include patterns for %s\n", pattern.name);
-			var include_patterns = new ArrayList<IncludePattern>();
-			var patterns_to_include = new ArrayList<Pattern>();
-
-			// find include patterns (and deal with subpatterns)
-			foreach (Pattern p in ps) {
-				if (p is IncludePattern) {
-					include_patterns.add((IncludePattern) p);
-				}
-				else {
-					if (p is DoublePattern)
-						replace_include_patterns((DoublePattern) p, ((DoublePattern) p).patterns);
-				}
-			}
-
-			// remove include patterns
-			foreach (Pattern ip in include_patterns)
-				ps.remove(ip);
-			
-			// add referenced patterns
-			foreach (Pattern ip in include_patterns) {
-				// stdout.printf("includename: %s\n", ip.name);
-				if (ip.name == "$self") {
-					foreach (var p in ps) {
-						patterns_to_include.add(p);
-					}
-				}
-				else if (ip.name == "$base") {
-					foreach (var p in this.patterns) {
-						patterns_to_include.add(p);
-					}
-				}
-				else if (ip.name.has_prefix("#")) {
-					// stdout.printf("get reponame: %s\n", ip.name.substring(1, ((int) ip.name.size())-1));
-// 					patterns_to_include = repository.get(ip.name.substring(1, ((int) ip.name.size())-1));
-				}
-				else {
-					// stdout.printf("get reponame: %s\n", ip.name);
-				}
-				
-				
-			}
-
-			foreach (Pattern p in patterns_to_include) {
-				ps.add(p);
-			}
-		}
 	}
 
 }

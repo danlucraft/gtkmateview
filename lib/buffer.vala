@@ -36,7 +36,7 @@ namespace Gtk.Mate {
 			foreach (var bundle in Buffer.bundles)
 				foreach (var gr in bundle.grammars)
 					if ((re = gr.first_line_match) != null)
-						if (re.search(first_line, 0, (int)first_line.size()) != null) {
+						if (re.search(first_line, 0, (int) first_line.size()) != null) {
 							this.grammar = gr;
 							return gr.name;
 						}

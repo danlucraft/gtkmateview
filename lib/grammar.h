@@ -11,7 +11,6 @@
 #include <gee/hashmap.h>
 #include <onig_wrap.h>
 #include <plist.h>
-#include <pattern.h>
 
 G_BEGIN_DECLS
 
@@ -36,6 +35,7 @@ struct _GtkMateGrammar {
 	char* key_equivalent;
 	char* scope_name;
 	char* comment;
+	GeeArrayList* all_patterns;
 	gboolean loaded;
 	OnigurumaRegex* folding_start_marker;
 	OnigurumaRegex* folding_stop_marker;
@@ -51,7 +51,6 @@ struct _GtkMateGrammarClass {
 GtkMateGrammar* gtk_mate_grammar_new (PListDict* plist);
 void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self);
 void gtk_mate_grammar_init_for_use (GtkMateGrammar* self);
-void gtk_mate_grammar_replace_include_patterns (GtkMateGrammar* self, GtkMateDoublePattern* pattern, GeeArrayList* ps);
 const char* gtk_mate_grammar_get_name (GtkMateGrammar* self);
 PListDict* gtk_mate_grammar_get_plist (GtkMateGrammar* self);
 GType gtk_mate_grammar_get_type (void);

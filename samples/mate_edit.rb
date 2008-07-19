@@ -3,7 +3,7 @@ require 'gtk2'
 require 'gtksourceview2'
 require 'lib/gtkmateview_rb'
 
- win = Gtk::Window.new
+win = Gtk::Window.new
 win.set_size_request(800, 600)
 mv = Gtk::Mate::View.new
 mv.buffer = Gtk::Mate::Buffer.new

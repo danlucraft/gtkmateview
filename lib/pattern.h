@@ -11,6 +11,7 @@
 #include <gee/hashmap.h>
 #include <plist.h>
 #include <onig_wrap.h>
+#include <grammar.h>
 
 G_BEGIN_DECLS
 
@@ -86,6 +87,7 @@ struct _GtkMateDoublePattern {
 	GtkMateDoublePatternPrivate * priv;
 	OnigurumaRegex* begin;
 	OnigurumaRegex* end;
+	char* begin_string;
 	GeeHashMap* begin_captures;
 	GeeHashMap* end_captures;
 	GeeArrayList* patterns;
@@ -106,14 +108,17 @@ struct _GtkMateIncludePatternClass {
 
 
 extern GeeArrayList* gtk_mate_pattern_all_patterns;
-GtkMatePattern* gtk_mate_pattern_create_from_plist (PListDict* pd);
+GtkMatePattern* gtk_mate_pattern_create_from_plist (GeeArrayList* all_patterns, PListDict* pd);
 GeeHashMap* gtk_mate_pattern_make_captures_from_plist (PListDict* pd);
 GtkMatePattern* gtk_mate_pattern_new (void);
 GType gtk_mate_pattern_get_type (void);
-GtkMateSinglePattern* gtk_mate_single_pattern_create_from_plist (PListDict* pd);
+GtkMateSinglePattern* gtk_mate_single_pattern_create_from_plist (GeeArrayList* all_patterns, PListDict* pd);
 GtkMateSinglePattern* gtk_mate_single_pattern_new (void);
 GType gtk_mate_single_pattern_get_type (void);
-GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (PListDict* pd);
+GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* all_patterns, PListDict* pd);
+void gtk_mate_double_pattern_replace_include_patterns (GtkMateDoublePattern* self, GtkMateGrammar* g);
+void gtk_mate_double_pattern_replace_repository_includes (GtkMateDoublePattern* self, GtkMateGrammar* g);
+void gtk_mate_double_pattern_replace_base_and_self_includes (GtkMateDoublePattern* self, GtkMateGrammar* g);
 GtkMateDoublePattern* gtk_mate_double_pattern_new (void);
 GType gtk_mate_double_pattern_get_type (void);
 GtkMateIncludePattern* gtk_mate_include_pattern_create_from_plist (PListDict* pd);
