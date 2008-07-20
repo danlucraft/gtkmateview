@@ -7,7 +7,10 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gtksourceview/gtksourceview.h>
+#include <gee/arraylist.h>
 #include <pattern.h>
+#include <onig_wrap.h>
 
 G_BEGIN_DECLS
 
@@ -28,6 +31,19 @@ struct _GtkMateScope {
 	GtkMateScopePrivate * priv;
 	GtkMatePattern* pattern;
 	char* name;
+	OnigurumaMatch* open_match;
+	OnigurumaMatch* close_match;
+	OnigurumaRegex* closing_regex;
+	GtkSourceMark* start_mark;
+	GtkSourceMark* inner_start_mark;
+	GtkSourceMark* inner_end_mark;
+	GtkSourceMark* end_mark;
+	GtkTextTag* tag;
+	GtkTextTag* inner_tag;
+	char* bg_color;
+	gboolean is_capture;
+	GeeArrayList* children;
+	GtkMateScope* parent;
 };
 
 struct _GtkMateScopeClass {
@@ -35,6 +51,8 @@ struct _GtkMateScopeClass {
 };
 
 
+gboolean gtk_mate_scope_is_root (GtkMateScope* self);
+char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent);
 GtkMateScope* gtk_mate_scope_new (void);
 GType gtk_mate_scope_get_type (void);
 

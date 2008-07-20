@@ -10,5 +10,7 @@ describe Gtk::Mate::Parser do
   
   it "should create a root scope node" do
     @mb.parser.root.name.should == "source.apache-config"
+    @mb.parser.root.pretty(1).should == "  source.apache-config (inf)-(inf)\n"
+    @mb.parser.root.is_root.should be_true
   end
 end

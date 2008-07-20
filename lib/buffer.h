@@ -14,6 +14,8 @@ G_BEGIN_DECLS
 
 typedef struct _GtkMateBuffer GtkMateBuffer;
 typedef struct _GtkMateBufferClass GtkMateBufferClass;
+typedef struct _GtkMateTextLoc GtkMateTextLoc;
+typedef struct _GtkMateChange GtkMateChange;
 typedef struct _GtkMateParser GtkMateParser;
 typedef struct _GtkMateParserClass GtkMateParserClass;
 

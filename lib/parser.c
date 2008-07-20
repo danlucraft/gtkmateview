@@ -1,5 +1,8 @@
 
 #include "parser.h"
+#include <stdio.h>
+#include <gee/collection.h>
+#include <string.h>
 
 
 
@@ -15,9 +18,35 @@ enum  {
 	GTK_MATE_PARSER_GRAMMAR,
 	GTK_MATE_PARSER_BUFFER
 };
+GtkMateParser* gtk_mate_parser_current = NULL;
+static void _gtk_mate_parser_insert_text_handler_gtk_text_buffer_insert_text (GtkMateBuffer* _sender, GtkTextIter* pos, const char* text, gint length, gpointer self);
+static void _gtk_mate_parser_delete_range_handler_gtk_text_buffer_delete_range (GtkMateBuffer* _sender, GtkTextIter* start, GtkTextIter* end, gpointer self);
+static GtkMateChange* _gtk_mate_change_dup (GtkMateChange* self);
 static gpointer gtk_mate_parser_parent_class = NULL;
 static void gtk_mate_parser_dispose (GObject * obj);
+static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 
+
+
+
+GType gtk_mate_change_type_get_type (void) {
+	static GType gtk_mate_change_type_type_id = 0;
+	if (G_UNLIKELY (gtk_mate_change_type_type_id == 0)) {
+		static const GEnumValue values[] = {{GTK_MATE_CHANGE_TYPE_INSERTION, "GTK_MATE_CHANGE_TYPE_INSERTION", "insertion"}, {GTK_MATE_CHANGE_TYPE_DELETION, "GTK_MATE_CHANGE_TYPE_DELETION", "deletion"}, {0, NULL, NULL}};
+		gtk_mate_change_type_type_id = g_enum_register_static ("GtkMateChangeType", values);
+	}
+	return gtk_mate_change_type_type_id;
+}
+
+
+GtkMateTextLoc gtk_mate_text_loc_make (gint l, gint lo) {
+	GtkMateTextLoc _tmp0 = {0};
+	GtkMateTextLoc tl;
+	tl = (memset (&_tmp0, 0, sizeof (GtkMateTextLoc)), _tmp0);
+	tl.line = l;
+	tl.line_offset = lo;
+	return tl;
+}
 
 
 void gtk_mate_parser_make_root (GtkMateParser* self) {
@@ -33,23 +62,143 @@ void gtk_mate_parser_make_root (GtkMateParser* self) {
 }
 
 
-GtkMateParser* gtk_mate_parser_new (void) {
-	GtkMateParser * self;
-	self = g_object_newv (GTK_MATE_TYPE_PARSER, 0, NULL);
-	return self;
+static void _gtk_mate_parser_insert_text_handler_gtk_text_buffer_insert_text (GtkMateBuffer* _sender, GtkTextIter* pos, const char* text, gint length, gpointer self) {
+	gtk_mate_parser_insert_text_handler (self, _sender, pos, text, length);
+}
+
+
+static void _gtk_mate_parser_delete_range_handler_gtk_text_buffer_delete_range (GtkMateBuffer* _sender, GtkTextIter* start, GtkTextIter* end, gpointer self) {
+	gtk_mate_parser_delete_range_handler (self, _sender, start, end);
+}
+
+
+void gtk_mate_parser_connect_buffer_signals (GtkMateParser* self) {
+	g_return_if_fail (GTK_MATE_IS_PARSER (self));
+	g_signal_connect_object (GTK_TEXT_BUFFER (self->priv->_buffer), "insert-text", ((GCallback) (_gtk_mate_parser_insert_text_handler_gtk_text_buffer_insert_text)), self, 0);
+	g_signal_connect_object (GTK_TEXT_BUFFER (self->priv->_buffer), "delete-range", ((GCallback) (_gtk_mate_parser_delete_range_handler_gtk_text_buffer_delete_range)), self, 0);
+	/* remove when signal_connect_after works:*/
+	g_signal_connect_after (self->priv->_buffer, "insert_text", ((GCallback) (gtk_mate_parser_static_insert_text_after_handler)), NULL);
+	g_signal_connect_after (self->priv->_buffer, "delete_range", ((GCallback) (gtk_mate_parser_static_delete_range_after_handler)), NULL);
+}
+
+
+void gtk_mate_parser_insert_text_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, const char* text, gint length) {
+	GtkMateChange _tmp0 = {0};
+	GtkMateChange c;
+	char** _tmp1;
+	gint ss_length1;
+	char** ss;
+	g_return_if_fail (GTK_MATE_IS_PARSER (self));
+	g_return_if_fail (GTK_MATE_IS_BUFFER (bf));
+	g_return_if_fail (text != NULL);
+	fprintf (stdout, "insert_text(pos, \"%s\", %d)\n", text, length);
+	c = (memset (&_tmp0, 0, sizeof (GtkMateChange)), _tmp0);
+	c.type = GTK_MATE_CHANGE_TYPE_INSERTION;
+	c.from = gtk_mate_text_loc_make (gtk_text_iter_get_line (&(*pos)), gtk_text_iter_get_line_offset (&(*pos)));
+	c.length = length;
+	_tmp1 = NULL;
+	ss = (_tmp1 = g_strsplit (text, "\n", 0), ss_length1 = -1, _tmp1);
+	c.num_lines = -1;
+	{
+		char** s_collection;
+		int s_collection_length1;
+		int s_it;
+		s_collection = ss;
+		s_collection_length1 = ss_length1;
+		for (s_it = 0; (ss_length1 != -1 && s_it < ss_length1) || (ss_length1 == -1 && s_collection[s_it] != NULL); s_it = s_it + 1) {
+			const char* _tmp2;
+			char* s;
+			_tmp2 = NULL;
+			s = (_tmp2 = s_collection[s_it], (_tmp2 == NULL ? NULL : g_strdup (_tmp2)));
+			{
+				c.num_lines++;
+				s = (g_free (s), NULL);
+			}
+		}
+	}
+	/* stdout.printf("lines: %d\n", c.num_lines);*/
+	gee_collection_add (GEE_COLLECTION (self->changes), &c);
+	ss = (_vala_array_free (ss, ss_length1, ((GDestroyNotify) (g_free))), NULL);
+}
+
+
+void gtk_mate_parser_delete_range_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, GtkTextIter* pos2) {
+	GtkMateChange _tmp0 = {0};
+	GtkMateChange c;
+	g_return_if_fail (GTK_MATE_IS_PARSER (self));
+	g_return_if_fail (GTK_MATE_IS_BUFFER (bf));
+	fprintf (stdout, "delete_range(%d, %d)\n", gtk_text_iter_get_offset (&(*pos)), gtk_text_iter_get_offset (&(*pos2)));
+	c = (memset (&_tmp0, 0, sizeof (GtkMateChange)), _tmp0);
+	c.type = GTK_MATE_CHANGE_TYPE_DELETION;
+	c.from = gtk_mate_text_loc_make (gtk_text_iter_get_line (&(*pos)), gtk_text_iter_get_line_offset (&(*pos)));
+	c.to = gtk_mate_text_loc_make (gtk_text_iter_get_line (&(*pos)), gtk_text_iter_get_line_offset (&(*pos)));
+	c.length = gtk_text_iter_get_offset (&(*pos2)) - gtk_text_iter_get_offset (&(*pos));
+	c.num_lines = gtk_text_iter_get_line (&(*pos2)) - gtk_text_iter_get_line (&(*pos));
+	fprintf (stdout, "lines: %d\n", c.num_lines);
+	gee_collection_add (GEE_COLLECTION (self->changes), &c);
+}
+
+
+void gtk_mate_parser_insert_text_after_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, const char* text, gint length) {
+	g_return_if_fail (GTK_MATE_IS_PARSER (self));
+	g_return_if_fail (GTK_MATE_IS_BUFFER (bf));
+	g_return_if_fail (text != NULL);
+	fprintf (stdout, "insert_text_after(pos, \"%s\", %d)\n", text, length);
+}
+
+
+void gtk_mate_parser_delete_range_after_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, GtkTextIter* pos2) {
+	g_return_if_fail (GTK_MATE_IS_PARSER (self));
+	g_return_if_fail (GTK_MATE_IS_BUFFER (bf));
+	fprintf (stdout, "delete_range_after(%d, %d)\n", gtk_text_iter_get_offset (&(*pos)), gtk_text_iter_get_offset (&(*pos2)));
+}
+
+
+void gtk_mate_parser_static_insert_text_after_handler (GtkMateBuffer* bf, GtkTextIter* pos, const char* text, gint length) {
+	g_return_if_fail (GTK_MATE_IS_BUFFER (bf));
+	g_return_if_fail (text != NULL);
+	gtk_mate_parser_insert_text_after_handler (gtk_mate_parser_current, bf, &(*pos), text, length);
+}
+
+
+void gtk_mate_parser_static_delete_range_after_handler (GtkMateBuffer* bf, GtkTextIter* pos, GtkTextIter* pos2) {
+	g_return_if_fail (GTK_MATE_IS_BUFFER (bf));
+	gtk_mate_parser_delete_range_after_handler (gtk_mate_parser_current, bf, &(*pos), &(*pos2));
+}
+
+
+static GtkMateChange* _gtk_mate_change_dup (GtkMateChange* self) {
+	return g_memdup (self, sizeof (GtkMateChange));
 }
 
 
 GtkMateParser* gtk_mate_parser_create (GtkMateGrammar* grammar, GtkMateBuffer* buffer) {
 	GtkMateParser* p;
+	GeeArrayList* _tmp0;
+	GtkMateParser* _tmp2;
+	GtkMateParser* _tmp1;
 	g_return_val_if_fail (GTK_MATE_IS_GRAMMAR (grammar), NULL);
 	g_return_val_if_fail (GTK_MATE_IS_BUFFER (buffer), NULL);
+	gtk_mate_grammar_init_for_use (grammar);
 	p = g_object_ref_sink (gtk_mate_parser_new ());
 	gtk_mate_parser_set_grammar (p, grammar);
-	gtk_mate_grammar_init_for_use (grammar);
 	gtk_mate_parser_set_buffer (p, buffer);
+	_tmp0 = NULL;
+	p->changes = (_tmp0 = gee_array_list_new (G_TYPE_POINTER, ((GBoxedCopyFunc) (_gtk_mate_change_dup)), g_free, g_direct_equal), (p->changes == NULL ? NULL : (p->changes = (g_object_unref (p->changes), NULL))), _tmp0);
 	gtk_mate_parser_make_root (p);
+	gtk_mate_parser_connect_buffer_signals (p);
+	_tmp2 = NULL;
+	_tmp1 = NULL;
+	gtk_mate_parser_current = (_tmp2 = (_tmp1 = p, (_tmp1 == NULL ? NULL : g_object_ref (_tmp1))), (gtk_mate_parser_current == NULL ? NULL : (gtk_mate_parser_current = (g_object_unref (gtk_mate_parser_current), NULL))), _tmp2);
+	/* remove when signal_connect_after works*/
 	return p;
+}
+
+
+GtkMateParser* gtk_mate_parser_new (void) {
+	GtkMateParser * self;
+	self = g_object_newv (GTK_MATE_TYPE_PARSER, 0, NULL);
+	return self;
 }
 
 
@@ -143,6 +292,7 @@ static void gtk_mate_parser_dispose (GObject * obj) {
 	(self->priv->_grammar == NULL ? NULL : (self->priv->_grammar = (g_object_unref (self->priv->_grammar), NULL)));
 	(self->priv->_buffer == NULL ? NULL : (self->priv->_buffer = (g_object_unref (self->priv->_buffer), NULL)));
 	(self->root == NULL ? NULL : (self->root = (g_object_unref (self->root), NULL)));
+	(self->changes == NULL ? NULL : (self->changes = (g_object_unref (self->changes), NULL)));
 	G_OBJECT_CLASS (gtk_mate_parser_parent_class)->dispose (obj);
 }
 
@@ -154,6 +304,23 @@ GType gtk_mate_parser_get_type (void) {
 		gtk_mate_parser_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateParser", &g_define_type_info, 0);
 	}
 	return gtk_mate_parser_type_id;
+}
+
+
+static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
+	if (array != NULL && destroy_func != NULL) {
+		int i;
+		if (array_length >= 0)
+		for (i = 0; i < array_length; i = i + 1) {
+			if (((gpointer*) (array))[i] != NULL)
+			destroy_func (((gpointer*) (array))[i]);
+		}
+		else
+		for (i = 0; ((gpointer*) (array))[i] != NULL; i = i + 1) {
+			destroy_func (((gpointer*) (array))[i]);
+		}
+	}
+	g_free (array);
 }
 
 

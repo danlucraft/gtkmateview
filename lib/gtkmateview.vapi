@@ -4,6 +4,11 @@
 namespace Gtk {
 	[CCode (cprefix = "GtkMate", lower_case_cprefix = "gtk_mate_")]
 	namespace Mate {
+		[CCode (cprefix = "GTK_MATE_CHANGE_TYPE_", cheader_filename = "parser.h")]
+		public enum ChangeType {
+			INSERTION,
+			DELETION
+		}
 		[CCode (cheader_filename = "theme.h")]
 		public class ThemeSetting : Gtk.Object {
 			public string name;
@@ -62,6 +67,21 @@ namespace Gtk {
 		public class Scope : Gtk.Object {
 			public Gtk.Mate.Pattern pattern;
 			public string name;
+			public Oniguruma.Match open_match;
+			public Oniguruma.Match close_match;
+			public Oniguruma.Regex closing_regex;
+			public Gtk.SourceMark start_mark;
+			public Gtk.SourceMark inner_start_mark;
+			public Gtk.SourceMark inner_end_mark;
+			public Gtk.SourceMark end_mark;
+			public Gtk.TextTag tag;
+			public Gtk.TextTag inner_tag;
+			public string bg_color;
+			public bool is_capture;
+			public Gee.ArrayList<Gtk.Mate.Scope> children;
+			public Gtk.Mate.Scope parent;
+			public bool is_root ();
+			public string pretty (int indent);
 			public Scope ();
 		}
 		[CCode (cheader_filename = "grammar.h")]
@@ -101,9 +121,18 @@ namespace Gtk {
 		[CCode (cheader_filename = "parser.h")]
 		public class Parser : Gtk.Object {
 			public Gtk.Mate.Scope root;
+			public Gee.ArrayList<Gtk.Mate.Change?> changes;
+			public static Gtk.Mate.Parser current;
 			public void make_root ();
-			public Parser ();
+			public void connect_buffer_signals ();
+			public void insert_text_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, string text, int length);
+			public void delete_range_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);
+			public void insert_text_after_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, string text, int length);
+			public void delete_range_after_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);
+			public static void static_insert_text_after_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, string text, int length);
+			public static void static_delete_range_after_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);
 			public static Gtk.Mate.Parser create (Gtk.Mate.Grammar grammar, Gtk.Mate.Buffer buffer);
+			public Parser ();
 			public Gtk.Mate.Grammar grammar { get; set; }
 			public Gtk.Mate.Buffer buffer { get; set; }
 		}
@@ -112,6 +141,20 @@ namespace Gtk {
 			public Gee.ArrayList<Gtk.Mate.Grammar> grammars;
 			public Bundle (string name);
 			public string name { get; set; }
+		}
+		[CCode (cheader_filename = "parser.h")]
+		public struct TextLoc {
+			public int line;
+			public int line_offset;
+			public static Gtk.Mate.TextLoc make (int l, int lo);
+		}
+		[CCode (cheader_filename = "parser.h")]
+		public struct Change {
+			public Gtk.Mate.TextLoc from;
+			public Gtk.Mate.TextLoc to;
+			public Gtk.Mate.ChangeType type;
+			public int length;
+			public int num_lines;
 		}
 		[CCode (cheader_filename = "gtkmateview.h")]
 		public static int load_bundles ();

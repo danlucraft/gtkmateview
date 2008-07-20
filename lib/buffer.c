@@ -107,10 +107,7 @@ char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char*
 											const char* _tmp1;
 											char* _tmp2;
 											_tmp0 = NULL;
-											self->parser = (_tmp0 = g_object_ref_sink (gtk_mate_parser_new ()), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp0);
-											/*gr, this);*/
-											gtk_mate_parser_set_grammar (self->parser, gr);
-											gtk_mate_parser_set_buffer (self->parser, self);
+											self->parser = (_tmp0 = gtk_mate_parser_create (gr, self), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp0);
 											_tmp1 = NULL;
 											_tmp2 = NULL;
 											return (_tmp2 = (_tmp1 = gtk_mate_grammar_get_name (gr), (_tmp1 == NULL ? NULL : g_strdup (_tmp1))), (ext = (g_free (ext), NULL)), (gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL))), (bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL))), _tmp2);
@@ -159,10 +156,7 @@ char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char*
 									const char* _tmp12;
 									char* _tmp13;
 									_tmp11 = NULL;
-									self->parser = (_tmp11 = g_object_ref_sink (gtk_mate_parser_new ()), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp11);
-									/*gr, this);*/
-									gtk_mate_parser_set_grammar (self->parser, gr);
-									gtk_mate_parser_set_buffer (self->parser, self);
+									self->parser = (_tmp11 = gtk_mate_parser_create (gr, self), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp11);
 									_tmp12 = NULL;
 									_tmp13 = NULL;
 									return (_tmp13 = (_tmp12 = gtk_mate_grammar_get_name (gr), (_tmp12 == NULL ? NULL : g_strdup (_tmp12))), (gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL))), (bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL))), (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), (first_line = (g_free (first_line), NULL)), _tmp13);
