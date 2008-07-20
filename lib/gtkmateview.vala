@@ -6,6 +6,8 @@ using Gee;
 
 namespace Gtk {
 	namespace Mate {
+		// Loads bundles (in particular, grammars) from 
+		// /usr/share/textmate/Bundles
 		public static int load_bundles() {
 			if (Buffer.bundles != null)
 				return 1;
@@ -52,7 +54,10 @@ namespace Gtk {
 			return -1;
 		}
 
+		// Loads themes from /usr/share/textmate/Themes/. 
 		public static void load_themes() {
+			if (Theme.themes != null)
+				return;
 			Theme.themes = new ArrayList<Theme>();
 			foreach (string fn in Theme.theme_filenames()) {
 				try {
@@ -67,6 +72,7 @@ namespace Gtk {
 			}
 		}
 
+		// Return a list of bundle names like "Ruby.tmbundle"
 		public static ArrayList<string>? bundle_dirs() {
 			string name;
 			var share_dir = textmate_share_dir();
@@ -86,6 +92,8 @@ namespace Gtk {
 			return null;
 		}
 
+		// Return the textmate assets directory path,
+		// e.g. /usr/share/textmate
 		public static string? textmate_share_dir() {
 			string share_dir = "/usr/local/share/textmate";
 			if (FileUtils.test(share_dir, FileTest.EXISTS)) {
@@ -98,10 +106,5 @@ namespace Gtk {
 			stdout.printf("couldn't find /usr/share/textmate or /usr/local/share/textmate\n");
 			return null;
 		}
-
-		errordomain MateError {
-			INIT_ERROR
-		}
-
 	}
 }

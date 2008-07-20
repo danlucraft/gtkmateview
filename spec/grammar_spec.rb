@@ -9,6 +9,11 @@ describe Gtk::Mate::Grammar do
     @apg.init_for_use
   end
   
+  it "should load grammar information" do
+    @apg.name.should == "Apache"
+    @apg.scope_name.should == "source.apache-config"
+  end
+  
   it "should load patterns into memory" do
     @apg.patterns.should_not be_empty
     pnames = @apg.patterns.map{|p| p.name}

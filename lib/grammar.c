@@ -36,6 +36,8 @@ GtkMateGrammar* gtk_mate_grammar_new (PListDict* plist) {
 }
 
 
+/* Loads the properties that are needed whether or not 
+ the grammar ever used.*/
 void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self) {
 	PListNode* nm;
 	PListNode* flm;
@@ -120,6 +122,9 @@ void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self) {
 }
 
 
+/* Loads the properties of the grammar that are required
+ for parsing. Loads patterns into memory, and sets
+ up possible patterns.*/
 void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 	PListNode* fsm;
 	PListNode* ftm;

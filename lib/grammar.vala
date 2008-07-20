@@ -22,6 +22,8 @@ namespace Gtk.Mate {
 			this.plist = plist;
 		}
 
+		// Loads the properties that are needed whether or not 
+		// the grammar ever used.
 		public void init_for_reference() {
 			PList.Node? nm = plist.get("name");
 			if (nm != null)
@@ -59,6 +61,9 @@ namespace Gtk.Mate {
 		public ArrayList<Pattern> patterns;
 		public HashMap<string, ArrayList<Pattern>> repository;
 
+		// Loads the properties of the grammar that are required
+		// for parsing. Loads patterns into memory, and sets
+		// up possible patterns.
 		public void init_for_use() {
 			if (loaded)
 				return;

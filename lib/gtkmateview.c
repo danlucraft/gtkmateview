@@ -17,6 +17,8 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
+/* Loads bundles (in particular, grammars) from 
+ /usr/share/textmate/Bundles*/
 gint gtk_mate_load_bundles (void) {
 	GError * inner_error;
 	GeeArrayList* _tmp1;
@@ -180,10 +182,14 @@ gint gtk_mate_load_bundles (void) {
 }
 
 
+/* Loads themes from /usr/share/textmate/Themes/. */
 void gtk_mate_load_themes (void) {
 	GError * inner_error;
 	GeeArrayList* _tmp0;
 	inner_error = NULL;
+	if (gtk_mate_theme_themes != NULL) {
+		return;
+	}
 	_tmp0 = NULL;
 	gtk_mate_theme_themes = (_tmp0 = gee_array_list_new (GTK_MATE_TYPE_THEME, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal), (gtk_mate_theme_themes == NULL ? NULL : (gtk_mate_theme_themes = (g_object_unref (gtk_mate_theme_themes), NULL))), _tmp0);
 	{
@@ -233,6 +239,7 @@ void gtk_mate_load_themes (void) {
 }
 
 
+/* Return a list of bundle names like "Ruby.tmbundle"*/
 GeeArrayList* gtk_mate_bundle_dirs (void) {
 	GError * inner_error;
 	char* name;
@@ -291,6 +298,8 @@ GeeArrayList* gtk_mate_bundle_dirs (void) {
 }
 
 
+/* Return the textmate assets directory path,
+ e.g. /usr/share/textmate*/
 char* gtk_mate_textmate_share_dir (void) {
 	char* share_dir;
 	char* _tmp1;
@@ -307,11 +316,6 @@ char* gtk_mate_textmate_share_dir (void) {
 	fprintf (stdout, "couldn't find /usr/share/textmate or /usr/local/share/textmate\n");
 	_tmp3 = NULL;
 	return (_tmp3 = NULL, (share_dir = (g_free (share_dir), NULL)), _tmp3);
-}
-
-
-GQuark gtk_mate_mate_error_quark (void) {
-	return g_quark_from_static_string ("gtk_mate_mate_error-quark");
 }
 
 
