@@ -27,6 +27,10 @@ public class RangeSet : Object {
 		return sizec;
 	}
 
+	public bool is_empty() {
+		return (ranges.size == 0);
+	}
+
 	public void add(int a, int b) {
 		bool merged = false;
 		int insert_ix = 0;

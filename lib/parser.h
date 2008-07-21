@@ -7,19 +7,13 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
+#include <buffer.h>
 #include <scope.h>
+#include <range_set.h>
 #include <grammar.h>
 
 G_BEGIN_DECLS
 
-typedef struct _GtkMateTextLoc GtkMateTextLoc;
-typedef struct _GtkMateChange GtkMateChange;
-typedef struct _GtkMateParser GtkMateParser;
-typedef struct _GtkMateParserClass GtkMateParserClass;
-typedef struct _GtkMateBuffer GtkMateBuffer;
-typedef struct _GtkMateBufferClass GtkMateBufferClass;
-
-#define GTK_MATE_TYPE_CHANGE_TYPE (gtk_mate_change_type_get_type ())
 
 #define GTK_MATE_TYPE_PARSER (gtk_mate_parser_get_type ())
 #define GTK_MATE_PARSER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_MATE_TYPE_PARSER, GtkMateParser))
@@ -30,27 +24,16 @@ typedef struct _GtkMateBufferClass GtkMateBufferClass;
 
 typedef struct _GtkMateParserPrivate GtkMateParserPrivate;
 
-typedef enum  {
-	GTK_MATE_CHANGE_TYPE_INSERTION,
-	GTK_MATE_CHANGE_TYPE_DELETION
-} GtkMateChangeType;
-
 struct _GtkMateTextLoc {
 	gint line;
 	gint line_offset;
-};
-
-struct _GtkMateChange {
-	GtkMateChangeType type;
-	gint line;
-	gint num_lines;
 };
 
 struct _GtkMateParser {
 	GtkObject parent_instance;
 	GtkMateParserPrivate * priv;
 	GtkMateScope* root;
-	GQueue* changes;
+	RangeSet* changes;
 	gint deactivation_level;
 };
 
@@ -59,7 +42,6 @@ struct _GtkMateParserClass {
 };
 
 
-GType gtk_mate_change_type_get_type (void);
 GtkMateTextLoc gtk_mate_text_loc_make (gint l, gint lo);
 extern GtkMateParser* gtk_mate_parser_current;
 void gtk_mate_parser_make_root (GtkMateParser* self);

@@ -3,7 +3,6 @@ using Gee;
 using GLib;
 
 namespace Gtk.Mate {
-	public enum ChangeType { INSERTION, DELETION }
 
 	public struct TextLoc {
 		public int line;
@@ -16,17 +15,11 @@ namespace Gtk.Mate {
 		}
 	}
 	
-	public struct Change {
-		public ChangeType type;
-		public int line;
-		public int num_lines;
-	}
-	
 	public class Parser : Object {
 		public Grammar grammar {get; set;}
 		public Mate.Buffer buffer {get; set;}
 		public Mate.Scope root;
-		public Queue<Change?> changes;
+		public RangeSet changes;
 		public int deactivation_level;
 		
 		public void make_root() {
@@ -50,14 +43,14 @@ namespace Gtk.Mate {
 		}
 
 		private void process_changes() {
-			while (!changes.is_empty()) {
-				var change = changes.pop_head();
-				parse_from(change.line, change.num_lines);
+			for (int i = 0; i < changes.length(); i++) {
+				parse_from(changes.ranges[i].a, changes.ranges[i].b);
 			}
+			changes.ranges.clear();
 		}
 
-		private void parse_from(int from_line, int num_lines) {
-			stdout.printf("parse_from(%d, %d)\n", from_line, num_lines);
+		private void parse_from(int from_line, int to_line) {
+			stdout.printf("parse_from(%d, %d)\n", from_line, to_line);
 		}
 
 		public void connect_buffer_signals() {
@@ -70,22 +63,15 @@ namespace Gtk.Mate {
 
 		public void insert_text_handler(Buffer bf, TextIter pos, string text, int length) {
 			stdout.printf("insert_text(pos, \"%s\", %d)\n", text, length);
-			Change c = Change();
-			c.type = ChangeType.INSERTION;
-			c.line = pos.get_line();
 			var ss = text.split("\n");
-			c.num_lines = -1;
-			foreach (var s in ss) c.num_lines++;
-			changes.push_head(c);
+			int num_lines = -1;
+			foreach (var s in ss) num_lines++;
+			changes.add(pos.get_line(), pos.get_line() + num_lines);
 		}
 		
 		public void delete_range_handler(Buffer bf, TextIter pos, TextIter pos2) {
 			stdout.printf("delete_range(%d, %d)\n", pos.get_offset(), pos2.get_offset());
-			Change c = Change();
-			c.type = ChangeType.DELETION;
-			c.line = pos.get_line();
-			c.num_lines = pos2.get_line() - pos.get_line();
-			changes.push_head(c);
+			changes.add(pos.get_line(), pos.get_line());
 		}
 
 		public void insert_text_after_handler(Buffer bf, TextIter pos, string text, int length) {
@@ -113,7 +99,7 @@ namespace Gtk.Mate {
 			var p = new Parser();
 			p.grammar = grammar;
 			p.buffer = buffer;
-			p.changes = new Queue<Change?>();
+			p.changes = new RangeSet();
 //			p.is_parsing = true;
 			p.deactivation_level = 0;
 			p.make_root();

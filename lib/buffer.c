@@ -2,6 +2,7 @@
 #include "buffer.h"
 #include <bundle.h>
 #include <grammar.h>
+#include <parser.h>
 #include <onig_wrap.h>
 #include <gtkmateview.h>
 
