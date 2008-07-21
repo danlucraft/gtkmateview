@@ -51,7 +51,7 @@ public class RangeSet : Object {
 			// stdout.printf("ix > 0\n");
 			IntPair? x = ranges[ix-1];
 			// stdout.printf("x: %d..%d, n: %d..%d\n", x.a, x.b, n.a, n.b);
-			if (n.a <= x.b) {
+			if (n.a <= x.b+1) {
 				ranges.remove_at(ix);
 				x.b = max(x.b, n.b);
 				ranges[ix-1] = x;
@@ -62,7 +62,7 @@ public class RangeSet : Object {
 		if (ix < ranges.size-1) {
 			// stdout.printf("ix < %d\n", ranges.size-1);
 			IntPair? y = ranges[ix+1];
-			while (ix < ranges.size-1 && n.b >= y.a) {
+			while (ix < ranges.size-1 && n.b >= y.a-1) {
 				// stdout.printf("n: %d..%d, y: %d..%d\n", n.a, n.b, y.a, y.b);
 				y.a = min(n.a, y.a);
 				if (n.b > y.b)

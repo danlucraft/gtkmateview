@@ -8,12 +8,20 @@ win.set_size_request(800, 600)
 mv = Gtk::Mate::View.new
 mv.buffer = Gtk::Mate::Buffer.new
 vb = Gtk::VBox.new
-button = Gtk::Button.new("grammar")
-button.signal_connect("clicked") do 
+
+button_gr = Gtk::Button.new("grammar")
+button_gr.signal_connect("clicked") do 
   p mv.buffer.set_grammar_by_extension("poipoi")
 end
+
+button_rb = Gtk::Button.new("Ruby")
+button_rb.signal_connect("clicked") do 
+  mv.buffer.set_grammar_by_name("Ruby")
+end
+
 toolbar = Gtk::HBox.new
-toolbar.pack_start(button)
+toolbar.pack_start(button_rb)
+toolbar.pack_start(button_gr)
 vb.pack_start(toolbar, false)
 vb.pack_start(mv)
 button_on = Gtk::Button.new("on")

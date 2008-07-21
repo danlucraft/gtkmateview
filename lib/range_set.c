@@ -93,7 +93,7 @@ void range_set_merge (RangeSet* self, gint ix) {
 		/* stdout.printf("ix > 0\n");*/
 		x = gee_list_get (((GeeList*) (self->ranges)), ix - 1);
 		/* stdout.printf("x: %d..%d, n: %d..%d\n", x.a, x.b, n.a, n.b);*/
-		if ((*n).a <= (*x).b) {
+		if ((*n).a <= (*x).b + 1) {
 			RangeSetIntPair* _tmp0 = {0};
 			gee_list_remove_at (GEE_LIST (self->ranges), ix);
 			(*x).b = range_set_max (self, (*x).b, (*n).b);
@@ -107,7 +107,7 @@ void range_set_merge (RangeSet* self, gint ix) {
 		RangeSetIntPair* y;
 		/* stdout.printf("ix < %d\n", ranges.size-1);*/
 		y = gee_list_get (((GeeList*) (self->ranges)), ix + 1);
-		while (ix < gee_collection_get_size (GEE_COLLECTION (self->ranges)) - 1 && (*n).b >= (*y).a) {
+		while (ix < gee_collection_get_size (GEE_COLLECTION (self->ranges)) - 1 && (*n).b >= (*y).a - 1) {
 			/* stdout.printf("n: %d..%d, y: %d..%d\n", n.a, n.b, y.a, y.b);*/
 			(*y).a = range_set_min (self, (*n).a, (*y).a);
 			if ((*n).b > (*y).b) {
