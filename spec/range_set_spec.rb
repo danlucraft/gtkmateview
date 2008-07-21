@@ -36,17 +36,22 @@ describe RangeSet, "with contents" do
   
   it "should merge ranges" do
     @rs.add(14, 16)
-    @rs.present.should == "1-3, 5, 10-16, "
+    @rs.present.should == "1..3, 5, 10..16, "
   end
   
   it "should merge ranges 2" do
     @rs.add(7, 11)
-    @rs.present.should == "1-3, 5, 7-15, "
+    @rs.present.should == "1..3, 5, 7..15, "
   end
   
   it "should merge two ranges" do
     @rs.add(4, 11)
-    @rs.present.should == "1-3, 4-15, "
+    @rs.present.should == "1..3, 4..15, "
+  end
+
+  it "should merge all ranges" do
+    @rs.add(1, 20)
+    @rs.present.should == "1..20, "
   end
 end
 

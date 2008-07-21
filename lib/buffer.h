@@ -9,15 +9,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
+#include <parser.h>
 
 G_BEGIN_DECLS
 
-typedef struct _GtkMateBuffer GtkMateBuffer;
-typedef struct _GtkMateBufferClass GtkMateBufferClass;
-typedef struct _GtkMateTextLoc GtkMateTextLoc;
-typedef struct _GtkMateChange GtkMateChange;
-typedef struct _GtkMateParser GtkMateParser;
-typedef struct _GtkMateParserClass GtkMateParserClass;
 
 #define GTK_MATE_TYPE_BUFFER (gtk_mate_buffer_get_type ())
 #define GTK_MATE_BUFFER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_MATE_TYPE_BUFFER, GtkMateBuffer))

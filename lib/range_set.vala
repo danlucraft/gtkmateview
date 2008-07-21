@@ -29,36 +29,45 @@ public class RangeSet : Object {
 
 	public void add(int a, int b) {
 		bool merged = false;
-		int ix = 0;
-		int remove_ix;
-		IntPair add_p;
+		int insert_ix = 0;
+		IntPair n = IntPair(a, b);
 		IntPair? p, p2;
-		for (int i = 0; i < ranges.size-1; i++) {
-			p = ranges[i];
-			p2 = ranges[i+1];
-			if (a > p.b && !merged) {
-				ix++;
-			}
-			if (a >= p.a && a <= p.b && b > p.b) {
-				stdout.printf("asdf: %d\n", b);
-				remove_ix = ix;
-				add_p = IntPair(p.a, b);
-				merged = true;
-			}
-			if (b >= p.a && b <= p.b && a < p.a) {
-				p.a = a;
-				remove_ix = ix;
-				add_p = IntPair(a, p.b);
-				merged = true;
+		foreach (var p in ranges) {
+			if (p.a < n.a)
+				insert_ix++;
+		}
+		ranges.insert(insert_ix, n);
+		merge(insert_ix);
+	}
+
+	public void merge(int ix) {
+		IntPair? n = ranges[ix];
+		// stdout.printf("merge(%d, %d..%d)\n", ix, n.a, n.b);
+		if (ix > 0) {
+			// stdout.printf("ix > 0\n");
+			IntPair? x = ranges[ix-1];
+			// stdout.printf("x: %d..%d, n: %d..%d\n", x.a, x.b, n.a, n.b);
+			if (n.a <= x.b) {
+				ranges.remove_at(ix);
+				x.b = max(x.b, n.b);
+				ranges[ix-1] = x;
+				ix--;
+				n = ranges[ix];
 			}
 		}
-		if (!merged) {
-			IntPair? p = IntPair(a, b);
-			ranges.insert(ix, p);
-		}
-		else {
-			ranges.remove_at(remove_ix);
-			ranges.insert(ix, add_p);
+		if (ix < ranges.size-1) {
+			// stdout.printf("ix < %d\n", ranges.size-1);
+			IntPair? y = ranges[ix+1];
+			while (ix < ranges.size-1 && n.b >= y.a) {
+				// stdout.printf("n: %d..%d, y: %d..%d\n", n.a, n.b, y.a, y.b);
+				y.a = min(n.a, y.a);
+				if (n.b > y.b)
+					y.b = n.b;
+				ranges[ix+1] = y;
+				ranges.remove_at(ix);
+				if (ix < ranges.size-1)
+					y = ranges[ix+1];
+			}
 		}
 	}
 
@@ -71,7 +80,7 @@ public class RangeSet : Object {
 			}
 			else {
 				sb.append(p.a.to_string());
-				sb.append("-");
+				sb.append("..");
 				sb.append(p.b.to_string());
 				sb.append(", ");
 			}
@@ -79,6 +88,20 @@ public class RangeSet : Object {
 		return sb.str;
 	}
 
+	public int max(int a, int b) {
+		if (a > b)
+			return a;
+		else
+			return b;
+	}
+
+	public int min(int a, int b) {
+		if (a < b)
+			return a;
+		else
+			return b;
+	}
+	
 	construct {
 		ranges = new ArrayList<IntPair?>();
 	}

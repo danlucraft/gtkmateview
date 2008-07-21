@@ -7,12 +7,17 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
-#include <buffer.h>
 #include <scope.h>
 #include <grammar.h>
 
 G_BEGIN_DECLS
 
+typedef struct _GtkMateTextLoc GtkMateTextLoc;
+typedef struct _GtkMateChange GtkMateChange;
+typedef struct _GtkMateParser GtkMateParser;
+typedef struct _GtkMateParserClass GtkMateParserClass;
+typedef struct _GtkMateBuffer GtkMateBuffer;
+typedef struct _GtkMateBufferClass GtkMateBufferClass;
 
 #define GTK_MATE_TYPE_CHANGE_TYPE (gtk_mate_change_type_get_type ())
 
