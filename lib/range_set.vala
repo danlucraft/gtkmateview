@@ -3,7 +3,7 @@ using GLib;
 using Gee;
 
 // This data structure stores sets of ranges 
-// like 1, 4-9, 10, 12, 15-20
+// like 1, 4-8, 10, 12, 15-20
 public class RangeSet : Object {
 	public struct IntPair {
 		public int a;

@@ -24,7 +24,7 @@ typedef struct _RangeSetPrivate RangeSetPrivate;
 typedef struct _RangeSetIntPair RangeSetIntPair;
 
 /* This data structure stores sets of ranges 
- like 1, 4-9, 10, 12, 15-20*/
+ like 1, 4-8, 10, 12, 15-20*/
 struct _RangeSet {
 	GObject parent_instance;
 	RangeSetPrivate * priv;

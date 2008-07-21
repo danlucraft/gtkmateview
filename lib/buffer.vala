@@ -61,6 +61,24 @@ namespace Gtk.Mate {
 			return i;
 		}
 
+		// public TextIter iter_end() {
+			
+		// }
+
+		// Line number -> Iter
+	  // 	public TextIter iter_line_end(int line) {
+      // // if num >= line_count - 1
+      // //   iter(end_mark)
+      // // else
+      // //   line_start(num+1)
+      // // // end
+	  // // 		TextIter i;
+	  // // 		if (line >= line_count() - 1)
+	  // // 			iter(
+	  // // 		get_iter_at_line(out i, line);
+	  // // 		return i;
+	  // 	}
+
 		construct {
 			Mate.load_bundles();
 			Mate.load_themes();

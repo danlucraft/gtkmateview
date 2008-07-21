@@ -20,7 +20,8 @@ enum  {
 };
 GtkMateParser* gtk_mate_parser_current = NULL;
 static void gtk_mate_parser_process_changes (GtkMateParser* self);
-static void gtk_mate_parser_parse_from (GtkMateParser* self, gint from_line, gint to_line);
+static gint gtk_mate_parser_parse_range (GtkMateParser* self, gint from_line, gint to_line);
+static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix);
 static void _gtk_mate_parser_insert_text_handler_gtk_text_buffer_insert_text (GtkMateBuffer* _sender, GtkTextIter* pos, const char* text, gint length, gpointer self);
 static void _gtk_mate_parser_delete_range_handler_gtk_text_buffer_delete_range (GtkMateBuffer* _sender, GtkTextIter* start, GtkTextIter* end, gpointer self);
 static gpointer gtk_mate_parser_parent_class = NULL;
@@ -75,26 +76,60 @@ gboolean gtk_mate_parser_is_parsing (GtkMateParser* self) {
 }
 
 
+/* Process all change ranges.*/
 static void gtk_mate_parser_process_changes (GtkMateParser* self) {
+	gint parsed_upto;
 	g_return_if_fail (GTK_MATE_IS_PARSER (self));
+	parsed_upto = -1;
 	{
 		gint i;
 		i = 0;
 		for (; i < range_set_length (self->changes); i++) {
-			RangeSetIntPair* _tmp1 = {0};
 			RangeSetIntPair* _tmp0 = {0};
-			gtk_mate_parser_parse_from (self, (*(_tmp0 = gee_list_get (((GeeList*) (self->changes->ranges)), i))).a, (*(_tmp1 = gee_list_get (((GeeList*) (self->changes->ranges)), i))).b);
-			(_tmp1 == NULL ? NULL : (_tmp1 = (g_free (_tmp1), NULL)));
-			(_tmp0 == NULL ? NULL : (_tmp0 = (g_free (_tmp0), NULL)));
+			gboolean _tmp1;
+			if ((_tmp1 = (*(_tmp0 = gee_list_get (((GeeList*) (self->changes->ranges)), i))).b > parsed_upto, (_tmp0 == NULL ? NULL : (_tmp0 = (g_free (_tmp0), NULL))), _tmp1)) {
+				RangeSetIntPair* _tmp3 = {0};
+				RangeSetIntPair* _tmp2 = {0};
+				parsed_upto = gtk_mate_parser_parse_range (self, (*(_tmp2 = gee_list_get (((GeeList*) (self->changes->ranges)), i))).a, (*(_tmp3 = gee_list_get (((GeeList*) (self->changes->ranges)), i))).b);
+				(_tmp3 == NULL ? NULL : (_tmp3 = (g_free (_tmp3), NULL)));
+				(_tmp2 == NULL ? NULL : (_tmp2 = (g_free (_tmp2), NULL)));
+			}
 		}
 	}
 	gee_collection_clear (GEE_COLLECTION (self->changes->ranges));
 }
 
 
-static void gtk_mate_parser_parse_from (GtkMateParser* self, gint from_line, gint to_line) {
-	g_return_if_fail (GTK_MATE_IS_PARSER (self));
+/* Parse from from_line to *at least* to_line. Will parse
+ more if necessary. Returns the index of the last line
+ parsed.*/
+static gint gtk_mate_parser_parse_range (GtkMateParser* self, gint from_line, gint to_line) {
+	gint line_ix;
+	gboolean scope_changed;
+	g_return_val_if_fail (GTK_MATE_IS_PARSER (self), 0);
 	fprintf (stdout, "parse_from(%d, %d)\n", from_line, to_line);
+	line_ix = from_line;
+	scope_changed = FALSE;
+	while (line_ix <= to_line || scope_changed) {
+		scope_changed = gtk_mate_parser_parse_line (self, line_ix++);
+	}
+	return to_line;
+}
+
+
+/* Parse line line_ix. Returns whether or not the ending
+ scope of the line has changed.*/
+static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
+	const char* _tmp2;
+	GtkTextIter _tmp1 = {0};
+	GtkTextIter _tmp0 = {0};
+	char* line;
+	gboolean _tmp3;
+	g_return_val_if_fail (GTK_MATE_IS_PARSER (self), FALSE);
+	_tmp2 = NULL;
+	line = (_tmp2 = gtk_text_buffer_get_slice (GTK_TEXT_BUFFER (self->priv->_buffer), (_tmp0 = gtk_mate_buffer_iter_line_start (self->priv->_buffer, line_ix), &_tmp0), (_tmp1 = gtk_mate_buffer_iter_line_start (self->priv->_buffer, line_ix + 1), &_tmp1), TRUE), (_tmp2 == NULL ? NULL : g_strdup (_tmp2)));
+	fprintf (stdout, "parse line: %d: '%s'\n", line_ix, line);
+	return (_tmp3 = FALSE, (line = (g_free (line), NULL)), _tmp3);
 }
 
 
@@ -147,6 +182,7 @@ void gtk_mate_parser_insert_text_handler (GtkMateParser* self, GtkMateBuffer* bf
 			}
 		}
 	}
+	/*stdout.printf("add_change(%d, %d)\n", pos.get_line(), pos.get_line() + num_lines);*/
 	range_set_add (self->changes, gtk_text_iter_get_line (&(*pos)), gtk_text_iter_get_line (&(*pos)) + num_lines);
 	ss = (_vala_array_free (ss, ss_length1, ((GDestroyNotify) (g_free))), NULL);
 }

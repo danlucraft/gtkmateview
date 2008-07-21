@@ -30,7 +30,7 @@ namespace Gtk.Mate {
 		public void stop_parsing() {
 			deactivation_level += 1;
 		}
-
+		
 		public void start_parsing() {
 			if (deactivation_level > 0)
 				deactivation_level -= 1;
@@ -42,15 +42,35 @@ namespace Gtk.Mate {
 			return (deactivation_level == 0);
 		}
 
+		// Process all change ranges.
 		private void process_changes() {
+			int parsed_upto = -1;
 			for (int i = 0; i < changes.length(); i++) {
-				parse_from(changes.ranges[i].a, changes.ranges[i].b);
+				if (changes.ranges[i].b > parsed_upto)
+					parsed_upto = parse_range(changes.ranges[i].a, changes.ranges[i].b);
 			}
 			changes.ranges.clear();
 		}
 
-		private void parse_from(int from_line, int to_line) {
+		// Parse from from_line to *at least* to_line. Will parse
+		// more if necessary. Returns the index of the last line
+		// parsed.
+		private int parse_range(int from_line, int to_line) {
 			stdout.printf("parse_from(%d, %d)\n", from_line, to_line);
+			int line_ix = from_line;
+			bool scope_changed = false;
+			while (line_ix <= to_line || scope_changed) {
+				scope_changed = parse_line(line_ix++);
+			}
+			return to_line;
+		}
+
+		// Parse line line_ix. Returns whether or not the ending
+		// scope of the line has changed.
+		private bool parse_line(int line_ix) {
+			string line = buffer.get_slice(buffer.iter_line_start(line_ix), buffer.iter_line_start(line_ix+1), true);
+			stdout.printf("parse line: %d: '%s'\n", line_ix, line);
+			return false;
 		}
 
 		public void connect_buffer_signals() {
@@ -66,6 +86,7 @@ namespace Gtk.Mate {
 			var ss = text.split("\n");
 			int num_lines = -1;
 			foreach (var s in ss) num_lines++;
+//			stdout.printf("add_change(%d, %d)\n", pos.get_line(), pos.get_line() + num_lines);
 			changes.add(pos.get_line(), pos.get_line() + num_lines);
 		}
 		

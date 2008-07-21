@@ -202,6 +202,21 @@ GtkMateBuffer* gtk_mate_buffer_new (void) {
 }
 
 
+/* public TextIter iter_end() {
+ }
+ Line number -> Iter
+ public TextIter iter_line_end(int line) {
+ // if num >= line_count - 1
+ //   iter(end_mark)
+ // else
+ //   line_start(num+1)
+ // // end
+ // TextIter i;
+ // if (line >= line_count() - 1)
+ // iter(
+ // get_iter_at_line(out i, line);
+ // return i;
+ }*/
 static GObject * gtk_mate_buffer_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties) {
 	GObject * obj;
 	GtkMateBufferClass * klass;
