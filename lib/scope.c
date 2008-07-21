@@ -21,52 +21,98 @@ gboolean gtk_mate_scope_is_root (GtkMateScope* self) {
 }
 
 
-char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent) {
-	GString* s;
-	char* _tmp0;
-	const char* _tmp2;
-	char* _tmp3;
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
-	s = g_string_new ("");
-	{
-		gint i;
-		i = 0;
-		for (; i < indent; i++) {
-			g_string_append (s, "  ");
+/* compare two Scope's. Returns 1 if b is later than a,
+ -1 if b is before a and 0 if b is overlapping with a*/
+gint gtk_mate_scope_compare (GtkMateScope* a, GtkMateScope* b) {
+	GtkTextIter a_start = {0};
+	GtkTextIter b_start = {0};
+	GtkTextBuffer* _tmp3;
+	GtkTextBuffer* buf;
+	gint _tmp8;
+	g_return_val_if_fail (GTK_MATE_IS_SCOPE (a), 0);
+	g_return_val_if_fail (GTK_MATE_IS_SCOPE (b), 0);
+	if (a->start_mark == NULL) {
+		if (b->start_mark == NULL) {
+			return 0;
+		} else {
+			return 1;
+		}
+	} else {
+		if (b->start_mark == NULL) {
+			return -1;
 		}
 	}
-	_tmp0 = NULL;
-	g_string_append (s, (_tmp0 = g_strconcat (self->name, " (", NULL)));
-	_tmp0 = (g_free (_tmp0), NULL);
-	if (self->start_mark == NULL) {
-		g_string_append (s, "inf");
-	}
-	g_string_append (s, ")-(");
-	if (self->end_mark == NULL) {
-		g_string_append (s, "inf");
-	}
-	g_string_append (s, ")\n");
-	if (self->children != NULL) {
-		{
-			GeeArrayList* ss_collection;
-			int ss_it;
-			ss_collection = self->children;
-			for (ss_it = 0; ss_it < gee_collection_get_size (GEE_COLLECTION (ss_collection)); ss_it = ss_it + 1) {
-				GtkMateScope* ss;
-				ss = ((GtkMateScope*) (gee_list_get (GEE_LIST (ss_collection), ss_it)));
-				{
-					char* _tmp1;
-					_tmp1 = NULL;
-					g_string_append (s, (_tmp1 = gtk_mate_scope_pretty (ss, indent + 1)));
-					_tmp1 = (g_free (_tmp1), NULL);
-					(ss == NULL ? NULL : (ss = (g_object_unref (ss), NULL)));
+	_tmp3 = NULL;
+	buf = (_tmp3 = gtk_text_mark_get_buffer (GTK_TEXT_MARK (a->start_mark)), (_tmp3 == NULL ? NULL : g_object_ref (_tmp3)));
+	gtk_text_buffer_get_iter_at_mark (buf, &a_start, GTK_TEXT_MARK (a->start_mark));
+	gtk_text_buffer_get_iter_at_mark (buf, &b_start, GTK_TEXT_MARK (b->start_mark));
+	if (gtk_text_iter_get_line (&a_start) > gtk_text_iter_get_line (&b_start)) {
+		gint _tmp4;
+		return (_tmp4 = -1, (buf == NULL ? NULL : (buf = (g_object_unref (buf), NULL))), _tmp4);
+	} else {
+		if (gtk_text_iter_get_line (&a_start) < gtk_text_iter_get_line (&b_start)) {
+			gint _tmp5;
+			return (_tmp5 = 1, (buf == NULL ? NULL : (buf = (g_object_unref (buf), NULL))), _tmp5);
+		} else {
+			if (gtk_text_iter_get_line (&a_start) == gtk_text_iter_get_line (&b_start)) {
+				if (gtk_text_iter_get_line_offset (&a_start) > gtk_text_iter_get_line_offset (&b_start)) {
+					gint _tmp6;
+					return (_tmp6 = -1, (buf == NULL ? NULL : (buf = (g_object_unref (buf), NULL))), _tmp6);
+				} else {
+					if (gtk_text_iter_get_line_offset (&a_start) < gtk_text_iter_get_line_offset (&b_start)) {
+						gint _tmp7;
+						return (_tmp7 = 1, (buf == NULL ? NULL : (buf = (g_object_unref (buf), NULL))), _tmp7);
+					}
 				}
 			}
 		}
 	}
+	return (_tmp8 = 0, (buf == NULL ? NULL : (buf = (g_object_unref (buf), NULL))), _tmp8);
+}
+
+
+char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent) {
+	GString* _tmp0;
+	char* _tmp1;
+	const char* _tmp2;
+	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	_tmp0 = NULL;
+	self->pretty_string = (_tmp0 = g_string_new (""), (self->pretty_string == NULL ? NULL : (self->pretty_string = (g_string_free (self->pretty_string, TRUE), NULL))), _tmp0);
+	self->indent = indent;
+	{
+		gint i;
+		i = 0;
+		for (; i < self->indent; i++) {
+			g_string_append (self->pretty_string, "  ");
+		}
+	}
+	_tmp1 = NULL;
+	g_string_append (self->pretty_string, (_tmp1 = g_strconcat (self->name, " (", NULL)));
+	_tmp1 = (g_free (_tmp1), NULL);
+	if (self->start_mark == NULL) {
+		g_string_append (self->pretty_string, "inf");
+	}
+	g_string_append (self->pretty_string, ")-(");
+	if (self->end_mark == NULL) {
+		g_string_append (self->pretty_string, "inf");
+	}
+	g_string_append (self->pretty_string, ")\n");
+	self->indent = self->indent + (1);
+	if (self->children != NULL) {
+		g_sequence_foreach (self->children, ((GFunc) (gtk_mate_scope_append_pretty)), NULL);
+	}
 	_tmp2 = NULL;
-	_tmp3 = NULL;
-	return (_tmp3 = (_tmp2 = s->str, (_tmp2 == NULL ? NULL : g_strdup (_tmp2))), (s == NULL ? NULL : (s = (g_string_free (s, TRUE), NULL))), _tmp3);
+	return (_tmp2 = self->pretty_string->str, (_tmp2 == NULL ? NULL : g_strdup (_tmp2)));
+}
+
+
+void gtk_mate_scope_append_pretty (GtkMateScope* self, GtkMateScope* child) {
+	char* _tmp0;
+	g_return_if_fail (GTK_MATE_IS_SCOPE (self));
+	g_return_if_fail (GTK_MATE_IS_SCOPE (child));
+	_tmp0 = NULL;
+	g_string_append (self->pretty_string, (_tmp0 = gtk_mate_scope_pretty (child, self->indent)));
+	_tmp0 = (g_free (_tmp0), NULL);
 }
 
 
@@ -102,8 +148,9 @@ static void gtk_mate_scope_dispose (GObject * obj) {
 	(self->tag == NULL ? NULL : (self->tag = (g_object_unref (self->tag), NULL)));
 	(self->inner_tag == NULL ? NULL : (self->inner_tag = (g_object_unref (self->inner_tag), NULL)));
 	self->bg_color = (g_free (self->bg_color), NULL);
-	(self->children == NULL ? NULL : (self->children = (g_object_unref (self->children), NULL)));
+	(self->children == NULL ? NULL : (self->children = (g_sequence_free (self->children), NULL)));
 	(self->parent == NULL ? NULL : (self->parent = (g_object_unref (self->parent), NULL)));
+	(self->pretty_string == NULL ? NULL : (self->pretty_string = (g_string_free (self->pretty_string, TRUE), NULL)));
 	G_OBJECT_CLASS (gtk_mate_scope_parent_class)->dispose (obj);
 }
 

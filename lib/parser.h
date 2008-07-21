@@ -5,7 +5,6 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
-#include <gee/arraylist.h>
 #include <stdlib.h>
 #include <string.h>
 #include <buffer.h>
@@ -37,10 +36,8 @@ struct _GtkMateTextLoc {
 };
 
 struct _GtkMateChange {
-	GtkMateTextLoc from;
-	GtkMateTextLoc to;
 	GtkMateChangeType type;
-	gint length;
+	gint line;
 	gint num_lines;
 };
 
@@ -48,7 +45,8 @@ struct _GtkMateParser {
 	GtkObject parent_instance;
 	GtkMateParserPrivate * priv;
 	GtkMateScope* root;
-	GeeArrayList* changes;
+	GQueue* changes;
+	gint deactivation_level;
 };
 
 struct _GtkMateParserClass {
@@ -60,6 +58,9 @@ GType gtk_mate_change_type_get_type (void);
 GtkMateTextLoc gtk_mate_text_loc_make (gint l, gint lo);
 extern GtkMateParser* gtk_mate_parser_current;
 void gtk_mate_parser_make_root (GtkMateParser* self);
+void gtk_mate_parser_stop_parsing (GtkMateParser* self);
+void gtk_mate_parser_start_parsing (GtkMateParser* self);
+gboolean gtk_mate_parser_is_parsing (GtkMateParser* self);
 void gtk_mate_parser_connect_buffer_signals (GtkMateParser* self);
 void gtk_mate_parser_insert_text_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, const char* text, gint length);
 void gtk_mate_parser_delete_range_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, GtkTextIter* pos2);

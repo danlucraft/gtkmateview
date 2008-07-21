@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtksourceview/gtksourceview.h>
-#include <gee/arraylist.h>
 #include <pattern.h>
 #include <onig_wrap.h>
 
@@ -42,8 +41,10 @@ struct _GtkMateScope {
 	GtkTextTag* inner_tag;
 	char* bg_color;
 	gboolean is_capture;
-	GeeArrayList* children;
+	GSequence* children;
 	GtkMateScope* parent;
+	GString* pretty_string;
+	gint indent;
 };
 
 struct _GtkMateScopeClass {
@@ -52,7 +53,9 @@ struct _GtkMateScopeClass {
 
 
 gboolean gtk_mate_scope_is_root (GtkMateScope* self);
+gint gtk_mate_scope_compare (GtkMateScope* a, GtkMateScope* b);
 char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent);
+void gtk_mate_scope_append_pretty (GtkMateScope* self, GtkMateScope* child);
 GtkMateScope* gtk_mate_scope_new (void);
 GType gtk_mate_scope_get_type (void);
 

@@ -78,10 +78,14 @@ namespace Gtk {
 			public Gtk.TextTag inner_tag;
 			public string bg_color;
 			public bool is_capture;
-			public Gee.ArrayList<Gtk.Mate.Scope> children;
+			public GLib.Sequence<Gtk.Mate.Scope> children;
 			public Gtk.Mate.Scope parent;
+			public GLib.StringBuilder pretty_string;
+			public int indent;
 			public bool is_root ();
+			public static int compare (Gtk.Mate.Scope a, Gtk.Mate.Scope b);
 			public string pretty (int indent);
+			public void append_pretty (Gtk.Mate.Scope child);
 			public Scope ();
 		}
 		[CCode (cheader_filename = "grammar.h")]
@@ -121,9 +125,13 @@ namespace Gtk {
 		[CCode (cheader_filename = "parser.h")]
 		public class Parser : Gtk.Object {
 			public Gtk.Mate.Scope root;
-			public Gee.ArrayList<Gtk.Mate.Change?> changes;
+			public GLib.Queue<Gtk.Mate.Change?> changes;
+			public int deactivation_level;
 			public static Gtk.Mate.Parser current;
 			public void make_root ();
+			public void stop_parsing ();
+			public void start_parsing ();
+			public bool is_parsing ();
 			public void connect_buffer_signals ();
 			public void insert_text_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, string text, int length);
 			public void delete_range_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);
@@ -150,10 +158,8 @@ namespace Gtk {
 		}
 		[CCode (cheader_filename = "parser.h")]
 		public struct Change {
-			public Gtk.Mate.TextLoc from;
-			public Gtk.Mate.TextLoc to;
 			public Gtk.Mate.ChangeType type;
-			public int length;
+			public int line;
 			public int num_lines;
 		}
 		[CCode (cheader_filename = "gtkmateview.h")]
@@ -228,4 +234,19 @@ namespace PList {
 public errordomain XmlError {
 	FILE_NOT_FOUND,
 	XML_DOCUMENT_EMPTY,
+}
+[CCode (cheader_filename = "range_set.h")]
+public class RangeSet : GLib.Object {
+	public Gee.ArrayList<RangeSet.IntPair?> ranges;
+	public int length ();
+	public int size ();
+	public void add (int a, int b);
+	public string present ();
+	public RangeSet ();
+	[CCode (cheader_filename = "range_set.h")]
+	public struct IntPair {
+		public int a;
+		public int b;
+		public IntPair (int x, int y);
+	}
 }
