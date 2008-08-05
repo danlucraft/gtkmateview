@@ -134,11 +134,11 @@ namespace Gtk {
 			public string scope_name;
 			public string comment;
 			public Gee.ArrayList<Gtk.Mate.Pattern> all_patterns;
-			public bool loaded;
 			public Oniguruma.Regex folding_start_marker;
 			public Oniguruma.Regex folding_stop_marker;
 			public Gee.ArrayList<Gtk.Mate.Pattern> patterns;
 			public Gee.HashMap<string,Gee.ArrayList<Gtk.Mate.Pattern>> repository;
+			public bool loaded;
 			public Grammar (PList.Dict plist);
 			public void init_for_reference ();
 			public void init_for_use ();

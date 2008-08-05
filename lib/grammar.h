@@ -36,11 +36,11 @@ struct _GtkMateGrammar {
 	char* scope_name;
 	char* comment;
 	GeeArrayList* all_patterns;
-	gboolean loaded;
 	OnigurumaRegex* folding_start_marker;
 	OnigurumaRegex* folding_stop_marker;
 	GeeArrayList* patterns;
 	GeeHashMap* repository;
+	gboolean loaded;
 };
 
 struct _GtkMateGrammarClass {

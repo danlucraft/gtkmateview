@@ -68,8 +68,22 @@ namespace Gtk.Mate {
 		// Parse line line_ix. Returns whether or not the ending
 		// scope of the line has changed.
 		private bool parse_line(int line_ix) {
-			string line = buffer.get_slice(buffer.iter_line_start(line_ix), buffer.iter_line_start(line_ix+1), true);
-			stdout.printf("parse line: %d: '%s'\n", line_ix, line);
+			var line_start = buffer.iter_line_start(line_ix);
+			var line_end = buffer.iter_line_start(line_ix+1);
+			string line = buffer.get_slice(line_start, line_end, true);
+			stdout.printf("parse line: %d (%d): '%s'\n", line_ix, line_end.get_offset() - line_start.get_offset()-1, line);
+			foreach (var p in this.grammar.patterns) {
+				Oniguruma.Match match;
+				if (p is SinglePattern) {
+					match = ((SinglePattern) p).match.search(line, 0, line_end.get_offset() - line_start.get_offset()-1);
+				}
+				else if (p is DoublePattern) {
+					match = ((DoublePattern) p).begin.search(line, 0, line_end.get_offset() - line_start.get_offset()-1);
+				}
+				if (match != null) {
+					stdout.printf("%s\n", p.name);
+				}
+			}
 			return false;
 		}
 
@@ -121,7 +135,6 @@ namespace Gtk.Mate {
 			p.grammar = grammar;
 			p.buffer = buffer;
 			p.changes = new RangeSet();
-//			p.is_parsing = true;
 			p.deactivation_level = 0;
 			p.make_root();
 			p.connect_buffer_signals();

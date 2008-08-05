@@ -2672,42 +2672,6 @@ static VALUE rb_gtk_mate_grammar_set_all_patterns(VALUE self, VALUE all_patterns
     return Qnil;
 }
 
-static VALUE rb_gtk_mate_grammar_get_loaded(VALUE self) {
-    GtkMateGrammar* gtk_mate_grammar = RVAL2GOBJ(self);
-    // Method#type_checks
-    // Method#argument_type_conversions
-    // ValaMemberGet#body
-    gboolean _c_return = gtk_mate_grammar->loaded; 
-    // Method#return_type_conversion
-    VALUE _rb_return; 
-          if (_c_return == TRUE)
-          _rb_return = Qtrue;
-      else
-          _rb_return = Qfalse;
-
-    return _rb_return;
-}
-
-static VALUE rb_gtk_mate_grammar_set_loaded(VALUE self, VALUE loaded) {
-    GtkMateGrammar* gtk_mate_grammar = RVAL2GOBJ(self);
-    // Method#type_checks
-    if (TYPE(loaded) != T_TRUE && TYPE(loaded) != T_FALSE) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected true or false");
-    }
-    // Method#argument_type_conversions
-    gboolean _c_loaded;
-          if (loaded == Qtrue)
-          _c_loaded = TRUE;
-      else
-          _c_loaded = FALSE;
-
-    // ValaMemberSet#body
-    gtk_mate_grammar->loaded = _c_loaded;
-    // Method#return_type_conversion
-    return Qnil;
-}
-
 static VALUE rb_gtk_mate_grammar_get_folding_start_marker(VALUE self) {
     GtkMateGrammar* gtk_mate_grammar = RVAL2GOBJ(self);
     // Method#type_checks
@@ -2912,6 +2876,42 @@ static VALUE rb_gtk_mate_grammar_set_repository(VALUE self, VALUE repository) {
 
     // ValaMemberSet#body
     gtk_mate_grammar->repository = _c_repository;
+    // Method#return_type_conversion
+    return Qnil;
+}
+
+static VALUE rb_gtk_mate_grammar_get_loaded(VALUE self) {
+    GtkMateGrammar* gtk_mate_grammar = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // ValaMemberGet#body
+    gboolean _c_return = gtk_mate_grammar->loaded; 
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+          if (_c_return == TRUE)
+          _rb_return = Qtrue;
+      else
+          _rb_return = Qfalse;
+
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_grammar_set_loaded(VALUE self, VALUE loaded) {
+    GtkMateGrammar* gtk_mate_grammar = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(loaded) != T_TRUE && TYPE(loaded) != T_FALSE) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected true or false");
+    }
+    // Method#argument_type_conversions
+    gboolean _c_loaded;
+          if (loaded == Qtrue)
+          _c_loaded = TRUE;
+      else
+          _c_loaded = FALSE;
+
+    // ValaMemberSet#body
+    gtk_mate_grammar->loaded = _c_loaded;
     // Method#return_type_conversion
     return Qnil;
 }
@@ -3870,8 +3870,6 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_grammar, "comment=", rb_gtk_mate_grammar_set_comment, 1);
     rb_define_method(rbc_gtk_mate_grammar, "all_patterns", rb_gtk_mate_grammar_get_all_patterns, 0);
     rb_define_method(rbc_gtk_mate_grammar, "all_patterns=", rb_gtk_mate_grammar_set_all_patterns, 1);
-    rb_define_method(rbc_gtk_mate_grammar, "loaded", rb_gtk_mate_grammar_get_loaded, 0);
-    rb_define_method(rbc_gtk_mate_grammar, "loaded=", rb_gtk_mate_grammar_set_loaded, 1);
     rb_define_method(rbc_gtk_mate_grammar, "folding_start_marker", rb_gtk_mate_grammar_get_folding_start_marker, 0);
     rb_define_method(rbc_gtk_mate_grammar, "folding_start_marker=", rb_gtk_mate_grammar_set_folding_start_marker, 1);
     rb_define_method(rbc_gtk_mate_grammar, "folding_stop_marker", rb_gtk_mate_grammar_get_folding_stop_marker, 0);
@@ -3880,6 +3878,8 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_grammar, "patterns=", rb_gtk_mate_grammar_set_patterns, 1);
     rb_define_method(rbc_gtk_mate_grammar, "repository", rb_gtk_mate_grammar_get_repository, 0);
     rb_define_method(rbc_gtk_mate_grammar, "repository=", rb_gtk_mate_grammar_set_repository, 1);
+    rb_define_method(rbc_gtk_mate_grammar, "loaded", rb_gtk_mate_grammar_get_loaded, 0);
+    rb_define_method(rbc_gtk_mate_grammar, "loaded=", rb_gtk_mate_grammar_set_loaded, 1);
     rb_define_method(rbc_gtk_mate_grammar, "init_for_reference", rb_gtk_mate_grammar_init_for_reference, 0);
     rb_define_method(rbc_gtk_mate_grammar, "init_for_use", rb_gtk_mate_grammar_init_for_use, 0);
     rbc_gtk_mate_pattern = G_DEF_CLASS(gtk_mate_pattern_get_type(), "Pattern", rbc_gtk_mate);

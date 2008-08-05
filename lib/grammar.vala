@@ -15,6 +15,11 @@ namespace Gtk.Mate {
 		public string comment;
 		public ArrayList<Pattern> all_patterns;
 
+		public Oniguruma.Regex folding_start_marker;
+		public Oniguruma.Regex folding_stop_marker;
+		public ArrayList<Pattern> patterns;
+		public HashMap<string, ArrayList<Pattern>> repository;
+
 		// rest of properties (loaded on demand)
 		public bool loaded;
 		
@@ -55,11 +60,6 @@ namespace Gtk.Mate {
 				}
 			}
 		}
-
-		public Oniguruma.Regex folding_start_marker;
-		public Oniguruma.Regex folding_stop_marker;
-		public ArrayList<Pattern> patterns;
-		public HashMap<string, ArrayList<Pattern>> repository;
 
 		// Loads the properties of the grammar that are required
 		// for parsing. Loads patterns into memory, and sets
