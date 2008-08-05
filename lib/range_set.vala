@@ -4,17 +4,17 @@ using Gee;
 
 // This data structure stores sets of ranges 
 // like 1, 4-8, 10, 12, 15-20
-public class RangeSet : Object {
-	public struct IntPair {
+public class RangeSet : Object, Iterable<Range> {
+	public class Range : Object {
 		public int a;
 		public int b;
-		public IntPair(int x, int y) {
-			a = x;
-			b = y;
-		}
+// 		public Range(int x, int y) {
+// 			a = x;
+// 			b = y;
+// 		}
 	}
 
-	public ArrayList<IntPair?> ranges;
+	public ArrayList<Range> ranges;
 
 	public int length() {
 		return (int) ranges.size;
@@ -22,7 +22,7 @@ public class RangeSet : Object {
 
 	public int size() {
 		int sizec = 0;
-		foreach (IntPair? p in ranges)
+		foreach (Range p in ranges)
 			sizec += p.b - p.a + 1;
 		return sizec;
 	}
@@ -34,8 +34,10 @@ public class RangeSet : Object {
 	public void add(int a, int b) {
 		bool merged = false;
 		int insert_ix = 0;
-		IntPair n = IntPair(a, b);
-		IntPair? p, p2;
+		Range n = new Range();
+		n.a = a;
+		n.b = b;
+		Range p, p2;
 		foreach (var p in ranges) {
 			if (p.a < n.a)
 				insert_ix++;
@@ -45,11 +47,11 @@ public class RangeSet : Object {
 	}
 
 	public void merge(int ix) {
-		IntPair? n = ranges[ix];
+		Range n = ranges[ix];
 		// stdout.printf("merge(%d, %d..%d)\n", ix, n.a, n.b);
 		if (ix > 0) {
 			// stdout.printf("ix > 0\n");
-			IntPair? x = ranges[ix-1];
+			Range x = ranges[ix-1];
 			// stdout.printf("x: %d..%d, n: %d..%d\n", x.a, x.b, n.a, n.b);
 			if (n.a <= x.b+1) {
 				ranges.remove_at(ix);
@@ -61,7 +63,7 @@ public class RangeSet : Object {
 		}
 		if (ix < ranges.size-1) {
 			// stdout.printf("ix < %d\n", ranges.size-1);
-			IntPair? y = ranges[ix+1];
+			Range y = ranges[ix+1];
 			while (ix < ranges.size-1 && n.b >= y.a-1) {
 				// stdout.printf("n: %d..%d, y: %d..%d\n", n.a, n.b, y.a, y.b);
 				y.a = min(n.a, y.a);
@@ -77,7 +79,7 @@ public class RangeSet : Object {
 
 	public string present() {
 		var sb = new StringBuilder("");
-		foreach (IntPair? p in ranges) {
+		foreach (Range p in ranges) {
 			if (p.b - p.a == 0) {
 				sb.append(p.a.to_string());
 				sb.append(", ");
@@ -107,9 +109,18 @@ public class RangeSet : Object {
 	}
 	
 	construct {
-		ranges = new ArrayList<IntPair?>();
+		ranges = new ArrayList<Range>();
 	}
 
 	public RangeSet() {
 	}
+
+	public Type get_element_type () {
+		return typeof (Range);
+	}
+
+	public Gee.Iterator<Range> iterator () {
+		return ranges.iterator();
+	}
+
 }

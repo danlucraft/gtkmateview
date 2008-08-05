@@ -45,9 +45,9 @@ namespace Gtk.Mate {
 		// Process all change ranges.
 		private void process_changes() {
 			int parsed_upto = -1;
-			for (int i = 0; i < changes.length(); i++) {
-				if (changes.ranges[i].b > parsed_upto)
-					parsed_upto = parse_range(changes.ranges[i].a, changes.ranges[i].b);
+			foreach (RangeSet.Range range in changes) {
+				if (range.b > parsed_upto)
+					parsed_upto = parse_range(range.a, range.b);
 			}
 			changes.ranges.clear();
 		}

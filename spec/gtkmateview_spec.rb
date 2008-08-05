@@ -1,4 +1,5 @@
 
+require 'spec/spec_helper'
 
 describe Gtk::Mate::View, "initialization" do
   it "returns textmate_share_dir" do

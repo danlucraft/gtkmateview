@@ -254,10 +254,12 @@ static void gtk_mate_buffer_dispose (GObject * obj) {
 
 
 GType gtk_mate_buffer_get_type (void) {
-	static GType gtk_mate_buffer_type_id = 0;
-	if (G_UNLIKELY (gtk_mate_buffer_type_id == 0)) {
+	static volatile gsize gtk_mate_buffer_type_id = 0;
+	if (g_once_init_enter (&gtk_mate_buffer_type_id)) {
+		GType gtk_mate_buffer_type_id_temp;
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateBufferClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_buffer_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateBuffer), 0, (GInstanceInitFunc) gtk_mate_buffer_instance_init };
-		gtk_mate_buffer_type_id = g_type_register_static (GTK_TYPE_SOURCE_BUFFER, "GtkMateBuffer", &g_define_type_info, 0);
+		gtk_mate_buffer_type_id_temp = g_type_register_static (GTK_TYPE_SOURCE_BUFFER, "GtkMateBuffer", &g_define_type_info, 0);
+		g_once_init_leave (&gtk_mate_buffer_type_id, gtk_mate_buffer_type_id_temp);
 	}
 	return gtk_mate_buffer_type_id;
 }

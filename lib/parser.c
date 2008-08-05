@@ -82,19 +82,21 @@ static void gtk_mate_parser_process_changes (GtkMateParser* self) {
 	g_return_if_fail (GTK_MATE_IS_PARSER (self));
 	parsed_upto = -1;
 	{
-		gint i;
-		i = 0;
-		for (; i < range_set_length (self->changes); i++) {
-			RangeSetIntPair* _tmp0 = {0};
-			gboolean _tmp1;
-			if ((_tmp1 = (*(_tmp0 = gee_list_get (((GeeList*) (self->changes->ranges)), i))).b > parsed_upto, (_tmp0 == NULL ? NULL : (_tmp0 = (g_free (_tmp0), NULL))), _tmp1)) {
-				RangeSetIntPair* _tmp3 = {0};
-				RangeSetIntPair* _tmp2 = {0};
-				parsed_upto = gtk_mate_parser_parse_range (self, (*(_tmp2 = gee_list_get (((GeeList*) (self->changes->ranges)), i))).a, (*(_tmp3 = gee_list_get (((GeeList*) (self->changes->ranges)), i))).b);
-				(_tmp3 == NULL ? NULL : (_tmp3 = (g_free (_tmp3), NULL)));
-				(_tmp2 == NULL ? NULL : (_tmp2 = (g_free (_tmp2), NULL)));
+		RangeSet* range_collection;
+		GeeIterator* range_it;
+		range_collection = self->changes;
+		range_it = gee_iterable_iterator (GEE_ITERABLE (range_collection));
+		while (gee_iterator_next (range_it)) {
+			RangeSetRange* range;
+			range = ((RangeSetRange*) (gee_iterator_get (range_it)));
+			{
+				if (range->b > parsed_upto) {
+					parsed_upto = gtk_mate_parser_parse_range (self, range->a, range->b);
+				}
+				(range == NULL ? NULL : (range = (g_object_unref (range), NULL)));
 			}
 		}
+		(range_it == NULL ? NULL : (range_it = (g_object_unref (range_it), NULL)));
 	}
 	gee_collection_clear (GEE_COLLECTION (self->changes->ranges));
 }
@@ -356,10 +358,12 @@ static void gtk_mate_parser_dispose (GObject * obj) {
 
 
 GType gtk_mate_parser_get_type (void) {
-	static GType gtk_mate_parser_type_id = 0;
-	if (G_UNLIKELY (gtk_mate_parser_type_id == 0)) {
+	static volatile gsize gtk_mate_parser_type_id = 0;
+	if (g_once_init_enter (&gtk_mate_parser_type_id)) {
+		GType gtk_mate_parser_type_id_temp;
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateParserClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_parser_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateParser), 0, (GInstanceInitFunc) gtk_mate_parser_instance_init };
-		gtk_mate_parser_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateParser", &g_define_type_info, 0);
+		gtk_mate_parser_type_id_temp = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateParser", &g_define_type_info, 0);
+		g_once_init_leave (&gtk_mate_parser_type_id, gtk_mate_parser_type_id_temp);
 	}
 	return gtk_mate_parser_type_id;
 }
