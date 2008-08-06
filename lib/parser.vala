@@ -56,7 +56,7 @@ namespace Gtk.Mate {
 		// more if necessary. Returns the index of the last line
 		// parsed.
 		private int parse_range(int from_line, int to_line) {
-			stdout.printf("parse_from(%d, %d)\n", from_line, to_line);
+			//stdout.printf("parse_from(%d, %d)\n", from_line, to_line);
 			int line_ix = from_line;
 			bool scope_changed = false;
 			while (line_ix <= to_line || scope_changed) {
@@ -68,17 +68,17 @@ namespace Gtk.Mate {
 		// Parse line line_ix. Returns whether or not the ending
 		// scope of the line has changed.
 		private bool parse_line(int line_ix) {
-			var line_start = buffer.iter_line_start(line_ix);
-			var line_end = buffer.iter_line_start(line_ix+1);
-			string line = buffer.get_slice(line_start, line_end, true);
-			stdout.printf("parse line: %d (%d): '%s'\n", line_ix, line_end.get_offset() - line_start.get_offset()-1, line);
+			string? line = buffer.get_line(line_ix);
+			int length = buffer.get_line_length(line_ix);
+			var scanner = new Scanner(this.root, line);
+			//stdout.printf("parse line: %d (%d): '%s'\n", line_ix, line_end.get_offset() - line_start.get_offset()-1, line);
 			foreach (var p in this.grammar.patterns) {
 				Oniguruma.Match match;
 				if (p is SinglePattern) {
-					match = ((SinglePattern) p).match.search(line, 0, line_end.get_offset() - line_start.get_offset()-1);
+					match = ((SinglePattern) p).match.search(line, 0, length);
 				}
 				else if (p is DoublePattern) {
-					match = ((DoublePattern) p).begin.search(line, 0, line_end.get_offset() - line_start.get_offset()-1);
+					match = ((DoublePattern) p).begin.search(line, 0, length);
 				}
 				if (match != null) {
 					stdout.printf("%s\n", p.name);
@@ -96,16 +96,16 @@ namespace Gtk.Mate {
 		}
 
 		public void insert_text_handler(Buffer bf, TextIter pos, string text, int length) {
-			stdout.printf("insert_text(pos, \"%s\", %d)\n", text, length);
+			//stdout.printf("insert_text(pos, \"%s\", %d)\n", text, length);
 			var ss = text.split("\n");
 			int num_lines = -1;
 			foreach (var s in ss) num_lines++;
-//			stdout.printf("add_change(%d, %d)\n", pos.get_line(), pos.get_line() + num_lines);
+			//stdout.printf("add_change(%d, %d)\n", pos.get_line(), pos.get_line() + num_lines);
 			changes.add(pos.get_line(), pos.get_line() + num_lines);
 		}
 		
 		public void delete_range_handler(Buffer bf, TextIter pos, TextIter pos2) {
-			stdout.printf("delete_range(%d, %d)\n", pos.get_offset(), pos2.get_offset());
+			//stdout.printf("delete_range(%d, %d)\n", pos.get_offset(), pos2.get_offset());
 			changes.add(pos.get_line(), pos.get_line());
 		}
 

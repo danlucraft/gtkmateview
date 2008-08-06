@@ -30,3 +30,24 @@ describe Gtk::Mate::Buffer do
     @mb.parser.grammar.name.should == "D"
   end
 end
+
+describe Gtk::Mate::Buffer, "helper methods" do
+  before(:each) do
+    @mb = Gtk::Mate::Buffer.new
+    @mb.text = "foo\nbar\nbaz"
+  end
+
+  it "get_line" do
+    @mb.get_line(0).should == "foo\n"
+    @mb.get_line(1).should == "bar\n"
+    @mb.get_line(2).should == "baz"
+    @mb.get_line(3).should be_nil
+    @mb.get_line(-1).should be_nil
+  end
+  
+  it "get_line_length" do
+    @mb.get_line_length(0).should == 3
+    @mb.get_line_length(2).should == 3
+    @mb.get_line_length(3).should == -1
+  end
+end

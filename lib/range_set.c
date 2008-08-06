@@ -264,12 +264,10 @@ static void range_set_range_dispose (GObject * obj) {
 
 
 GType range_set_range_get_type (void) {
-	static volatile gsize range_set_range_type_id = 0;
-	if (g_once_init_enter (&range_set_range_type_id)) {
-		GType range_set_range_type_id_temp;
+	static GType range_set_range_type_id = 0;
+	if (G_UNLIKELY (range_set_range_type_id == 0)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RangeSetRangeClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) range_set_range_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RangeSetRange), 0, (GInstanceInitFunc) range_set_range_instance_init };
-		range_set_range_type_id_temp = g_type_register_static (G_TYPE_OBJECT, "RangeSetRange", &g_define_type_info, 0);
-		g_once_init_leave (&range_set_range_type_id, range_set_range_type_id_temp);
+		range_set_range_type_id = g_type_register_static (G_TYPE_OBJECT, "RangeSetRange", &g_define_type_info, 0);
 	}
 	return range_set_range_type_id;
 }
@@ -302,14 +300,12 @@ static void range_set_dispose (GObject * obj) {
 
 
 GType range_set_get_type (void) {
-	static volatile gsize range_set_type_id = 0;
-	if (g_once_init_enter (&range_set_type_id)) {
-		GType range_set_type_id_temp;
+	static GType range_set_type_id = 0;
+	if (G_UNLIKELY (range_set_type_id == 0)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RangeSetClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) range_set_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RangeSet), 0, (GInstanceInitFunc) range_set_instance_init };
 		static const GInterfaceInfo gee_iterable_info = { (GInterfaceInitFunc) range_set_gee_iterable_interface_init, (GInterfaceFinalizeFunc) NULL, NULL};
-		range_set_type_id_temp = g_type_register_static (G_TYPE_OBJECT, "RangeSet", &g_define_type_info, 0);
-		g_type_add_interface_static (range_set_type_id_temp, GEE_TYPE_ITERABLE, &gee_iterable_info);
-		g_once_init_leave (&range_set_type_id, range_set_type_id_temp);
+		range_set_type_id = g_type_register_static (G_TYPE_OBJECT, "RangeSet", &g_define_type_info, 0);
+		g_type_add_interface_static (range_set_type_id, GEE_TYPE_ITERABLE, &gee_iterable_info);
 	}
 	return range_set_type_id;
 }

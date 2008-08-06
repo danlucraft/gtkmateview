@@ -2,6 +2,7 @@
 #include "parser.h"
 #include <gee/collection.h>
 #include <stdio.h>
+#include <scanner.h>
 #include <pattern.h>
 #include <onig_wrap.h>
 #include <string.h>
@@ -111,7 +112,7 @@ static gint gtk_mate_parser_parse_range (GtkMateParser* self, gint from_line, gi
 	gint line_ix;
 	gboolean scope_changed;
 	g_return_val_if_fail (GTK_MATE_IS_PARSER (self), 0);
-	fprintf (stdout, "parse_from(%d, %d)\n", from_line, to_line);
+	/*stdout.printf("parse_from(%d, %d)\n", from_line, to_line);*/
 	line_ix = from_line;
 	scope_changed = FALSE;
 	while (line_ix <= to_line || scope_changed) {
@@ -124,17 +125,15 @@ static gint gtk_mate_parser_parse_range (GtkMateParser* self, gint from_line, gi
 /* Parse line line_ix. Returns whether or not the ending
  scope of the line has changed.*/
 static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
-	GtkTextIter line_start;
-	GtkTextIter line_end;
-	const char* _tmp0;
 	char* line;
-	gboolean _tmp3;
+	gint length;
+	GtkMateScanner* scanner;
+	gboolean _tmp2;
 	g_return_val_if_fail (GTK_MATE_IS_PARSER (self), FALSE);
-	line_start = gtk_mate_buffer_iter_line_start (self->priv->_buffer, line_ix);
-	line_end = gtk_mate_buffer_iter_line_start (self->priv->_buffer, line_ix + 1);
-	_tmp0 = NULL;
-	line = (_tmp0 = gtk_text_buffer_get_slice (GTK_TEXT_BUFFER (self->priv->_buffer), &line_start, &line_end, TRUE), (_tmp0 == NULL ? NULL : g_strdup (_tmp0)));
-	fprintf (stdout, "parse line: %d (%d): '%s'\n", line_ix, gtk_text_iter_get_offset (&line_end) - gtk_text_iter_get_offset (&line_start) - 1, line);
+	line = gtk_mate_buffer_get_line (self->priv->_buffer, line_ix);
+	length = gtk_mate_buffer_get_line_length (self->priv->_buffer, line_ix);
+	scanner = g_object_ref_sink (gtk_mate_scanner_new (self->root, line));
+	/*stdout.printf("parse line: %d (%d): '%s'\n", line_ix, line_end.get_offset() - line_start.get_offset()-1, line);*/
 	{
 		GeeArrayList* p_collection;
 		int p_it;
@@ -146,14 +145,14 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 				OnigurumaMatch* match;
 				match = NULL;
 				if (GTK_MATE_IS_SINGLE_PATTERN (p)) {
-					OnigurumaMatch* _tmp1;
-					_tmp1 = NULL;
-					match = (_tmp1 = oniguruma_regex_search ((GTK_MATE_SINGLE_PATTERN (p))->match, line, 0, gtk_text_iter_get_offset (&line_end) - gtk_text_iter_get_offset (&line_start) - 1), (match == NULL ? NULL : (match = (g_object_unref (match), NULL))), _tmp1);
+					OnigurumaMatch* _tmp0;
+					_tmp0 = NULL;
+					match = (_tmp0 = oniguruma_regex_search ((GTK_MATE_SINGLE_PATTERN (p))->match, line, 0, length), (match == NULL ? NULL : (match = (g_object_unref (match), NULL))), _tmp0);
 				} else {
 					if (GTK_MATE_IS_DOUBLE_PATTERN (p)) {
-						OnigurumaMatch* _tmp2;
-						_tmp2 = NULL;
-						match = (_tmp2 = oniguruma_regex_search ((GTK_MATE_DOUBLE_PATTERN (p))->begin, line, 0, gtk_text_iter_get_offset (&line_end) - gtk_text_iter_get_offset (&line_start) - 1), (match == NULL ? NULL : (match = (g_object_unref (match), NULL))), _tmp2);
+						OnigurumaMatch* _tmp1;
+						_tmp1 = NULL;
+						match = (_tmp1 = oniguruma_regex_search ((GTK_MATE_DOUBLE_PATTERN (p))->begin, line, 0, length), (match == NULL ? NULL : (match = (g_object_unref (match), NULL))), _tmp1);
 					}
 				}
 				if (match != NULL) {
@@ -164,7 +163,7 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 			}
 		}
 	}
-	return (_tmp3 = FALSE, (line = (g_free (line), NULL)), _tmp3);
+	return (_tmp2 = FALSE, (line = (g_free (line), NULL)), (scanner == NULL ? NULL : (scanner = (g_object_unref (scanner), NULL))), _tmp2);
 }
 
 
@@ -196,7 +195,7 @@ void gtk_mate_parser_insert_text_handler (GtkMateParser* self, GtkMateBuffer* bf
 	g_return_if_fail (GTK_MATE_IS_PARSER (self));
 	g_return_if_fail (GTK_MATE_IS_BUFFER (bf));
 	g_return_if_fail (text != NULL);
-	fprintf (stdout, "insert_text(pos, \"%s\", %d)\n", text, length);
+	/*stdout.printf("insert_text(pos, \"%s\", %d)\n", text, length);*/
 	_tmp0 = NULL;
 	ss = (_tmp0 = g_strsplit (text, "\n", 0), ss_length1 = -1, _tmp0);
 	num_lines = -1;
@@ -226,7 +225,7 @@ void gtk_mate_parser_insert_text_handler (GtkMateParser* self, GtkMateBuffer* bf
 void gtk_mate_parser_delete_range_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, GtkTextIter* pos2) {
 	g_return_if_fail (GTK_MATE_IS_PARSER (self));
 	g_return_if_fail (GTK_MATE_IS_BUFFER (bf));
-	fprintf (stdout, "delete_range(%d, %d)\n", gtk_text_iter_get_offset (&(*pos)), gtk_text_iter_get_offset (&(*pos2)));
+	/*stdout.printf("delete_range(%d, %d)\n", pos.get_offset(), pos2.get_offset());*/
 	range_set_add (self->changes, gtk_text_iter_get_line (&(*pos)), gtk_text_iter_get_line (&(*pos)));
 }
 
@@ -390,12 +389,10 @@ static void gtk_mate_parser_dispose (GObject * obj) {
 
 
 GType gtk_mate_parser_get_type (void) {
-	static volatile gsize gtk_mate_parser_type_id = 0;
-	if (g_once_init_enter (&gtk_mate_parser_type_id)) {
-		GType gtk_mate_parser_type_id_temp;
+	static GType gtk_mate_parser_type_id = 0;
+	if (G_UNLIKELY (gtk_mate_parser_type_id == 0)) {
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateParserClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_parser_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateParser), 0, (GInstanceInitFunc) gtk_mate_parser_instance_init };
-		gtk_mate_parser_type_id_temp = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateParser", &g_define_type_info, 0);
-		g_once_init_leave (&gtk_mate_parser_type_id, gtk_mate_parser_type_id_temp);
+		gtk_mate_parser_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateParser", &g_define_type_info, 0);
 	}
 	return gtk_mate_parser_type_id;
 }

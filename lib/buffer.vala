@@ -9,6 +9,11 @@ namespace Gtk.Mate {
 
 		public Parser parser;
 		
+		construct {
+			Mate.load_bundles();
+			Mate.load_themes();
+		}
+
 		// Sets the grammar explicitly by name.
 		public int set_grammar_by_name(string name) {
 			foreach (var bundle in Buffer.bundles) {
@@ -35,7 +40,7 @@ namespace Gtk.Mate {
 							return gr.name;
 						}
 			Oniguruma.Regex re;
-			var first_line = get_text(iter_(0), iter_line_start(1), false);
+			var first_line = get_text(iter_(0), line_start_iter(1), false);
 			foreach (var bundle in Buffer.bundles)
 				foreach (var gr in bundle.grammars)
 					if ((re = gr.first_line_match) != null)
@@ -47,6 +52,8 @@ namespace Gtk.Mate {
 			return null;
 		}
 
+		// HELPER METHODS
+		
 		// Offset from start of document -> Iter
 		public TextIter iter_(int offset) {
 			TextIter i;
@@ -54,40 +61,104 @@ namespace Gtk.Mate {
 			return i;
 		}
 
-		// Line number -> Iter
-		public TextIter iter_line_start(int line) {
+		public TextIter start_iter() {
+			TextIter i;
+			get_iter_at_offset(out i, 0);
+			return i;
+		}
+
+		public TextIter end_iter() {
+			TextIter i;
+			get_iter_at_offset(out i, get_char_count());
+			return i;
+		}
+
+		public TextIter cursor_iter() {
+			TextIter i;
+			get_iter_at_mark(out i, cursor_mark());
+			return i;
+		}
+
+		public TextIter line_start_iter(int line) {
 			TextIter i;
 			get_iter_at_line(out i, line);
 			return i;
 		}
 
-		public TextIter iter_end() {
-			
-		}
-
-		// Line number -> Iter
-	  	public TextIter iter_line_end(int line) {
-      // if num >= line_count - 1
-      //   iter(end_mark)
-      // else
-      //   line_start(num+1)
-      // // end
-	  // 		TextIter i;
-	  // 		if (line >= line_count() - 1)
-	  // 			iter(
-	  // 		get_iter_at_line(out i, line);
-	  // 		return i;
-			if (line >= get_line_count() - 1) {
-			}
-			else {
-
-			}
+		// Iter at end of line, after the "\n" (if present).
+	  	public TextIter line_end_iter(int line) {
+	  		if (line >= get_line_count() - 1) {
+				return end_iter();
+	  		}
+	  		else {
+				return line_start_iter(line+1);
+	  		}
 	  	}
 
-		construct {
-			Mate.load_bundles();
-			Mate.load_themes();
+		// Iter at end of line, before the "\n" (if present).
+		public TextIter line_end_iter1(int line) {
+	  		if (line >= get_line_count() - 1) {
+				return end_iter();
+	  		}
+	  		else {
+				TextIter i = line_start_iter(line+1);
+				i.backward_char();
+				return i;
+	  		}
 		}
 
+		public TextMark start_mark() {
+			return get_mark("start_mark");
+		}
+
+		public TextMark end_mark() {
+			return get_mark("end_mark");
+		}
+
+		public TextMark cursor_mark() {
+			return get_mark("insert");
+		}
+
+		public TextMark selection_mark() {
+			return get_mark("selection");
+		}
+
+		// Get text of line, including the "\n". Returns null if line does
+		// not exist.
+		public string? get_line(int line) {
+			TextIter ei;
+			if (line == get_line_count() - 1) {
+				ei = end_iter();
+			}
+			else if (line > get_line_count() - 1 || line < 0) {
+				return null;
+			}
+			else {
+				ei = line_start_iter(line+1);
+			}
+			return get_slice(line_start_iter(line), ei, true);
+		}
+
+		public int get_line_length(int line) {
+			if (line >= get_line_count() || line < 0) {
+				return -1;
+			}
+			if (line == get_line_count() - 1)
+				return end_iter().get_offset() - line_start_iter(line).get_offset();
+			else
+				return line_end_iter(line).get_offset() - line_start_iter(line).get_offset() - 1;
+		}
+
+		public int cursor_line() {
+			return cursor_iter().get_line();
+		}
+
+		public int cursor_line_offset() {
+			return cursor_iter().get_line_offset();
+		}
+
+		public int cursor_offset() {
+			return cursor_iter().get_offset();
+		}
 	}
 }

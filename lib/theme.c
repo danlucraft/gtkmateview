@@ -104,12 +104,10 @@ static void gtk_mate_theme_setting_dispose (GObject * obj) {
 
 
 GType gtk_mate_theme_setting_get_type (void) {
-	static volatile gsize gtk_mate_theme_setting_type_id = 0;
-	if (g_once_init_enter (&gtk_mate_theme_setting_type_id)) {
-		GType gtk_mate_theme_setting_type_id_temp;
+	static GType gtk_mate_theme_setting_type_id = 0;
+	if (G_UNLIKELY (gtk_mate_theme_setting_type_id == 0)) {
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateThemeSettingClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_theme_setting_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateThemeSetting), 0, (GInstanceInitFunc) gtk_mate_theme_setting_instance_init };
-		gtk_mate_theme_setting_type_id_temp = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateThemeSetting", &g_define_type_info, 0);
-		g_once_init_leave (&gtk_mate_theme_setting_type_id, gtk_mate_theme_setting_type_id_temp);
+		gtk_mate_theme_setting_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateThemeSetting", &g_define_type_info, 0);
 	}
 	return gtk_mate_theme_setting_type_id;
 }
@@ -226,7 +224,7 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
 		d = (_tmp1 = g_dir_open ((_tmp0 = g_strconcat (share_dir, "/Themes", NULL)), 0, &inner_error), (_tmp0 = (g_free (_tmp0), NULL)), _tmp1);
 		if (inner_error != NULL) {
 			if (inner_error->domain == G_FILE_ERROR) {
-				goto __catch4_g_file_error;
+				goto __catch0_g_file_error;
 			}
 			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
 			g_clear_error (&inner_error);
@@ -247,8 +245,8 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
 		_tmp6 = NULL;
 		return (_tmp6 = names, (d == NULL ? NULL : (d = (g_dir_close (d), NULL))), (share_dir = (g_free (share_dir), NULL)), (name = (g_free (name), NULL)), _tmp6);
 	}
-	goto __finally4;
-	__catch4_g_file_error:
+	goto __finally0;
+	__catch0_g_file_error:
 	{
 		GError * e;
 		e = inner_error;
@@ -261,7 +259,7 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
 			(e == NULL ? NULL : (e = (g_error_free (e), NULL)));
 		}
 	}
-	__finally4:
+	__finally0:
 	;
 	_tmp8 = NULL;
 	return (_tmp8 = NULL, (names == NULL ? NULL : (names = (g_object_unref (names), NULL))), (share_dir = (g_free (share_dir), NULL)), (name = (g_free (name), NULL)), _tmp8);
@@ -297,12 +295,10 @@ static void gtk_mate_theme_dispose (GObject * obj) {
 
 
 GType gtk_mate_theme_get_type (void) {
-	static volatile gsize gtk_mate_theme_type_id = 0;
-	if (g_once_init_enter (&gtk_mate_theme_type_id)) {
-		GType gtk_mate_theme_type_id_temp;
+	static GType gtk_mate_theme_type_id = 0;
+	if (G_UNLIKELY (gtk_mate_theme_type_id == 0)) {
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateThemeClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_theme_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateTheme), 0, (GInstanceInitFunc) gtk_mate_theme_instance_init };
-		gtk_mate_theme_type_id_temp = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateTheme", &g_define_type_info, 0);
-		g_once_init_leave (&gtk_mate_theme_type_id, gtk_mate_theme_type_id_temp);
+		gtk_mate_theme_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateTheme", &g_define_type_info, 0);
 	}
 	return gtk_mate_theme_type_id;
 }
