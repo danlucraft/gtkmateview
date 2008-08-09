@@ -61,10 +61,12 @@ static void oniguruma_onig_error_dispose (GObject * obj) {
 
 
 GType oniguruma_onig_error_get_type (void) {
-	static GType oniguruma_onig_error_type_id = 0;
-	if (G_UNLIKELY (oniguruma_onig_error_type_id == 0)) {
+	static volatile gsize oniguruma_onig_error_type_id = 0;
+	if (g_once_init_enter (&oniguruma_onig_error_type_id)) {
+		GType oniguruma_onig_error_type_id_temp;
 		static const GTypeInfo g_define_type_info = { sizeof (OnigurumaOnigErrorClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) oniguruma_onig_error_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (OnigurumaOnigError), 0, (GInstanceInitFunc) oniguruma_onig_error_instance_init };
-		oniguruma_onig_error_type_id = g_type_register_static (G_TYPE_OBJECT, "OnigurumaOnigError", &g_define_type_info, 0);
+		oniguruma_onig_error_type_id_temp = g_type_register_static (G_TYPE_OBJECT, "OnigurumaOnigError", &g_define_type_info, 0);
+		g_once_init_leave (&oniguruma_onig_error_type_id, oniguruma_onig_error_type_id_temp);
 	}
 	return oniguruma_onig_error_type_id;
 }
@@ -189,10 +191,12 @@ static void oniguruma_match_dispose (GObject * obj) {
 
 
 GType oniguruma_match_get_type (void) {
-	static GType oniguruma_match_type_id = 0;
-	if (G_UNLIKELY (oniguruma_match_type_id == 0)) {
+	static volatile gsize oniguruma_match_type_id = 0;
+	if (g_once_init_enter (&oniguruma_match_type_id)) {
+		GType oniguruma_match_type_id_temp;
 		static const GTypeInfo g_define_type_info = { sizeof (OnigurumaMatchClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) oniguruma_match_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (OnigurumaMatch), 0, (GInstanceInitFunc) oniguruma_match_instance_init };
-		oniguruma_match_type_id = g_type_register_static (G_TYPE_OBJECT, "OnigurumaMatch", &g_define_type_info, 0);
+		oniguruma_match_type_id_temp = g_type_register_static (G_TYPE_OBJECT, "OnigurumaMatch", &g_define_type_info, 0);
+		g_once_init_leave (&oniguruma_match_type_id, oniguruma_match_type_id_temp);
 	}
 	return oniguruma_match_type_id;
 }
@@ -350,10 +354,12 @@ static void oniguruma_regex_dispose (GObject * obj) {
 
 
 GType oniguruma_regex_get_type (void) {
-	static GType oniguruma_regex_type_id = 0;
-	if (G_UNLIKELY (oniguruma_regex_type_id == 0)) {
+	static volatile gsize oniguruma_regex_type_id = 0;
+	if (g_once_init_enter (&oniguruma_regex_type_id)) {
+		GType oniguruma_regex_type_id_temp;
 		static const GTypeInfo g_define_type_info = { sizeof (OnigurumaRegexClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) oniguruma_regex_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (OnigurumaRegex), 0, (GInstanceInitFunc) oniguruma_regex_instance_init };
-		oniguruma_regex_type_id = g_type_register_static (G_TYPE_OBJECT, "OnigurumaRegex", &g_define_type_info, 0);
+		oniguruma_regex_type_id_temp = g_type_register_static (G_TYPE_OBJECT, "OnigurumaRegex", &g_define_type_info, 0);
+		g_once_init_leave (&oniguruma_regex_type_id, oniguruma_regex_type_id_temp);
 	}
 	return oniguruma_regex_type_id;
 }

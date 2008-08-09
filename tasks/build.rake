@@ -23,7 +23,8 @@ namespace :build do
   task :build_c do
     FileUtils.cd("lib") do
       puts "compiling gtkmateview..."
-      puts %x{valac -C --library gtkmateview --pkg gtksourceview-2.0 --pkg libxml-2.0 --pkg gee-1.0 --pkg gtksourceview-2.0 --vapidir=./../vapi/ --pkg=oniguruma #{VALA_SOURCES.map{|n| n+".vala"}.join(" ")}}
+      puts valac="valac -C --library gtkmateview --pkg gtksourceview-2.0 --pkg libxml-2.0 --pkg gee-1.0 --pkg gtksourceview-2.0 --vapidir=./../vapi/ --pkg=oniguruma #{VALA_SOURCES.map{|n| n+".vala"}.join(" ")}"
+      %x{#{valac}}
       VALA_SOURCES.each do |name|
         fix_vala_c_file(name)
       end

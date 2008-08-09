@@ -141,10 +141,12 @@ static void gtk_mate_pattern_dispose (GObject * obj) {
 
 
 GType gtk_mate_pattern_get_type (void) {
-	static GType gtk_mate_pattern_type_id = 0;
-	if (G_UNLIKELY (gtk_mate_pattern_type_id == 0)) {
+	static volatile gsize gtk_mate_pattern_type_id = 0;
+	if (g_once_init_enter (&gtk_mate_pattern_type_id)) {
+		GType gtk_mate_pattern_type_id_temp;
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMatePatternClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_pattern_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMatePattern), 0, (GInstanceInitFunc) gtk_mate_pattern_instance_init };
-		gtk_mate_pattern_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMatePattern", &g_define_type_info, 0);
+		gtk_mate_pattern_type_id_temp = g_type_register_static (GTK_TYPE_OBJECT, "GtkMatePattern", &g_define_type_info, 0);
+		g_once_init_leave (&gtk_mate_pattern_type_id, gtk_mate_pattern_type_id_temp);
 	}
 	return gtk_mate_pattern_type_id;
 }
@@ -221,10 +223,12 @@ static void gtk_mate_single_pattern_dispose (GObject * obj) {
 
 
 GType gtk_mate_single_pattern_get_type (void) {
-	static GType gtk_mate_single_pattern_type_id = 0;
-	if (G_UNLIKELY (gtk_mate_single_pattern_type_id == 0)) {
+	static volatile gsize gtk_mate_single_pattern_type_id = 0;
+	if (g_once_init_enter (&gtk_mate_single_pattern_type_id)) {
+		GType gtk_mate_single_pattern_type_id_temp;
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateSinglePatternClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_single_pattern_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateSinglePattern), 0, (GInstanceInitFunc) gtk_mate_single_pattern_instance_init };
-		gtk_mate_single_pattern_type_id = g_type_register_static (GTK_MATE_TYPE_PATTERN, "GtkMateSinglePattern", &g_define_type_info, 0);
+		gtk_mate_single_pattern_type_id_temp = g_type_register_static (GTK_MATE_TYPE_PATTERN, "GtkMateSinglePattern", &g_define_type_info, 0);
+		g_once_init_leave (&gtk_mate_single_pattern_type_id, gtk_mate_single_pattern_type_id_temp);
 	}
 	return gtk_mate_single_pattern_type_id;
 }
@@ -402,33 +406,20 @@ void gtk_mate_double_pattern_replace_base_and_self_includes (GtkMateDoublePatter
 			{
 				if (GTK_MATE_IS_INCLUDE_PATTERN (p) && g_str_has_prefix (p->name, "$")) {
 					gee_collection_add (GEE_COLLECTION (include_patterns), p);
-					if (_vala_strcmp0 (p->name, "$self") == 0) {
+					if (_vala_strcmp0 (p->name, "$self") == 0 || _vala_strcmp0 (p->name, "$base") == 0) {
+						/* patterns_to_include.add(this);
+						 }
+						 else if (p.name == "$base") {*/
 						{
-							GeeArrayList* p1_collection;
-							int p1_it;
-							p1_collection = self->patterns;
-							for (p1_it = 0; p1_it < gee_collection_get_size (GEE_COLLECTION (p1_collection)); p1_it = p1_it + 1) {
-								GtkMatePattern* p1;
-								p1 = ((GtkMatePattern*) (gee_list_get (GEE_LIST (p1_collection), p1_it)));
+							GeeArrayList* p_collection;
+							int p_it;
+							p_collection = g->patterns;
+							for (p_it = 0; p_it < gee_collection_get_size (GEE_COLLECTION (p_collection)); p_it = p_it + 1) {
+								GtkMatePattern* p;
+								p = ((GtkMatePattern*) (gee_list_get (GEE_LIST (p_collection), p_it)));
 								{
 									gee_collection_add (GEE_COLLECTION (patterns_to_include), p);
-									(p1 == NULL ? NULL : (p1 = (g_object_unref (p1), NULL)));
-								}
-							}
-						}
-					} else {
-						if (_vala_strcmp0 (p->name, "$base") == 0) {
-							{
-								GeeArrayList* p_collection;
-								int p_it;
-								p_collection = g->patterns;
-								for (p_it = 0; p_it < gee_collection_get_size (GEE_COLLECTION (p_collection)); p_it = p_it + 1) {
-									GtkMatePattern* p;
-									p = ((GtkMatePattern*) (gee_list_get (GEE_LIST (p_collection), p_it)));
-									{
-										gee_collection_add (GEE_COLLECTION (patterns_to_include), p);
-										(p == NULL ? NULL : (p = (g_object_unref (p), NULL)));
-									}
+									(p == NULL ? NULL : (p = (g_object_unref (p), NULL)));
 								}
 							}
 						}
@@ -514,10 +505,12 @@ static void gtk_mate_double_pattern_dispose (GObject * obj) {
 
 
 GType gtk_mate_double_pattern_get_type (void) {
-	static GType gtk_mate_double_pattern_type_id = 0;
-	if (G_UNLIKELY (gtk_mate_double_pattern_type_id == 0)) {
+	static volatile gsize gtk_mate_double_pattern_type_id = 0;
+	if (g_once_init_enter (&gtk_mate_double_pattern_type_id)) {
+		GType gtk_mate_double_pattern_type_id_temp;
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateDoublePatternClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_double_pattern_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateDoublePattern), 0, (GInstanceInitFunc) gtk_mate_double_pattern_instance_init };
-		gtk_mate_double_pattern_type_id = g_type_register_static (GTK_MATE_TYPE_PATTERN, "GtkMateDoublePattern", &g_define_type_info, 0);
+		gtk_mate_double_pattern_type_id_temp = g_type_register_static (GTK_MATE_TYPE_PATTERN, "GtkMateDoublePattern", &g_define_type_info, 0);
+		g_once_init_leave (&gtk_mate_double_pattern_type_id, gtk_mate_double_pattern_type_id_temp);
 	}
 	return gtk_mate_double_pattern_type_id;
 }
@@ -561,10 +554,12 @@ static void gtk_mate_include_pattern_instance_init (GtkMateIncludePattern * self
 
 
 GType gtk_mate_include_pattern_get_type (void) {
-	static GType gtk_mate_include_pattern_type_id = 0;
-	if (G_UNLIKELY (gtk_mate_include_pattern_type_id == 0)) {
+	static volatile gsize gtk_mate_include_pattern_type_id = 0;
+	if (g_once_init_enter (&gtk_mate_include_pattern_type_id)) {
+		GType gtk_mate_include_pattern_type_id_temp;
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateIncludePatternClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_include_pattern_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateIncludePattern), 0, (GInstanceInitFunc) gtk_mate_include_pattern_instance_init };
-		gtk_mate_include_pattern_type_id = g_type_register_static (GTK_MATE_TYPE_PATTERN, "GtkMateIncludePattern", &g_define_type_info, 0);
+		gtk_mate_include_pattern_type_id_temp = g_type_register_static (GTK_MATE_TYPE_PATTERN, "GtkMateIncludePattern", &g_define_type_info, 0);
+		g_once_init_leave (&gtk_mate_include_pattern_type_id, gtk_mate_include_pattern_type_id_temp);
 	}
 	return gtk_mate_include_pattern_type_id;
 }

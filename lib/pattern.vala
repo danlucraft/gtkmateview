@@ -152,12 +152,10 @@ namespace Gtk.Mate {
 			foreach (Pattern p in this.patterns) {
 				if (p is IncludePattern && p.name.has_prefix("$")) {
 					include_patterns.add(p);
-					if (p.name == "$self") {
-						foreach (var p1 in patterns) {
-							patterns_to_include.add(p);
-						}
-					}
-					else if (p.name == "$base") {
+					if (p.name == "$self" || p.name == "$base") {
+					// 	patterns_to_include.add(this);
+					// }
+					// else if (p.name == "$base") {
 						foreach (var p in g.patterns) {
 							patterns_to_include.add(p);
 						}

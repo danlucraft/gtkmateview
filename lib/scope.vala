@@ -30,6 +30,9 @@ namespace Gtk.Mate {
 			return false;
 		}
 
+		public StringBuilder pretty_string;
+		public int indent;
+
 		// compare two Scope's. Returns 1 if b is later than a,
 		// -1 if b is before a and 0 if b is overlapping with a
 		public static int compare(Scope a, Scope b) {
@@ -57,9 +60,6 @@ namespace Gtk.Mate {
 			}
 			return 0;
 		}
-
-		public StringBuilder pretty_string;
-		public int indent;
 
 		public string pretty(int indent) {
 			pretty_string = new StringBuilder("");

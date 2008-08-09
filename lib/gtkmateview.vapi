@@ -155,17 +155,25 @@ namespace Gtk {
 		}
 		[CCode (cheader_filename = "scanner.h")]
 		public class Marker : Gtk.Object {
+			public int from;
+			public int hint;
+			public Gtk.Mate.Pattern pattern;
+			public Oniguruma.Match match;
 			public Marker ();
 		}
 		[CCode (cheader_filename = "scanner.h")]
 		public class Scanner : Gtk.Object, Gee.Iterable<Gtk.Mate.Marker> {
-			public Scanner (Gtk.Mate.Scope s, string line);
+			public int position;
+			public Scanner (Gtk.Mate.Scope s, string line, int line_length);
+			public Gtk.Mate.Marker? find_next_marker ();
 			public Gtk.Mate.Scope current_scope { get; set; }
 			public string line { get; set; }
+			public int line_length { get; set; }
 			[CCode (cheader_filename = "scanner.h")]
 			public class Iterator<Marker> : Gtk.Object, Gee.Iterator<Marker> {
+				public Marker? next_marker;
 				public Iterator (Gtk.Mate.Scanner s);
-				public Gtk.Mate.Scanner scanner { get; set; }
+				public Gtk.Mate.Scanner scanner { get; set construct; }
 			}
 		}
 		[CCode (cheader_filename = "bundle.h")]

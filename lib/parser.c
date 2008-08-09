@@ -2,8 +2,8 @@
 #include "parser.h"
 #include <gee/collection.h>
 #include <stdio.h>
-#include <scanner.h>
 #include <pattern.h>
+#include <scanner.h>
 #include <onig_wrap.h>
 #include <string.h>
 
@@ -47,12 +47,30 @@ void gtk_mate_parser_make_root (GtkMateParser* self) {
 	GtkMateScope* _tmp0;
 	char* _tmp2;
 	const char* _tmp1;
+	GtkMateDoublePattern* dp;
+	char* _tmp4;
+	const char* _tmp3;
+	GeeArrayList* _tmp6;
+	GeeArrayList* _tmp5;
+	GtkMatePattern* _tmp8;
+	GtkMatePattern* _tmp7;
 	g_return_if_fail (GTK_MATE_IS_PARSER (self));
 	_tmp0 = NULL;
 	self->root = (_tmp0 = g_object_ref_sink (gtk_mate_scope_new ()), (self->root == NULL ? NULL : (self->root = (g_object_unref (self->root), NULL))), _tmp0);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
 	self->root->name = (_tmp2 = (_tmp1 = self->priv->_grammar->scope_name, (_tmp1 == NULL ? NULL : g_strdup (_tmp1))), (self->root->name = (g_free (self->root->name), NULL)), _tmp2);
+	dp = g_object_ref_sink (gtk_mate_double_pattern_new ());
+	_tmp4 = NULL;
+	_tmp3 = NULL;
+	GTK_MATE_PATTERN (dp)->name = (_tmp4 = (_tmp3 = gtk_mate_grammar_get_name (self->priv->_grammar), (_tmp3 == NULL ? NULL : g_strdup (_tmp3))), (GTK_MATE_PATTERN (dp)->name = (g_free (GTK_MATE_PATTERN (dp)->name), NULL)), _tmp4);
+	_tmp6 = NULL;
+	_tmp5 = NULL;
+	dp->patterns = (_tmp6 = (_tmp5 = self->priv->_grammar->patterns, (_tmp5 == NULL ? NULL : g_object_ref (_tmp5))), (dp->patterns == NULL ? NULL : (dp->patterns = (g_object_unref (dp->patterns), NULL))), _tmp6);
+	_tmp8 = NULL;
+	_tmp7 = NULL;
+	self->root->pattern = (_tmp8 = (_tmp7 = GTK_MATE_PATTERN (dp), (_tmp7 == NULL ? NULL : g_object_ref (_tmp7))), (self->root->pattern == NULL ? NULL : (self->root->pattern = (g_object_unref (self->root->pattern), NULL))), _tmp8);
+	(dp == NULL ? NULL : (dp = (g_object_unref (dp), NULL)));
 }
 
 
@@ -128,42 +146,49 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	char* line;
 	gint length;
 	GtkMateScanner* scanner;
-	gboolean _tmp2;
+	gint i;
+	gboolean _tmp4;
 	g_return_val_if_fail (GTK_MATE_IS_PARSER (self), FALSE);
 	line = gtk_mate_buffer_get_line (self->priv->_buffer, line_ix);
 	length = gtk_mate_buffer_get_line_length (self->priv->_buffer, line_ix);
-	scanner = g_object_ref_sink (gtk_mate_scanner_new (self->root, line));
-	/*stdout.printf("parse line: %d (%d): '%s'\n", line_ix, line_end.get_offset() - line_start.get_offset()-1, line);*/
+	fprintf (stdout, "parse line: %d (%d): '%s'\n", line_ix, length, line);
+	scanner = g_object_ref_sink (gtk_mate_scanner_new (self->root, line, length));
+	i = 0;
 	{
-		GeeArrayList* p_collection;
-		int p_it;
-		p_collection = self->priv->_grammar->patterns;
-		for (p_it = 0; p_it < gee_collection_get_size (GEE_COLLECTION (p_collection)); p_it = p_it + 1) {
-			GtkMatePattern* p;
-			p = ((GtkMatePattern*) (gee_list_get (GEE_LIST (p_collection), p_it)));
+		GtkMateScanner* m_collection;
+		GeeIterator* m_it;
+		m_collection = scanner;
+		m_it = gee_iterable_iterator (GEE_ITERABLE (m_collection));
+		while (gee_iterator_next (m_it)) {
+			GtkMateMarker* m;
+			m = ((GtkMateMarker*) (gee_iterator_get (m_it)));
 			{
-				OnigurumaMatch* match;
-				match = NULL;
-				if (GTK_MATE_IS_SINGLE_PATTERN (p)) {
-					OnigurumaMatch* _tmp0;
+				fprintf (stdout, "%s (%d-%d), ", m->pattern->name, m->from, oniguruma_match_end (m->match, 0));
+				if (GTK_MATE_IS_DOUBLE_PATTERN (m->pattern)) {
+					GtkMateScope* s;
+					GtkMatePattern* _tmp1;
+					GtkMatePattern* _tmp0;
+					char* _tmp3;
+					const char* _tmp2;
+					fprintf (stdout, "[opening with %d patterns], ", gee_collection_get_size (GEE_COLLECTION ((GTK_MATE_DOUBLE_PATTERN (m->pattern))->patterns)));
+					s = g_object_ref_sink (gtk_mate_scope_new ());
+					_tmp1 = NULL;
 					_tmp0 = NULL;
-					match = (_tmp0 = oniguruma_regex_search ((GTK_MATE_SINGLE_PATTERN (p))->match, line, 0, length), (match == NULL ? NULL : (match = (g_object_unref (match), NULL))), _tmp0);
-				} else {
-					if (GTK_MATE_IS_DOUBLE_PATTERN (p)) {
-						OnigurumaMatch* _tmp1;
-						_tmp1 = NULL;
-						match = (_tmp1 = oniguruma_regex_search ((GTK_MATE_DOUBLE_PATTERN (p))->begin, line, 0, length), (match == NULL ? NULL : (match = (g_object_unref (match), NULL))), _tmp1);
-					}
+					s->pattern = (_tmp1 = (_tmp0 = m->pattern, (_tmp0 == NULL ? NULL : g_object_ref (_tmp0))), (s->pattern == NULL ? NULL : (s->pattern = (g_object_unref (s->pattern), NULL))), _tmp1);
+					_tmp3 = NULL;
+					_tmp2 = NULL;
+					s->name = (_tmp3 = (_tmp2 = m->pattern->name, (_tmp2 == NULL ? NULL : g_strdup (_tmp2))), (s->name = (g_free (s->name), NULL)), _tmp3);
+					gtk_mate_scanner_set_current_scope (scanner, s);
+					(s == NULL ? NULL : (s = (g_object_unref (s), NULL)));
 				}
-				if (match != NULL) {
-					fprintf (stdout, "%s\n", p->name);
-				}
-				(p == NULL ? NULL : (p = (g_object_unref (p), NULL)));
-				(match == NULL ? NULL : (match = (g_object_unref (match), NULL)));
+				scanner->position = oniguruma_match_end (m->match, 0);
+				(m == NULL ? NULL : (m = (g_object_unref (m), NULL)));
 			}
 		}
+		(m_it == NULL ? NULL : (m_it = (g_object_unref (m_it), NULL)));
 	}
-	return (_tmp2 = FALSE, (line = (g_free (line), NULL)), (scanner == NULL ? NULL : (scanner = (g_object_unref (scanner), NULL))), _tmp2);
+	fprintf (stdout, "\n");
+	return (_tmp4 = FALSE, (line = (g_free (line), NULL)), (scanner == NULL ? NULL : (scanner = (g_object_unref (scanner), NULL))), _tmp4);
 }
 
 
@@ -271,6 +296,7 @@ GtkMateParser* gtk_mate_parser_create (GtkMateGrammar* grammar, GtkMateBuffer* b
 	g_return_val_if_fail (GTK_MATE_IS_BUFFER (buffer), NULL);
 	gtk_mate_grammar_init_for_use (grammar);
 	p = g_object_ref_sink (gtk_mate_parser_new ());
+	fprintf (stdout, "grammar: %s\n", gtk_mate_grammar_get_name (grammar));
 	gtk_mate_parser_set_grammar (p, grammar);
 	gtk_mate_parser_set_buffer (p, buffer);
 	_tmp0 = NULL;
@@ -389,10 +415,12 @@ static void gtk_mate_parser_dispose (GObject * obj) {
 
 
 GType gtk_mate_parser_get_type (void) {
-	static GType gtk_mate_parser_type_id = 0;
-	if (G_UNLIKELY (gtk_mate_parser_type_id == 0)) {
+	static volatile gsize gtk_mate_parser_type_id = 0;
+	if (g_once_init_enter (&gtk_mate_parser_type_id)) {
+		GType gtk_mate_parser_type_id_temp;
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateParserClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_parser_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateParser), 0, (GInstanceInitFunc) gtk_mate_parser_instance_init };
-		gtk_mate_parser_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateParser", &g_define_type_info, 0);
+		gtk_mate_parser_type_id_temp = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateParser", &g_define_type_info, 0);
+		g_once_init_leave (&gtk_mate_parser_type_id, gtk_mate_parser_type_id_temp);
 	}
 	return gtk_mate_parser_type_id;
 }

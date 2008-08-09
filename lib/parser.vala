@@ -25,6 +25,10 @@ namespace Gtk.Mate {
 		public void make_root() {
 			this.root = new Scope();
 			this.root.name = this.grammar.scope_name;
+			var dp = new DoublePattern();
+			dp.name = this.grammar.name;
+			dp.patterns = this.grammar.patterns;
+			this.root.pattern = dp;
 		}
 
 		public void stop_parsing() {
@@ -70,20 +74,21 @@ namespace Gtk.Mate {
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line(line_ix);
 			int length = buffer.get_line_length(line_ix);
-			var scanner = new Scanner(this.root, line);
-			//stdout.printf("parse line: %d (%d): '%s'\n", line_ix, line_end.get_offset() - line_start.get_offset()-1, line);
-			foreach (var p in this.grammar.patterns) {
-				Oniguruma.Match match;
-				if (p is SinglePattern) {
-					match = ((SinglePattern) p).match.search(line, 0, length);
+			stdout.printf("parse line: %d (%d): '%s'\n", line_ix, length, line);
+			var scanner = new Scanner(this.root, line, length);
+			int i = 0;
+			foreach (var m in scanner) {
+				stdout.printf("%s (%d-%d), ", m.pattern.name, m.from, m.match.end(0));
+				if (m.pattern is DoublePattern) {
+					stdout.printf("[opening with %d patterns], ", ((DoublePattern) m.pattern).patterns.size);
+					var s = new Scope();
+					s.pattern = m.pattern;
+					s.name = m.pattern.name;
+					scanner.current_scope = s;
 				}
-				else if (p is DoublePattern) {
-					match = ((DoublePattern) p).begin.search(line, 0, length);
-				}
-				if (match != null) {
-					stdout.printf("%s\n", p.name);
-				}
+				scanner.position = m.match.end(0);
 			}
+			stdout.printf("\n");
 			return false;
 		}
 
@@ -132,6 +137,7 @@ namespace Gtk.Mate {
 			grammar.init_for_use();
 
 			var p = new Parser();
+			stdout.printf("grammar: %s\n", grammar.name);
 			p.grammar = grammar;
 			p.buffer = buffer;
 			p.changes = new RangeSet();
