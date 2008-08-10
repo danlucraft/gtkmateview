@@ -164,7 +164,10 @@ namespace Gtk {
 		[CCode (cheader_filename = "scanner.h")]
 		public class Scanner : Gtk.Object, Gee.Iterable<Gtk.Mate.Marker> {
 			public int position;
+			public Gee.ArrayList<Gtk.Mate.Marker> cached_markers;
 			public Scanner (Gtk.Mate.Scope s, string line, int line_length);
+			public Gtk.Mate.Marker? get_cached_marker ();
+			public Oniguruma.Match? scan_for_match (int from, Gtk.Mate.Pattern p);
 			public Gtk.Mate.Marker? find_next_marker ();
 			public Gtk.Mate.Scope current_scope { get; set; }
 			public string line { get; set; }

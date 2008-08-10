@@ -6,6 +6,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 #include <gee/iterable.h>
+#include <gee/arraylist.h>
 #include <stdlib.h>
 #include <string.h>
 #include <gee/iterator.h>
@@ -69,6 +70,7 @@ struct _GtkMateScanner {
 	GtkObject parent_instance;
 	GtkMateScannerPrivate * priv;
 	gint position;
+	GeeArrayList* cached_markers;
 };
 
 struct _GtkMateScannerClass {
@@ -89,6 +91,8 @@ struct _GtkMateScannerIteratorClass {
 GtkMateMarker* gtk_mate_marker_new (void);
 GType gtk_mate_marker_get_type (void);
 GtkMateScanner* gtk_mate_scanner_new (GtkMateScope* s, const char* line, gint line_length);
+GtkMateMarker* gtk_mate_scanner_get_cached_marker (GtkMateScanner* self);
+OnigurumaMatch* gtk_mate_scanner_scan_for_match (GtkMateScanner* self, gint from, GtkMatePattern* p);
 GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self);
 GtkMateScope* gtk_mate_scanner_get_current_scope (GtkMateScanner* self);
 void gtk_mate_scanner_set_current_scope (GtkMateScanner* self, GtkMateScope* value);

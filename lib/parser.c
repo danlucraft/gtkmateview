@@ -182,12 +182,12 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 					(s == NULL ? NULL : (s = (g_object_unref (s), NULL)));
 				}
 				scanner->position = oniguruma_match_end (m->match, 0);
+				fprintf (stdout, "\n");
 				(m == NULL ? NULL : (m = (g_object_unref (m), NULL)));
 			}
 		}
 		(m_it == NULL ? NULL : (m_it = (g_object_unref (m_it), NULL)));
 	}
-	fprintf (stdout, "\n");
 	return (_tmp4 = FALSE, (line = (g_free (line), NULL)), (scanner == NULL ? NULL : (scanner = (g_object_unref (scanner), NULL))), _tmp4);
 }
 
@@ -296,7 +296,7 @@ GtkMateParser* gtk_mate_parser_create (GtkMateGrammar* grammar, GtkMateBuffer* b
 	g_return_val_if_fail (GTK_MATE_IS_BUFFER (buffer), NULL);
 	gtk_mate_grammar_init_for_use (grammar);
 	p = g_object_ref_sink (gtk_mate_parser_new ());
-	fprintf (stdout, "grammar: %s\n", gtk_mate_grammar_get_name (grammar));
+	/*stdout.printf("grammar: %s\n", grammar.name);*/
 	gtk_mate_parser_set_grammar (p, grammar);
 	gtk_mate_parser_set_buffer (p, buffer);
 	_tmp0 = NULL;

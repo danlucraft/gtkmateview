@@ -87,8 +87,8 @@ namespace Gtk.Mate {
 					scanner.current_scope = s;
 				}
 				scanner.position = m.match.end(0);
+				stdout.printf("\n");
 			}
-			stdout.printf("\n");
 			return false;
 		}
 
@@ -137,7 +137,7 @@ namespace Gtk.Mate {
 			grammar.init_for_use();
 
 			var p = new Parser();
-			stdout.printf("grammar: %s\n", grammar.name);
+			//stdout.printf("grammar: %s\n", grammar.name);
 			p.grammar = grammar;
 			p.buffer = buffer;
 			p.changes = new RangeSet();
