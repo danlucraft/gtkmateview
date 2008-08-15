@@ -7,8 +7,9 @@ namespace Gtk.Mate {
 	public class Marker : Object {
 		public int     from;  // the line offset where it begins
 		public int     hint;  // ??
-		public Pattern pattern; // the pattern that was matched
-		public Oniguruma.Match match; // the matchdata of the successful match
+		public bool    is_close_scope; // whether this represents a closing of the current scope
+		public Pattern pattern;        // the pattern that was matched
+		public Oniguruma.Match match;  // the matchdata of the successful match
 	}
 
 	// Scans lines for patterns. Handles caching of what has already been seen etc.
@@ -46,17 +47,35 @@ namespace Gtk.Mate {
 		}
 		
 		// if we have already scanned this line for this scope then
-		// simply return the next cached marker
+		// simply return the next cached marker (choosing the longest
+		// match in case of a tie).
 		public Marker? get_cached_marker() {
 			Marker? m;
+			int best_length = 0;
+			int new_length;
 			foreach (var m1 in cached_markers) {
-				if (m == null || m.from > m1.from) {
+				new_length = m1.match.end(0) - m1.from;
+				if (m == null || (m.from > m1.from && new_length > best_length)) {
 					m = m1;
+					best_length = new_length;
 				}
 			}
 			return m;
 		}
-
+		
+		// if we have gone beyond the marker, toss it out.
+		public void remove_preceding_cached_markers(Marker m) {
+			int ix = 0;
+			int len = cached_markers.size;
+			for(int i = 0; i < len; i++, ix++) {
+				var cm = cached_markers.get(ix);
+				if (cached_markers.get(ix).from <= m.match.end(0)) {
+					cached_markers.remove_at(ix);
+					ix--;
+				}
+			}
+		}
+		
 		public Oniguruma.Match? scan_for_match(int from, Pattern p) {
 			Oniguruma.Match match;
 			if (p is SinglePattern) {
@@ -70,9 +89,12 @@ namespace Gtk.Mate {
 
 		public Marker? find_next_marker() {
 			Marker m;
+			int best_length = 0;
+			int new_length;
 			if ((m = get_cached_marker()) != null) {
 				stdout.printf("got cached marker\n");
 				cached_markers.remove(m);
+				remove_preceding_cached_markers(m);
 				return m;
 			}
 			stdout.printf("no cached marker\n");
@@ -81,30 +103,34 @@ namespace Gtk.Mate {
 				int position_now = position;
 				Oniguruma.Match match;
 				while ((match = scan_for_match(position_now, p)) != null) {
-					stdout.printf("matched: %s\n", p.name);
+					stdout.printf("matched: %s (%d-%d)\n", p.name, match.begin(0), match.end(0));
 					var nm = new Marker();
 					nm.pattern = p;
 					nm.match = match;
 					nm.from = match.begin(0);
 					cached_markers.add(nm);
-					if (m == null || nm.from < m.from) {
-						//stdout.printf("(current first)\n");
+					new_length = nm.match.end(0) - nm.from;
+					if (m == null || (nm.from < m.from && new_length > best_length)) {
 						m = nm;
+						best_length = new_length;
 					}
 					position_now = match.end(0);
 				}
 			}
-			if (m != null)
+			if (m != null) {
 				cached_markers.remove(m);
+				remove_preceding_cached_markers(m);
+			}
 			return m;
 		}
 
 		// called when the current_scope property is set.
 		private void updated_current_scope() {
 			// clear markers cached for this scope: 
-			// (optimization potential? keep them for each scope in a hashmap)
+			// (optimization potential: keep them for each scope in a hashmap)
+			// (optimization potential: be aware of when a subscope can contain
+			//  all the parents scopes, so we don't need to clear.)
 			cached_markers.clear();
-			
 		}
 
 		public class Iterator<Marker> : Object, Gee.Iterator<Marker> {

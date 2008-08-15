@@ -908,7 +908,11 @@ static VALUE rb_gtk_mate_pattern_make_captures_from_plist(VALUE self, VALUE pd) 
     // Method#type_checks
     // Method#argument_type_conversions
     PListDict* _c_pd;
-    _c_pd = _PLIST_DICT_SELF(pd);
+    if (pd == Qnil)
+        _c_pd = NULL;
+    else {
+        _c_pd = _PLIST_DICT_SELF(pd);
+    }
     // Method#body
     
     GeeHashMap* _c_return;
@@ -1513,9 +1517,11 @@ static VALUE rb_gtk_mate_include_pattern_create_from_plist(VALUE self, VALUE pd)
 /****  Gtk.Mate.Scope methods *****/
 
 
-static VALUE gtk_mate_scope_initialize(VALUE self) {
+static VALUE gtk_mate_scope_initialize(VALUE self, VALUE name) {
+    char * _c_name;
+    _c_name = g_strdup(STR2CSTR(name));
 
-    RBGTK_INITIALIZE(self, gtk_mate_scope_new ());
+    RBGTK_INITIALIZE(self, gtk_mate_scope_new (_c_name));
     return Qnil;
 }
 
@@ -1539,40 +1545,6 @@ static VALUE rb_gtk_mate_scope_set_pattern(VALUE self, VALUE pattern) {
     _c_pattern = _GTK_MATE_PATTERN_SELF(pattern);
     // ValaMemberSet#body
     gtk_mate_scope->pattern = _c_pattern;
-    // Method#return_type_conversion
-    return Qnil;
-}
-
-static VALUE rb_gtk_mate_scope_get_name(VALUE self) {
-    GtkMateScope* gtk_mate_scope = RVAL2GOBJ(self);
-    // Method#type_checks
-    // Method#argument_type_conversions
-    // ValaMemberGet#body
-    char * _c_return = gtk_mate_scope->name; 
-    // Method#return_type_conversion
-    VALUE _rb_return; 
-          if (_c_return == NULL) {
-        _rb_return = Qnil;
-      }
-      else {
-        _rb_return = rb_str_new2(_c_return);
-      }
-
-    return _rb_return;
-}
-
-static VALUE rb_gtk_mate_scope_set_name(VALUE self, VALUE name) {
-    GtkMateScope* gtk_mate_scope = RVAL2GOBJ(self);
-    // Method#type_checks
-    if (TYPE(name) != T_STRING) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected a string");
-    }
-    // Method#argument_type_conversions
-    char * _c_name;
-    _c_name = g_strdup(STR2CSTR(name));
-    // ValaMemberSet#body
-    gtk_mate_scope->name = _c_name;
     // Method#return_type_conversion
     return Qnil;
 }
@@ -3002,6 +2974,56 @@ static VALUE rb_gtk_mate_parser_is_parsing(VALUE self) {
     return _rb_return;
 }
 
+static VALUE rb_gtk_mate_parser_handle_captures(VALUE self, VALUE scope, VALUE m) {
+    GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    GtkMateScope* _c_scope;
+    _c_scope = _GTK_MATE_SCOPE_SELF(scope);
+    GtkMateMarker* _c_m;
+    _c_m = _GTK_MATE_MARKER_SELF(m);
+    // Method#body
+    
+    gtk_mate_parser_handle_captures(gtk_mate_parser, _c_scope, _c_m);
+    // Method#return_type_conversion
+    return Qnil;
+}
+
+static VALUE rb_gtk_mate_parser_make_closing_regex(VALUE self, VALUE m) {
+    GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    GtkMateMarker* _c_m;
+    _c_m = _GTK_MATE_MARKER_SELF(m);
+    // Method#body
+    
+    OnigurumaRegex* _c_return;
+    _c_return = gtk_mate_parser_make_closing_regex(gtk_mate_parser, _c_m);
+    // Method#return_type_conversion
+    VALUE _rb_return;
+    if (_c_return == NULL)
+        _rb_return = Qnil;
+    else {
+        _rb_return = GOBJ2RVAL(_c_return);
+    }
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_parser_collect_child_captures(VALUE self, VALUE scope, VALUE m) {
+    GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    GtkMateScope* _c_scope;
+    _c_scope = _GTK_MATE_SCOPE_SELF(scope);
+    GtkMateMarker* _c_m;
+    _c_m = _GTK_MATE_MARKER_SELF(m);
+    // Method#body
+    
+    gtk_mate_parser_collect_child_captures(gtk_mate_parser, _c_scope, _c_m);
+    // Method#return_type_conversion
+    return Qnil;
+}
+
 static VALUE rb_gtk_mate_parser_connect_buffer_signals(VALUE self) {
     GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
     // Method#type_checks
@@ -3092,6 +3114,42 @@ static VALUE rb_gtk_mate_marker_set_hint(VALUE self, VALUE hint) {
     _c_hint = FIX2INT(hint);
     // ValaMemberSet#body
     gtk_mate_marker->hint = _c_hint;
+    // Method#return_type_conversion
+    return Qnil;
+}
+
+static VALUE rb_gtk_mate_marker_get_is_close_scope(VALUE self) {
+    GtkMateMarker* gtk_mate_marker = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // ValaMemberGet#body
+    gboolean _c_return = gtk_mate_marker->is_close_scope; 
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+          if (_c_return == TRUE)
+          _rb_return = Qtrue;
+      else
+          _rb_return = Qfalse;
+
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_marker_set_is_close_scope(VALUE self, VALUE is_close_scope) {
+    GtkMateMarker* gtk_mate_marker = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(is_close_scope) != T_TRUE && TYPE(is_close_scope) != T_FALSE) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected true or false");
+    }
+    // Method#argument_type_conversions
+    gboolean _c_is_close_scope;
+          if (is_close_scope == Qtrue)
+          _c_is_close_scope = TRUE;
+      else
+          _c_is_close_scope = FALSE;
+
+    // ValaMemberSet#body
+    gtk_mate_marker->is_close_scope = _c_is_close_scope;
     // Method#return_type_conversion
     return Qnil;
 }
@@ -3259,6 +3317,19 @@ static VALUE rb_gtk_mate_scanner_get_cached_marker(VALUE self) {
         _rb_return = GOBJ2RVAL(_c_return);
     }
     return _rb_return;
+}
+
+static VALUE rb_gtk_mate_scanner_remove_preceding_cached_markers(VALUE self, VALUE m) {
+    GtkMateScanner* gtk_mate_scanner = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    GtkMateMarker* _c_m;
+    _c_m = _GTK_MATE_MARKER_SELF(m);
+    // Method#body
+    
+    gtk_mate_scanner_remove_preceding_cached_markers(gtk_mate_scanner, _c_m);
+    // Method#return_type_conversion
+    return Qnil;
 }
 
 static VALUE rb_gtk_mate_scanner_scan_for_match(VALUE self, VALUE from, VALUE p) {
@@ -4211,11 +4282,9 @@ void Init_gtkmateview_rb() {
     rb_define_singleton_method(rbc_gtk_mate_theme, "create_from_plist", rb_gtk_mate_theme_create_from_plist, 1);
     rb_define_singleton_method(rbc_gtk_mate_theme, "theme_filenames", rb_gtk_mate_theme_theme_filenames, 0);
     rbc_gtk_mate_scope = G_DEF_CLASS(gtk_mate_scope_get_type(), "Scope", rbc_gtk_mate);
-    rb_define_method(rbc_gtk_mate_scope, "initialize", gtk_mate_scope_initialize, 0);
+    rb_define_method(rbc_gtk_mate_scope, "initialize", gtk_mate_scope_initialize, 1);
     rb_define_method(rbc_gtk_mate_scope, "pattern", rb_gtk_mate_scope_get_pattern, 0);
     rb_define_method(rbc_gtk_mate_scope, "pattern=", rb_gtk_mate_scope_set_pattern, 1);
-    rb_define_method(rbc_gtk_mate_scope, "name", rb_gtk_mate_scope_get_name, 0);
-    rb_define_method(rbc_gtk_mate_scope, "name=", rb_gtk_mate_scope_set_name, 1);
     rb_define_method(rbc_gtk_mate_scope, "open_match", rb_gtk_mate_scope_get_open_match, 0);
     rb_define_method(rbc_gtk_mate_scope, "open_match=", rb_gtk_mate_scope_set_open_match, 1);
     rb_define_method(rbc_gtk_mate_scope, "close_match", rb_gtk_mate_scope_get_close_match, 0);
@@ -4266,6 +4335,9 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_parser, "stop_parsing", rb_gtk_mate_parser_stop_parsing, 0);
     rb_define_method(rbc_gtk_mate_parser, "start_parsing", rb_gtk_mate_parser_start_parsing, 0);
     rb_define_method(rbc_gtk_mate_parser, "is_parsing", rb_gtk_mate_parser_is_parsing, 0);
+    rb_define_method(rbc_gtk_mate_parser, "handle_captures", rb_gtk_mate_parser_handle_captures, 2);
+    rb_define_method(rbc_gtk_mate_parser, "make_closing_regex", rb_gtk_mate_parser_make_closing_regex, 1);
+    rb_define_method(rbc_gtk_mate_parser, "collect_child_captures", rb_gtk_mate_parser_collect_child_captures, 2);
     rb_define_method(rbc_gtk_mate_parser, "connect_buffer_signals", rb_gtk_mate_parser_connect_buffer_signals, 0);
     rb_define_singleton_method(rbc_gtk_mate_parser, "create", rb_gtk_mate_parser_create, 2);
     rbc_oniguruma_match = G_DEF_CLASS(oniguruma_match_get_type(), "Match", rbc_oniguruma);
@@ -4305,6 +4377,8 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_marker, "from=", rb_gtk_mate_marker_set_from, 1);
     rb_define_method(rbc_gtk_mate_marker, "hint", rb_gtk_mate_marker_get_hint, 0);
     rb_define_method(rbc_gtk_mate_marker, "hint=", rb_gtk_mate_marker_set_hint, 1);
+    rb_define_method(rbc_gtk_mate_marker, "is_close_scope", rb_gtk_mate_marker_get_is_close_scope, 0);
+    rb_define_method(rbc_gtk_mate_marker, "is_close_scope=", rb_gtk_mate_marker_set_is_close_scope, 1);
     rb_define_method(rbc_gtk_mate_marker, "pattern", rb_gtk_mate_marker_get_pattern, 0);
     rb_define_method(rbc_gtk_mate_marker, "pattern=", rb_gtk_mate_marker_set_pattern, 1);
     rb_define_method(rbc_gtk_mate_marker, "match", rb_gtk_mate_marker_get_match, 0);
@@ -4342,6 +4416,7 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_scanner, "cached_markers", rb_gtk_mate_scanner_get_cached_markers, 0);
     rb_define_method(rbc_gtk_mate_scanner, "cached_markers=", rb_gtk_mate_scanner_set_cached_markers, 1);
     rb_define_method(rbc_gtk_mate_scanner, "get_cached_marker", rb_gtk_mate_scanner_get_cached_marker, 0);
+    rb_define_method(rbc_gtk_mate_scanner, "remove_preceding_cached_markers", rb_gtk_mate_scanner_remove_preceding_cached_markers, 1);
     rb_define_method(rbc_gtk_mate_scanner, "scan_for_match", rb_gtk_mate_scanner_scan_for_match, 2);
     rb_define_method(rbc_gtk_mate_scanner, "find_next_marker", rb_gtk_mate_scanner_find_next_marker, 0);
     rbc_gtk_mate_pattern = G_DEF_CLASS(gtk_mate_pattern_get_type(), "Pattern", rbc_gtk_mate);

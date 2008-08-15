@@ -23,8 +23,7 @@ namespace Gtk.Mate {
 		public int deactivation_level;
 		
 		public void make_root() {
-			this.root = new Scope();
-			this.root.name = this.grammar.scope_name;
+			this.root = new Scope(this.grammar.scope_name);
 			var dp = new DoublePattern();
 			dp.name = this.grammar.name;
 			dp.patterns = this.grammar.patterns;
@@ -77,19 +76,65 @@ namespace Gtk.Mate {
 			stdout.printf("parse line: %d (%d): '%s'\n", line_ix, length, line);
 			var scanner = new Scanner(this.root, line, length);
 			int i = 0;
-			foreach (var m in scanner) {
+			Scope s;
+			foreach (Marker m in scanner) {
 				stdout.printf("%s (%d-%d), ", m.pattern.name, m.from, m.match.end(0));
 				if (m.pattern is DoublePattern) {
 					stdout.printf("[opening with %d patterns], ", ((DoublePattern) m.pattern).patterns.size);
-					var s = new Scope();
+					s = new Scope(m.pattern.name);
 					s.pattern = m.pattern;
-					s.name = m.pattern.name;
+					s.open_match = m.match;
+					// s.set_start_mark(buffer, m.from, false);
+					// s.set_inner_start_mark(buffer, m.match.end(0), false);
+					// s.set_inner_end_mark(buffer, buffer.get_char_count(), false);
+					// s.set_end_mark(buffer, buffer.get_char_count(), false);
+					// s.is_open = true;
+					// s.closing_regex = make_close_scope_regex_from_marker(m);
 					scanner.current_scope = s;
 				}
+				else {
+					s = new Scope(m.pattern.name);
+					s.pattern = m.pattern;
+					s.open_match = m.match;
+				}
+				handle_captures(s, m);
 				scanner.position = m.match.end(0);
 				stdout.printf("\n");
 			}
 			return false;
+		}
+
+		// Opens scopes for captures AND creates closing regexp from
+		// captures if necessary.
+		public void handle_captures(Scope scope, Marker m) {
+			make_closing_regex(m);
+			collect_child_captures(scope, m);
+		}
+
+		public Oniguruma.Regex? make_closing_regex(Marker m) {
+			// new_end = pattern.end.gsub(/\\([0-9]+)/) do
+			// 	md.captures.send(:[], $1.to_i-1)
+			// end			
+			return null;
+		}
+		
+		// arranges the child captures in a tree under the 
+		public void collect_child_captures(Scope scope, Marker m) {
+			Scope s;
+			HashMap<int, string> captures;
+			if (m.pattern is SinglePattern) {
+				captures = ((SinglePattern) m.pattern).captures;
+			}
+			foreach (int cap in captures.get_keys()) {
+				s = new Scope(captures.get(cap));
+				// FIXME: should arrange these into a tree.
+				scope.children.append(s);
+			}
+			GLib.SequenceIter iter = scope.children.get_begin_iter();
+			while (!iter.is_end()) {
+				stdout.printf("child: %s\n", scope.children.get(iter).name);
+				iter = iter.next();
+			} 
 		}
 
 		public void connect_buffer_signals() {

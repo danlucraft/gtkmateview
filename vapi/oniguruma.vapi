@@ -16,6 +16,10 @@ namespace Oniguruma {
 						  char* range, Region region, OnigOptionType option);
 		[CCode (cname = "onig_number_of_captures", cheader_filename = "oniguruma.h")]
 		public int number_of_captures();
+		[CCode (cname = "onig_number_of_names", cheader_filename = "oniguruma.h")]
+		public int number_of_names();
+		// [CCode (cname = "onig_number_of_capture_histories", cheader_filename = "oniguruma.h")]
+		// public int number_of_capture_histories();
 	}
 	
 	[CCode (cname = "OnigRegion", cheader_filename = "oniguruma.h", free_function = "onig_region_free", ref_function="", unref_function="")]
@@ -25,6 +29,20 @@ namespace Oniguruma {
 		public int[] end;
 		[CCode (cname = "onig_region_new", cheader_filename = "oniguruma.h")]
 		public Region();
+		[CCode (cname = "onig_get_capture_tree", cheader_filename = "oniguruma.h")]
+		public CaptureTreeNode get_capture_tree();	
+		[CCode (cname = "onig_number_of_capture_histories", cheader_filename = "oniguruma.h")]
+		public int number_of_capture_histories();
+}
+
+	[CCode (cname = "OnigCaptureTreeNode", cheader_filename = "oniguruma.h", free_function = "", ref_function = "", unref_function = "")]
+	public class CaptureTreeNode {
+		public int group;
+		public int beg;
+		public int end;
+		public int allocated;
+		public int num_childs;
+		public CaptureTreeNode[] childs;
 	}
 
 	[CCode (cname="OnigOptionType*")]
@@ -33,8 +51,13 @@ namespace Oniguruma {
 	[CCode (cname="OnigEncoding*")]
 	public struct OnigEncoding : int { }
 
-	[CCode (cname="OnigSyntaxType*")]
-	public struct OnigSyntaxType : int { }
+	[CCode (cname="OnigSyntaxType")]
+	public struct OnigSyntaxType {
+		[CCode (cname = "onig_set_syntax_op2", cheader_filename = "oniguruma.h")]
+		public void set_op2(uint op2);
+		[CCode (cname = "onig_get_syntax_op2", cheader_filename = "oniguruma.h")]
+		public uint get_op2();
+	}
 
 	[CCode (cname="UChar")]
 	public struct UChar : char { }
@@ -119,7 +142,36 @@ namespace Oniguruma {
 		// public const OnigSyntaxType ONIG_SYNTAX_PERL_NG;
 		// public const OnigSyntaxType ONIG_SYNTAX_RUBY;
 		[CCode (cname = "ONIG_SYNTAX_DEFAULT", cheader_filename = "oniguruma.h")]
-		public const OnigSyntaxType DEFAULT;
+		public const OnigSyntaxType* DEFAULT;
+		
+		[CCode (cname = "onig_copy_syntax", cheader_filename = "oniguruma.h")]
+		public static void copy(OnigSyntaxType* to, OnigSyntaxType* from);
+
+		namespace Op2 {
+			// public const int ONIG_SYN_OP2_ESC_CAPITAL_Q_QUOTE;
+			// public const int ONIG_SYN_OP2_QMARK_GROUP_EFFECT;
+			// public const int ONIG_SYN_OP2_OPTION_PERL;       
+			// public const int ONIG_SYN_OP2_OPTION_RUBY;       
+			// public const int ONIG_SYN_OP2_PLUS_POSSESSIVE_REPEAT;
+			// public const int ONIG_SYN_OP2_PLUS_POSSESSIVE_INTERVAL;
+			// public const int ONIG_SYN_OP2_CCLASS_SET_OP;           
+			// public const int ONIG_SYN_OP2_QMARK_LT_NAMED_GROUP;    
+			// public const int ONIG_SYN_OP2_ESC_K_NAMED_BACKREF;     
+			// public const int ONIG_SYN_OP2_ESC_G_SUBEXP_CALL;   
+			[CCode (cname = "ONIG_SYN_OP2_ATMARK_CAPTURE_HISTORY", cheader_filename = "oniguruma.h")]    
+			public const uint ATMARK_CAPTURE_HISTORY;  
+			// public const int ONIG_SYN_OP2_ESC_CAPITAL_C_BAR_CONTROL;
+			// public const int ONIG_SYN_OP2_ESC_CAPITAL_M_BAR_META;   
+			// public const int ONIG_SYN_OP2_ESC_V_VTAB;               
+			// public const int ONIG_SYN_OP2_ESC_U_HEX4;               
+			// public const int ONIG_SYN_OP2_ESC_GNU_BUF_ANCHOR;       
+			// public const int ONIG_SYN_OP2_ESC_P_BRACE_CHAR_PROPERTY;
+			// public const int ONIG_SYN_OP2_ESC_P_BRACE_CIRCUMFLEX_NOT;
+			// public const int ONIG_SYN_OP2_CHAR_PROPERTY_PREFIX_IS;   
+			// public const int ONIG_SYN_OP2_ESC_H_XDIGIT;              
+			// public const int ONIG_SYN_OP2_INEFFECTIVE_ESCAPE;        
+
+		}
 	}
 
 	[CCode (cname = "OnigErrorInfo", cheader_filename = "oniguruma.h")]

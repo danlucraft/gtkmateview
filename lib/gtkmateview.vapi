@@ -29,7 +29,7 @@ namespace Gtk {
 			public string comment;
 			public static Gee.ArrayList<Gtk.Mate.Pattern> all_patterns;
 			public static Gtk.Mate.Pattern? create_from_plist (Gee.ArrayList<Gtk.Mate.Pattern> all_patterns, PList.Dict pd);
-			public static Gee.HashMap<int,string> make_captures_from_plist (PList.Dict pd);
+			public static Gee.HashMap<int,string> make_captures_from_plist (PList.Dict? pd);
 			public Pattern ();
 		}
 		[CCode (cheader_filename = "pattern.h")]
@@ -61,7 +61,6 @@ namespace Gtk {
 		[CCode (cheader_filename = "scope.h")]
 		public class Scope : Gtk.Object {
 			public Gtk.Mate.Pattern pattern;
-			public string name;
 			public Oniguruma.Match open_match;
 			public Oniguruma.Match close_match;
 			public Oniguruma.Regex closing_regex;
@@ -73,15 +72,16 @@ namespace Gtk {
 			public Gtk.TextTag inner_tag;
 			public string bg_color;
 			public bool is_capture;
-			public GLib.Sequence<Gtk.Mate.Scope> children;
 			public Gtk.Mate.Scope parent;
 			public GLib.StringBuilder pretty_string;
 			public int indent;
+			public Scope (string name);
 			public bool is_root ();
 			public static int compare (Gtk.Mate.Scope a, Gtk.Mate.Scope b);
 			public string pretty (int indent);
 			public void append_pretty (Gtk.Mate.Scope child);
-			public Scope ();
+			public string name { get; set; }
+			public GLib.Sequence<Gtk.Mate.Scope> children { get; }
 		}
 		[CCode (cheader_filename = "grammar.h")]
 		public class Grammar : Gtk.Object {
@@ -141,6 +141,9 @@ namespace Gtk {
 			public void stop_parsing ();
 			public void start_parsing ();
 			public bool is_parsing ();
+			public void handle_captures (Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
+			public Oniguruma.Regex? make_closing_regex (Gtk.Mate.Marker m);
+			public void collect_child_captures (Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
 			public void connect_buffer_signals ();
 			public void insert_text_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, string text, int length);
 			public void delete_range_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);
@@ -157,6 +160,7 @@ namespace Gtk {
 		public class Marker : Gtk.Object {
 			public int from;
 			public int hint;
+			public bool is_close_scope;
 			public Gtk.Mate.Pattern pattern;
 			public Oniguruma.Match match;
 			public Marker ();
@@ -167,6 +171,7 @@ namespace Gtk {
 			public Gee.ArrayList<Gtk.Mate.Marker> cached_markers;
 			public Scanner (Gtk.Mate.Scope s, string line, int line_length);
 			public Gtk.Mate.Marker? get_cached_marker ();
+			public void remove_preceding_cached_markers (Gtk.Mate.Marker m);
 			public Oniguruma.Match? scan_for_match (int from, Gtk.Mate.Pattern p);
 			public Gtk.Mate.Marker? find_next_marker ();
 			public Gtk.Mate.Scope current_scope { get; set; }

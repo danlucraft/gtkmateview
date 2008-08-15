@@ -4,12 +4,29 @@
 
 
 
+struct _GtkMateScopePrivate {
+	char* _name;
+	GSequence* _children;
+};
+
+#define GTK_MATE_SCOPE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GTK_MATE_TYPE_SCOPE, GtkMateScopePrivate))
 enum  {
-	GTK_MATE_SCOPE_DUMMY_PROPERTY
+	GTK_MATE_SCOPE_DUMMY_PROPERTY,
+	GTK_MATE_SCOPE_NAME,
+	GTK_MATE_SCOPE_CHILDREN
 };
 static gpointer gtk_mate_scope_parent_class = NULL;
 static void gtk_mate_scope_dispose (GObject * obj);
 
+
+
+GtkMateScope* gtk_mate_scope_new (const char* name) {
+	GtkMateScope * self;
+	g_return_val_if_fail (name != NULL, NULL);
+	self = g_object_newv (GTK_MATE_TYPE_SCOPE, 0, NULL);
+	gtk_mate_scope_set_name (self, name);
+	return self;
+}
 
 
 gboolean gtk_mate_scope_is_root (GtkMateScope* self) {
@@ -87,7 +104,7 @@ char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent) {
 		}
 	}
 	_tmp1 = NULL;
-	g_string_append (self->pretty_string, (_tmp1 = g_strconcat (self->name, " (", NULL)));
+	g_string_append (self->pretty_string, (_tmp1 = g_strconcat (self->priv->_name, " (", NULL)));
 	_tmp1 = (g_free (_tmp1), NULL);
 	if (self->start_mark == NULL) {
 		g_string_append (self->pretty_string, "inf");
@@ -98,8 +115,8 @@ char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent) {
 	}
 	g_string_append (self->pretty_string, ")\n");
 	self->indent = self->indent + (1);
-	if (self->children != NULL) {
-		g_sequence_foreach (self->children, ((GFunc) (gtk_mate_scope_append_pretty)), NULL);
+	if (gtk_mate_scope_get_children (self) != NULL) {
+		g_sequence_foreach (gtk_mate_scope_get_children (self), ((GFunc) (gtk_mate_scope_append_pretty)), NULL);
 	}
 	_tmp2 = NULL;
 	return (_tmp2 = self->pretty_string->str, (_tmp2 == NULL ? NULL : g_strdup (_tmp2)));
@@ -116,20 +133,78 @@ void gtk_mate_scope_append_pretty (GtkMateScope* self, GtkMateScope* child) {
 }
 
 
-GtkMateScope* gtk_mate_scope_new (void) {
+const char* gtk_mate_scope_get_name (GtkMateScope* self) {
+	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	return self->priv->_name;
+}
+
+
+void gtk_mate_scope_set_name (GtkMateScope* self, const char* value) {
+	char* _tmp2;
+	const char* _tmp1;
+	g_return_if_fail (GTK_MATE_IS_SCOPE (self));
+	_tmp2 = NULL;
+	_tmp1 = NULL;
+	self->priv->_name = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL ? NULL : g_strdup (_tmp1))), (self->priv->_name = (g_free (self->priv->_name), NULL)), _tmp2);
+	g_object_notify (((GObject *) (self)), "name");
+}
+
+
+GSequence* gtk_mate_scope_get_children (GtkMateScope* self) {
+	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	if (self->priv->_children == NULL) {
+		GSequence* _tmp0;
+		_tmp0 = NULL;
+		self->priv->_children = (_tmp0 = g_sequence_new (NULL), (self->priv->_children == NULL ? NULL : (self->priv->_children = (g_sequence_free (self->priv->_children), NULL))), _tmp0);
+	}
+	return self->priv->_children;
+}
+
+
+static void gtk_mate_scope_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	GtkMateScope * self;
-	self = g_object_newv (GTK_MATE_TYPE_SCOPE, 0, NULL);
-	return self;
+	self = GTK_MATE_SCOPE (object);
+	switch (property_id) {
+		case GTK_MATE_SCOPE_NAME:
+		g_value_set_string (value, gtk_mate_scope_get_name (self));
+		break;
+		case GTK_MATE_SCOPE_CHILDREN:
+		g_value_set_pointer (value, gtk_mate_scope_get_children (self));
+		break;
+		default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+		break;
+	}
+}
+
+
+static void gtk_mate_scope_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
+	GtkMateScope * self;
+	self = GTK_MATE_SCOPE (object);
+	switch (property_id) {
+		case GTK_MATE_SCOPE_NAME:
+		gtk_mate_scope_set_name (self, g_value_get_string (value));
+		break;
+		default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+		break;
+	}
 }
 
 
 static void gtk_mate_scope_class_init (GtkMateScopeClass * klass) {
 	gtk_mate_scope_parent_class = g_type_class_peek_parent (klass);
+	g_type_class_add_private (klass, sizeof (GtkMateScopePrivate));
+	G_OBJECT_CLASS (klass)->get_property = gtk_mate_scope_get_property;
+	G_OBJECT_CLASS (klass)->set_property = gtk_mate_scope_set_property;
 	G_OBJECT_CLASS (klass)->dispose = gtk_mate_scope_dispose;
+	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_SCOPE_NAME, g_param_spec_string ("name", "name", "name", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_SCOPE_CHILDREN, g_param_spec_pointer ("children", "children", "children", G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
 }
 
 
 static void gtk_mate_scope_instance_init (GtkMateScope * self) {
+	self->priv = GTK_MATE_SCOPE_GET_PRIVATE (self);
 }
 
 
@@ -137,7 +212,7 @@ static void gtk_mate_scope_dispose (GObject * obj) {
 	GtkMateScope * self;
 	self = GTK_MATE_SCOPE (obj);
 	(self->pattern == NULL ? NULL : (self->pattern = (g_object_unref (self->pattern), NULL)));
-	self->name = (g_free (self->name), NULL);
+	self->priv->_name = (g_free (self->priv->_name), NULL);
 	(self->open_match == NULL ? NULL : (self->open_match = (g_object_unref (self->open_match), NULL)));
 	(self->close_match == NULL ? NULL : (self->close_match = (g_object_unref (self->close_match), NULL)));
 	(self->closing_regex == NULL ? NULL : (self->closing_regex = (g_object_unref (self->closing_regex), NULL)));
@@ -148,7 +223,7 @@ static void gtk_mate_scope_dispose (GObject * obj) {
 	(self->tag == NULL ? NULL : (self->tag = (g_object_unref (self->tag), NULL)));
 	(self->inner_tag == NULL ? NULL : (self->inner_tag = (g_object_unref (self->inner_tag), NULL)));
 	self->bg_color = (g_free (self->bg_color), NULL);
-	(self->children == NULL ? NULL : (self->children = (g_sequence_free (self->children), NULL)));
+	(self->priv->_children == NULL ? NULL : (self->priv->_children = (g_sequence_free (self->priv->_children), NULL)));
 	(self->parent == NULL ? NULL : (self->parent = (g_object_unref (self->parent), NULL)));
 	(self->pretty_string == NULL ? NULL : (self->pretty_string = (g_string_free (self->pretty_string, TRUE), NULL)));
 	G_OBJECT_CLASS (gtk_mate_scope_parent_class)->dispose (obj);

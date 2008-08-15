@@ -56,6 +56,7 @@ struct _GtkMateMarker {
 	GtkMateMarkerPrivate * priv;
 	gint from;
 	gint hint;
+	gboolean is_close_scope;
 	GtkMatePattern* pattern;
 	OnigurumaMatch* match;
 };
@@ -92,6 +93,7 @@ GtkMateMarker* gtk_mate_marker_new (void);
 GType gtk_mate_marker_get_type (void);
 GtkMateScanner* gtk_mate_scanner_new (GtkMateScope* s, const char* line, gint line_length);
 GtkMateMarker* gtk_mate_scanner_get_cached_marker (GtkMateScanner* self);
+void gtk_mate_scanner_remove_preceding_cached_markers (GtkMateScanner* self, GtkMateMarker* m);
 OnigurumaMatch* gtk_mate_scanner_scan_for_match (GtkMateScanner* self, gint from, GtkMatePattern* p);
 GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self);
 GtkMateScope* gtk_mate_scanner_get_current_scope (GtkMateScanner* self);

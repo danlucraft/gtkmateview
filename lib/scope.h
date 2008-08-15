@@ -5,9 +5,9 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
+#include <gtksourceview/gtksourceview.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gtksourceview/gtksourceview.h>
 #include <pattern.h>
 #include <onig_wrap.h>
 
@@ -29,7 +29,6 @@ struct _GtkMateScope {
 	GtkObject parent_instance;
 	GtkMateScopePrivate * priv;
 	GtkMatePattern* pattern;
-	char* name;
 	OnigurumaMatch* open_match;
 	OnigurumaMatch* close_match;
 	OnigurumaRegex* closing_regex;
@@ -41,7 +40,6 @@ struct _GtkMateScope {
 	GtkTextTag* inner_tag;
 	char* bg_color;
 	gboolean is_capture;
-	GSequence* children;
 	GtkMateScope* parent;
 	GString* pretty_string;
 	gint indent;
@@ -52,11 +50,14 @@ struct _GtkMateScopeClass {
 };
 
 
+GtkMateScope* gtk_mate_scope_new (const char* name);
 gboolean gtk_mate_scope_is_root (GtkMateScope* self);
 gint gtk_mate_scope_compare (GtkMateScope* a, GtkMateScope* b);
 char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent);
 void gtk_mate_scope_append_pretty (GtkMateScope* self, GtkMateScope* child);
-GtkMateScope* gtk_mate_scope_new (void);
+const char* gtk_mate_scope_get_name (GtkMateScope* self);
+void gtk_mate_scope_set_name (GtkMateScope* self, const char* value);
+GSequence* gtk_mate_scope_get_children (GtkMateScope* self);
 GType gtk_mate_scope_get_type (void);
 
 

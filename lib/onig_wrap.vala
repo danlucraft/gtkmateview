@@ -33,6 +33,7 @@ namespace Oniguruma {
 		public RegexT rx {get; set;}
 
 		public Match? search(string target, int start, int end) {
+
 			Region rg = new Region();
 			char* ctarget = (char *) target;
 			int r = rx.search(ctarget, (ctarget+target.size()), ctarget+start, (ctarget+end), rg, Option.NONE);
@@ -46,16 +47,25 @@ namespace Oniguruma {
 				return md;
 			}
 		}
-		
+
 		public static Regex? make(string pattern, OnigOptionType options, out OnigError error) {
 			var rx = new Regex();
 			char* c_pattern = (char *) pattern;
 			RegexT rx1;
 			Oniguruma.OnigErrorInfo err_info;
+			// OnigSyntaxType syntax;
+			// stdout.printf("foo\n");
+			// Oniguruma.Syntax.copy(&syntax, Syntax.DEFAULT);
+			// // stdout.printf("bar\n");
+			// // stdout.printf("op2; %d\n", (int) syntax.get_op2()); 
+			// int newop2 = (int) (syntax.get_op2() | Syntax.Op2.ATMARK_CAPTURE_HISTORY);
+			// // stdout.printf("newop2; %d\n", newop2);
+			// syntax.set_op2((int) newop2);
+			// stdout.printf("baz\n");
 			int r = Oniguruma.onig_new(out rx1, 
 									   c_pattern, (c_pattern+pattern.size()), 
 									   options,
-									   Encoding.ASCII, Syntax.DEFAULT, 
+									   Encoding.ASCII, *Syntax.DEFAULT, 
 									   ref err_info);
 			if (r < 0) {
 				error = new OnigError();

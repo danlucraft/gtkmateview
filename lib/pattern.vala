@@ -23,7 +23,9 @@ namespace Gtk.Mate {
 			return p;
 		}
 		
-		public static HashMap<int, string> make_captures_from_plist(PList.Dict pd) {
+		public static HashMap<int, string> make_captures_from_plist(PList.Dict? pd) {
+			if (pd == null)
+				return new HashMap<int, string>(direct_hash, direct_equal);
 			PList.Dict? pcd;
 			PList.String ns;
 			var captures = new HashMap<int, string>(direct_hash, direct_equal);
@@ -31,7 +33,7 @@ namespace Gtk.Mate {
 				int capnum = s_capnum.to_int();
 				pcd = (PList.Dict) pd.get(s_capnum);
 				ns = (PList.String) pcd.get("name");
-				// stdout.printf("capture: %s\n", ns.str);
+				// stdout.printf("capture: %d, %s\n", capnum, ns.str);
 				captures.set(capnum, ns.str);
 			}
 			return captures;
@@ -57,9 +59,7 @@ namespace Gtk.Mate {
 
 			PList.Node? n = pd.get("captures");
 			PList.Dict? pcs, pcd;
-			if (n != null) {
-				pattern.captures = Pattern.make_captures_from_plist((PList.Dict) n);
-			}
+			pattern.captures = Pattern.make_captures_from_plist((PList.Dict?) n);
 			all_patterns.add(pattern);
 			return pattern;
 		}
@@ -92,19 +92,15 @@ namespace Gtk.Mate {
 
 			PList.Node? n = pd.get("beginCaptures");
 			if (n != null) {
-				pattern.begin_captures = Pattern.make_captures_from_plist((PList.Dict) n);
+				pattern.begin_captures = Pattern.make_captures_from_plist((PList.Dict?) n);
 			}
 			else {
 				n = pd.get("captures");
-				if (n != null) {
-					pattern.begin_captures = Pattern.make_captures_from_plist((PList.Dict) n);
-				}
+				pattern.begin_captures = Pattern.make_captures_from_plist((PList.Dict?) n);
 			}
 			
 			n = pd.get("endCaptures");
-			if (n != null) {
-				pattern.end_captures = Pattern.make_captures_from_plist((PList.Dict) n);
-			}
+			pattern.end_captures = Pattern.make_captures_from_plist((PList.Dict?) n);
 
 			pattern.patterns = new ArrayList<Pattern>();
 			PList.Node? ps = pd.get("patterns");

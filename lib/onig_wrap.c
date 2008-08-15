@@ -243,6 +243,15 @@ OnigurumaRegex* oniguruma_regex_make (const char* pattern, OnigOptionType* optio
 	rx = oniguruma_regex_new ();
 	c_pattern = ((gchar*) (pattern));
 	rx1 = NULL;
+	/* OnigSyntaxType syntax;
+	 stdout.printf("foo\n");
+	 Oniguruma.Syntax.copy(&syntax, Syntax.DEFAULT);
+	 // stdout.printf("bar\n");
+	 // stdout.printf("op2; %d\n", (int) syntax.get_op2()); 
+	 int newop2 = (int) (syntax.get_op2() | Syntax.Op2.ATMARK_CAPTURE_HISTORY);
+	 // stdout.printf("newop2; %d\n", newop2);
+	 syntax.set_op2((int) newop2);
+	 stdout.printf("baz\n");*/
 	_tmp2 = NULL;
 	_tmp0 = NULL;
 	r = (_tmp1 = onig_new (&_tmp0, c_pattern, (c_pattern + strlen (pattern)), options, ((gint) (ONIG_ENCODING_ASCII)), ONIG_SYNTAX_DEFAULT, &err_info), rx1 = (_tmp2 = _tmp0, (rx1 == NULL ? NULL : (rx1 = ( (rx1), NULL))), _tmp2), _tmp1);

@@ -5,7 +5,7 @@ using GLib;
 namespace Gtk.Mate {
 	public class Scope : Object {
 		public Pattern pattern;
-		public string name;
+		public string name {get; set;}
 
 		public Oniguruma.Match open_match;
 		public Oniguruma.Match close_match;
@@ -17,21 +17,33 @@ namespace Gtk.Mate {
 		public SourceMark end_mark;
 		public TextTag tag;
 		public TextTag inner_tag;
+		// public bool is_open;
 
 		public string bg_color;
 		public bool is_capture;
 
-		public Sequence<Scope> children;
+		private Sequence<Scope> _children;
+		public Sequence<Scope> children {
+			get { 
+				if (_children == null)
+					_children = new Sequence<Scope>(null);
+				return _children;
+			}
+		}
 		public Scope parent;
+
+		public StringBuilder pretty_string;
+		public int indent;
+
+		public Scope(string name) {
+			this.name = name;
+		}
 
 		public bool is_root() {
 			if (parent == null)
 				return true;
 			return false;
 		}
-
-		public StringBuilder pretty_string;
-		public int indent;
 
 		// compare two Scope's. Returns 1 if b is later than a,
 		// -1 if b is before a and 0 if b is overlapping with a
@@ -82,5 +94,21 @@ namespace Gtk.Mate {
 		public void append_pretty(Scope child) {
 			pretty_string.append(child.pretty(this.indent));
 		}
+
+		// public void set_start_mark(Mate.Buffer buf, int offset, bool has_left_gravity) {
+		// 	// start_mark = (Gtk.SourceMark) buf.create_mark(null, buf.iter_(offset), has_left_gravity);
+		// }
+
+		// public void set_inner_start_mark(Mate.Buffer buf, int offset, bool has_left_gravity) {
+		// 	// inner_start_mark = (Gtk.SourceMark) buf.create_mark(null, buf.iter_(offset), has_left_gravity);
+		// }
+
+		// public void set_inner_end_mark(Mate.Buffer buf, int offset, bool has_left_gravity) {
+		// 	// inner_end_mark = (Gtk.SourceMark) buf.create_mark(null, buf.iter_(offset), has_left_gravity);
+		// }
+
+		// public void set_end_mark(Mate.Buffer buf, int offset, bool has_left_gravity) {
+		// 	// end_mark = (Gtk.SourceMark) buf.create_mark(null, buf.iter_(offset), has_left_gravity);
+		// }
 	}
 }
