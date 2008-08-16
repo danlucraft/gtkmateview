@@ -8,7 +8,7 @@ enum  {
 	ONIGURUMA_ONIG_ERROR_DUMMY_PROPERTY
 };
 static gpointer oniguruma_onig_error_parent_class = NULL;
-static void oniguruma_onig_error_dispose (GObject * obj);
+static void oniguruma_onig_error_finalize (GObject * obj);
 struct _OnigurumaMatchPrivate {
 	regex_t* _rx;
 	OnigRegion* _rg;
@@ -21,7 +21,7 @@ enum  {
 	ONIGURUMA_MATCH_RG
 };
 static gpointer oniguruma_match_parent_class = NULL;
-static void oniguruma_match_dispose (GObject * obj);
+static void oniguruma_match_finalize (GObject * obj);
 struct _OnigurumaRegexPrivate {
 	regex_t* _rx;
 };
@@ -32,7 +32,7 @@ enum  {
 	ONIGURUMA_REGEX_RX
 };
 static gpointer oniguruma_regex_parent_class = NULL;
-static void oniguruma_regex_dispose (GObject * obj);
+static void oniguruma_regex_finalize (GObject * obj);
 
 
 
@@ -45,7 +45,7 @@ OnigurumaOnigError* oniguruma_onig_error_new (void) {
 
 static void oniguruma_onig_error_class_init (OnigurumaOnigErrorClass * klass) {
 	oniguruma_onig_error_parent_class = g_type_class_peek_parent (klass);
-	G_OBJECT_CLASS (klass)->dispose = oniguruma_onig_error_dispose;
+	G_OBJECT_CLASS (klass)->finalize = oniguruma_onig_error_finalize;
 }
 
 
@@ -53,20 +53,18 @@ static void oniguruma_onig_error_instance_init (OnigurumaOnigError * self) {
 }
 
 
-static void oniguruma_onig_error_dispose (GObject * obj) {
+static void oniguruma_onig_error_finalize (GObject * obj) {
 	OnigurumaOnigError * self;
 	self = ONIGURUMA_ONIG_ERROR (obj);
-	G_OBJECT_CLASS (oniguruma_onig_error_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (oniguruma_onig_error_parent_class)->finalize (obj);
 }
 
 
 GType oniguruma_onig_error_get_type (void) {
-	static volatile gsize oniguruma_onig_error_type_id = 0;
-	if (g_once_init_enter (&oniguruma_onig_error_type_id)) {
-		GType oniguruma_onig_error_type_id_temp;
+	static GType oniguruma_onig_error_type_id = 0;
+	if (oniguruma_onig_error_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (OnigurumaOnigErrorClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) oniguruma_onig_error_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (OnigurumaOnigError), 0, (GInstanceInitFunc) oniguruma_onig_error_instance_init };
-		oniguruma_onig_error_type_id_temp = g_type_register_static (G_TYPE_OBJECT, "OnigurumaOnigError", &g_define_type_info, 0);
-		g_once_init_leave (&oniguruma_onig_error_type_id, oniguruma_onig_error_type_id_temp);
+		oniguruma_onig_error_type_id = g_type_register_static (G_TYPE_OBJECT, "OnigurumaOnigError", &g_define_type_info, 0);
 	}
 	return oniguruma_onig_error_type_id;
 }
@@ -170,7 +168,7 @@ static void oniguruma_match_class_init (OnigurumaMatchClass * klass) {
 	g_type_class_add_private (klass, sizeof (OnigurumaMatchPrivate));
 	G_OBJECT_CLASS (klass)->get_property = oniguruma_match_get_property;
 	G_OBJECT_CLASS (klass)->set_property = oniguruma_match_set_property;
-	G_OBJECT_CLASS (klass)->dispose = oniguruma_match_dispose;
+	G_OBJECT_CLASS (klass)->finalize = oniguruma_match_finalize;
 	g_object_class_install_property (G_OBJECT_CLASS (klass), ONIGURUMA_MATCH_RX, g_param_spec_pointer ("rx", "rx", "rx", G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (klass), ONIGURUMA_MATCH_RG, g_param_spec_pointer ("rg", "rg", "rg", G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 }
@@ -181,22 +179,20 @@ static void oniguruma_match_instance_init (OnigurumaMatch * self) {
 }
 
 
-static void oniguruma_match_dispose (GObject * obj) {
+static void oniguruma_match_finalize (GObject * obj) {
 	OnigurumaMatch * self;
 	self = ONIGURUMA_MATCH (obj);
 	(self->priv->_rx == NULL ? NULL : (self->priv->_rx = ( (self->priv->_rx), NULL)));
 	(self->priv->_rg == NULL ? NULL : (self->priv->_rg = ( (self->priv->_rg), NULL)));
-	G_OBJECT_CLASS (oniguruma_match_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (oniguruma_match_parent_class)->finalize (obj);
 }
 
 
 GType oniguruma_match_get_type (void) {
-	static volatile gsize oniguruma_match_type_id = 0;
-	if (g_once_init_enter (&oniguruma_match_type_id)) {
-		GType oniguruma_match_type_id_temp;
+	static GType oniguruma_match_type_id = 0;
+	if (oniguruma_match_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (OnigurumaMatchClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) oniguruma_match_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (OnigurumaMatch), 0, (GInstanceInitFunc) oniguruma_match_instance_init };
-		oniguruma_match_type_id_temp = g_type_register_static (G_TYPE_OBJECT, "OnigurumaMatch", &g_define_type_info, 0);
-		g_once_init_leave (&oniguruma_match_type_id, oniguruma_match_type_id_temp);
+		oniguruma_match_type_id = g_type_register_static (G_TYPE_OBJECT, "OnigurumaMatch", &g_define_type_info, 0);
 	}
 	return oniguruma_match_type_id;
 }
@@ -344,7 +340,7 @@ static void oniguruma_regex_class_init (OnigurumaRegexClass * klass) {
 	g_type_class_add_private (klass, sizeof (OnigurumaRegexPrivate));
 	G_OBJECT_CLASS (klass)->get_property = oniguruma_regex_get_property;
 	G_OBJECT_CLASS (klass)->set_property = oniguruma_regex_set_property;
-	G_OBJECT_CLASS (klass)->dispose = oniguruma_regex_dispose;
+	G_OBJECT_CLASS (klass)->finalize = oniguruma_regex_finalize;
 	g_object_class_install_property (G_OBJECT_CLASS (klass), ONIGURUMA_REGEX_RX, g_param_spec_pointer ("rx", "rx", "rx", G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 }
 
@@ -354,21 +350,19 @@ static void oniguruma_regex_instance_init (OnigurumaRegex * self) {
 }
 
 
-static void oniguruma_regex_dispose (GObject * obj) {
+static void oniguruma_regex_finalize (GObject * obj) {
 	OnigurumaRegex * self;
 	self = ONIGURUMA_REGEX (obj);
 	(self->priv->_rx == NULL ? NULL : (self->priv->_rx = ( (self->priv->_rx), NULL)));
-	G_OBJECT_CLASS (oniguruma_regex_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (oniguruma_regex_parent_class)->finalize (obj);
 }
 
 
 GType oniguruma_regex_get_type (void) {
-	static volatile gsize oniguruma_regex_type_id = 0;
-	if (g_once_init_enter (&oniguruma_regex_type_id)) {
-		GType oniguruma_regex_type_id_temp;
+	static GType oniguruma_regex_type_id = 0;
+	if (oniguruma_regex_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (OnigurumaRegexClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) oniguruma_regex_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (OnigurumaRegex), 0, (GInstanceInitFunc) oniguruma_regex_instance_init };
-		oniguruma_regex_type_id_temp = g_type_register_static (G_TYPE_OBJECT, "OnigurumaRegex", &g_define_type_info, 0);
-		g_once_init_leave (&oniguruma_regex_type_id, oniguruma_regex_type_id_temp);
+		oniguruma_regex_type_id = g_type_register_static (G_TYPE_OBJECT, "OnigurumaRegex", &g_define_type_info, 0);
 	}
 	return oniguruma_regex_type_id;
 }

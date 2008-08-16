@@ -6,18 +6,19 @@ namespace Gtk.Mate {
 	public class Scope : Object {
 		public Pattern pattern;
 		public string name {get; set;}
+		public Mate.Buffer buffer {get; set;}
 
 		public Oniguruma.Match open_match;
 		public Oniguruma.Match close_match;
 		public Oniguruma.Regex closing_regex;
 
-		public SourceMark start_mark;
-		public SourceMark inner_start_mark;
-		public SourceMark inner_end_mark;
-		public SourceMark end_mark;
+		public TextMark start_mark;
+		public TextMark inner_start_mark;
+		public TextMark inner_end_mark;
+		public TextMark end_mark;
 		public TextTag tag;
 		public TextTag inner_tag;
-		// public bool is_open;
+		public bool is_open;
 
 		public string bg_color;
 		public bool is_capture;
@@ -35,8 +36,9 @@ namespace Gtk.Mate {
 		public StringBuilder pretty_string;
 		public int indent;
 
-		public Scope(string name) {
+		public Scope(Mate.Buffer buf, string name) {
 			this.name = name;
+			this.buffer = buf;
 		}
 
 		public bool is_root() {
@@ -78,37 +80,61 @@ namespace Gtk.Mate {
 			this.indent = indent;
 			for (int i = 0; i < this.indent; i++)
 				pretty_string.append("  ");
-			pretty_string.append(name+" (");
-			if (start_mark == null)
+			pretty_string.append("+ " + name + " (");
+			if (start_mark == null) {
 				pretty_string.append("inf");
+			}
+			else {
+				pretty_string.append("%d,%d".printf(buffer.iter_from_mark(start_mark).get_line(), 
+													 buffer.iter_from_mark(start_mark).get_line_offset()));
+			}
 			pretty_string.append(")-(");
-			if (end_mark == null)
+			if (end_mark == null) {
 				pretty_string.append("inf");
-			pretty_string.append(")\n");
+			}
+			else {
+				pretty_string.append("%d,%d".printf(buffer.iter_from_mark(end_mark).get_line(), 
+													 buffer.iter_from_mark(end_mark).get_line_offset()));
+			}
+			pretty_string.append(")");
+			pretty_string.append((is_open ? " open" : " closed"));
+			pretty_string.append("\n");
+
 			this.indent += 1;
-			if (children != null)
-				children.foreach((Func) this.append_pretty);
+			GLib.SequenceIter iter = children.get_begin_iter();
+			while (!iter.is_end()) {
+				pretty_string.append(children.get(iter).pretty(this.indent));
+				iter = iter.next();
+			} 
+			this.indent -= 1;
 			return pretty_string.str;
 		}
 
-		public void append_pretty(Scope child) {
-			pretty_string.append(child.pretty(this.indent));
+		public void start_mark_set(int line, int line_offset, bool has_left_gravity) {
+			start_mark = buffer.create_mark(null, buffer.iter_at_line_offset(line, line_offset), has_left_gravity);
 		}
 
-		// public void set_start_mark(Mate.Buffer buf, int offset, bool has_left_gravity) {
-		// 	// start_mark = (Gtk.SourceMark) buf.create_mark(null, buf.iter_(offset), has_left_gravity);
-		// }
+		public void inner_start_mark_set(int line, int line_offset, bool has_left_gravity) {
+			inner_start_mark = buffer.create_mark(null, buffer.iter_at_line_offset(line, line_offset), has_left_gravity);
+		}
 
-		// public void set_inner_start_mark(Mate.Buffer buf, int offset, bool has_left_gravity) {
-		// 	// inner_start_mark = (Gtk.SourceMark) buf.create_mark(null, buf.iter_(offset), has_left_gravity);
-		// }
+		public void inner_end_mark_set(int line, int line_offset, bool has_left_gravity) {
+			inner_end_mark = buffer.create_mark(null, buffer.iter_at_line_offset(line, line_offset), has_left_gravity);
+		}
 
-		// public void set_inner_end_mark(Mate.Buffer buf, int offset, bool has_left_gravity) {
-		// 	// inner_end_mark = (Gtk.SourceMark) buf.create_mark(null, buf.iter_(offset), has_left_gravity);
-		// }
+		public void end_mark_set(int line, int line_offset, bool has_left_gravity) {
+			end_mark = buffer.create_mark(null, buffer.iter_at_line_offset(line, line_offset), has_left_gravity);
+		}
 
-		// public void set_end_mark(Mate.Buffer buf, int offset, bool has_left_gravity) {
-		// 	// end_mark = (Gtk.SourceMark) buf.create_mark(null, buf.iter_(offset), has_left_gravity);
-		// }
+		public int start_offset() {
+			return buffer.iter_from_mark(start_mark).get_offset();
+		}
+
+		public int end_offset() {
+			if (end_mark != null)
+				return buffer.iter_from_mark(end_mark).get_offset();
+			else
+				return int.MAX;
+		}
 	}
 }

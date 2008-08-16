@@ -9,14 +9,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
+#include "scope.h"
 
 G_BEGIN_DECLS
 
-typedef struct _GtkMateBuffer GtkMateBuffer;
-typedef struct _GtkMateBufferClass GtkMateBufferClass;
-typedef struct _GtkMateTextLoc GtkMateTextLoc;
-typedef struct _GtkMateParser GtkMateParser;
-typedef struct _GtkMateParserClass GtkMateParserClass;
 
 #define GTK_MATE_TYPE_BUFFER (gtk_mate_buffer_get_type ())
 #define GTK_MATE_BUFFER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_MATE_TYPE_BUFFER, GtkMateBuffer))
@@ -46,6 +42,8 @@ GtkTextIter gtk_mate_buffer_iter_ (GtkMateBuffer* self, gint offset);
 GtkTextIter gtk_mate_buffer_start_iter (GtkMateBuffer* self);
 GtkTextIter gtk_mate_buffer_end_iter (GtkMateBuffer* self);
 GtkTextIter gtk_mate_buffer_cursor_iter (GtkMateBuffer* self);
+GtkTextIter gtk_mate_buffer_iter_from_mark (GtkMateBuffer* self, GtkTextMark* mark);
+GtkTextIter gtk_mate_buffer_iter_at_line_offset (GtkMateBuffer* self, gint line, gint line_offset);
 GtkTextIter gtk_mate_buffer_line_start_iter (GtkMateBuffer* self, gint line);
 GtkTextIter gtk_mate_buffer_line_end_iter (GtkMateBuffer* self, gint line);
 GtkTextIter gtk_mate_buffer_line_end_iter1 (GtkMateBuffer* self, gint line);

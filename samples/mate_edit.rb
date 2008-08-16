@@ -7,6 +7,8 @@ win = Gtk::Window.new
 win.set_size_request(800, 600)
 mv = Gtk::Mate::View.new
 mv.buffer = Gtk::Mate::Buffer.new
+mv.modify_font(Pango::FontDescription.new("Consolas 14"))
+
 vb = Gtk::VBox.new
 
 button_gr = Gtk::Button.new("grammar")

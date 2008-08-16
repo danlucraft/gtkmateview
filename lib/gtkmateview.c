@@ -3,11 +3,11 @@
 #include <gee/collection.h>
 #include <glib/gstdio.h>
 #include <stdio.h>
-#include <buffer.h>
-#include <bundle.h>
-#include <theme.h>
-#include <grammar.h>
-#include <plist.h>
+#include "buffer.h"
+#include "bundle.h"
+#include "theme.h"
+#include "grammar.h"
+#include "plist.h"
 
 
 

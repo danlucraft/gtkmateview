@@ -64,23 +64,30 @@ namespace Gtk {
 			public Oniguruma.Match open_match;
 			public Oniguruma.Match close_match;
 			public Oniguruma.Regex closing_regex;
-			public Gtk.SourceMark start_mark;
-			public Gtk.SourceMark inner_start_mark;
-			public Gtk.SourceMark inner_end_mark;
-			public Gtk.SourceMark end_mark;
+			public Gtk.TextMark start_mark;
+			public Gtk.TextMark inner_start_mark;
+			public Gtk.TextMark inner_end_mark;
+			public Gtk.TextMark end_mark;
 			public Gtk.TextTag tag;
 			public Gtk.TextTag inner_tag;
+			public bool is_open;
 			public string bg_color;
 			public bool is_capture;
 			public Gtk.Mate.Scope parent;
 			public GLib.StringBuilder pretty_string;
 			public int indent;
-			public Scope (string name);
+			public Scope (Gtk.Mate.Buffer buf, string name);
 			public bool is_root ();
 			public static int compare (Gtk.Mate.Scope a, Gtk.Mate.Scope b);
 			public string pretty (int indent);
-			public void append_pretty (Gtk.Mate.Scope child);
+			public void start_mark_set (int line, int line_offset, bool has_left_gravity);
+			public void inner_start_mark_set (int line, int line_offset, bool has_left_gravity);
+			public void inner_end_mark_set (int line, int line_offset, bool has_left_gravity);
+			public void end_mark_set (int line, int line_offset, bool has_left_gravity);
+			public int start_offset ();
+			public int end_offset ();
 			public string name { get; set; }
+			public Gtk.Mate.Buffer buffer { get; set; }
 			public GLib.Sequence<Gtk.Mate.Scope> children { get; }
 		}
 		[CCode (cheader_filename = "grammar.h")]
@@ -117,6 +124,8 @@ namespace Gtk {
 			public Gtk.TextIter start_iter ();
 			public Gtk.TextIter end_iter ();
 			public Gtk.TextIter cursor_iter ();
+			public Gtk.TextIter iter_from_mark (Gtk.TextMark mark);
+			public Gtk.TextIter iter_at_line_offset (int line, int line_offset);
 			public Gtk.TextIter line_start_iter (int line);
 			public Gtk.TextIter line_end_iter (int line);
 			public Gtk.TextIter line_end_iter1 (int line);
@@ -141,9 +150,9 @@ namespace Gtk {
 			public void stop_parsing ();
 			public void start_parsing ();
 			public bool is_parsing ();
-			public void handle_captures (Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
+			public void handle_captures (int line_ix, Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
 			public Oniguruma.Regex? make_closing_regex (Gtk.Mate.Marker m);
-			public void collect_child_captures (Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
+			public void collect_child_captures (int line_ix, Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
 			public void connect_buffer_signals ();
 			public void insert_text_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, string text, int length);
 			public void delete_range_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);

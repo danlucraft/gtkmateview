@@ -23,7 +23,10 @@ namespace Gtk.Mate {
 		public int deactivation_level;
 		
 		public void make_root() {
-			this.root = new Scope(this.grammar.scope_name);
+			this.root = new Scope(this.buffer, this.grammar.scope_name);
+			this.root.is_open = true;
+			this.root.start_mark_set(0, 0, true);
+			this.root.end_mark_set(buffer.end_iter().get_line(), buffer.end_iter().get_line_offset(), false);
 			var dp = new DoublePattern();
 			dp.name = this.grammar.name;
 			dp.patterns = this.grammar.patterns;
@@ -73,42 +76,48 @@ namespace Gtk.Mate {
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line(line_ix);
 			int length = buffer.get_line_length(line_ix);
-			stdout.printf("parse line: %d (%d): '%s'\n", line_ix, length, line);
+			stdout.printf("parse line: %d (%d): '%s'\n", line_ix, length, line.substring(0, length));
 			var scanner = new Scanner(this.root, line, length);
 			int i = 0;
 			Scope s;
 			foreach (Marker m in scanner) {
-				stdout.printf("%s (%d-%d), ", m.pattern.name, m.from, m.match.end(0));
 				if (m.pattern is DoublePattern) {
-					stdout.printf("[opening with %d patterns], ", ((DoublePattern) m.pattern).patterns.size);
-					s = new Scope(m.pattern.name);
+//					stdout.printf("[opening with %d patterns], \n", ((DoublePattern) m.pattern).patterns.size);
+					s = new Scope(this.buffer, m.pattern.name);
 					s.pattern = m.pattern;
 					s.open_match = m.match;
-					// s.set_start_mark(buffer, m.from, false);
-					// s.set_inner_start_mark(buffer, m.match.end(0), false);
-					// s.set_inner_end_mark(buffer, buffer.get_char_count(), false);
-					// s.set_end_mark(buffer, buffer.get_char_count(), false);
-					// s.is_open = true;
-					// s.closing_regex = make_close_scope_regex_from_marker(m);
+					s.start_mark_set(line_ix, m.from, false);
+					s.inner_start_mark_set(line_ix, int.min(m.match.end(0), length), false);
+					var end_iter = buffer.end_iter();
+					var end_line = end_iter.get_line();
+					var end_line_offset = end_iter.get_line_offset();
+					s.inner_end_mark_set(end_line, end_line_offset, false);
+					s.end_mark_set(end_line, end_line_offset, false);
+					s.is_open = true;
+					scanner.current_scope.children.append(s);
 					scanner.current_scope = s;
 				}
 				else {
-					s = new Scope(m.pattern.name);
+					s = new Scope(this.buffer, m.pattern.name);
 					s.pattern = m.pattern;
 					s.open_match = m.match;
+					s.start_mark_set(line_ix, m.from, false);
+					s.end_mark_set(line_ix, int.min(m.match.end(0), length), true);
+					s.is_open = false;
+					scanner.current_scope.children.append(s);
 				}
-				handle_captures(s, m);
+				handle_captures(line_ix, s, m);
+				stdout.printf("pretty: %s\n", s.pretty(0));
 				scanner.position = m.match.end(0);
-				stdout.printf("\n");
 			}
 			return false;
 		}
 
 		// Opens scopes for captures AND creates closing regexp from
 		// captures if necessary.
-		public void handle_captures(Scope scope, Marker m) {
+		public void handle_captures(int line_ix, Scope scope, Marker m) {
 			make_closing_regex(m);
-			collect_child_captures(scope, m);
+			collect_child_captures(line_ix, scope, m);
 		}
 
 		public Oniguruma.Regex? make_closing_regex(Marker m) {
@@ -118,23 +127,62 @@ namespace Gtk.Mate {
 			return null;
 		}
 		
-		// arranges the child captures in a tree under the 
-		public void collect_child_captures(Scope scope, Marker m) {
+		public void collect_child_captures(int line_ix, Scope scope, Marker m) {
 			Scope s;
 			HashMap<int, string> captures;
 			if (m.pattern is SinglePattern) {
 				captures = ((SinglePattern) m.pattern).captures;
 			}
-			foreach (int cap in captures.get_keys()) {
-				s = new Scope(captures.get(cap));
-				// FIXME: should arrange these into a tree.
-				scope.children.append(s);
+			else {
+				captures = ((DoublePattern) m.pattern).begin_captures;
 			}
-			GLib.SequenceIter iter = scope.children.get_begin_iter();
-			while (!iter.is_end()) {
-				stdout.printf("child: %s\n", scope.children.get(iter).name);
-				iter = iter.next();
-			} 
+			var capture_scopes = new ArrayList<Scope>();
+			// create capture scopes
+			foreach (int cap in captures.get_keys()) {
+				if (m.match.begin(cap) != -1) {
+					s = new Scope(this.buffer, captures.get(cap));
+					s.start_mark_set(line_ix, m.match.begin(cap), false);
+					s.end_mark_set(line_ix, m.match.end(cap), true);
+					s.is_open = false;
+					capture_scopes.add(s);
+				}
+			}
+			// Now we arrange the capture scopes into a tree under the matched
+			// scope. We do this by processing the captures in order of offset and 
+			// length. For each capture, we check to see if it is a child of an already 
+			// placed capture, and if so we add it as a child (we know that the latest 
+			// such capture is the one to add it to by the ordering). If not we
+			// add it as a child of the matched scope.
+			int best_length = 0;
+			int new_length;
+			var placed_scopes = new ArrayList<Scope>();
+			Scope parent_scope;
+			while (capture_scopes.size > 0) {
+				s = null;
+				// find first and longest remaining scope (put it in 's')
+				foreach (var cs in capture_scopes) {
+					new_length = cs.end_offset() - cs.start_offset();
+					if (s == null || (cs.start_offset() < s.start_offset() && new_length >= best_length)) {
+						s = cs;
+						best_length = new_length;
+					}
+				}
+				// look for somewhere to put it from placed_scopes
+				parent_scope = null;
+				foreach (var ps in placed_scopes) {
+					if (s.start_offset() >= ps.start_offset() && s.end_offset() <= ps.end_offset()) {
+						parent_scope = ps;
+					}
+				}
+				if (parent_scope != null) {
+					parent_scope.children.append(s);
+				}
+				else {
+					scope.children.append(s);
+				}
+				placed_scopes.add(s);
+				capture_scopes.remove(s);
+			}
 		}
 
 		public void connect_buffer_signals() {

@@ -9,7 +9,7 @@
 #include <string.h>
 #include <gee/hashmap.h>
 #include <gee/arraylist.h>
-#include <plist.h>
+#include "plist.h"
 
 G_BEGIN_DECLS
 

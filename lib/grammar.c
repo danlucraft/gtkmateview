@@ -3,7 +3,7 @@
 #include <gee/collection.h>
 #include <stdio.h>
 #include <gee/map.h>
-#include <pattern.h>
+#include "pattern.h"
 
 
 
@@ -22,7 +22,7 @@ enum  {
 static void gtk_mate_grammar_set_name (GtkMateGrammar* self, const char* value);
 static void gtk_mate_grammar_set_plist (GtkMateGrammar* self, PListDict* value);
 static gpointer gtk_mate_grammar_parent_class = NULL;
-static void gtk_mate_grammar_dispose (GObject * obj);
+static void gtk_mate_grammar_finalize (GObject * obj);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 
 
@@ -351,7 +351,7 @@ static void gtk_mate_grammar_class_init (GtkMateGrammarClass * klass) {
 	g_type_class_add_private (klass, sizeof (GtkMateGrammarPrivate));
 	G_OBJECT_CLASS (klass)->get_property = gtk_mate_grammar_get_property;
 	G_OBJECT_CLASS (klass)->set_property = gtk_mate_grammar_set_property;
-	G_OBJECT_CLASS (klass)->dispose = gtk_mate_grammar_dispose;
+	G_OBJECT_CLASS (klass)->finalize = gtk_mate_grammar_finalize;
 	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_GRAMMAR_NAME, g_param_spec_string ("name", "name", "name", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_GRAMMAR_PLIST, g_param_spec_object ("plist", "plist", "plist", PLIST_TYPE_DICT, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 }
@@ -362,7 +362,7 @@ static void gtk_mate_grammar_instance_init (GtkMateGrammar * self) {
 }
 
 
-static void gtk_mate_grammar_dispose (GObject * obj) {
+static void gtk_mate_grammar_finalize (GObject * obj) {
 	GtkMateGrammar * self;
 	self = GTK_MATE_GRAMMAR (obj);
 	self->priv->_name = (g_free (self->priv->_name), NULL);
@@ -377,17 +377,15 @@ static void gtk_mate_grammar_dispose (GObject * obj) {
 	(self->folding_stop_marker == NULL ? NULL : (self->folding_stop_marker = (g_object_unref (self->folding_stop_marker), NULL)));
 	(self->patterns == NULL ? NULL : (self->patterns = (g_object_unref (self->patterns), NULL)));
 	(self->repository == NULL ? NULL : (self->repository = (g_object_unref (self->repository), NULL)));
-	G_OBJECT_CLASS (gtk_mate_grammar_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (gtk_mate_grammar_parent_class)->finalize (obj);
 }
 
 
 GType gtk_mate_grammar_get_type (void) {
-	static volatile gsize gtk_mate_grammar_type_id = 0;
-	if (g_once_init_enter (&gtk_mate_grammar_type_id)) {
-		GType gtk_mate_grammar_type_id_temp;
+	static GType gtk_mate_grammar_type_id = 0;
+	if (gtk_mate_grammar_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateGrammarClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_grammar_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateGrammar), 0, (GInstanceInitFunc) gtk_mate_grammar_instance_init };
-		gtk_mate_grammar_type_id_temp = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateGrammar", &g_define_type_info, 0);
-		g_once_init_leave (&gtk_mate_grammar_type_id, gtk_mate_grammar_type_id_temp);
+		gtk_mate_grammar_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateGrammar", &g_define_type_info, 0);
 	}
 	return gtk_mate_grammar_type_id;
 }

@@ -1,0 +1,1 @@
+80809 Why do both $self and $base refer to the entire grammar? Shouldn't $self refer to the pattern itself? (See 

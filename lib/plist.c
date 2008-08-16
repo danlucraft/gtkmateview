@@ -17,19 +17,19 @@ enum  {
 	PLIST_STRING_DUMMY_PROPERTY
 };
 static gpointer plist_string_parent_class = NULL;
-static void plist_string_dispose (GObject * obj);
+static void plist_string_finalize (GObject * obj);
 enum  {
 	PLIST_ARRAY_DUMMY_PROPERTY
 };
 static GObject * plist_array_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 static gpointer plist_array_parent_class = NULL;
-static void plist_array_dispose (GObject * obj);
+static void plist_array_finalize (GObject * obj);
 enum  {
 	PLIST_DICT_DUMMY_PROPERTY
 };
 static GObject * plist_dict_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 static gpointer plist_dict_parent_class = NULL;
-static void plist_dict_dispose (GObject * obj);
+static void plist_dict_finalize (GObject * obj);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
@@ -76,12 +76,10 @@ static void plist_node_instance_init (PListNode * self) {
 
 
 GType plist_node_get_type (void) {
-	static volatile gsize plist_node_type_id = 0;
-	if (g_once_init_enter (&plist_node_type_id)) {
-		GType plist_node_type_id_temp;
+	static GType plist_node_type_id = 0;
+	if (plist_node_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (PListNodeClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) plist_node_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (PListNode), 0, (GInstanceInitFunc) plist_node_instance_init };
-		plist_node_type_id_temp = g_type_register_static (G_TYPE_OBJECT, "PListNode", &g_define_type_info, 0);
-		g_once_init_leave (&plist_node_type_id, plist_node_type_id_temp);
+		plist_node_type_id = g_type_register_static (G_TYPE_OBJECT, "PListNode", &g_define_type_info, 0);
 	}
 	return plist_node_type_id;
 }
@@ -96,7 +94,7 @@ PListString* plist_string_new (void) {
 
 static void plist_string_class_init (PListStringClass * klass) {
 	plist_string_parent_class = g_type_class_peek_parent (klass);
-	G_OBJECT_CLASS (klass)->dispose = plist_string_dispose;
+	G_OBJECT_CLASS (klass)->finalize = plist_string_finalize;
 }
 
 
@@ -104,21 +102,19 @@ static void plist_string_instance_init (PListString * self) {
 }
 
 
-static void plist_string_dispose (GObject * obj) {
+static void plist_string_finalize (GObject * obj) {
 	PListString * self;
 	self = PLIST_STRING (obj);
 	self->str = (g_free (self->str), NULL);
-	G_OBJECT_CLASS (plist_string_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (plist_string_parent_class)->finalize (obj);
 }
 
 
 GType plist_string_get_type (void) {
-	static volatile gsize plist_string_type_id = 0;
-	if (g_once_init_enter (&plist_string_type_id)) {
-		GType plist_string_type_id_temp;
+	static GType plist_string_type_id = 0;
+	if (plist_string_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (PListStringClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) plist_string_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (PListString), 0, (GInstanceInitFunc) plist_string_instance_init };
-		plist_string_type_id_temp = g_type_register_static (PLIST_TYPE_NODE, "PListString", &g_define_type_info, 0);
-		g_once_init_leave (&plist_string_type_id, plist_string_type_id_temp);
+		plist_string_type_id = g_type_register_static (PLIST_TYPE_NODE, "PListString", &g_define_type_info, 0);
 	}
 	return plist_string_type_id;
 }
@@ -182,7 +178,7 @@ static GObject * plist_array_constructor (GType type, guint n_construct_properti
 static void plist_array_class_init (PListArrayClass * klass) {
 	plist_array_parent_class = g_type_class_peek_parent (klass);
 	G_OBJECT_CLASS (klass)->constructor = plist_array_constructor;
-	G_OBJECT_CLASS (klass)->dispose = plist_array_dispose;
+	G_OBJECT_CLASS (klass)->finalize = plist_array_finalize;
 }
 
 
@@ -190,21 +186,19 @@ static void plist_array_instance_init (PListArray * self) {
 }
 
 
-static void plist_array_dispose (GObject * obj) {
+static void plist_array_finalize (GObject * obj) {
 	PListArray * self;
 	self = PLIST_ARRAY (obj);
 	(self->array == NULL ? NULL : (self->array = (g_object_unref (self->array), NULL)));
-	G_OBJECT_CLASS (plist_array_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (plist_array_parent_class)->finalize (obj);
 }
 
 
 GType plist_array_get_type (void) {
-	static volatile gsize plist_array_type_id = 0;
-	if (g_once_init_enter (&plist_array_type_id)) {
-		GType plist_array_type_id_temp;
+	static GType plist_array_type_id = 0;
+	if (plist_array_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (PListArrayClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) plist_array_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (PListArray), 0, (GInstanceInitFunc) plist_array_instance_init };
-		plist_array_type_id_temp = g_type_register_static (PLIST_TYPE_NODE, "PListArray", &g_define_type_info, 0);
-		g_once_init_leave (&plist_array_type_id, plist_array_type_id_temp);
+		plist_array_type_id = g_type_register_static (PLIST_TYPE_NODE, "PListArray", &g_define_type_info, 0);
 	}
 	return plist_array_type_id;
 }
@@ -345,7 +339,7 @@ static GObject * plist_dict_constructor (GType type, guint n_construct_propertie
 static void plist_dict_class_init (PListDictClass * klass) {
 	plist_dict_parent_class = g_type_class_peek_parent (klass);
 	G_OBJECT_CLASS (klass)->constructor = plist_dict_constructor;
-	G_OBJECT_CLASS (klass)->dispose = plist_dict_dispose;
+	G_OBJECT_CLASS (klass)->finalize = plist_dict_finalize;
 }
 
 
@@ -353,21 +347,19 @@ static void plist_dict_instance_init (PListDict * self) {
 }
 
 
-static void plist_dict_dispose (GObject * obj) {
+static void plist_dict_finalize (GObject * obj) {
 	PListDict * self;
 	self = PLIST_DICT (obj);
 	(self->map == NULL ? NULL : (self->map = (g_object_unref (self->map), NULL)));
-	G_OBJECT_CLASS (plist_dict_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (plist_dict_parent_class)->finalize (obj);
 }
 
 
 GType plist_dict_get_type (void) {
-	static volatile gsize plist_dict_type_id = 0;
-	if (g_once_init_enter (&plist_dict_type_id)) {
-		GType plist_dict_type_id_temp;
+	static GType plist_dict_type_id = 0;
+	if (plist_dict_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (PListDictClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) plist_dict_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (PListDict), 0, (GInstanceInitFunc) plist_dict_instance_init };
-		plist_dict_type_id_temp = g_type_register_static (PLIST_TYPE_NODE, "PListDict", &g_define_type_info, 0);
-		g_once_init_leave (&plist_dict_type_id, plist_dict_type_id_temp);
+		plist_dict_type_id = g_type_register_static (PLIST_TYPE_NODE, "PListDict", &g_define_type_info, 0);
 	}
 	return plist_dict_type_id;
 }

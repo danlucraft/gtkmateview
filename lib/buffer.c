@@ -1,10 +1,10 @@
 
 #include "buffer.h"
-#include <bundle.h>
-#include <grammar.h>
-#include <parser.h>
-#include <onig_wrap.h>
-#include <gtkmateview.h>
+#include "bundle.h"
+#include "grammar.h"
+#include "parser.h"
+#include "onig_wrap.h"
+#include "gtkmateview.h"
 
 
 
@@ -16,7 +16,7 @@ GeeArrayList* gtk_mate_buffer_bundles = NULL;
 GeeArrayList* gtk_mate_buffer_themes = NULL;
 static GObject * gtk_mate_buffer_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 static gpointer gtk_mate_buffer_parent_class = NULL;
-static void gtk_mate_buffer_dispose (GObject * obj);
+static void gtk_mate_buffer_finalize (GObject * obj);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
@@ -214,6 +214,23 @@ GtkTextIter gtk_mate_buffer_cursor_iter (GtkMateBuffer* self) {
 }
 
 
+GtkTextIter gtk_mate_buffer_iter_from_mark (GtkMateBuffer* self, GtkTextMark* mark) {
+	GtkTextIter i = {0};
+	0;
+	0;
+	gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (self), &i, mark);
+	return i;
+}
+
+
+GtkTextIter gtk_mate_buffer_iter_at_line_offset (GtkMateBuffer* self, gint line, gint line_offset) {
+	GtkTextIter i = {0};
+	0;
+	gtk_text_buffer_get_iter_at_line_offset (GTK_TEXT_BUFFER (self), &i, line, line_offset);
+	return i;
+}
+
+
 GtkTextIter gtk_mate_buffer_line_start_iter (GtkMateBuffer* self, gint line) {
 	GtkTextIter i = {0};
 	0;
@@ -365,7 +382,7 @@ static GObject * gtk_mate_buffer_constructor (GType type, guint n_construct_prop
 static void gtk_mate_buffer_class_init (GtkMateBufferClass * klass) {
 	gtk_mate_buffer_parent_class = g_type_class_peek_parent (klass);
 	G_OBJECT_CLASS (klass)->constructor = gtk_mate_buffer_constructor;
-	G_OBJECT_CLASS (klass)->dispose = gtk_mate_buffer_dispose;
+	G_OBJECT_CLASS (klass)->finalize = gtk_mate_buffer_finalize;
 }
 
 
@@ -373,21 +390,19 @@ static void gtk_mate_buffer_instance_init (GtkMateBuffer * self) {
 }
 
 
-static void gtk_mate_buffer_dispose (GObject * obj) {
+static void gtk_mate_buffer_finalize (GObject * obj) {
 	GtkMateBuffer * self;
 	self = GTK_MATE_BUFFER (obj);
 	(self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL)));
-	G_OBJECT_CLASS (gtk_mate_buffer_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (gtk_mate_buffer_parent_class)->finalize (obj);
 }
 
 
 GType gtk_mate_buffer_get_type (void) {
-	static volatile gsize gtk_mate_buffer_type_id = 0;
-	if (g_once_init_enter (&gtk_mate_buffer_type_id)) {
-		GType gtk_mate_buffer_type_id_temp;
+	static GType gtk_mate_buffer_type_id = 0;
+	if (gtk_mate_buffer_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateBufferClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_buffer_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateBuffer), 0, (GInstanceInitFunc) gtk_mate_buffer_instance_init };
-		gtk_mate_buffer_type_id_temp = g_type_register_static (GTK_TYPE_SOURCE_BUFFER, "GtkMateBuffer", &g_define_type_info, 0);
-		g_once_init_leave (&gtk_mate_buffer_type_id, gtk_mate_buffer_type_id_temp);
+		gtk_mate_buffer_type_id = g_type_register_static (GTK_TYPE_SOURCE_BUFFER, "GtkMateBuffer", &g_define_type_info, 0);
 	}
 	return gtk_mate_buffer_type_id;
 }

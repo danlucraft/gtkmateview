@@ -79,6 +79,18 @@ namespace Gtk.Mate {
 			return i;
 		}
 
+		public TextIter iter_from_mark(TextMark mark) {
+			TextIter i;
+			get_iter_at_mark(out i, mark);
+			return i;
+		}
+
+		public TextIter iter_at_line_offset(int line, int line_offset) {
+			TextIter i;
+			get_iter_at_line_offset(out i, line, line_offset);
+			return i;
+		}
+		
 		public TextIter line_start_iter(int line) {
 			TextIter i;
 			get_iter_at_line(out i, line);

@@ -9,9 +9,9 @@
 #include <string.h>
 #include <gee/arraylist.h>
 #include <gee/hashmap.h>
-#include <plist.h>
-#include <onig_wrap.h>
-#include <grammar.h>
+#include "plist.h"
+#include "onig_wrap.h"
+#include "grammar.h"
 
 G_BEGIN_DECLS
 

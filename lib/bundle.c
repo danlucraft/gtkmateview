@@ -1,6 +1,6 @@
 
 #include "bundle.h"
-#include <grammar.h>
+#include "grammar.h"
 
 
 
@@ -17,7 +17,7 @@ enum  {
 static void gtk_mate_bundle_set_name (GtkMateBundle* self, const char* value);
 static GObject * gtk_mate_bundle_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 static gpointer gtk_mate_bundle_parent_class = NULL;
-static void gtk_mate_bundle_dispose (GObject * obj);
+static void gtk_mate_bundle_finalize (GObject * obj);
 
 
 
@@ -99,7 +99,7 @@ static void gtk_mate_bundle_class_init (GtkMateBundleClass * klass) {
 	G_OBJECT_CLASS (klass)->get_property = gtk_mate_bundle_get_property;
 	G_OBJECT_CLASS (klass)->set_property = gtk_mate_bundle_set_property;
 	G_OBJECT_CLASS (klass)->constructor = gtk_mate_bundle_constructor;
-	G_OBJECT_CLASS (klass)->dispose = gtk_mate_bundle_dispose;
+	G_OBJECT_CLASS (klass)->finalize = gtk_mate_bundle_finalize;
 	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_BUNDLE_NAME, g_param_spec_string ("name", "name", "name", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 }
 
@@ -109,22 +109,20 @@ static void gtk_mate_bundle_instance_init (GtkMateBundle * self) {
 }
 
 
-static void gtk_mate_bundle_dispose (GObject * obj) {
+static void gtk_mate_bundle_finalize (GObject * obj) {
 	GtkMateBundle * self;
 	self = GTK_MATE_BUNDLE (obj);
 	self->priv->_name = (g_free (self->priv->_name), NULL);
 	(self->grammars == NULL ? NULL : (self->grammars = (g_object_unref (self->grammars), NULL)));
-	G_OBJECT_CLASS (gtk_mate_bundle_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (gtk_mate_bundle_parent_class)->finalize (obj);
 }
 
 
 GType gtk_mate_bundle_get_type (void) {
-	static volatile gsize gtk_mate_bundle_type_id = 0;
-	if (g_once_init_enter (&gtk_mate_bundle_type_id)) {
-		GType gtk_mate_bundle_type_id_temp;
+	static GType gtk_mate_bundle_type_id = 0;
+	if (gtk_mate_bundle_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateBundleClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_bundle_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateBundle), 0, (GInstanceInitFunc) gtk_mate_bundle_instance_init };
-		gtk_mate_bundle_type_id_temp = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateBundle", &g_define_type_info, 0);
-		g_once_init_leave (&gtk_mate_bundle_type_id, gtk_mate_bundle_type_id_temp);
+		gtk_mate_bundle_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateBundle", &g_define_type_info, 0);
 	}
 	return gtk_mate_bundle_type_id;
 }

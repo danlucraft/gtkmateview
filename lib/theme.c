@@ -3,7 +3,7 @@
 #include <gee/map.h>
 #include <gee/collection.h>
 #include <stdio.h>
-#include <gtkmateview.h>
+#include "gtkmateview.h"
 
 
 
@@ -12,13 +12,13 @@ enum  {
 	GTK_MATE_THEME_SETTING_DUMMY_PROPERTY
 };
 static gpointer gtk_mate_theme_setting_parent_class = NULL;
-static void gtk_mate_theme_setting_dispose (GObject * obj);
+static void gtk_mate_theme_setting_finalize (GObject * obj);
 enum  {
 	GTK_MATE_THEME_DUMMY_PROPERTY
 };
 GeeArrayList* gtk_mate_theme_themes = NULL;
 static gpointer gtk_mate_theme_parent_class = NULL;
-static void gtk_mate_theme_dispose (GObject * obj);
+static void gtk_mate_theme_finalize (GObject * obj);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 
 
@@ -85,7 +85,7 @@ GtkMateThemeSetting* gtk_mate_theme_setting_new (void) {
 
 static void gtk_mate_theme_setting_class_init (GtkMateThemeSettingClass * klass) {
 	gtk_mate_theme_setting_parent_class = g_type_class_peek_parent (klass);
-	G_OBJECT_CLASS (klass)->dispose = gtk_mate_theme_setting_dispose;
+	G_OBJECT_CLASS (klass)->finalize = gtk_mate_theme_setting_finalize;
 }
 
 
@@ -93,23 +93,21 @@ static void gtk_mate_theme_setting_instance_init (GtkMateThemeSetting * self) {
 }
 
 
-static void gtk_mate_theme_setting_dispose (GObject * obj) {
+static void gtk_mate_theme_setting_finalize (GObject * obj) {
 	GtkMateThemeSetting * self;
 	self = GTK_MATE_THEME_SETTING (obj);
 	self->name = (g_free (self->name), NULL);
 	self->scope = (g_free (self->scope), NULL);
 	(self->settings == NULL ? NULL : (self->settings = (g_object_unref (self->settings), NULL)));
-	G_OBJECT_CLASS (gtk_mate_theme_setting_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (gtk_mate_theme_setting_parent_class)->finalize (obj);
 }
 
 
 GType gtk_mate_theme_setting_get_type (void) {
-	static volatile gsize gtk_mate_theme_setting_type_id = 0;
-	if (g_once_init_enter (&gtk_mate_theme_setting_type_id)) {
-		GType gtk_mate_theme_setting_type_id_temp;
+	static GType gtk_mate_theme_setting_type_id = 0;
+	if (gtk_mate_theme_setting_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateThemeSettingClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_theme_setting_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateThemeSetting), 0, (GInstanceInitFunc) gtk_mate_theme_setting_instance_init };
-		gtk_mate_theme_setting_type_id_temp = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateThemeSetting", &g_define_type_info, 0);
-		g_once_init_leave (&gtk_mate_theme_setting_type_id, gtk_mate_theme_setting_type_id_temp);
+		gtk_mate_theme_setting_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateThemeSetting", &g_define_type_info, 0);
 	}
 	return gtk_mate_theme_setting_type_id;
 }
@@ -277,7 +275,7 @@ GtkMateTheme* gtk_mate_theme_new (void) {
 
 static void gtk_mate_theme_class_init (GtkMateThemeClass * klass) {
 	gtk_mate_theme_parent_class = g_type_class_peek_parent (klass);
-	G_OBJECT_CLASS (klass)->dispose = gtk_mate_theme_dispose;
+	G_OBJECT_CLASS (klass)->finalize = gtk_mate_theme_finalize;
 }
 
 
@@ -285,24 +283,22 @@ static void gtk_mate_theme_instance_init (GtkMateTheme * self) {
 }
 
 
-static void gtk_mate_theme_dispose (GObject * obj) {
+static void gtk_mate_theme_finalize (GObject * obj) {
 	GtkMateTheme * self;
 	self = GTK_MATE_THEME (obj);
 	self->author = (g_free (self->author), NULL);
 	self->name = (g_free (self->name), NULL);
 	(self->global_settings == NULL ? NULL : (self->global_settings = (g_object_unref (self->global_settings), NULL)));
 	(self->settings == NULL ? NULL : (self->settings = (g_object_unref (self->settings), NULL)));
-	G_OBJECT_CLASS (gtk_mate_theme_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (gtk_mate_theme_parent_class)->finalize (obj);
 }
 
 
 GType gtk_mate_theme_get_type (void) {
-	static volatile gsize gtk_mate_theme_type_id = 0;
-	if (g_once_init_enter (&gtk_mate_theme_type_id)) {
-		GType gtk_mate_theme_type_id_temp;
+	static GType gtk_mate_theme_type_id = 0;
+	if (gtk_mate_theme_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateThemeClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_theme_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateTheme), 0, (GInstanceInitFunc) gtk_mate_theme_instance_init };
-		gtk_mate_theme_type_id_temp = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateTheme", &g_define_type_info, 0);
-		g_once_init_leave (&gtk_mate_theme_type_id, gtk_mate_theme_type_id_temp);
+		gtk_mate_theme_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateTheme", &g_define_type_info, 0);
 	}
 	return gtk_mate_theme_type_id;
 }

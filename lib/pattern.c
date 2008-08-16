@@ -11,19 +11,19 @@ enum  {
 };
 GeeArrayList* gtk_mate_pattern_all_patterns = NULL;
 static gpointer gtk_mate_pattern_parent_class = NULL;
-static void gtk_mate_pattern_dispose (GObject * obj);
+static void gtk_mate_pattern_finalize (GObject * obj);
 enum  {
 	GTK_MATE_SINGLE_PATTERN_DUMMY_PROPERTY
 };
 static gpointer gtk_mate_single_pattern_parent_class = NULL;
-static void gtk_mate_single_pattern_dispose (GObject * obj);
+static void gtk_mate_single_pattern_finalize (GObject * obj);
 enum  {
 	GTK_MATE_DOUBLE_PATTERN_DUMMY_PROPERTY
 };
 static void gtk_mate_double_pattern_remove_patterns (GtkMateDoublePattern* self, GeeArrayList* ps);
 static void gtk_mate_double_pattern_add_patterns (GtkMateDoublePattern* self, GeeArrayList* ps);
 static gpointer gtk_mate_double_pattern_parent_class = NULL;
-static void gtk_mate_double_pattern_dispose (GObject * obj);
+static void gtk_mate_double_pattern_finalize (GObject * obj);
 enum  {
 	GTK_MATE_INCLUDE_PATTERN_DUMMY_PROPERTY
 };
@@ -126,7 +126,7 @@ GtkMatePattern* gtk_mate_pattern_new (void) {
 
 static void gtk_mate_pattern_class_init (GtkMatePatternClass * klass) {
 	gtk_mate_pattern_parent_class = g_type_class_peek_parent (klass);
-	G_OBJECT_CLASS (klass)->dispose = gtk_mate_pattern_dispose;
+	G_OBJECT_CLASS (klass)->finalize = gtk_mate_pattern_finalize;
 }
 
 
@@ -134,22 +134,20 @@ static void gtk_mate_pattern_instance_init (GtkMatePattern * self) {
 }
 
 
-static void gtk_mate_pattern_dispose (GObject * obj) {
+static void gtk_mate_pattern_finalize (GObject * obj) {
 	GtkMatePattern * self;
 	self = GTK_MATE_PATTERN (obj);
 	self->name = (g_free (self->name), NULL);
 	self->comment = (g_free (self->comment), NULL);
-	G_OBJECT_CLASS (gtk_mate_pattern_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (gtk_mate_pattern_parent_class)->finalize (obj);
 }
 
 
 GType gtk_mate_pattern_get_type (void) {
-	static volatile gsize gtk_mate_pattern_type_id = 0;
-	if (g_once_init_enter (&gtk_mate_pattern_type_id)) {
-		GType gtk_mate_pattern_type_id_temp;
+	static GType gtk_mate_pattern_type_id = 0;
+	if (gtk_mate_pattern_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMatePatternClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_pattern_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMatePattern), 0, (GInstanceInitFunc) gtk_mate_pattern_instance_init };
-		gtk_mate_pattern_type_id_temp = g_type_register_static (GTK_TYPE_OBJECT, "GtkMatePattern", &g_define_type_info, 0);
-		g_once_init_leave (&gtk_mate_pattern_type_id, gtk_mate_pattern_type_id_temp);
+		gtk_mate_pattern_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMatePattern", &g_define_type_info, 0);
 	}
 	return gtk_mate_pattern_type_id;
 }
@@ -206,7 +204,7 @@ GtkMateSinglePattern* gtk_mate_single_pattern_new (void) {
 
 static void gtk_mate_single_pattern_class_init (GtkMateSinglePatternClass * klass) {
 	gtk_mate_single_pattern_parent_class = g_type_class_peek_parent (klass);
-	G_OBJECT_CLASS (klass)->dispose = gtk_mate_single_pattern_dispose;
+	G_OBJECT_CLASS (klass)->finalize = gtk_mate_single_pattern_finalize;
 }
 
 
@@ -214,22 +212,20 @@ static void gtk_mate_single_pattern_instance_init (GtkMateSinglePattern * self) 
 }
 
 
-static void gtk_mate_single_pattern_dispose (GObject * obj) {
+static void gtk_mate_single_pattern_finalize (GObject * obj) {
 	GtkMateSinglePattern * self;
 	self = GTK_MATE_SINGLE_PATTERN (obj);
 	(self->match == NULL ? NULL : (self->match = (g_object_unref (self->match), NULL)));
 	(self->captures == NULL ? NULL : (self->captures = (g_object_unref (self->captures), NULL)));
-	G_OBJECT_CLASS (gtk_mate_single_pattern_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (gtk_mate_single_pattern_parent_class)->finalize (obj);
 }
 
 
 GType gtk_mate_single_pattern_get_type (void) {
-	static volatile gsize gtk_mate_single_pattern_type_id = 0;
-	if (g_once_init_enter (&gtk_mate_single_pattern_type_id)) {
-		GType gtk_mate_single_pattern_type_id_temp;
+	static GType gtk_mate_single_pattern_type_id = 0;
+	if (gtk_mate_single_pattern_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateSinglePatternClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_single_pattern_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateSinglePattern), 0, (GInstanceInitFunc) gtk_mate_single_pattern_instance_init };
-		gtk_mate_single_pattern_type_id_temp = g_type_register_static (GTK_MATE_TYPE_PATTERN, "GtkMateSinglePattern", &g_define_type_info, 0);
-		g_once_init_leave (&gtk_mate_single_pattern_type_id, gtk_mate_single_pattern_type_id_temp);
+		gtk_mate_single_pattern_type_id = g_type_register_static (GTK_MATE_TYPE_PATTERN, "GtkMateSinglePattern", &g_define_type_info, 0);
 	}
 	return gtk_mate_single_pattern_type_id;
 }
@@ -480,7 +476,7 @@ GtkMateDoublePattern* gtk_mate_double_pattern_new (void) {
 
 static void gtk_mate_double_pattern_class_init (GtkMateDoublePatternClass * klass) {
 	gtk_mate_double_pattern_parent_class = g_type_class_peek_parent (klass);
-	G_OBJECT_CLASS (klass)->dispose = gtk_mate_double_pattern_dispose;
+	G_OBJECT_CLASS (klass)->finalize = gtk_mate_double_pattern_finalize;
 }
 
 
@@ -488,7 +484,7 @@ static void gtk_mate_double_pattern_instance_init (GtkMateDoublePattern * self) 
 }
 
 
-static void gtk_mate_double_pattern_dispose (GObject * obj) {
+static void gtk_mate_double_pattern_finalize (GObject * obj) {
 	GtkMateDoublePattern * self;
 	self = GTK_MATE_DOUBLE_PATTERN (obj);
 	(self->begin == NULL ? NULL : (self->begin = (g_object_unref (self->begin), NULL)));
@@ -497,17 +493,15 @@ static void gtk_mate_double_pattern_dispose (GObject * obj) {
 	(self->begin_captures == NULL ? NULL : (self->begin_captures = (g_object_unref (self->begin_captures), NULL)));
 	(self->end_captures == NULL ? NULL : (self->end_captures = (g_object_unref (self->end_captures), NULL)));
 	(self->patterns == NULL ? NULL : (self->patterns = (g_object_unref (self->patterns), NULL)));
-	G_OBJECT_CLASS (gtk_mate_double_pattern_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (gtk_mate_double_pattern_parent_class)->finalize (obj);
 }
 
 
 GType gtk_mate_double_pattern_get_type (void) {
-	static volatile gsize gtk_mate_double_pattern_type_id = 0;
-	if (g_once_init_enter (&gtk_mate_double_pattern_type_id)) {
-		GType gtk_mate_double_pattern_type_id_temp;
+	static GType gtk_mate_double_pattern_type_id = 0;
+	if (gtk_mate_double_pattern_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateDoublePatternClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_double_pattern_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateDoublePattern), 0, (GInstanceInitFunc) gtk_mate_double_pattern_instance_init };
-		gtk_mate_double_pattern_type_id_temp = g_type_register_static (GTK_MATE_TYPE_PATTERN, "GtkMateDoublePattern", &g_define_type_info, 0);
-		g_once_init_leave (&gtk_mate_double_pattern_type_id, gtk_mate_double_pattern_type_id_temp);
+		gtk_mate_double_pattern_type_id = g_type_register_static (GTK_MATE_TYPE_PATTERN, "GtkMateDoublePattern", &g_define_type_info, 0);
 	}
 	return gtk_mate_double_pattern_type_id;
 }
@@ -551,12 +545,10 @@ static void gtk_mate_include_pattern_instance_init (GtkMateIncludePattern * self
 
 
 GType gtk_mate_include_pattern_get_type (void) {
-	static volatile gsize gtk_mate_include_pattern_type_id = 0;
-	if (g_once_init_enter (&gtk_mate_include_pattern_type_id)) {
-		GType gtk_mate_include_pattern_type_id_temp;
+	static GType gtk_mate_include_pattern_type_id = 0;
+	if (gtk_mate_include_pattern_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (GtkMateIncludePatternClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_include_pattern_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateIncludePattern), 0, (GInstanceInitFunc) gtk_mate_include_pattern_instance_init };
-		gtk_mate_include_pattern_type_id_temp = g_type_register_static (GTK_MATE_TYPE_PATTERN, "GtkMateIncludePattern", &g_define_type_info, 0);
-		g_once_init_leave (&gtk_mate_include_pattern_type_id, gtk_mate_include_pattern_type_id_temp);
+		gtk_mate_include_pattern_type_id = g_type_register_static (GTK_MATE_TYPE_PATTERN, "GtkMateIncludePattern", &g_define_type_info, 0);
 	}
 	return gtk_mate_include_pattern_type_id;
 }

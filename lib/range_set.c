@@ -16,10 +16,10 @@ enum  {
 	RANGE_SET_RANGE_DUMMY_PROPERTY
 };
 static gpointer range_set_range_parent_class = NULL;
-static void range_set_range_dispose (GObject * obj);
+static void range_set_range_finalize (GObject * obj);
 static gpointer range_set_parent_class = NULL;
 static GeeIterableIface* range_set_gee_iterable_parent_iface = NULL;
-static void range_set_dispose (GObject * obj);
+static void range_set_finalize (GObject * obj);
 
 
 
@@ -248,7 +248,7 @@ RangeSetRange* range_set_range_new (void) {
 
 static void range_set_range_class_init (RangeSetRangeClass * klass) {
 	range_set_range_parent_class = g_type_class_peek_parent (klass);
-	G_OBJECT_CLASS (klass)->dispose = range_set_range_dispose;
+	G_OBJECT_CLASS (klass)->finalize = range_set_range_finalize;
 }
 
 
@@ -256,20 +256,18 @@ static void range_set_range_instance_init (RangeSetRange * self) {
 }
 
 
-static void range_set_range_dispose (GObject * obj) {
+static void range_set_range_finalize (GObject * obj) {
 	RangeSetRange * self;
 	self = RANGE_SET_RANGE (obj);
-	G_OBJECT_CLASS (range_set_range_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (range_set_range_parent_class)->finalize (obj);
 }
 
 
 GType range_set_range_get_type (void) {
-	static volatile gsize range_set_range_type_id = 0;
-	if (g_once_init_enter (&range_set_range_type_id)) {
-		GType range_set_range_type_id_temp;
+	static GType range_set_range_type_id = 0;
+	if (range_set_range_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (RangeSetRangeClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) range_set_range_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RangeSetRange), 0, (GInstanceInitFunc) range_set_range_instance_init };
-		range_set_range_type_id_temp = g_type_register_static (G_TYPE_OBJECT, "RangeSetRange", &g_define_type_info, 0);
-		g_once_init_leave (&range_set_range_type_id, range_set_range_type_id_temp);
+		range_set_range_type_id = g_type_register_static (G_TYPE_OBJECT, "RangeSetRange", &g_define_type_info, 0);
 	}
 	return range_set_range_type_id;
 }
@@ -278,7 +276,7 @@ GType range_set_range_get_type (void) {
 static void range_set_class_init (RangeSetClass * klass) {
 	range_set_parent_class = g_type_class_peek_parent (klass);
 	G_OBJECT_CLASS (klass)->constructor = range_set_constructor;
-	G_OBJECT_CLASS (klass)->dispose = range_set_dispose;
+	G_OBJECT_CLASS (klass)->finalize = range_set_finalize;
 }
 
 
@@ -293,23 +291,21 @@ static void range_set_instance_init (RangeSet * self) {
 }
 
 
-static void range_set_dispose (GObject * obj) {
+static void range_set_finalize (GObject * obj) {
 	RangeSet * self;
 	self = RANGE_SET (obj);
 	(self->ranges == NULL ? NULL : (self->ranges = (g_object_unref (self->ranges), NULL)));
-	G_OBJECT_CLASS (range_set_parent_class)->dispose (obj);
+	G_OBJECT_CLASS (range_set_parent_class)->finalize (obj);
 }
 
 
 GType range_set_get_type (void) {
-	static volatile gsize range_set_type_id = 0;
-	if (g_once_init_enter (&range_set_type_id)) {
-		GType range_set_type_id_temp;
+	static GType range_set_type_id = 0;
+	if (range_set_type_id == 0) {
 		static const GTypeInfo g_define_type_info = { sizeof (RangeSetClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) range_set_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RangeSet), 0, (GInstanceInitFunc) range_set_instance_init };
 		static const GInterfaceInfo gee_iterable_info = { (GInterfaceInitFunc) range_set_gee_iterable_interface_init, (GInterfaceFinalizeFunc) NULL, NULL};
-		range_set_type_id_temp = g_type_register_static (G_TYPE_OBJECT, "RangeSet", &g_define_type_info, 0);
-		g_type_add_interface_static (range_set_type_id_temp, GEE_TYPE_ITERABLE, &gee_iterable_info);
-		g_once_init_leave (&range_set_type_id, range_set_type_id_temp);
+		range_set_type_id = g_type_register_static (G_TYPE_OBJECT, "RangeSet", &g_define_type_info, 0);
+		g_type_add_interface_static (range_set_type_id, GEE_TYPE_ITERABLE, &gee_iterable_info);
 	}
 	return range_set_type_id;
 }
