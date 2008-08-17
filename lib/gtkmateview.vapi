@@ -41,6 +41,7 @@ namespace Gtk {
 		}
 		[CCode (cheader_filename = "pattern.h")]
 		public class DoublePattern : Gtk.Mate.Pattern {
+			public string content_name;
 			public Oniguruma.Regex begin;
 			public Oniguruma.Regex end;
 			public string end_string;
@@ -151,6 +152,9 @@ namespace Gtk {
 			public void stop_parsing ();
 			public void start_parsing ();
 			public bool is_parsing ();
+			public void close_scope (Gtk.Mate.Scanner scanner, int line_ix, Gtk.Mate.Marker m);
+			public void open_scope (Gtk.Mate.Scanner scanner, int line_ix, int length, Gtk.Mate.Marker m);
+			public void single_scope (Gtk.Mate.Scanner scanner, int line_ix, int length, Gtk.Mate.Marker m);
 			public void handle_captures (int line_ix, Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
 			public Oniguruma.Regex? make_closing_regex (Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
 			public void collect_child_captures (int line_ix, Gtk.Mate.Scope scope, Gtk.Mate.Marker m);

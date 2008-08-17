@@ -80,7 +80,10 @@ namespace Gtk.Mate {
 			this.indent = indent;
 			for (int i = 0; i < this.indent; i++)
 				pretty_string.append("  ");
-			pretty_string.append("+ " + name + " (");
+			pretty_string.append("+ " + name);
+			if (pattern is DoublePattern && ((DoublePattern) pattern).content_name != null) 
+				pretty_string.append(" " + ((DoublePattern) pattern).content_name);
+			pretty_string.append(" (");
 			if (start_mark == null) {
 				pretty_string.append("inf");
 			}

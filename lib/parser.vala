@@ -82,44 +82,58 @@ namespace Gtk.Mate {
 			Scope s;
 			foreach (Marker m in scanner) {
 				if (m.is_close_scope) {
-					stdout.printf("closing scope at %d\n", m.from);
-					scanner.current_scope.inner_end_mark_set(line_ix, m.from, true);
-					scanner.current_scope.end_mark_set(line_ix, m.match.end(0), true);
-					scanner.current_scope.is_open = false;
-					scanner.current_scope = scanner.current_scope.parent;
+					close_scope(scanner, line_ix, m);
 				}
 				else if (m.pattern is DoublePattern) {
-					stdout.printf("[opening with %d patterns], \n", ((DoublePattern) m.pattern).patterns.size);
-					s = new Scope(this.buffer, m.pattern.name);
-					s.pattern = m.pattern;
-					s.open_match = m.match;
-					s.start_mark_set(line_ix, m.from, false);
-					s.inner_start_mark_set(line_ix, int.min(m.match.end(0), length), false);
-					var end_iter = buffer.end_iter();
-					var end_line = end_iter.get_line();
-					var end_line_offset = end_iter.get_line_offset();
-					s.inner_end_mark_set(end_line, end_line_offset, false);
-					s.end_mark_set(end_line, end_line_offset, false);
-					s.is_open = true;
-					scanner.current_scope.children.append(s);
-					s.parent = scanner.current_scope;
-					scanner.current_scope = s;
+					open_scope(scanner, line_ix, length, m);
 				}
 				else {
-					s = new Scope(this.buffer, m.pattern.name);
-					s.pattern = m.pattern;
-					s.open_match = m.match;
-					s.start_mark_set(line_ix, m.from, false);
-					s.end_mark_set(line_ix, int.min(m.match.end(0), length), true);
-					s.is_open = false;
-					s.parent = scanner.current_scope;
-					scanner.current_scope.children.append(s);
+					single_scope(scanner, line_ix, length, m);
 				}
-				handle_captures(line_ix, s, m);
-				stdout.printf("pretty: %s\n", s.pretty(0));
+//				stdout.printf("pretty: %s\n", s.pretty(0));
 				scanner.position = m.match.end(0);
 			}
 			return false;
+		}
+
+		public void close_scope(Scanner scanner, int line_ix, Marker m) {
+			stdout.printf("closing scope at %d\n", m.from);
+			scanner.current_scope.inner_end_mark_set(line_ix, m.from, true);
+			scanner.current_scope.end_mark_set(line_ix, m.match.end(0), true);
+			scanner.current_scope.is_open = false;
+			handle_captures(line_ix, scanner.current_scope, m);
+			scanner.current_scope = scanner.current_scope.parent;
+		}
+
+		public void open_scope(Scanner scanner, int line_ix, int length, Marker m) {
+			stdout.printf("[opening with %d patterns], \n", ((DoublePattern) m.pattern).patterns.size);
+			var s = new Scope(this.buffer, m.pattern.name);
+			s.pattern = m.pattern;
+			s.open_match = m.match;
+			s.start_mark_set(line_ix, m.from, false);
+			s.inner_start_mark_set(line_ix, int.min(m.match.end(0), length), false);
+			var end_iter = buffer.end_iter();
+			var end_line = end_iter.get_line();
+			var end_line_offset = end_iter.get_line_offset();
+			s.inner_end_mark_set(end_line, end_line_offset, false);
+			s.end_mark_set(end_line, end_line_offset, false);
+			s.is_open = true;
+			scanner.current_scope.children.append(s);
+			s.parent = scanner.current_scope;
+			scanner.current_scope = s;
+			handle_captures(line_ix, s, m);
+		}
+
+		public void single_scope(Scanner scanner, int line_ix, int length, Marker m) {
+			var s = new Scope(this.buffer, m.pattern.name);
+			s.pattern = m.pattern;
+			s.open_match = m.match;
+			s.start_mark_set(line_ix, m.from, false);
+			s.end_mark_set(line_ix, int.min(m.match.end(0), length), true);
+			s.is_open = false;
+			s.parent = scanner.current_scope;
+			scanner.current_scope.children.append(s);
+			handle_captures(line_ix, s, m);
 		}
 
 		// Opens scopes for captures AND creates closing regexp from

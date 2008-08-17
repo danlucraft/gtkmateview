@@ -153,7 +153,7 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	GtkMateScanner* scanner;
 	gint i;
 	GtkMateScope* s;
-	gboolean _tmp19;
+	gboolean _tmp2;
 	g_return_val_if_fail (GTK_MATE_IS_PARSER (self), FALSE);
 	line = gtk_mate_buffer_get_line (self->priv->_buffer, line_ix);
 	length = gtk_mate_buffer_get_line_length (self->priv->_buffer, line_ix);
@@ -173,87 +173,110 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 			GtkMateMarker* m;
 			m = ((GtkMateMarker*) (gee_iterator_get (m_it)));
 			{
-				char* _tmp18;
 				if (m->is_close_scope) {
-					fprintf (stdout, "closing scope at %d\n", m->from);
-					gtk_mate_scope_inner_end_mark_set (gtk_mate_scanner_get_current_scope (scanner), line_ix, m->from, TRUE);
-					gtk_mate_scope_end_mark_set (gtk_mate_scanner_get_current_scope (scanner), line_ix, oniguruma_match_end (m->match, 0), TRUE);
-					gtk_mate_scanner_get_current_scope (scanner)->is_open = FALSE;
-					gtk_mate_scanner_set_current_scope (scanner, gtk_mate_scanner_get_current_scope (scanner)->parent);
+					gtk_mate_parser_close_scope (self, scanner, line_ix, m);
 				} else {
 					if (GTK_MATE_IS_DOUBLE_PATTERN (m->pattern)) {
-						GtkMateScope* _tmp2;
-						GtkMatePattern* _tmp4;
-						GtkMatePattern* _tmp3;
-						OnigurumaMatch* _tmp6;
-						OnigurumaMatch* _tmp5;
-						GtkTextIter end_iter;
-						gint end_line;
-						gint end_line_offset;
-						GtkMateScope* _tmp7;
-						GtkMateScope* _tmp9;
-						GtkMateScope* _tmp8;
-						fprintf (stdout, "[opening with %d patterns], \n", gee_collection_get_size (GEE_COLLECTION ((GTK_MATE_DOUBLE_PATTERN (m->pattern))->patterns)));
-						_tmp2 = NULL;
-						s = (_tmp2 = g_object_ref_sink (gtk_mate_scope_new (self->priv->_buffer, m->pattern->name)), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), _tmp2);
-						_tmp4 = NULL;
-						_tmp3 = NULL;
-						s->pattern = (_tmp4 = (_tmp3 = m->pattern, (_tmp3 == NULL ? NULL : g_object_ref (_tmp3))), (s->pattern == NULL ? NULL : (s->pattern = (g_object_unref (s->pattern), NULL))), _tmp4);
-						_tmp6 = NULL;
-						_tmp5 = NULL;
-						s->open_match = (_tmp6 = (_tmp5 = m->match, (_tmp5 == NULL ? NULL : g_object_ref (_tmp5))), (s->open_match == NULL ? NULL : (s->open_match = (g_object_unref (s->open_match), NULL))), _tmp6);
-						gtk_mate_scope_start_mark_set (s, line_ix, m->from, FALSE);
-						gtk_mate_scope_inner_start_mark_set (s, line_ix, MIN (oniguruma_match_end (m->match, 0), length), FALSE);
-						end_iter = gtk_mate_buffer_end_iter (self->priv->_buffer);
-						end_line = gtk_text_iter_get_line (&end_iter);
-						end_line_offset = gtk_text_iter_get_line_offset (&end_iter);
-						gtk_mate_scope_inner_end_mark_set (s, end_line, end_line_offset, FALSE);
-						gtk_mate_scope_end_mark_set (s, end_line, end_line_offset, FALSE);
-						s->is_open = TRUE;
-						_tmp7 = NULL;
-						g_sequence_append (gtk_mate_scope_get_children (gtk_mate_scanner_get_current_scope (scanner)), (_tmp7 = s, (_tmp7 == NULL ? NULL : g_object_ref (_tmp7))));
-						_tmp9 = NULL;
-						_tmp8 = NULL;
-						s->parent = (_tmp9 = (_tmp8 = gtk_mate_scanner_get_current_scope (scanner), (_tmp8 == NULL ? NULL : g_object_ref (_tmp8))), (s->parent == NULL ? NULL : (s->parent = (g_object_unref (s->parent), NULL))), _tmp9);
-						gtk_mate_scanner_set_current_scope (scanner, s);
+						gtk_mate_parser_open_scope (self, scanner, line_ix, length, m);
 					} else {
-						GtkMateScope* _tmp10;
-						GtkMatePattern* _tmp12;
-						GtkMatePattern* _tmp11;
-						OnigurumaMatch* _tmp14;
-						OnigurumaMatch* _tmp13;
-						GtkMateScope* _tmp16;
-						GtkMateScope* _tmp15;
-						GtkMateScope* _tmp17;
-						_tmp10 = NULL;
-						s = (_tmp10 = g_object_ref_sink (gtk_mate_scope_new (self->priv->_buffer, m->pattern->name)), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), _tmp10);
-						_tmp12 = NULL;
-						_tmp11 = NULL;
-						s->pattern = (_tmp12 = (_tmp11 = m->pattern, (_tmp11 == NULL ? NULL : g_object_ref (_tmp11))), (s->pattern == NULL ? NULL : (s->pattern = (g_object_unref (s->pattern), NULL))), _tmp12);
-						_tmp14 = NULL;
-						_tmp13 = NULL;
-						s->open_match = (_tmp14 = (_tmp13 = m->match, (_tmp13 == NULL ? NULL : g_object_ref (_tmp13))), (s->open_match == NULL ? NULL : (s->open_match = (g_object_unref (s->open_match), NULL))), _tmp14);
-						gtk_mate_scope_start_mark_set (s, line_ix, m->from, FALSE);
-						gtk_mate_scope_end_mark_set (s, line_ix, MIN (oniguruma_match_end (m->match, 0), length), TRUE);
-						s->is_open = FALSE;
-						_tmp16 = NULL;
-						_tmp15 = NULL;
-						s->parent = (_tmp16 = (_tmp15 = gtk_mate_scanner_get_current_scope (scanner), (_tmp15 == NULL ? NULL : g_object_ref (_tmp15))), (s->parent == NULL ? NULL : (s->parent = (g_object_unref (s->parent), NULL))), _tmp16);
-						_tmp17 = NULL;
-						g_sequence_append (gtk_mate_scope_get_children (gtk_mate_scanner_get_current_scope (scanner)), (_tmp17 = s, (_tmp17 == NULL ? NULL : g_object_ref (_tmp17))));
+						gtk_mate_parser_single_scope (self, scanner, line_ix, length, m);
 					}
 				}
-				gtk_mate_parser_handle_captures (self, line_ix, s, m);
-				_tmp18 = NULL;
-				fprintf (stdout, "pretty: %s\n", (_tmp18 = gtk_mate_scope_pretty (s, 0)));
-				_tmp18 = (g_free (_tmp18), NULL);
+				/*stdout.printf("pretty: %s\n", s.pretty(0));*/
 				scanner->position = oniguruma_match_end (m->match, 0);
 				(m == NULL ? NULL : (m = (g_object_unref (m), NULL)));
 			}
 		}
 		(m_it == NULL ? NULL : (m_it = (g_object_unref (m_it), NULL)));
 	}
-	return (_tmp19 = FALSE, (line = (g_free (line), NULL)), (scanner == NULL ? NULL : (scanner = (g_object_unref (scanner), NULL))), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), _tmp19);
+	return (_tmp2 = FALSE, (line = (g_free (line), NULL)), (scanner == NULL ? NULL : (scanner = (g_object_unref (scanner), NULL))), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), _tmp2);
+}
+
+
+void gtk_mate_parser_close_scope (GtkMateParser* self, GtkMateScanner* scanner, gint line_ix, GtkMateMarker* m) {
+	g_return_if_fail (GTK_MATE_IS_PARSER (self));
+	g_return_if_fail (GTK_MATE_IS_SCANNER (scanner));
+	g_return_if_fail (GTK_MATE_IS_MARKER (m));
+	fprintf (stdout, "closing scope at %d\n", m->from);
+	gtk_mate_scope_inner_end_mark_set (gtk_mate_scanner_get_current_scope (scanner), line_ix, m->from, TRUE);
+	gtk_mate_scope_end_mark_set (gtk_mate_scanner_get_current_scope (scanner), line_ix, oniguruma_match_end (m->match, 0), TRUE);
+	gtk_mate_scanner_get_current_scope (scanner)->is_open = FALSE;
+	gtk_mate_parser_handle_captures (self, line_ix, gtk_mate_scanner_get_current_scope (scanner), m);
+	gtk_mate_scanner_set_current_scope (scanner, gtk_mate_scanner_get_current_scope (scanner)->parent);
+}
+
+
+void gtk_mate_parser_open_scope (GtkMateParser* self, GtkMateScanner* scanner, gint line_ix, gint length, GtkMateMarker* m) {
+	GtkMateScope* s;
+	GtkMatePattern* _tmp1;
+	GtkMatePattern* _tmp0;
+	OnigurumaMatch* _tmp3;
+	OnigurumaMatch* _tmp2;
+	GtkTextIter end_iter;
+	gint end_line;
+	gint end_line_offset;
+	GtkMateScope* _tmp4;
+	GtkMateScope* _tmp6;
+	GtkMateScope* _tmp5;
+	g_return_if_fail (GTK_MATE_IS_PARSER (self));
+	g_return_if_fail (GTK_MATE_IS_SCANNER (scanner));
+	g_return_if_fail (GTK_MATE_IS_MARKER (m));
+	fprintf (stdout, "[opening with %d patterns], \n", gee_collection_get_size (GEE_COLLECTION ((GTK_MATE_DOUBLE_PATTERN (m->pattern))->patterns)));
+	s = g_object_ref_sink (gtk_mate_scope_new (self->priv->_buffer, m->pattern->name));
+	_tmp1 = NULL;
+	_tmp0 = NULL;
+	s->pattern = (_tmp1 = (_tmp0 = m->pattern, (_tmp0 == NULL ? NULL : g_object_ref (_tmp0))), (s->pattern == NULL ? NULL : (s->pattern = (g_object_unref (s->pattern), NULL))), _tmp1);
+	_tmp3 = NULL;
+	_tmp2 = NULL;
+	s->open_match = (_tmp3 = (_tmp2 = m->match, (_tmp2 == NULL ? NULL : g_object_ref (_tmp2))), (s->open_match == NULL ? NULL : (s->open_match = (g_object_unref (s->open_match), NULL))), _tmp3);
+	gtk_mate_scope_start_mark_set (s, line_ix, m->from, FALSE);
+	gtk_mate_scope_inner_start_mark_set (s, line_ix, MIN (oniguruma_match_end (m->match, 0), length), FALSE);
+	end_iter = gtk_mate_buffer_end_iter (self->priv->_buffer);
+	end_line = gtk_text_iter_get_line (&end_iter);
+	end_line_offset = gtk_text_iter_get_line_offset (&end_iter);
+	gtk_mate_scope_inner_end_mark_set (s, end_line, end_line_offset, FALSE);
+	gtk_mate_scope_end_mark_set (s, end_line, end_line_offset, FALSE);
+	s->is_open = TRUE;
+	_tmp4 = NULL;
+	g_sequence_append (gtk_mate_scope_get_children (gtk_mate_scanner_get_current_scope (scanner)), (_tmp4 = s, (_tmp4 == NULL ? NULL : g_object_ref (_tmp4))));
+	_tmp6 = NULL;
+	_tmp5 = NULL;
+	s->parent = (_tmp6 = (_tmp5 = gtk_mate_scanner_get_current_scope (scanner), (_tmp5 == NULL ? NULL : g_object_ref (_tmp5))), (s->parent == NULL ? NULL : (s->parent = (g_object_unref (s->parent), NULL))), _tmp6);
+	gtk_mate_scanner_set_current_scope (scanner, s);
+	gtk_mate_parser_handle_captures (self, line_ix, s, m);
+	(s == NULL ? NULL : (s = (g_object_unref (s), NULL)));
+}
+
+
+void gtk_mate_parser_single_scope (GtkMateParser* self, GtkMateScanner* scanner, gint line_ix, gint length, GtkMateMarker* m) {
+	GtkMateScope* s;
+	GtkMatePattern* _tmp1;
+	GtkMatePattern* _tmp0;
+	OnigurumaMatch* _tmp3;
+	OnigurumaMatch* _tmp2;
+	GtkMateScope* _tmp5;
+	GtkMateScope* _tmp4;
+	GtkMateScope* _tmp6;
+	g_return_if_fail (GTK_MATE_IS_PARSER (self));
+	g_return_if_fail (GTK_MATE_IS_SCANNER (scanner));
+	g_return_if_fail (GTK_MATE_IS_MARKER (m));
+	s = g_object_ref_sink (gtk_mate_scope_new (self->priv->_buffer, m->pattern->name));
+	_tmp1 = NULL;
+	_tmp0 = NULL;
+	s->pattern = (_tmp1 = (_tmp0 = m->pattern, (_tmp0 == NULL ? NULL : g_object_ref (_tmp0))), (s->pattern == NULL ? NULL : (s->pattern = (g_object_unref (s->pattern), NULL))), _tmp1);
+	_tmp3 = NULL;
+	_tmp2 = NULL;
+	s->open_match = (_tmp3 = (_tmp2 = m->match, (_tmp2 == NULL ? NULL : g_object_ref (_tmp2))), (s->open_match == NULL ? NULL : (s->open_match = (g_object_unref (s->open_match), NULL))), _tmp3);
+	gtk_mate_scope_start_mark_set (s, line_ix, m->from, FALSE);
+	gtk_mate_scope_end_mark_set (s, line_ix, MIN (oniguruma_match_end (m->match, 0), length), TRUE);
+	s->is_open = FALSE;
+	_tmp5 = NULL;
+	_tmp4 = NULL;
+	s->parent = (_tmp5 = (_tmp4 = gtk_mate_scanner_get_current_scope (scanner), (_tmp4 == NULL ? NULL : g_object_ref (_tmp4))), (s->parent == NULL ? NULL : (s->parent = (g_object_unref (s->parent), NULL))), _tmp5);
+	_tmp6 = NULL;
+	g_sequence_append (gtk_mate_scope_get_children (gtk_mate_scanner_get_current_scope (scanner)), (_tmp6 = s, (_tmp6 == NULL ? NULL : g_object_ref (_tmp6))));
+	gtk_mate_parser_handle_captures (self, line_ix, s, m);
+	(s == NULL ? NULL : (s = (g_object_unref (s), NULL)));
 }
 
 

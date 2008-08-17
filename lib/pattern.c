@@ -242,13 +242,14 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 	PListString* _tmp7;
 	char* _tmp9;
 	const char* _tmp8;
+	PListString* _tmp10;
 	PListNode* n;
-	PListNode* _tmp13;
-	GeeHashMap* _tmp14;
-	GeeArrayList* _tmp15;
+	PListNode* _tmp16;
+	GeeHashMap* _tmp17;
+	GeeArrayList* _tmp18;
 	PListNode* ps;
 	GtkMatePattern* subpattern;
-	GtkMateDoublePattern* _tmp17;
+	GtkMateDoublePattern* _tmp20;
 	g_return_val_if_fail (GEE_IS_ARRAY_LIST (all_patterns), NULL);
 	g_return_val_if_fail (PLIST_IS_DICT (pd), NULL);
 	ns = NULL;
@@ -262,9 +263,6 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 		_tmp1 = NULL;
 		GTK_MATE_PATTERN (pattern)->name = (_tmp2 = (_tmp1 = ns->str, (_tmp1 == NULL ? NULL : g_strdup (_tmp1))), (GTK_MATE_PATTERN (pattern)->name = (g_free (GTK_MATE_PATTERN (pattern)->name), NULL)), _tmp2);
 	}
-	/*stdout.printf("dp: %s\n", ((PList.String) pd.get("name")).str);
-	 else
-	 stdout.printf("dp: no name\n");*/
 	_tmp3 = NULL;
 	ns = (_tmp3 = PLIST_STRING (plist_dict_get (pd, "begin")), (ns == NULL ? NULL : (ns = (g_object_unref (ns), NULL))), _tmp3);
 	_tmp5 = NULL;
@@ -274,29 +272,37 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 	pattern->begin = (_tmp6 = oniguruma_regex_make1 (ns->str), (pattern->begin == NULL ? NULL : (pattern->begin = (g_object_unref (pattern->begin), NULL))), _tmp6);
 	_tmp7 = NULL;
 	ns = (_tmp7 = PLIST_STRING (plist_dict_get (pd, "end")), (ns == NULL ? NULL : (ns = (g_object_unref (ns), NULL))), _tmp7);
-	/* pattern.end = Oniguruma.Regex.make1(ns.str);*/
 	_tmp9 = NULL;
 	_tmp8 = NULL;
 	pattern->end_string = (_tmp9 = (_tmp8 = ns->str, (_tmp8 == NULL ? NULL : g_strdup (_tmp8))), (pattern->end_string = (g_free (pattern->end_string), NULL)), _tmp9);
+	_tmp10 = NULL;
+	ns = (_tmp10 = PLIST_STRING (plist_dict_get (pd, "contentName")), (ns == NULL ? NULL : (ns = (g_object_unref (ns), NULL))), _tmp10);
+	if (ns != NULL) {
+		char* _tmp12;
+		const char* _tmp11;
+		_tmp12 = NULL;
+		_tmp11 = NULL;
+		pattern->content_name = (_tmp12 = (_tmp11 = ns->str, (_tmp11 == NULL ? NULL : g_strdup (_tmp11))), (pattern->content_name = (g_free (pattern->content_name), NULL)), _tmp12);
+	}
 	n = plist_dict_get (pd, "beginCaptures");
 	if (n != NULL) {
-		GeeHashMap* _tmp10;
-		_tmp10 = NULL;
-		pattern->begin_captures = (_tmp10 = gtk_mate_pattern_make_captures_from_plist (PLIST_DICT (n)), (pattern->begin_captures == NULL ? NULL : (pattern->begin_captures = (g_object_unref (pattern->begin_captures), NULL))), _tmp10);
+		GeeHashMap* _tmp13;
+		_tmp13 = NULL;
+		pattern->begin_captures = (_tmp13 = gtk_mate_pattern_make_captures_from_plist (PLIST_DICT (n)), (pattern->begin_captures == NULL ? NULL : (pattern->begin_captures = (g_object_unref (pattern->begin_captures), NULL))), _tmp13);
 	} else {
-		PListNode* _tmp11;
-		GeeHashMap* _tmp12;
-		_tmp11 = NULL;
-		n = (_tmp11 = plist_dict_get (pd, "captures"), (n == NULL ? NULL : (n = (g_object_unref (n), NULL))), _tmp11);
-		_tmp12 = NULL;
-		pattern->begin_captures = (_tmp12 = gtk_mate_pattern_make_captures_from_plist (PLIST_DICT (n)), (pattern->begin_captures == NULL ? NULL : (pattern->begin_captures = (g_object_unref (pattern->begin_captures), NULL))), _tmp12);
+		PListNode* _tmp14;
+		GeeHashMap* _tmp15;
+		_tmp14 = NULL;
+		n = (_tmp14 = plist_dict_get (pd, "captures"), (n == NULL ? NULL : (n = (g_object_unref (n), NULL))), _tmp14);
+		_tmp15 = NULL;
+		pattern->begin_captures = (_tmp15 = gtk_mate_pattern_make_captures_from_plist (PLIST_DICT (n)), (pattern->begin_captures == NULL ? NULL : (pattern->begin_captures = (g_object_unref (pattern->begin_captures), NULL))), _tmp15);
 	}
-	_tmp13 = NULL;
-	n = (_tmp13 = plist_dict_get (pd, "endCaptures"), (n == NULL ? NULL : (n = (g_object_unref (n), NULL))), _tmp13);
-	_tmp14 = NULL;
-	pattern->end_captures = (_tmp14 = gtk_mate_pattern_make_captures_from_plist (PLIST_DICT (n)), (pattern->end_captures == NULL ? NULL : (pattern->end_captures = (g_object_unref (pattern->end_captures), NULL))), _tmp14);
-	_tmp15 = NULL;
-	pattern->patterns = (_tmp15 = gee_array_list_new (GTK_MATE_TYPE_PATTERN, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal), (pattern->patterns == NULL ? NULL : (pattern->patterns = (g_object_unref (pattern->patterns), NULL))), _tmp15);
+	_tmp16 = NULL;
+	n = (_tmp16 = plist_dict_get (pd, "endCaptures"), (n == NULL ? NULL : (n = (g_object_unref (n), NULL))), _tmp16);
+	_tmp17 = NULL;
+	pattern->end_captures = (_tmp17 = gtk_mate_pattern_make_captures_from_plist (PLIST_DICT (n)), (pattern->end_captures == NULL ? NULL : (pattern->end_captures = (g_object_unref (pattern->end_captures), NULL))), _tmp17);
+	_tmp18 = NULL;
+	pattern->patterns = (_tmp18 = gee_array_list_new (GTK_MATE_TYPE_PATTERN, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal), (pattern->patterns == NULL ? NULL : (pattern->patterns = (g_object_unref (pattern->patterns), NULL))), _tmp18);
 	ps = plist_dict_get (pd, "patterns");
 	subpattern = NULL;
 	if (ps != NULL) {
@@ -308,9 +314,9 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 				PListNode* p;
 				p = ((PListNode*) (gee_list_get (GEE_LIST (p_collection), p_it)));
 				{
-					GtkMatePattern* _tmp16;
-					_tmp16 = NULL;
-					subpattern = (_tmp16 = gtk_mate_pattern_create_from_plist (all_patterns, PLIST_DICT (p)), (subpattern == NULL ? NULL : (subpattern = (g_object_unref (subpattern), NULL))), _tmp16);
+					GtkMatePattern* _tmp19;
+					_tmp19 = NULL;
+					subpattern = (_tmp19 = gtk_mate_pattern_create_from_plist (all_patterns, PLIST_DICT (p)), (subpattern == NULL ? NULL : (subpattern = (g_object_unref (subpattern), NULL))), _tmp19);
 					if (subpattern != NULL) {
 						gee_collection_add (GEE_COLLECTION (pattern->patterns), subpattern);
 					}
@@ -320,8 +326,8 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 		}
 	}
 	gee_collection_add (GEE_COLLECTION (all_patterns), GTK_MATE_PATTERN (pattern));
-	_tmp17 = NULL;
-	return (_tmp17 = pattern, (ns == NULL ? NULL : (ns = (g_object_unref (ns), NULL))), (n == NULL ? NULL : (n = (g_object_unref (n), NULL))), (ps == NULL ? NULL : (ps = (g_object_unref (ps), NULL))), (subpattern == NULL ? NULL : (subpattern = (g_object_unref (subpattern), NULL))), _tmp17);
+	_tmp20 = NULL;
+	return (_tmp20 = pattern, (ns == NULL ? NULL : (ns = (g_object_unref (ns), NULL))), (n == NULL ? NULL : (n = (g_object_unref (n), NULL))), (ps == NULL ? NULL : (ps = (g_object_unref (ps), NULL))), (subpattern == NULL ? NULL : (subpattern = (g_object_unref (subpattern), NULL))), _tmp20);
 }
 
 
@@ -490,6 +496,7 @@ static void gtk_mate_double_pattern_instance_init (GtkMateDoublePattern * self) 
 static void gtk_mate_double_pattern_finalize (GObject * obj) {
 	GtkMateDoublePattern * self;
 	self = GTK_MATE_DOUBLE_PATTERN (obj);
+	self->content_name = (g_free (self->content_name), NULL);
 	(self->begin == NULL ? NULL : (self->begin = (g_object_unref (self->begin), NULL)));
 	(self->end == NULL ? NULL : (self->end = (g_object_unref (self->end), NULL)));
 	self->end_string = (g_free (self->end_string), NULL);

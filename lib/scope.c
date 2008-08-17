@@ -95,7 +95,6 @@ gint gtk_mate_scope_compare (GtkMateScope* a, GtkMateScope* b) {
 
 char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent) {
 	GString* _tmp0;
-	char* _tmp2;
 	char* _tmp1;
 	GSequenceIter* _tmp9;
 	GSequenceIter* iter;
@@ -112,11 +111,16 @@ char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent) {
 			g_string_append (self->pretty_string, "  ");
 		}
 	}
-	_tmp2 = NULL;
 	_tmp1 = NULL;
-	g_string_append (self->pretty_string, (_tmp2 = g_strconcat ((_tmp1 = g_strconcat ("+ ", self->priv->_name, NULL)), " (", NULL)));
-	_tmp2 = (g_free (_tmp2), NULL);
+	g_string_append (self->pretty_string, (_tmp1 = g_strconcat ("+ ", self->priv->_name, NULL)));
 	_tmp1 = (g_free (_tmp1), NULL);
+	if (GTK_MATE_IS_DOUBLE_PATTERN (self->pattern) && (GTK_MATE_DOUBLE_PATTERN (self->pattern))->content_name != NULL) {
+		char* _tmp2;
+		_tmp2 = NULL;
+		g_string_append (self->pretty_string, (_tmp2 = g_strconcat (" ", (GTK_MATE_DOUBLE_PATTERN (self->pattern))->content_name, NULL)));
+		_tmp2 = (g_free (_tmp2), NULL);
+	}
+	g_string_append (self->pretty_string, " (");
 	if (self->start_mark == NULL) {
 		g_string_append (self->pretty_string, "inf");
 	} else {

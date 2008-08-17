@@ -1115,6 +1115,40 @@ static VALUE gtk_mate_double_pattern_initialize(VALUE self) {
     return Qnil;
 }
 
+static VALUE rb_gtk_mate_double_pattern_get_content_name(VALUE self) {
+    GtkMateDoublePattern* gtk_mate_double_pattern = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // ValaMemberGet#body
+    char * _c_return = gtk_mate_double_pattern->content_name; 
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+          if (_c_return == NULL) {
+        _rb_return = Qnil;
+      }
+      else {
+        _rb_return = rb_str_new2(_c_return);
+      }
+
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_double_pattern_set_content_name(VALUE self, VALUE content_name) {
+    GtkMateDoublePattern* gtk_mate_double_pattern = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(content_name) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    // Method#argument_type_conversions
+    char * _c_content_name;
+    _c_content_name = g_strdup(STR2CSTR(content_name));
+    // ValaMemberSet#body
+    gtk_mate_double_pattern->content_name = _c_content_name;
+    // Method#return_type_conversion
+    return Qnil;
+}
+
 static VALUE rb_gtk_mate_double_pattern_get_begin(VALUE self) {
     GtkMateDoublePattern* gtk_mate_double_pattern = RVAL2GOBJ(self);
     // Method#type_checks
@@ -3193,6 +3227,81 @@ static VALUE rb_gtk_mate_parser_is_parsing(VALUE self) {
     return _rb_return;
 }
 
+static VALUE rb_gtk_mate_parser_close_scope(VALUE self, VALUE scanner, VALUE line_ix, VALUE m) {
+    GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(line_ix) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    // Method#argument_type_conversions
+    GtkMateScanner* _c_scanner;
+    _c_scanner = _GTK_MATE_SCANNER_SELF(scanner);
+    int _c_line_ix;
+    _c_line_ix = FIX2INT(line_ix);
+    GtkMateMarker* _c_m;
+    _c_m = _GTK_MATE_MARKER_SELF(m);
+    // Method#body
+    
+    gtk_mate_parser_close_scope(gtk_mate_parser, _c_scanner, _c_line_ix, _c_m);
+    // Method#return_type_conversion
+    return Qnil;
+}
+
+static VALUE rb_gtk_mate_parser_open_scope(VALUE self, VALUE scanner, VALUE line_ix, VALUE length, VALUE m) {
+    GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(line_ix) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    if (TYPE(length) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    // Method#argument_type_conversions
+    GtkMateScanner* _c_scanner;
+    _c_scanner = _GTK_MATE_SCANNER_SELF(scanner);
+    int _c_line_ix;
+    _c_line_ix = FIX2INT(line_ix);
+    int _c_length;
+    _c_length = FIX2INT(length);
+    GtkMateMarker* _c_m;
+    _c_m = _GTK_MATE_MARKER_SELF(m);
+    // Method#body
+    
+    gtk_mate_parser_open_scope(gtk_mate_parser, _c_scanner, _c_line_ix, _c_length, _c_m);
+    // Method#return_type_conversion
+    return Qnil;
+}
+
+static VALUE rb_gtk_mate_parser_single_scope(VALUE self, VALUE scanner, VALUE line_ix, VALUE length, VALUE m) {
+    GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(line_ix) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    if (TYPE(length) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    // Method#argument_type_conversions
+    GtkMateScanner* _c_scanner;
+    _c_scanner = _GTK_MATE_SCANNER_SELF(scanner);
+    int _c_line_ix;
+    _c_line_ix = FIX2INT(line_ix);
+    int _c_length;
+    _c_length = FIX2INT(length);
+    GtkMateMarker* _c_m;
+    _c_m = _GTK_MATE_MARKER_SELF(m);
+    // Method#body
+    
+    gtk_mate_parser_single_scope(gtk_mate_parser, _c_scanner, _c_line_ix, _c_length, _c_m);
+    // Method#return_type_conversion
+    return Qnil;
+}
+
 static VALUE rb_gtk_mate_parser_handle_captures(VALUE self, VALUE line_ix, VALUE scope, VALUE m) {
     GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
     // Method#type_checks
@@ -4575,6 +4684,9 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_parser, "stop_parsing", rb_gtk_mate_parser_stop_parsing, 0);
     rb_define_method(rbc_gtk_mate_parser, "start_parsing", rb_gtk_mate_parser_start_parsing, 0);
     rb_define_method(rbc_gtk_mate_parser, "is_parsing", rb_gtk_mate_parser_is_parsing, 0);
+    rb_define_method(rbc_gtk_mate_parser, "close_scope", rb_gtk_mate_parser_close_scope, 3);
+    rb_define_method(rbc_gtk_mate_parser, "open_scope", rb_gtk_mate_parser_open_scope, 4);
+    rb_define_method(rbc_gtk_mate_parser, "single_scope", rb_gtk_mate_parser_single_scope, 4);
     rb_define_method(rbc_gtk_mate_parser, "handle_captures", rb_gtk_mate_parser_handle_captures, 3);
     rb_define_method(rbc_gtk_mate_parser, "make_closing_regex", rb_gtk_mate_parser_make_closing_regex, 2);
     rb_define_method(rbc_gtk_mate_parser, "collect_child_captures", rb_gtk_mate_parser_collect_child_captures, 3);
@@ -4684,6 +4796,8 @@ void Init_gtkmateview_rb() {
     rb_define_singleton_method(rbc_gtk_mate_theme_setting, "create_from_plist", rb_gtk_mate_theme_setting_create_from_plist, 1);
     rbc_gtk_mate_double_pattern = G_DEF_CLASS(gtk_mate_double_pattern_get_type(), "DoublePattern", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_double_pattern, "initialize", gtk_mate_double_pattern_initialize, 0);
+    rb_define_method(rbc_gtk_mate_double_pattern, "content_name", rb_gtk_mate_double_pattern_get_content_name, 0);
+    rb_define_method(rbc_gtk_mate_double_pattern, "content_name=", rb_gtk_mate_double_pattern_set_content_name, 1);
     rb_define_method(rbc_gtk_mate_double_pattern, "begin", rb_gtk_mate_double_pattern_get_begin, 0);
     rb_define_method(rbc_gtk_mate_double_pattern, "begin=", rb_gtk_mate_double_pattern_set_begin, 1);
     rb_define_method(rbc_gtk_mate_double_pattern, "end", rb_gtk_mate_double_pattern_get_end, 0);

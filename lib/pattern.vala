@@ -66,6 +66,7 @@ namespace Gtk.Mate {
 	}
 	
 	public class DoublePattern : Pattern {
+		public string content_name;
 		public Oniguruma.Regex begin;
 		public Oniguruma.Regex end;
 		public string end_string;
@@ -81,17 +82,17 @@ namespace Gtk.Mate {
 			ns = (PList.String) pd.get("name");
 			if (ns != null) {
 				pattern.name = ns.str;
-//				stdout.printf("dp: %s\n", ((PList.String) pd.get("name")).str);
 			}
-			// else
-			// 	stdout.printf("dp: no name\n");
 			ns = (PList.String) pd.get("begin");
 			pattern.begin_string = ns.str;
 			pattern.begin = Oniguruma.Regex.make1(ns.str);
 			ns = (PList.String) pd.get("end");
-			// pattern.end = Oniguruma.Regex.make1(ns.str);
 			pattern.end_string = ns.str;
 
+			ns = (PList.String) pd.get("contentName");
+			if (ns != null) {
+				pattern.content_name = ns.str;
+			}
 			PList.Node? n = pd.get("beginCaptures");
 			if (n != null) {
 				pattern.begin_captures = Pattern.make_captures_from_plist((PList.Dict?) n);
