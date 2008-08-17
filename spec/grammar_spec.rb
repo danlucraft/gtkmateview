@@ -22,7 +22,7 @@ describe Gtk::Mate::Grammar do
     pnames.should include("support.constant.apache-config")
     
     # loads one without a name
-    @apg.patterns.find{|p| p.respond_to? :begin_captures and p.begin_captures and p.begin_captures.values == ["support.constant.rewritecond.apache-config"]}.should_not be_nil
+    @apg.patterns.find{|p| p.respond_to? :both_captures and p.both_captures and p.both_captures.values == ["support.constant.rewritecond.apache-config"]}.should_not be_nil
   end
 
   it "should replace all include patterns" do
@@ -45,7 +45,7 @@ describe Gtk::Mate::Grammar do
     pt.patterns.map{ |pat| pat.name}.should include("meta.vhost.apache-config")
 
     # check replaces #vars properly:
-    pt = @apg.patterns.find {|p| p.respond_to? :begin_captures and p.begin_captures.values == ["support.constant.rewritecond.apache-config"]}
+    pt = @apg.patterns.find {|p| p.respond_to? :both_captures and p.both_captures and  p.both_captures.values == ["support.constant.rewritecond.apache-config"]}
     pattern_list = pt.patterns.first.patterns
     pnames = pattern_list.map{|p1| p1.name}
     pnames.should include("support.variable.apache-config")
