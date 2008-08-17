@@ -4,15 +4,36 @@ using GLib;
 
 namespace Gtk.Mate {
 
-	public struct TextLoc {
+	public class TextLoc : Object {
 		public int line;
 		public int line_offset;
 		public static TextLoc make(int l, int lo) {
-			var tl = TextLoc();
+			var tl = new TextLoc();
 			tl.line = l;
 			tl.line_offset = lo;
 			return tl;
 		}
+
+		public static bool equal(TextLoc t1, TextLoc t2) {
+			return (t1.line == t2.line && t1.line_offset == t2.line_offset);
+		}
+
+		public static bool gt(TextLoc t1, TextLoc t2) {
+			return ((t1.line > t2.line) || (t1.line >= t2.line && t1.line_offset > t2.line_offset));
+		}
+
+		public static bool lt(TextLoc t1, TextLoc t2) {
+			return (!TextLoc.equal(t1, t2) && !TextLoc.gt(t1, t2));
+		}
+		
+		public static bool gte(TextLoc t1, TextLoc t2) {
+			return (!TextLoc.lt(t1, t2));
+		}
+		
+		public static bool lte(TextLoc t1, TextLoc t2) {
+			return (!TextLoc.gt(t1, t2));
+		}
+
 	}
 	
 	public class Parser : Object {
@@ -74,21 +95,23 @@ namespace Gtk.Mate {
 		// Parse line line_ix. Returns whether or not the ending
 		// scope of the line has changed.
 		private bool parse_line(int line_ix) {
-			string? line = buffer.get_line(line_ix);
-			int length = buffer.get_line_length(line_ix);
-			stdout.printf("parse line: %d (%d): '%s'\n", line_ix, length, line.substring(0, length));
-			var scanner = new Scanner(this.root, line, length);
+			string? line = buffer.get_line1(line_ix);
+			int length = (int) line.length;//buffer.get_line_length(line_ix);
+			stdout.printf("parse line: %d (%d): '%s'\n", line_ix, length, line);
+			var current_scope = this.root.scope_at(line_ix, -1);
+			stdout.printf("scope_at returns: %s\n", current_scope.name);
+			var scanner = new Scanner(current_scope, line, length);
 			int i = 0;
 			Scope s;
 			foreach (Marker m in scanner) {
 				if (m.is_close_scope) {
-					close_scope(scanner, line_ix, m);
+					close_scope(scanner, line_ix, line, m);
 				}
 				else if (m.pattern is DoublePattern) {
-					open_scope(scanner, line_ix, length, m);
+					open_scope(scanner, line_ix, line, length, m);
 				}
 				else {
-					single_scope(scanner, line_ix, length, m);
+					single_scope(scanner, line_ix, line, length, m);
 				}
 //				stdout.printf("pretty: %s\n", s.pretty(0));
 				scanner.position = m.match.end(0);
@@ -96,16 +119,16 @@ namespace Gtk.Mate {
 			return false;
 		}
 
-		public void close_scope(Scanner scanner, int line_ix, Marker m) {
+		public void close_scope(Scanner scanner, int line_ix, string line, Marker m) {
 			stdout.printf("closing scope at %d\n", m.from);
 			scanner.current_scope.inner_end_mark_set(line_ix, m.from, true);
 			scanner.current_scope.end_mark_set(line_ix, m.match.end(0), true);
 			scanner.current_scope.is_open = false;
-			handle_captures(line_ix, scanner.current_scope, m);
+			handle_captures(line_ix, line, scanner.current_scope, m);
 			scanner.current_scope = scanner.current_scope.parent;
 		}
 
-		public void open_scope(Scanner scanner, int line_ix, int length, Marker m) {
+		public void open_scope(Scanner scanner, int line_ix, string line, int length, Marker m) {
 			stdout.printf("[opening with %d patterns], \n", ((DoublePattern) m.pattern).patterns.size);
 			var s = new Scope(this.buffer, m.pattern.name);
 			s.pattern = m.pattern;
@@ -121,10 +144,10 @@ namespace Gtk.Mate {
 			scanner.current_scope.children.append(s);
 			s.parent = scanner.current_scope;
 			scanner.current_scope = s;
-			handle_captures(line_ix, s, m);
+			handle_captures(line_ix, line, s, m);
 		}
 
-		public void single_scope(Scanner scanner, int line_ix, int length, Marker m) {
+		public void single_scope(Scanner scanner, int line_ix, string line, int length, Marker m) {
 			var s = new Scope(this.buffer, m.pattern.name);
 			s.pattern = m.pattern;
 			s.open_match = m.match;
@@ -133,24 +156,44 @@ namespace Gtk.Mate {
 			s.is_open = false;
 			s.parent = scanner.current_scope;
 			scanner.current_scope.children.append(s);
-			handle_captures(line_ix, s, m);
+			handle_captures(line_ix, line, s, m);
 		}
 
 		// Opens scopes for captures AND creates closing regexp from
 		// captures if necessary.
-		public void handle_captures(int line_ix, Scope scope, Marker m) {
-			make_closing_regex(scope, m);
+		public void handle_captures(int line_ix, string line, Scope scope, Marker m) {
+			make_closing_regex(line, scope, m);
 			collect_child_captures(line_ix, scope, m);
 		}
 
-		public Oniguruma.Regex? make_closing_regex(Scope scope, Marker m) {
+		public Oniguruma.Regex? make_closing_regex(string line, Scope scope, Marker m) {
 			// new_end = pattern.end.gsub(/\\([0-9]+)/) do
 			// 	md.captures.send(:[], $1.to_i-1)
 			// end
-			if (m.pattern is DoublePattern) {
+			if (m.pattern is DoublePattern && !m.is_close_scope) {
 				var dp = (DoublePattern) m.pattern;
-				stdout.printf("making closing regex: %s\n", dp.end_string);
-				scope.closing_regex = Oniguruma.Regex.make1(dp.end_string);
+				stdout.printf("making closing regex: %s (%d)\n", dp.end_string, (int) dp.end_string.length);
+				var rx = Oniguruma.Regex.make1("\\\\(\\d+)");
+				Oniguruma.Match match;
+				int pos = 0;
+				var src = new StringBuilder("");
+				bool found = false;
+				while ((match = rx.search(dp.end_string, pos, (int) dp.end_string.length)) != null) {
+					found = true;
+					src.append(dp.end_string.substring(pos, match.begin(0)));
+					var numstr = dp.end_string.substring(match.begin(1), match.end(1));
+					var num = numstr.to_int();
+					stdout.printf("capture found: %d\n", num);
+					var capstr = line.substring(m.match.begin(num), m.match.end(num)-1);
+					src.append(capstr);
+					pos = match.end(1);
+				}
+				if (found)
+					src.append(dp.end_string.substring(pos, dp.end_string.length));
+				else
+					src.append(dp.end_string);
+				stdout.printf("src: '%s'\n", src.str);
+				scope.closing_regex = Oniguruma.Regex.make1(src.str);
 			}
 			return null;
 		}

@@ -75,12 +75,17 @@ namespace Gtk {
 			public bool is_open;
 			public string bg_color;
 			public bool is_capture;
+			public Gtk.Mate.TextLoc dummy_start_loc;
+			public Gtk.Mate.TextLoc dummy_end_loc;
 			public Gtk.Mate.Scope parent;
 			public GLib.StringBuilder pretty_string;
 			public int indent;
 			public Scope (Gtk.Mate.Buffer buf, string name);
 			public bool is_root ();
-			public static int compare (Gtk.Mate.Scope a, Gtk.Mate.Scope b);
+			public static int compare (Gtk.Mate.Scope a, Gtk.Mate.Scope b, void* data);
+			public static int compare_by_loc (Gtk.Mate.Scope a, Gtk.Mate.Scope b, void* data);
+			public Gtk.Mate.Scope? scope_at (int line, int line_offset);
+			public bool contains_loc (Gtk.Mate.TextLoc loc);
 			public string pretty (int indent);
 			public void start_mark_set (int line, int line_offset, bool has_left_gravity);
 			public void inner_start_mark_set (int line, int line_offset, bool has_left_gravity);
@@ -88,6 +93,12 @@ namespace Gtk {
 			public void end_mark_set (int line, int line_offset, bool has_left_gravity);
 			public int start_offset ();
 			public int end_offset ();
+			public int start_line ();
+			public int end_line ();
+			public int start_line_offset ();
+			public int end_line_offset ();
+			public Gtk.Mate.TextLoc start_loc ();
+			public Gtk.Mate.TextLoc end_loc ();
 			public string name { get; set; }
 			public Gtk.Mate.Buffer buffer { get; set; }
 			public GLib.Sequence<Gtk.Mate.Scope> children { get; }
@@ -136,11 +147,24 @@ namespace Gtk {
 			public Gtk.TextMark cursor_mark ();
 			public Gtk.TextMark selection_mark ();
 			public string? get_line (int line);
+			public string? get_line1 (int line_ix);
 			public int get_line_length (int line);
 			public int cursor_line ();
 			public int cursor_line_offset ();
 			public int cursor_offset ();
 			public Buffer ();
+		}
+		[CCode (cheader_filename = "parser.h")]
+		public class TextLoc : Gtk.Object {
+			public int line;
+			public int line_offset;
+			public static Gtk.Mate.TextLoc make (int l, int lo);
+			public static bool equal (Gtk.Mate.TextLoc t1, Gtk.Mate.TextLoc t2);
+			public static bool gt (Gtk.Mate.TextLoc t1, Gtk.Mate.TextLoc t2);
+			public static bool lt (Gtk.Mate.TextLoc t1, Gtk.Mate.TextLoc t2);
+			public static bool gte (Gtk.Mate.TextLoc t1, Gtk.Mate.TextLoc t2);
+			public static bool lte (Gtk.Mate.TextLoc t1, Gtk.Mate.TextLoc t2);
+			public TextLoc ();
 		}
 		[CCode (cheader_filename = "parser.h")]
 		public class Parser : Gtk.Object {
@@ -152,11 +176,11 @@ namespace Gtk {
 			public void stop_parsing ();
 			public void start_parsing ();
 			public bool is_parsing ();
-			public void close_scope (Gtk.Mate.Scanner scanner, int line_ix, Gtk.Mate.Marker m);
-			public void open_scope (Gtk.Mate.Scanner scanner, int line_ix, int length, Gtk.Mate.Marker m);
-			public void single_scope (Gtk.Mate.Scanner scanner, int line_ix, int length, Gtk.Mate.Marker m);
-			public void handle_captures (int line_ix, Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
-			public Oniguruma.Regex? make_closing_regex (Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
+			public void close_scope (Gtk.Mate.Scanner scanner, int line_ix, string line, Gtk.Mate.Marker m);
+			public void open_scope (Gtk.Mate.Scanner scanner, int line_ix, string line, int length, Gtk.Mate.Marker m);
+			public void single_scope (Gtk.Mate.Scanner scanner, int line_ix, string line, int length, Gtk.Mate.Marker m);
+			public void handle_captures (int line_ix, string line, Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
+			public Oniguruma.Regex? make_closing_regex (string line, Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
 			public void collect_child_captures (int line_ix, Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
 			public void connect_buffer_signals ();
 			public void insert_text_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, string text, int length);
@@ -203,12 +227,6 @@ namespace Gtk {
 			public Gee.ArrayList<Gtk.Mate.Grammar> grammars;
 			public Bundle (string name);
 			public string name { get; set; }
-		}
-		[CCode (cheader_filename = "parser.h")]
-		public struct TextLoc {
-			public int line;
-			public int line_offset;
-			public static Gtk.Mate.TextLoc make (int l, int lo);
 		}
 		[CCode (cheader_filename = "gtkmateview.h")]
 		public static int load_bundles ();

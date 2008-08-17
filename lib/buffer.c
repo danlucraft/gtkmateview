@@ -9,6 +9,7 @@
 
 
 
+static glong string_get_length (const char* self);
 enum  {
 	GTK_MATE_BUFFER_DUMMY_PROPERTY
 };
@@ -19,6 +20,12 @@ static gpointer gtk_mate_buffer_parent_class = NULL;
 static void gtk_mate_buffer_finalize (GObject * obj);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
+
+
+static glong string_get_length (const char* self) {
+	g_return_val_if_fail (self != NULL, 0L);
+	return g_utf8_strlen (self, -1);
+}
 
 
 /* Sets the grammar explicitly by name.*/
@@ -296,8 +303,8 @@ GtkTextMark* gtk_mate_buffer_selection_mark (GtkMateBuffer* self) {
 }
 
 
-/* Get text of line, including the "\n". Returns null if line does
- not exist.*/
+/* Get text of line, including the "\n" if present. Returns null if line 
+ does not exist.*/
 char* gtk_mate_buffer_get_line (GtkMateBuffer* self, gint line) {
 	GtkTextIter ei = {0};
 	const char* _tmp2;
@@ -314,6 +321,31 @@ char* gtk_mate_buffer_get_line (GtkMateBuffer* self, gint line) {
 	}
 	_tmp2 = NULL;
 	return (_tmp2 = gtk_text_buffer_get_slice (GTK_TEXT_BUFFER (self), (_tmp1 = gtk_mate_buffer_line_start_iter (self, line), &_tmp1), &ei, TRUE), (_tmp2 == NULL ? NULL : g_strdup (_tmp2)));
+}
+
+
+/* Get text of line, not including the "\n". Returns null if line
+ does not exist.*/
+char* gtk_mate_buffer_get_line1 (GtkMateBuffer* self, gint line_ix) {
+	char* line;
+	char* _tmp0;
+	char* _tmp4;
+	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), NULL);
+	line = NULL;
+	_tmp0 = NULL;
+	if ((line = (_tmp0 = gtk_mate_buffer_get_line (self, line_ix), (line = (g_free (line), NULL)), _tmp0)) != NULL) {
+		if (line_ix == gtk_text_buffer_get_line_count (GTK_TEXT_BUFFER (self)) - 1) {
+			return line;
+		} else {
+			char* _tmp2;
+			char* _tmp3;
+			_tmp2 = NULL;
+			_tmp3 = NULL;
+			return (_tmp3 = (_tmp2 = g_utf8_offset_to_pointer (line, ((glong) (0))), g_strndup (_tmp2, g_utf8_offset_to_pointer (_tmp2, string_get_length (line) - 1) - _tmp2)), (line = (g_free (line), NULL)), _tmp3);
+		}
+	}
+	_tmp4 = NULL;
+	return (_tmp4 = NULL, (line = (g_free (line), NULL)), _tmp4);
 }
 
 

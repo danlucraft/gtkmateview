@@ -135,8 +135,8 @@ namespace Gtk.Mate {
 			return get_mark("selection");
 		}
 
-		// Get text of line, including the "\n". Returns null if line does
-		// not exist.
+		// Get text of line, including the "\n" if present. Returns null if line 
+		// does not exist.
 		public string? get_line(int line) {
 			TextIter ei;
 			if (line == get_line_count() - 1) {
@@ -149,6 +149,19 @@ namespace Gtk.Mate {
 				ei = line_start_iter(line+1);
 			}
 			return get_slice(line_start_iter(line), ei, true);
+		}
+
+		// Get text of line, not including the "\n". Returns null if line
+		// does not exist.
+		public string? get_line1(int line_ix) {
+			string? line;
+			if ((line = get_line(line_ix)) != null) {
+				if (line_ix == get_line_count() - 1)
+					return line;
+				else
+					return line.substring(0, line.length-1);
+			}
+			return null;
 		}
 
 		public int get_line_length(int line) {

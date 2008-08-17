@@ -33,6 +33,7 @@ def fix_vala_c_sources(sources)
   # fix missing ScannerIterator typedefs
   lines = File.readlines("scope.h")
   ix = lines.index("typedef struct _GtkMateScannerClass GtkMateScannerClass;\n")
+  raise "couldn't patch parser.h" unless ix
   lines.insert(ix+1, "typedef struct _GtkMateScannerIteratorClass GtkMateScannerIteratorClass;\n")
   lines.insert(ix+1, "typedef struct _GtkMateScannerIterator GtkMateScannerIterator;\n")
   File.open("scope.h", "w") {|f| f.puts lines.join }

@@ -52,6 +52,7 @@ GtkTextMark* gtk_mate_buffer_end_mark (GtkMateBuffer* self);
 GtkTextMark* gtk_mate_buffer_cursor_mark (GtkMateBuffer* self);
 GtkTextMark* gtk_mate_buffer_selection_mark (GtkMateBuffer* self);
 char* gtk_mate_buffer_get_line (GtkMateBuffer* self, gint line);
+char* gtk_mate_buffer_get_line1 (GtkMateBuffer* self, gint line_ix);
 gint gtk_mate_buffer_get_line_length (GtkMateBuffer* self, gint line);
 gint gtk_mate_buffer_cursor_line (GtkMateBuffer* self);
 gint gtk_mate_buffer_cursor_line_offset (GtkMateBuffer* self);

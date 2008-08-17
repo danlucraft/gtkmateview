@@ -22,6 +22,11 @@ namespace Gtk.Mate {
 
 		public string bg_color;
 		public bool is_capture;
+		
+		// these are for when we want to compare scopes without
+		// having to create TextMarks
+		public TextLoc dummy_start_loc;
+		public TextLoc dummy_end_loc;
 
 		private Sequence<Scope> _children;
 		public Sequence<Scope> children {
@@ -47,9 +52,9 @@ namespace Gtk.Mate {
 			return false;
 		}
 
-		// compare two Scope's. Returns 1 if b is later than a,
-		// -1 if b is before a and 0 if b is overlapping with a
-		public static int compare(Scope a, Scope b) {
+		// compare two Scope's. Returns 1 if a is later than b,
+		// -1 if a is before b and 0 if b is overlapping with a
+		public static int compare(Scope a, Scope b, void* data) {
 			TextIter a_start, b_start;
 			if (a.start_mark == null) {
 				if (b.start_mark == null)
@@ -63,16 +68,70 @@ namespace Gtk.Mate {
 			buf.get_iter_at_mark(out a_start, a.start_mark);
 			buf.get_iter_at_mark(out b_start, b.start_mark);
 			if (a_start.get_line() > b_start.get_line())
-				return -1;
-			else if (a_start.get_line() < b_start.get_line())
 				return 1;
+			else if (a_start.get_line() < b_start.get_line())
+				return -1;
 			else if (a_start.get_line() == b_start.get_line()) {
 				if (a_start.get_line_offset() > b_start.get_line_offset())
-					return -1;
-				else if (a_start.get_line_offset() < b_start.get_line_offset())
 					return 1;
+				else if (a_start.get_line_offset() < b_start.get_line_offset())
+					return -1;
 			}
 			return 0;
+		}
+
+		public static int compare_by_loc(Scope a, Scope b, void* data) {
+			if (TextLoc.lt(a.start_loc(), b.start_loc())) {
+				return -1;
+			}
+			else if (TextLoc.equal(a.start_loc(), b.start_loc())) {
+				return 0;
+			}
+			else {
+				return 1;
+			}
+		}
+
+		public Scope? scope_at(int line, int line_offset) {
+			var loc = TextLoc.make(line, line_offset);
+			TextLoc? start = start_loc();
+			if (TextLoc.lte(start, loc) || parent == null) {
+				if (TextLoc.gte(end_loc(), loc)) {
+					if (children.get_length() == 0) {
+						return this;
+					}
+					var s = new Scope(this.buffer, "");
+					s.dummy_start_loc = loc;
+					s.dummy_end_loc = loc;
+					var iter = children.search(s, (CompareDataFunc) Scope.compare_by_loc);
+					if (!iter.is_begin()) {
+						var prev_scope = children.get(iter.prev());
+						if (prev_scope.contains_loc(loc)) {
+							return prev_scope.scope_at(line, line_offset);
+						}
+					}
+					if (!iter.is_end()) {
+						var next_scope = children.get(iter.next());
+						if (next_scope.contains_loc(loc)) {
+							return next_scope.scope_at(line, line_offset);
+						}
+					}
+					return this;
+				}
+				else {
+					return null;
+				}
+			}
+			else {
+				return null;
+			}
+		}
+
+		public bool contains_loc(TextLoc loc) {
+			if (TextLoc.lte(start_loc(), loc) && TextLoc.gt(end_loc(), loc))
+				return true;
+			else 
+				return false;
 		}
 
 		public string pretty(int indent) {
@@ -138,6 +197,44 @@ namespace Gtk.Mate {
 				return buffer.iter_from_mark(end_mark).get_offset();
 			else
 				return int.MAX;
+		}
+
+		public int start_line() {
+			return buffer.iter_from_mark(start_mark).get_line();
+		}
+
+		public int end_line() {
+			if (end_mark != null) 
+				return buffer.iter_from_mark(end_mark).get_line();
+			else
+				return int.MAX;
+		}
+
+		public int start_line_offset() {
+			return buffer.iter_from_mark(start_mark).get_line_offset();
+		}
+
+		public int end_line_offset() {
+			if (end_mark != null) 
+				return buffer.iter_from_mark(end_mark).get_line_offset();
+			else
+				return int.MAX;
+		}
+
+		public TextLoc start_loc() {
+			if (dummy_start_loc != null) {
+				return dummy_start_loc;
+			}
+			else {
+				return TextLoc.make(start_line(), start_line_offset());
+			}
+		}
+
+		public TextLoc end_loc() {
+			if (dummy_end_loc != null)
+				return dummy_end_loc;
+			else
+				return TextLoc.make(end_line(), end_line_offset());
 		}
 	}
 }
