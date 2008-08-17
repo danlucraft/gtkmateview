@@ -48,6 +48,7 @@ namespace Gtk {
 			public string begin_string;
 			public Gee.HashMap<int,string> begin_captures;
 			public Gee.HashMap<int,string> end_captures;
+			public Gee.HashMap<int,string> both_captures;
 			public Gee.ArrayList<Gtk.Mate.Pattern> patterns;
 			public static Gtk.Mate.DoublePattern? create_from_plist (Gee.ArrayList<Gtk.Mate.Pattern> all_patterns, PList.Dict pd);
 			public void replace_include_patterns (Gtk.Mate.Grammar g);

@@ -55,7 +55,11 @@ namespace Gtk.Mate {
 			int new_length;
 			foreach (var m1 in cached_markers) {
 				new_length = m1.match.end(0) - m1.from;
-				if (m == null || m1.from < m.from || (m1.from == m.from && new_length > best_length)) {
+				if (m == null || 
+					m1.from < m.from || 
+					(m1.from == m.from && new_length > best_length) ||
+					(m1.from == m.from && new_length == best_length && m1.is_close_scope)
+					) {
 					m = m1;
 					best_length = new_length;
 				}
@@ -70,7 +74,7 @@ namespace Gtk.Mate {
 			stdout.printf("num cached: %d\n", len);
 			for(int i = 0; i < len; i++, ix++) {
 				var cm = cached_markers.get(ix);
-				if (cached_markers.get(ix).from <= m.match.end(0)) {
+				if (cached_markers.get(ix).from < m.match.end(0)) {
 					cached_markers.remove_at(ix);
 					ix--;
 				}
@@ -91,6 +95,7 @@ namespace Gtk.Mate {
 
 		public Marker? find_next_marker() {
 			stdout.printf("find_next_marker (current_scope is %s)\n", current_scope.name);
+			stdout.printf("scanning: '%s' from %d to %d\n", line, position, line_length);
 			Marker m;
 			int best_length = 0;
 			int new_length;
@@ -104,10 +109,9 @@ namespace Gtk.Mate {
 			assert(cached_markers.size == 0);
 			var closing_regex = current_scope.closing_regex;
 			if (closing_regex != null) {
-				stdout.printf("have closing regex\n");
 				var match = closing_regex.search(line, position, line_length);
 				if (match != null) {
-					stdout.printf("have closing regex match\n");
+					stdout.printf("closing match: %s (%d-%d)\n", current_scope.name, match.begin(0), match.end(0));
 					var nm = new Marker();
 					nm.pattern = current_scope.pattern;
 					nm.match = match;

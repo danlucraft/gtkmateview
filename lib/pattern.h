@@ -92,6 +92,7 @@ struct _GtkMateDoublePattern {
 	char* begin_string;
 	GeeHashMap* begin_captures;
 	GeeHashMap* end_captures;
+	GeeHashMap* both_captures;
 	GeeArrayList* patterns;
 };
 

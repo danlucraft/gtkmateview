@@ -73,6 +73,7 @@ namespace Gtk.Mate {
 		public string begin_string;
 		public HashMap<int, string> begin_captures;
 		public HashMap<int, string> end_captures;
+		public HashMap<int, string> both_captures;
 		public ArrayList<Pattern> patterns;
 
 		public static DoublePattern? create_from_plist(ArrayList<Pattern> all_patterns, PList.Dict pd) {
@@ -93,13 +94,15 @@ namespace Gtk.Mate {
 			if (ns != null) {
 				pattern.content_name = ns.str;
 			}
+
 			PList.Node? n = pd.get("beginCaptures");
 			if (n != null) {
 				pattern.begin_captures = Pattern.make_captures_from_plist((PList.Dict?) n);
 			}
-			else {
-				n = pd.get("captures");
-				pattern.begin_captures = Pattern.make_captures_from_plist((PList.Dict?) n);
+
+			n = pd.get("captures");
+			if (n != null) {
+				pattern.both_captures = Pattern.make_captures_from_plist((PList.Dict?) n);
 			}
 			
 			n = pd.get("endCaptures");
@@ -147,14 +150,12 @@ namespace Gtk.Mate {
 		public void replace_base_and_self_includes(Grammar g) {
 			var include_patterns = new ArrayList<Pattern>();
 			var patterns_to_include = new ArrayList<Pattern>();
-
+			bool already_self = false; // some patterns have $self twice
 			foreach (Pattern p in this.patterns) {
 				if (p is IncludePattern && p.name.has_prefix("$")) {
 					include_patterns.add(p);
-					if (p.name == "$self" || p.name == "$base") {
-					// 	patterns_to_include.add(this);
-					// }
-					// else if (p.name == "$base") {
+					if ((p.name == "$self" || p.name == "$base") && !already_self) {
+						already_self = true;
 						foreach (var p in g.patterns) {
 							patterns_to_include.add(p);
 						}

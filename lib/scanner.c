@@ -139,7 +139,7 @@ GtkMateMarker* gtk_mate_scanner_get_cached_marker (GtkMateScanner* self) {
 			m1 = ((GtkMateMarker*) (gee_list_get (GEE_LIST (m1_collection), m1_it)));
 			{
 				new_length = oniguruma_match_end (m1->match, 0) - m1->from;
-				if (m == NULL || m1->from < m->from || (m1->from == m->from && new_length > best_length)) {
+				if (m == NULL || m1->from < m->from || (m1->from == m->from && new_length > best_length) || (m1->from == m->from && new_length == best_length && m1->is_close_scope)) {
 					GtkMateMarker* _tmp1;
 					GtkMateMarker* _tmp0;
 					_tmp1 = NULL;
@@ -173,7 +173,7 @@ void gtk_mate_scanner_remove_preceding_cached_markers (GtkMateScanner* self, Gtk
 			gboolean _tmp1;
 			cm = ((GtkMateMarker*) (gee_list_get (GEE_LIST (self->cached_markers), ix)));
 			_tmp0 = NULL;
-			if ((_tmp1 = (_tmp0 = ((GtkMateMarker*) (gee_list_get (GEE_LIST (self->cached_markers), ix))))->from <= oniguruma_match_end (m->match, 0), (_tmp0 == NULL ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL))), _tmp1)) {
+			if ((_tmp1 = (_tmp0 = ((GtkMateMarker*) (gee_list_get (GEE_LIST (self->cached_markers), ix))))->from < oniguruma_match_end (m->match, 0), (_tmp0 == NULL ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL))), _tmp1)) {
 				gee_list_remove_at (GEE_LIST (self->cached_markers), ix);
 				ix--;
 			}
@@ -214,6 +214,7 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 	GtkMateMarker* _tmp16;
 	g_return_val_if_fail (GTK_MATE_IS_SCANNER (self), NULL);
 	fprintf (stdout, "find_next_marker (current_scope is %s)\n", gtk_mate_scope_get_name (gtk_mate_scanner_get_current_scope (self)));
+	fprintf (stdout, "scanning: '%s' from %d to %d\n", self->priv->_line, self->position, self->priv->_line_length);
 	m = NULL;
 	best_length = 0;
 	new_length = 0;
@@ -230,7 +231,6 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 	closing_regex = (_tmp2 = gtk_mate_scanner_get_current_scope (self)->closing_regex, (_tmp2 == NULL ? NULL : g_object_ref (_tmp2)));
 	if (closing_regex != NULL) {
 		OnigurumaMatch* match;
-		fprintf (stdout, "have closing regex\n");
 		match = oniguruma_regex_search (closing_regex, self->priv->_line, self->position, self->priv->_line_length);
 		if (match != NULL) {
 			GtkMateMarker* nm;
@@ -240,7 +240,7 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 			OnigurumaMatch* _tmp5;
 			GtkMateMarker* _tmp8;
 			GtkMateMarker* _tmp7;
-			fprintf (stdout, "have closing regex match\n");
+			fprintf (stdout, "closing match: %s (%d-%d)\n", gtk_mate_scope_get_name (gtk_mate_scanner_get_current_scope (self)), oniguruma_match_begin (match, 0), oniguruma_match_end (match, 0));
 			nm = g_object_ref_sink (gtk_mate_marker_new ());
 			_tmp4 = NULL;
 			_tmp3 = NULL;

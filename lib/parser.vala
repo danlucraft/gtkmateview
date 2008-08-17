@@ -104,6 +104,7 @@ namespace Gtk.Mate {
 			int i = 0;
 			Scope s;
 			foreach (Marker m in scanner) {
+				stdout.printf("scope: %s\n", m.pattern.name);
 				if (m.is_close_scope) {
 					close_scope(scanner, line_ix, line, m);
 				}
@@ -210,6 +211,9 @@ namespace Gtk.Mate {
 				}
 				else {
 					captures = ((DoublePattern) m.pattern).begin_captures;
+				}
+				if (((DoublePattern) m.pattern).both_captures != null) {
+					captures = ((DoublePattern) m.pattern).both_captures;
 				}
 			}
 			var capture_scopes = new ArrayList<Scope>();

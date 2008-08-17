@@ -244,6 +244,7 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 	const char* _tmp8;
 	PListString* _tmp10;
 	PListNode* n;
+	PListNode* _tmp14;
 	PListNode* _tmp16;
 	GeeHashMap* _tmp17;
 	GeeArrayList* _tmp18;
@@ -289,13 +290,13 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 		GeeHashMap* _tmp13;
 		_tmp13 = NULL;
 		pattern->begin_captures = (_tmp13 = gtk_mate_pattern_make_captures_from_plist (PLIST_DICT (n)), (pattern->begin_captures == NULL ? NULL : (pattern->begin_captures = (g_object_unref (pattern->begin_captures), NULL))), _tmp13);
-	} else {
-		PListNode* _tmp14;
+	}
+	_tmp14 = NULL;
+	n = (_tmp14 = plist_dict_get (pd, "captures"), (n == NULL ? NULL : (n = (g_object_unref (n), NULL))), _tmp14);
+	if (n != NULL) {
 		GeeHashMap* _tmp15;
-		_tmp14 = NULL;
-		n = (_tmp14 = plist_dict_get (pd, "captures"), (n == NULL ? NULL : (n = (g_object_unref (n), NULL))), _tmp14);
 		_tmp15 = NULL;
-		pattern->begin_captures = (_tmp15 = gtk_mate_pattern_make_captures_from_plist (PLIST_DICT (n)), (pattern->begin_captures == NULL ? NULL : (pattern->begin_captures = (g_object_unref (pattern->begin_captures), NULL))), _tmp15);
+		pattern->both_captures = (_tmp15 = gtk_mate_pattern_make_captures_from_plist (PLIST_DICT (n)), (pattern->both_captures == NULL ? NULL : (pattern->both_captures = (g_object_unref (pattern->both_captures), NULL))), _tmp15);
 	}
 	_tmp16 = NULL;
 	n = (_tmp16 = plist_dict_get (pd, "endCaptures"), (n == NULL ? NULL : (n = (g_object_unref (n), NULL))), _tmp16);
@@ -394,10 +395,13 @@ void gtk_mate_double_pattern_replace_repository_includes (GtkMateDoublePattern* 
 void gtk_mate_double_pattern_replace_base_and_self_includes (GtkMateDoublePattern* self, GtkMateGrammar* g) {
 	GeeArrayList* include_patterns;
 	GeeArrayList* patterns_to_include;
+	gboolean already_self;
 	g_return_if_fail (GTK_MATE_IS_DOUBLE_PATTERN (self));
 	g_return_if_fail (GTK_MATE_IS_GRAMMAR (g));
 	include_patterns = gee_array_list_new (GTK_MATE_TYPE_PATTERN, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
 	patterns_to_include = gee_array_list_new (GTK_MATE_TYPE_PATTERN, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
+	already_self = FALSE;
+	/* some patterns have $self twice*/
 	{
 		GeeArrayList* p_collection;
 		int p_it;
@@ -408,10 +412,8 @@ void gtk_mate_double_pattern_replace_base_and_self_includes (GtkMateDoublePatter
 			{
 				if (GTK_MATE_IS_INCLUDE_PATTERN (p) && g_str_has_prefix (p->name, "$")) {
 					gee_collection_add (GEE_COLLECTION (include_patterns), p);
-					if (_vala_strcmp0 (p->name, "$self") == 0 || _vala_strcmp0 (p->name, "$base") == 0) {
-						/* patterns_to_include.add(this);
-						 }
-						 else if (p.name == "$base") {*/
+					if ((_vala_strcmp0 (p->name, "$self") == 0 || _vala_strcmp0 (p->name, "$base") == 0) && !already_self) {
+						already_self = TRUE;
 						{
 							GeeArrayList* p_collection;
 							int p_it;
@@ -503,6 +505,7 @@ static void gtk_mate_double_pattern_finalize (GObject * obj) {
 	self->begin_string = (g_free (self->begin_string), NULL);
 	(self->begin_captures == NULL ? NULL : (self->begin_captures = (g_object_unref (self->begin_captures), NULL)));
 	(self->end_captures == NULL ? NULL : (self->end_captures = (g_object_unref (self->end_captures), NULL)));
+	(self->both_captures == NULL ? NULL : (self->both_captures = (g_object_unref (self->both_captures), NULL)));
 	(self->patterns == NULL ? NULL : (self->patterns = (g_object_unref (self->patterns), NULL)));
 	G_OBJECT_CLASS (gtk_mate_double_pattern_parent_class)->finalize (obj);
 }
