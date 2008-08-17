@@ -1163,6 +1163,40 @@ static VALUE rb_gtk_mate_double_pattern_set_end(VALUE self, VALUE end) {
     return Qnil;
 }
 
+static VALUE rb_gtk_mate_double_pattern_get_end_string(VALUE self) {
+    GtkMateDoublePattern* gtk_mate_double_pattern = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // ValaMemberGet#body
+    char * _c_return = gtk_mate_double_pattern->end_string; 
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+          if (_c_return == NULL) {
+        _rb_return = Qnil;
+      }
+      else {
+        _rb_return = rb_str_new2(_c_return);
+      }
+
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_double_pattern_set_end_string(VALUE self, VALUE end_string) {
+    GtkMateDoublePattern* gtk_mate_double_pattern = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(end_string) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    // Method#argument_type_conversions
+    char * _c_end_string;
+    _c_end_string = g_strdup(STR2CSTR(end_string));
+    // ValaMemberSet#body
+    gtk_mate_double_pattern->end_string = _c_end_string;
+    // Method#return_type_conversion
+    return Qnil;
+}
+
 static VALUE rb_gtk_mate_double_pattern_get_begin_string(VALUE self) {
     GtkMateDoublePattern* gtk_mate_double_pattern = RVAL2GOBJ(self);
     // Method#type_checks
@@ -3180,16 +3214,18 @@ static VALUE rb_gtk_mate_parser_handle_captures(VALUE self, VALUE line_ix, VALUE
     return Qnil;
 }
 
-static VALUE rb_gtk_mate_parser_make_closing_regex(VALUE self, VALUE m) {
+static VALUE rb_gtk_mate_parser_make_closing_regex(VALUE self, VALUE scope, VALUE m) {
     GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
     // Method#type_checks
     // Method#argument_type_conversions
+    GtkMateScope* _c_scope;
+    _c_scope = _GTK_MATE_SCOPE_SELF(scope);
     GtkMateMarker* _c_m;
     _c_m = _GTK_MATE_MARKER_SELF(m);
     // Method#body
     
     OnigurumaRegex* _c_return;
-    _c_return = gtk_mate_parser_make_closing_regex(gtk_mate_parser, _c_m);
+    _c_return = gtk_mate_parser_make_closing_regex(gtk_mate_parser, _c_scope, _c_m);
     // Method#return_type_conversion
     VALUE _rb_return;
     if (_c_return == NULL)
@@ -4540,7 +4576,7 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_parser, "start_parsing", rb_gtk_mate_parser_start_parsing, 0);
     rb_define_method(rbc_gtk_mate_parser, "is_parsing", rb_gtk_mate_parser_is_parsing, 0);
     rb_define_method(rbc_gtk_mate_parser, "handle_captures", rb_gtk_mate_parser_handle_captures, 3);
-    rb_define_method(rbc_gtk_mate_parser, "make_closing_regex", rb_gtk_mate_parser_make_closing_regex, 1);
+    rb_define_method(rbc_gtk_mate_parser, "make_closing_regex", rb_gtk_mate_parser_make_closing_regex, 2);
     rb_define_method(rbc_gtk_mate_parser, "collect_child_captures", rb_gtk_mate_parser_collect_child_captures, 3);
     rb_define_method(rbc_gtk_mate_parser, "connect_buffer_signals", rb_gtk_mate_parser_connect_buffer_signals, 0);
     rb_define_singleton_method(rbc_gtk_mate_parser, "create", rb_gtk_mate_parser_create, 2);
@@ -4652,6 +4688,8 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_double_pattern, "begin=", rb_gtk_mate_double_pattern_set_begin, 1);
     rb_define_method(rbc_gtk_mate_double_pattern, "end", rb_gtk_mate_double_pattern_get_end, 0);
     rb_define_method(rbc_gtk_mate_double_pattern, "end=", rb_gtk_mate_double_pattern_set_end, 1);
+    rb_define_method(rbc_gtk_mate_double_pattern, "end_string", rb_gtk_mate_double_pattern_get_end_string, 0);
+    rb_define_method(rbc_gtk_mate_double_pattern, "end_string=", rb_gtk_mate_double_pattern_set_end_string, 1);
     rb_define_method(rbc_gtk_mate_double_pattern, "begin_string", rb_gtk_mate_double_pattern_get_begin_string, 0);
     rb_define_method(rbc_gtk_mate_double_pattern, "begin_string=", rb_gtk_mate_double_pattern_set_begin_string, 1);
     rb_define_method(rbc_gtk_mate_double_pattern, "begin_captures", rb_gtk_mate_double_pattern_get_begin_captures, 0);

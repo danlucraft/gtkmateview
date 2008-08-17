@@ -49,7 +49,7 @@ void gtk_mate_parser_stop_parsing (GtkMateParser* self);
 void gtk_mate_parser_start_parsing (GtkMateParser* self);
 gboolean gtk_mate_parser_is_parsing (GtkMateParser* self);
 void gtk_mate_parser_handle_captures (GtkMateParser* self, gint line_ix, GtkMateScope* scope, GtkMateMarker* m);
-OnigurumaRegex* gtk_mate_parser_make_closing_regex (GtkMateParser* self, GtkMateMarker* m);
+OnigurumaRegex* gtk_mate_parser_make_closing_regex (GtkMateParser* self, GtkMateScope* scope, GtkMateMarker* m);
 void gtk_mate_parser_collect_child_captures (GtkMateParser* self, gint line_ix, GtkMateScope* scope, GtkMateMarker* m);
 void gtk_mate_parser_connect_buffer_signals (GtkMateParser* self);
 void gtk_mate_parser_insert_text_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, const char* text, gint length);

@@ -43,6 +43,7 @@ namespace Gtk {
 		public class DoublePattern : Gtk.Mate.Pattern {
 			public Oniguruma.Regex begin;
 			public Oniguruma.Regex end;
+			public string end_string;
 			public string begin_string;
 			public Gee.HashMap<int,string> begin_captures;
 			public Gee.HashMap<int,string> end_captures;
@@ -151,7 +152,7 @@ namespace Gtk {
 			public void start_parsing ();
 			public bool is_parsing ();
 			public void handle_captures (int line_ix, Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
-			public Oniguruma.Regex? make_closing_regex (Gtk.Mate.Marker m);
+			public Oniguruma.Regex? make_closing_regex (Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
 			public void collect_child_captures (int line_ix, Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
 			public void connect_buffer_signals ();
 			public void insert_text_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, string text, int length);

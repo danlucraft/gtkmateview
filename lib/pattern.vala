@@ -68,6 +68,7 @@ namespace Gtk.Mate {
 	public class DoublePattern : Pattern {
 		public Oniguruma.Regex begin;
 		public Oniguruma.Regex end;
+		public string end_string;
 		public string begin_string;
 		public HashMap<int, string> begin_captures;
 		public HashMap<int, string> end_captures;
@@ -88,7 +89,8 @@ namespace Gtk.Mate {
 			pattern.begin_string = ns.str;
 			pattern.begin = Oniguruma.Regex.make1(ns.str);
 			ns = (PList.String) pd.get("end");
-			pattern.end = Oniguruma.Regex.make1(ns.str);
+			// pattern.end = Oniguruma.Regex.make1(ns.str);
+			pattern.end_string = ns.str;
 
 			PList.Node? n = pd.get("beginCaptures");
 			if (n != null) {

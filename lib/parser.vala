@@ -81,8 +81,15 @@ namespace Gtk.Mate {
 			int i = 0;
 			Scope s;
 			foreach (Marker m in scanner) {
-				if (m.pattern is DoublePattern) {
-//					stdout.printf("[opening with %d patterns], \n", ((DoublePattern) m.pattern).patterns.size);
+				if (m.is_close_scope) {
+					stdout.printf("closing scope at %d\n", m.from);
+					scanner.current_scope.inner_end_mark_set(line_ix, m.from, true);
+					scanner.current_scope.end_mark_set(line_ix, m.match.end(0), true);
+					scanner.current_scope.is_open = false;
+					scanner.current_scope = scanner.current_scope.parent;
+				}
+				else if (m.pattern is DoublePattern) {
+					stdout.printf("[opening with %d patterns], \n", ((DoublePattern) m.pattern).patterns.size);
 					s = new Scope(this.buffer, m.pattern.name);
 					s.pattern = m.pattern;
 					s.open_match = m.match;
@@ -95,6 +102,7 @@ namespace Gtk.Mate {
 					s.end_mark_set(end_line, end_line_offset, false);
 					s.is_open = true;
 					scanner.current_scope.children.append(s);
+					s.parent = scanner.current_scope;
 					scanner.current_scope = s;
 				}
 				else {
@@ -104,6 +112,7 @@ namespace Gtk.Mate {
 					s.start_mark_set(line_ix, m.from, false);
 					s.end_mark_set(line_ix, int.min(m.match.end(0), length), true);
 					s.is_open = false;
+					s.parent = scanner.current_scope;
 					scanner.current_scope.children.append(s);
 				}
 				handle_captures(line_ix, s, m);
@@ -116,14 +125,19 @@ namespace Gtk.Mate {
 		// Opens scopes for captures AND creates closing regexp from
 		// captures if necessary.
 		public void handle_captures(int line_ix, Scope scope, Marker m) {
-			make_closing_regex(m);
+			make_closing_regex(scope, m);
 			collect_child_captures(line_ix, scope, m);
 		}
 
-		public Oniguruma.Regex? make_closing_regex(Marker m) {
+		public Oniguruma.Regex? make_closing_regex(Scope scope, Marker m) {
 			// new_end = pattern.end.gsub(/\\([0-9]+)/) do
 			// 	md.captures.send(:[], $1.to_i-1)
-			// end			
+			// end
+			if (m.pattern is DoublePattern) {
+				var dp = (DoublePattern) m.pattern;
+				stdout.printf("making closing regex: %s\n", dp.end_string);
+				scope.closing_regex = Oniguruma.Regex.make1(dp.end_string);
+			}
 			return null;
 		}
 		
@@ -134,7 +148,12 @@ namespace Gtk.Mate {
 				captures = ((SinglePattern) m.pattern).captures;
 			}
 			else {
-				captures = ((DoublePattern) m.pattern).begin_captures;
+				if (m.is_close_scope) {
+					captures = ((DoublePattern) m.pattern).end_captures;
+				}
+				else {
+					captures = ((DoublePattern) m.pattern).begin_captures;
+				}
 			}
 			var capture_scopes = new ArrayList<Scope>();
 			// create capture scopes

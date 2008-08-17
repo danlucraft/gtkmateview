@@ -87,6 +87,7 @@ struct _GtkMateDoublePattern {
 	GtkMateDoublePatternPrivate * priv;
 	OnigurumaRegex* begin;
 	OnigurumaRegex* end;
+	char* end_string;
 	char* begin_string;
 	GeeHashMap* begin_captures;
 	GeeHashMap* end_captures;

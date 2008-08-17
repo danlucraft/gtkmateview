@@ -48,14 +48,14 @@ namespace Gtk.Mate {
 		
 		// if we have already scanned this line for this scope then
 		// simply return the next cached marker (choosing the longest
-		// match in case of a tie).l
+		// match in case of a tie).
 		public Marker? get_cached_marker() {
 			Marker? m;
 			int best_length = 0;
 			int new_length;
 			foreach (var m1 in cached_markers) {
 				new_length = m1.match.end(0) - m1.from;
-				if (m == null || (m1.from < m.from && new_length >= best_length)) {
+				if (m == null || m1.from < m.from || (m1.from == m.from && new_length > best_length)) {
 					m = m1;
 					best_length = new_length;
 				}
@@ -67,6 +67,7 @@ namespace Gtk.Mate {
 		public void remove_preceding_cached_markers(Marker m) {
 			int ix = 0;
 			int len = cached_markers.size;
+			stdout.printf("num cached: %d\n", len);
 			for(int i = 0; i < len; i++, ix++) {
 				var cm = cached_markers.get(ix);
 				if (cached_markers.get(ix).from <= m.match.end(0)) {
@@ -74,6 +75,7 @@ namespace Gtk.Mate {
 					ix--;
 				}
 			}
+			stdout.printf("num cached after removals: %d\n", cached_markers.size);
 		}
 		
 		public Oniguruma.Match? scan_for_match(int from, Pattern p) {
@@ -88,29 +90,47 @@ namespace Gtk.Mate {
 		}
 
 		public Marker? find_next_marker() {
+			stdout.printf("find_next_marker (current_scope is %s)\n", current_scope.name);
 			Marker m;
 			int best_length = 0;
 			int new_length;
 			if ((m = get_cached_marker()) != null) {
-				// stdout.printf("got cached marker\n");
+				stdout.printf("got cached marker\n");
 				cached_markers.remove(m);
 				remove_preceding_cached_markers(m);
 				return m;
 			}
-			// stdout.printf("no cached marker\n");
+			stdout.printf("no cached marker\n");
 			assert(cached_markers.size == 0);
+			var closing_regex = current_scope.closing_regex;
+			if (closing_regex != null) {
+				stdout.printf("have closing regex\n");
+				var match = closing_regex.search(line, position, line_length);
+				if (match != null) {
+					stdout.printf("have closing regex match\n");
+					var nm = new Marker();
+					nm.pattern = current_scope.pattern;
+					nm.match = match;
+					nm.from = match.begin(0);
+					nm.is_close_scope = true;
+					cached_markers.add(nm);
+					m = nm;
+					best_length = nm.match.end(0) - nm.from;
+				}
+			}
 			foreach (var p in ((DoublePattern) current_scope.pattern).patterns) {
 				int position_now = position;
 				Oniguruma.Match match;
 				while ((match = scan_for_match(position_now, p)) != null) {
-					// stdout.printf("matched: %s (%d-%d)\n", p.name, match.begin(0), match.end(0));
+					stdout.printf("matched: %s (%d-%d)\n", p.name, match.begin(0), match.end(0));
 					var nm = new Marker();
 					nm.pattern = p;
 					nm.match = match;
 					nm.from = match.begin(0);
+					nm.is_close_scope = false;
 					cached_markers.add(nm);
 					new_length = nm.match.end(0) - nm.from;
-					if (m == null || (nm.from < m.from && new_length > best_length)) {
+					if (m == null || nm.from < m.from || (nm.from == m.from && new_length > best_length)) {
 						m = nm;
 						best_length = new_length;
 					}
