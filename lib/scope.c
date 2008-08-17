@@ -27,7 +27,6 @@ static void gtk_mate_scope_finalize (GObject * obj);
 GtkMateScope* gtk_mate_scope_new (GtkMateBuffer* buf, const char* name) {
 	GtkMateScope * self;
 	g_return_val_if_fail (GTK_MATE_IS_BUFFER (buf), NULL);
-	g_return_val_if_fail (name != NULL, NULL);
 	self = g_object_newv (GTK_MATE_TYPE_SCOPE, 0, NULL);
 	gtk_mate_scope_set_name (self, name);
 	gtk_mate_scope_set_buffer (self, buf);

@@ -1672,7 +1672,11 @@ static VALUE gtk_mate_scope_initialize(VALUE self, VALUE buf, VALUE name) {
     GtkMateBuffer* _c_buf;
     _c_buf = _GTK_MATE_BUFFER_SELF(buf);
     char * _c_name;
-    _c_name = g_strdup(STR2CSTR(name));
+    if (name == Qnil)
+        _c_name = NULL;
+    else {
+        _c_name = g_strdup(STR2CSTR(name));
+    }
 
     RBGTK_INITIALIZE(self, gtk_mate_scope_new (_c_buf, _c_name));
     return Qnil;
@@ -2944,6 +2948,29 @@ static VALUE rb_gtk_mate_grammar_set_loaded(VALUE self, VALUE loaded) {
     gtk_mate_grammar->loaded = _c_loaded;
     // Method#return_type_conversion
     return Qnil;
+}
+
+static VALUE rb_gtk_mate_grammar_find_by_scope_name(VALUE self, VALUE scope) {
+    // Method#type_checks
+    if (TYPE(scope) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    // Method#argument_type_conversions
+    char * _c_scope;
+    _c_scope = g_strdup(STR2CSTR(scope));
+    // Method#body
+    
+    GtkMateGrammar* _c_return;
+    _c_return = gtk_mate_grammar_find_by_scope_name(_c_scope);
+    // Method#return_type_conversion
+    VALUE _rb_return;
+    if (_c_return == NULL)
+        _rb_return = Qnil;
+    else {
+        _rb_return = GOBJ2RVAL(_c_return);
+    }
+    return _rb_return;
 }
 
 static VALUE rb_gtk_mate_grammar_init_for_reference(VALUE self) {
@@ -4390,6 +4417,42 @@ static VALUE oniguruma_regex_initialize(VALUE self) {
     return Qnil;
 }
 
+static VALUE rb_oniguruma_regex_get_matches_start_of_line(VALUE self) {
+    OnigurumaRegex* oniguruma_regex = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // ValaMemberGet#body
+    gboolean _c_return = oniguruma_regex->matches_start_of_line; 
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+          if (_c_return == TRUE)
+          _rb_return = Qtrue;
+      else
+          _rb_return = Qfalse;
+
+    return _rb_return;
+}
+
+static VALUE rb_oniguruma_regex_set_matches_start_of_line(VALUE self, VALUE matches_start_of_line) {
+    OnigurumaRegex* oniguruma_regex = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(matches_start_of_line) != T_TRUE && TYPE(matches_start_of_line) != T_FALSE) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected true or false");
+    }
+    // Method#argument_type_conversions
+    gboolean _c_matches_start_of_line;
+          if (matches_start_of_line == Qtrue)
+          _c_matches_start_of_line = TRUE;
+      else
+          _c_matches_start_of_line = FALSE;
+
+    // ValaMemberSet#body
+    oniguruma_regex->matches_start_of_line = _c_matches_start_of_line;
+    // Method#return_type_conversion
+    return Qnil;
+}
+
 static VALUE rb_oniguruma_regex_search(VALUE self, VALUE target, VALUE start, VALUE end) {
     OnigurumaRegex* oniguruma_regex = RVAL2GOBJ(self);
     // Method#type_checks
@@ -5249,6 +5312,8 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_buffer, "cursor_offset", rb_gtk_mate_buffer_cursor_offset, 0);
     rbc_oniguruma_regex = G_DEF_CLASS(oniguruma_regex_get_type(), "Regex", rbc_oniguruma);
     rb_define_method(rbc_oniguruma_regex, "initialize", oniguruma_regex_initialize, 0);
+    rb_define_method(rbc_oniguruma_regex, "matches_start_of_line", rb_oniguruma_regex_get_matches_start_of_line, 0);
+    rb_define_method(rbc_oniguruma_regex, "matches_start_of_line=", rb_oniguruma_regex_set_matches_start_of_line, 1);
     rb_define_method(rbc_oniguruma_regex, "search", rb_oniguruma_regex_search, 3);
     rb_define_singleton_method(rbc_oniguruma_regex, "make1", rb_oniguruma_regex_make1, 1);
     rbc_gtk_mate_text_loc = G_DEF_CLASS(gtk_mate_text_loc_get_type(), "TextLoc", rbc_gtk_mate);
@@ -5297,6 +5362,7 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_grammar, "repository=", rb_gtk_mate_grammar_set_repository, 1);
     rb_define_method(rbc_gtk_mate_grammar, "loaded", rb_gtk_mate_grammar_get_loaded, 0);
     rb_define_method(rbc_gtk_mate_grammar, "loaded=", rb_gtk_mate_grammar_set_loaded, 1);
+    rb_define_singleton_method(rbc_gtk_mate_grammar, "find_by_scope_name", rb_gtk_mate_grammar_find_by_scope_name, 1);
     rb_define_method(rbc_gtk_mate_grammar, "init_for_reference", rb_gtk_mate_grammar_init_for_reference, 0);
     rb_define_method(rbc_gtk_mate_grammar, "init_for_use", rb_gtk_mate_grammar_init_for_use, 0);
     rbc_gtk_mate_pattern = G_DEF_CLASS(gtk_mate_pattern_get_type(), "Pattern", rbc_gtk_mate);

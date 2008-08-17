@@ -190,14 +190,19 @@ OnigurumaMatch* gtk_mate_scanner_scan_for_match (GtkMateScanner* self, gint from
 	g_return_val_if_fail (GTK_MATE_IS_PATTERN (p), NULL);
 	match = NULL;
 	if (GTK_MATE_IS_SINGLE_PATTERN (p)) {
-		OnigurumaMatch* _tmp0;
+		GtkMateSinglePattern* _tmp0;
+		GtkMateSinglePattern* sp;
+		OnigurumaMatch* _tmp1;
 		_tmp0 = NULL;
-		match = (_tmp0 = oniguruma_regex_search ((GTK_MATE_SINGLE_PATTERN (p))->match, self->priv->_line, from, self->priv->_line_length), (match == NULL ? NULL : (match = (g_object_unref (match), NULL))), _tmp0);
+		sp = (_tmp0 = GTK_MATE_SINGLE_PATTERN (p), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
+		_tmp1 = NULL;
+		match = (_tmp1 = oniguruma_regex_search (sp->match, self->priv->_line, from, self->priv->_line_length), (match == NULL ? NULL : (match = (g_object_unref (match), NULL))), _tmp1);
+		(sp == NULL ? NULL : (sp = (g_object_unref (sp), NULL)));
 	} else {
 		if (GTK_MATE_IS_DOUBLE_PATTERN (p)) {
-			OnigurumaMatch* _tmp1;
-			_tmp1 = NULL;
-			match = (_tmp1 = oniguruma_regex_search ((GTK_MATE_DOUBLE_PATTERN (p))->begin, self->priv->_line, from, self->priv->_line_length), (match == NULL ? NULL : (match = (g_object_unref (match), NULL))), _tmp1);
+			OnigurumaMatch* _tmp2;
+			_tmp2 = NULL;
+			match = (_tmp2 = oniguruma_regex_search ((GTK_MATE_DOUBLE_PATTERN (p))->begin, self->priv->_line, from, self->priv->_line_length), (match == NULL ? NULL : (match = (g_object_unref (match), NULL))), _tmp2);
 		}
 	}
 	return match;
@@ -268,17 +273,21 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 			p = ((GtkMatePattern*) (gee_list_get (GEE_LIST (p_collection), p_it)));
 			{
 				gint position_now;
+				gint position_prev;
 				OnigurumaMatch* match;
 				OnigurumaMatch* _tmp9;
 				position_now = self->position;
+				position_prev = self->position - 1;
 				match = NULL;
 				_tmp9 = NULL;
-				while ((match = (_tmp9 = gtk_mate_scanner_scan_for_match (self, position_now, p), (match == NULL ? NULL : (match = (g_object_unref (match), NULL))), _tmp9)) != NULL) {
+				while ((match = (_tmp9 = gtk_mate_scanner_scan_for_match (self, position_now, p), (match == NULL ? NULL : (match = (g_object_unref (match), NULL))), _tmp9)) != NULL && position_now != position_prev) {
 					GtkMateMarker* nm;
 					GtkMatePattern* _tmp11;
 					GtkMatePattern* _tmp10;
 					OnigurumaMatch* _tmp13;
 					OnigurumaMatch* _tmp12;
+					/* some regex's have zero width (meta.selector.css)*/
+					position_prev = position_now;
 					fprintf (stdout, "matched: %s (%d-%d)\n", p->name, oniguruma_match_begin (match, 0), oniguruma_match_end (match, 0));
 					nm = g_object_ref_sink (gtk_mate_marker_new ());
 					_tmp11 = NULL;

@@ -31,6 +31,7 @@ namespace Oniguruma {
 
 	public class Regex : Object {
 		public RegexT rx {get; set;}
+		public bool matches_start_of_line;
 
 		public Match? search(string target, int start, int end) {
 
@@ -67,6 +68,7 @@ namespace Oniguruma {
 									   options,
 									   Encoding.ASCII, *Syntax.DEFAULT, 
 									   ref err_info);
+			rx.matches_start_of_line = pattern.has_prefix("^");
 			if (r < 0) {
 				error = new OnigError();
 				error.code = r;

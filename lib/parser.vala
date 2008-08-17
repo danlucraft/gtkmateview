@@ -165,6 +165,7 @@ namespace Gtk.Mate {
 		public void handle_captures(int line_ix, string line, Scope scope, Marker m) {
 			make_closing_regex(line, scope, m);
 			collect_child_captures(line_ix, scope, m);
+			stdout.printf("handle_captures:out\n");
 		}
 
 		public Oniguruma.Regex? make_closing_regex(string line, Scope scope, Marker m) {
@@ -200,6 +201,7 @@ namespace Gtk.Mate {
 		}
 		
 		public void collect_child_captures(int line_ix, Scope scope, Marker m) {
+			stdout.printf("collect_child_captures:in\n");
 			Scope s;
 			HashMap<int, string> captures;
 			if (m.pattern is SinglePattern) {
@@ -218,15 +220,19 @@ namespace Gtk.Mate {
 			}
 			var capture_scopes = new ArrayList<Scope>();
 			// create capture scopes
-			foreach (int cap in captures.get_keys()) {
-				if (m.match.begin(cap) != -1) {
-					s = new Scope(this.buffer, captures.get(cap));
-					s.start_mark_set(line_ix, m.match.begin(cap), false);
-					s.end_mark_set(line_ix, m.match.end(cap), true);
-					s.is_open = false;
-					capture_scopes.add(s);
+			stdout.printf("before foreah capture key\n");
+			if (captures != null) {
+				foreach (int cap in captures.get_keys()) {
+					if (m.match.begin(cap) != -1) {
+						s = new Scope(this.buffer, captures.get(cap));
+						s.start_mark_set(line_ix, m.match.begin(cap), false);
+						s.end_mark_set(line_ix, m.match.end(cap), true);
+						s.is_open = false;
+						capture_scopes.add(s);
+					}
 				}
 			}
+			stdout.printf("after foreah capture key\n");
 			// Now we arrange the capture scopes into a tree under the matched
 			// scope. We do this by processing the captures in order of offset and 
 			// length. For each capture, we check to see if it is a child of an already 
@@ -263,6 +269,7 @@ namespace Gtk.Mate {
 				placed_scopes.add(s);
 				capture_scopes.remove(s);
 			}
+			stdout.printf("collect_child_captures:out\n");
 		}
 
 		public void connect_buffer_signals() {

@@ -123,6 +123,7 @@ Gtk.Mate.Scope
   * int                                                  start_offset                       ()
 Gtk.Mate.Grammar
 )
+  * Gtk.Mate.Grammar                                     find_by_scope_name                 (string scope)
   * Gee.ArrayList<Gtk.Mate.Pattern>                      get_all_patterns                   ()
   * string                                               get_comment                        ()
   * string[]                                             get_file_types                     ()
@@ -249,9 +250,11 @@ Oniguruma.Match
   * int                                                  begin                              (int capture)
   * int                                                  end                                (int capture)
 Oniguruma.Regex
+  * bool                                                 get_matches_start_of_line          ()
   x Oniguruma.Regex                                      make                               (string pattern, Oniguruma.OnigOptionType options, out Oniguruma.OnigError)
   * Oniguruma.Regex                                      make1                              (string pattern)
   * Oniguruma.Match                                      search                             (string target, int start, int end)
+  * void                                                 set_matches_start_of_line          (bool matches_start_of_line)
 PList
   * PList.Dict                                           parse                              (string filename)
                       throws XmlError

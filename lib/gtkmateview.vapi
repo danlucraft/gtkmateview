@@ -81,7 +81,7 @@ namespace Gtk {
 			public Gtk.Mate.Scope parent;
 			public GLib.StringBuilder pretty_string;
 			public int indent;
-			public Scope (Gtk.Mate.Buffer buf, string name);
+			public Scope (Gtk.Mate.Buffer buf, string? name);
 			public bool is_root ();
 			public static int compare (Gtk.Mate.Scope a, Gtk.Mate.Scope b, void* data);
 			public static int compare_by_loc (Gtk.Mate.Scope a, Gtk.Mate.Scope b, void* data);
@@ -100,7 +100,7 @@ namespace Gtk {
 			public int end_line_offset ();
 			public Gtk.Mate.TextLoc start_loc ();
 			public Gtk.Mate.TextLoc end_loc ();
-			public string name { get; set; }
+			public string? name { get; set; }
 			public Gtk.Mate.Buffer buffer { get; set; }
 			public GLib.Sequence<Gtk.Mate.Scope> children { get; }
 		}
@@ -118,6 +118,7 @@ namespace Gtk {
 			public Gee.HashMap<string,Gee.ArrayList<Gtk.Mate.Pattern>> repository;
 			public bool loaded;
 			public Grammar (PList.Dict plist);
+			public static Gtk.Mate.Grammar? find_by_scope_name (string scope);
 			public void init_for_reference ();
 			public void init_for_use ();
 			public string name { get; set; }
@@ -257,6 +258,7 @@ namespace Oniguruma {
 	}
 	[CCode (cheader_filename = "onig_wrap.h")]
 	public class Regex : GLib.Object {
+		public bool matches_start_of_line;
 		public Oniguruma.Match? search (string target, int start, int end);
 		public static Oniguruma.Regex? make (string pattern, Oniguruma.OnigOptionType options, out Oniguruma.OnigError error);
 		public static Oniguruma.Regex? make1 (string pattern);

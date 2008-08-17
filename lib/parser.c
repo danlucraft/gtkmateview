@@ -374,6 +374,7 @@ void gtk_mate_parser_handle_captures (GtkMateParser* self, gint line_ix, const c
 	_tmp0 = gtk_mate_parser_make_closing_regex (self, line, scope, m);
 	(_tmp0 == NULL ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL)));
 	gtk_mate_parser_collect_child_captures (self, line_ix, scope, m);
+	fprintf (stdout, "handle_captures:out\n");
 }
 
 
@@ -461,6 +462,7 @@ void gtk_mate_parser_collect_child_captures (GtkMateParser* self, gint line_ix, 
 	g_return_if_fail (GTK_MATE_IS_PARSER (self));
 	g_return_if_fail (GTK_MATE_IS_SCOPE (scope));
 	g_return_if_fail (GTK_MATE_IS_MARKER (m));
+	fprintf (stdout, "collect_child_captures:in\n");
 	s = NULL;
 	captures = NULL;
 	if (GTK_MATE_IS_SINGLE_PATTERN (m->pattern)) {
@@ -493,32 +495,36 @@ void gtk_mate_parser_collect_child_captures (GtkMateParser* self, gint line_ix, 
 	}
 	capture_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
 	/* create capture scopes*/
-	{
-		GeeSet* cap_collection;
-		GeeIterator* cap_it;
-		cap_collection = gee_map_get_keys (GEE_MAP (captures));
-		cap_it = gee_iterable_iterator (GEE_ITERABLE (cap_collection));
-		while (gee_iterator_next (cap_it)) {
-			gint cap;
-			cap = GPOINTER_TO_INT (gee_iterator_get (cap_it));
-			{
-				if (oniguruma_match_begin (m->match, cap) != -1) {
-					GtkMateScope* _tmp9;
-					char* _tmp8;
-					_tmp9 = NULL;
-					_tmp8 = NULL;
-					s = (_tmp9 = g_object_ref_sink (gtk_mate_scope_new (self->priv->_buffer, (_tmp8 = ((char*) (gee_map_get (GEE_MAP (captures), GINT_TO_POINTER (cap))))))), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), _tmp9);
-					_tmp8 = (g_free (_tmp8), NULL);
-					gtk_mate_scope_start_mark_set (s, line_ix, oniguruma_match_begin (m->match, cap), FALSE);
-					gtk_mate_scope_end_mark_set (s, line_ix, oniguruma_match_end (m->match, cap), TRUE);
-					s->is_open = FALSE;
-					gee_collection_add (GEE_COLLECTION (capture_scopes), s);
+	fprintf (stdout, "before foreah capture key\n");
+	if (captures != NULL) {
+		{
+			GeeSet* cap_collection;
+			GeeIterator* cap_it;
+			cap_collection = gee_map_get_keys (GEE_MAP (captures));
+			cap_it = gee_iterable_iterator (GEE_ITERABLE (cap_collection));
+			while (gee_iterator_next (cap_it)) {
+				gint cap;
+				cap = GPOINTER_TO_INT (gee_iterator_get (cap_it));
+				{
+					if (oniguruma_match_begin (m->match, cap) != -1) {
+						GtkMateScope* _tmp9;
+						char* _tmp8;
+						_tmp9 = NULL;
+						_tmp8 = NULL;
+						s = (_tmp9 = g_object_ref_sink (gtk_mate_scope_new (self->priv->_buffer, (_tmp8 = ((char*) (gee_map_get (GEE_MAP (captures), GINT_TO_POINTER (cap))))))), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), _tmp9);
+						_tmp8 = (g_free (_tmp8), NULL);
+						gtk_mate_scope_start_mark_set (s, line_ix, oniguruma_match_begin (m->match, cap), FALSE);
+						gtk_mate_scope_end_mark_set (s, line_ix, oniguruma_match_end (m->match, cap), TRUE);
+						s->is_open = FALSE;
+						gee_collection_add (GEE_COLLECTION (capture_scopes), s);
+					}
 				}
 			}
+			(cap_it == NULL ? NULL : (cap_it = (g_object_unref (cap_it), NULL)));
+			(cap_collection == NULL ? NULL : (cap_collection = (g_object_unref (cap_collection), NULL)));
 		}
-		(cap_it == NULL ? NULL : (cap_it = (g_object_unref (cap_it), NULL)));
-		(cap_collection == NULL ? NULL : (cap_collection = (g_object_unref (cap_collection), NULL)));
 	}
+	fprintf (stdout, "after foreah capture key\n");
 	/* Now we arrange the capture scopes into a tree under the matched
 	 scope. We do this by processing the captures in order of offset and 
 	 length. For each capture, we check to see if it is a child of an already 
@@ -590,6 +596,7 @@ void gtk_mate_parser_collect_child_captures (GtkMateParser* self, gint line_ix, 
 		gee_collection_add (GEE_COLLECTION (placed_scopes), s);
 		gee_collection_remove (GEE_COLLECTION (capture_scopes), s);
 	}
+	fprintf (stdout, "collect_child_captures:out\n");
 	(s == NULL ? NULL : (s = (g_object_unref (s), NULL)));
 	(captures == NULL ? NULL : (captures = (g_object_unref (captures), NULL)));
 	(capture_scopes == NULL ? NULL : (capture_scopes = (g_object_unref (capture_scopes), NULL)));

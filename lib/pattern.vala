@@ -131,34 +131,55 @@ namespace Gtk.Mate {
 		public void replace_repository_includes(Grammar g) {
 			var include_patterns = new ArrayList<Pattern>();
 			var patterns_to_include = new ArrayList<Pattern>();
-
-			foreach (Pattern p in this.patterns) {
-				if (p is IncludePattern && p.name.has_prefix("#")) {
-					include_patterns.add(p);
-					string reponame = p.name.substring(1, ((int) p.name.size())-1);
-					ArrayList<Pattern> ps = g.repository.get(reponame);
-					// stdout.printf("getting reponame: %s (%d)\n", reponame, ps.size);
-					foreach (var p1 in ps) {
-						patterns_to_include.add(p1);
+			bool any_included = true;
+			// stdout.printf("%s.replace_repository_includes (%d)\n", this.name, this.patterns.size);
+			while (any_included) {
+				// stdout.printf("repo replacement pass\n");
+				any_included = false;
+				foreach (Pattern p in this.patterns) {
+					if (p is IncludePattern && p.name.has_prefix("#")) {
+						include_patterns.add(p);
+						string reponame = p.name.substring(1, ((int) p.name.size())-1);
+						ArrayList<Pattern> ps = g.repository.get(reponame);
+						// stdout.printf("(%s) getting reponame: %s (%d)\n", this.name, reponame, ps.size);
+						foreach (var p1 in ps) {
+							any_included = true;
+							patterns_to_include.add(p1);
+						}
 					}
 				}
+				remove_patterns(include_patterns);
+				add_patterns(patterns_to_include);
+				include_patterns.clear();
+				patterns_to_include.clear();
 			}
-			remove_patterns(include_patterns);
-			add_patterns(patterns_to_include);
 		}
 
 		public void replace_base_and_self_includes(Grammar g) {
 			var include_patterns = new ArrayList<Pattern>();
 			var patterns_to_include = new ArrayList<Pattern>();
 			bool already_self = false; // some patterns have $self twice
+			Grammar ng;
 			foreach (Pattern p in this.patterns) {
-				if (p is IncludePattern && p.name.has_prefix("$")) {
-					include_patterns.add(p);
-					if ((p.name == "$self" || p.name == "$base") && !already_self) {
-						already_self = true;
-						foreach (var p in g.patterns) {
+				if (p is IncludePattern) {
+					if (p.name.has_prefix("$")) {
+						include_patterns.add(p);
+						if ((p.name == "$self" || p.name == "$base") && !already_self) {
+							already_self = true;
+							foreach (var p in g.patterns) {
+								patterns_to_include.add(p);
+							}
+						}
+					}
+					else if ((ng = Grammar.find_by_scope_name(p.name)) != null) {
+						ng.init_for_use();
+						include_patterns.add(p);
+						foreach (var p in ng.patterns) {
 							patterns_to_include.add(p);
 						}
+					}
+					else {
+						stdout.printf("(%s) unknown include pattern: %s\n", this.name, p.name);
 					}
 				}
 			}

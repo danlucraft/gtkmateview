@@ -5,7 +5,7 @@ using GLib;
 namespace Gtk.Mate {
 	public class Scope : Object {
 		public Pattern pattern;
-		public string name {get; set;}
+		public string? name {get; set;}
 		public Mate.Buffer buffer {get; set;}
 
 		public Oniguruma.Match open_match;
@@ -41,7 +41,7 @@ namespace Gtk.Mate {
 		public StringBuilder pretty_string;
 		public int indent;
 
-		public Scope(Mate.Buffer buf, string name) {
+		public Scope(Mate.Buffer buf, string? name) {
 			this.name = name;
 			this.buffer = buf;
 		}

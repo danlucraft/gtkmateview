@@ -27,6 +27,17 @@ namespace Gtk.Mate {
 			this.plist = plist;
 		}
 
+		public static Grammar? find_by_scope_name(string scope) {
+			foreach (var bundle in Buffer.bundles) {
+				foreach (var gr in bundle.grammars) {
+					if (gr.scope_name == scope) {
+						return gr;
+					}
+				}
+			}
+			return null;
+		}
+
 		// Loads the properties that are needed whether or not 
 		// the grammar ever used.
 		public void init_for_reference() {
@@ -67,6 +78,7 @@ namespace Gtk.Mate {
 		public void init_for_use() {
 			if (loaded)
 				return;
+			loaded = true;
 			stdout.printf("initializing grammar for use: %s\n", name);
 
 			PList.Node? fsm = plist.get("foldingStartMarker");
@@ -104,16 +116,18 @@ namespace Gtk.Mate {
 					// repository name can go straight to a pattern
 					if (pd1.get("begin") != null || pd1.get("match") != null) {
 						pattern = Pattern.create_from_plist(this.all_patterns, (PList.Dict) pd1);
-						if (pattern != null)
+						if (pattern != null) {
 							repo_array.add(pattern);
+						}
 					}
 					// or it can go to an array of patterns
 					else {
 						pa1 = pd1.get("patterns");
 						foreach (PList.Node ps1 in ((PList.Array) pa1).array) {
 							pattern = Pattern.create_from_plist(this.all_patterns, (PList.Dict) ps1);
-							if (pattern != null)
+							if (pattern != null) {
 								repo_array.add(pattern);
+							}
 						}
 					}
 					repository.set(key, repo_array);
@@ -123,8 +137,10 @@ namespace Gtk.Mate {
 			foreach (var p in all_patterns)
 				if (p is DoublePattern)
 					((DoublePattern) p).replace_include_patterns(this);
-
-			loaded = true;
+			// stdout.printf("grammar: %s\n", this.name);
+			// foreach (var p in all_patterns) {
+			// 	stdout.printf("  %s\n", p.name);
+			// }
 		}
 
 	}

@@ -67,6 +67,7 @@ struct _OnigurumaMatchClass {
 struct _OnigurumaRegex {
 	GObject parent_instance;
 	OnigurumaRegexPrivate * priv;
+	gboolean matches_start_of_line;
 };
 
 struct _OnigurumaRegexClass {

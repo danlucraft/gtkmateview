@@ -49,6 +49,7 @@ struct _GtkMateGrammarClass {
 
 
 GtkMateGrammar* gtk_mate_grammar_new (PListDict* plist);
+GtkMateGrammar* gtk_mate_grammar_find_by_scope_name (const char* scope);
 void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self);
 void gtk_mate_grammar_init_for_use (GtkMateGrammar* self);
 const char* gtk_mate_grammar_get_name (GtkMateGrammar* self);

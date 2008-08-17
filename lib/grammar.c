@@ -3,6 +3,8 @@
 #include <gee/collection.h>
 #include <stdio.h>
 #include <gee/map.h>
+#include "buffer.h"
+#include "bundle.h"
 #include "pattern.h"
 
 
@@ -24,6 +26,7 @@ static void gtk_mate_grammar_set_plist (GtkMateGrammar* self, PListDict* value);
 static gpointer gtk_mate_grammar_parent_class = NULL;
 static void gtk_mate_grammar_finalize (GObject * obj);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
+static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
@@ -33,6 +36,41 @@ GtkMateGrammar* gtk_mate_grammar_new (PListDict* plist) {
 	self = g_object_newv (GTK_MATE_TYPE_GRAMMAR, 0, NULL);
 	gtk_mate_grammar_set_plist (self, plist);
 	return self;
+}
+
+
+GtkMateGrammar* gtk_mate_grammar_find_by_scope_name (const char* scope) {
+	g_return_val_if_fail (scope != NULL, NULL);
+	{
+		GeeArrayList* bundle_collection;
+		int bundle_it;
+		bundle_collection = gtk_mate_buffer_bundles;
+		for (bundle_it = 0; bundle_it < gee_collection_get_size (GEE_COLLECTION (bundle_collection)); bundle_it = bundle_it + 1) {
+			GtkMateBundle* bundle;
+			bundle = ((GtkMateBundle*) (gee_list_get (GEE_LIST (bundle_collection), bundle_it)));
+			{
+				{
+					GeeArrayList* gr_collection;
+					int gr_it;
+					gr_collection = bundle->grammars;
+					for (gr_it = 0; gr_it < gee_collection_get_size (GEE_COLLECTION (gr_collection)); gr_it = gr_it + 1) {
+						GtkMateGrammar* gr;
+						gr = ((GtkMateGrammar*) (gee_list_get (GEE_LIST (gr_collection), gr_it)));
+						{
+							if (_vala_strcmp0 (gr->scope_name, scope) == 0) {
+								GtkMateGrammar* _tmp0;
+								_tmp0 = NULL;
+								return (_tmp0 = gr, (bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL))), _tmp0);
+							}
+							(gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL)));
+						}
+					}
+				}
+				(bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL)));
+			}
+		}
+	}
+	return NULL;
 }
 
 
@@ -141,6 +179,7 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 	if (self->loaded) {
 		return;
 	}
+	self->loaded = TRUE;
 	fprintf (stdout, "initializing grammar for use: %s\n", self->priv->_name);
 	fsm = plist_dict_get (self->priv->_plist, "foldingStartMarker");
 	if (fsm != NULL) {
@@ -266,7 +305,6 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 			}
 		}
 	}
-	self->loaded = TRUE;
 	(fsm == NULL ? NULL : (fsm = (g_object_unref (fsm), NULL)));
 	(ftm == NULL ? NULL : (ftm = (g_object_unref (ftm), NULL)));
 	(ps == NULL ? NULL : (ps = (g_object_unref (ps), NULL)));
@@ -405,6 +443,17 @@ static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify 
 		}
 	}
 	g_free (array);
+}
+
+
+static int _vala_strcmp0 (const char * str1, const char * str2) {
+	if (str1 == NULL) {
+		return -(str1 != str2);
+	}
+	if (str2 == NULL) {
+		return (str1 != str2);
+	}
+	return strcmp (str1, str2);
 }
 
 

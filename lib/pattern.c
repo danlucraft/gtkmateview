@@ -2,6 +2,7 @@
 #include "pattern.h"
 #include <gee/map.h>
 #include <gee/collection.h>
+#include <stdio.h>
 
 
 
@@ -344,49 +345,58 @@ void gtk_mate_double_pattern_replace_include_patterns (GtkMateDoublePattern* sel
 void gtk_mate_double_pattern_replace_repository_includes (GtkMateDoublePattern* self, GtkMateGrammar* g) {
 	GeeArrayList* include_patterns;
 	GeeArrayList* patterns_to_include;
+	gboolean any_included;
 	g_return_if_fail (GTK_MATE_IS_DOUBLE_PATTERN (self));
 	g_return_if_fail (GTK_MATE_IS_GRAMMAR (g));
 	include_patterns = gee_array_list_new (GTK_MATE_TYPE_PATTERN, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
 	patterns_to_include = gee_array_list_new (GTK_MATE_TYPE_PATTERN, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
-	{
-		GeeArrayList* p_collection;
-		int p_it;
-		p_collection = self->patterns;
-		for (p_it = 0; p_it < gee_collection_get_size (GEE_COLLECTION (p_collection)); p_it = p_it + 1) {
-			GtkMatePattern* p;
-			p = ((GtkMatePattern*) (gee_list_get (GEE_LIST (p_collection), p_it)));
-			{
-				if (GTK_MATE_IS_INCLUDE_PATTERN (p) && g_str_has_prefix (p->name, "#")) {
-					char* _tmp0;
-					char* reponame;
-					GeeArrayList* ps;
-					gee_collection_add (GEE_COLLECTION (include_patterns), p);
-					_tmp0 = NULL;
-					reponame = (_tmp0 = g_utf8_offset_to_pointer (p->name, ((glong) (1))), g_strndup (_tmp0, g_utf8_offset_to_pointer (_tmp0, ((glong) ((((gint) (strlen (p->name)))) - 1))) - _tmp0));
-					ps = ((GeeArrayList*) (gee_map_get (GEE_MAP (g->repository), reponame)));
-					/* stdout.printf("getting reponame: %s (%d)\n", reponame, ps.size);*/
-					{
-						GeeArrayList* p1_collection;
-						int p1_it;
-						p1_collection = ps;
-						for (p1_it = 0; p1_it < gee_collection_get_size (GEE_COLLECTION (p1_collection)); p1_it = p1_it + 1) {
-							GtkMatePattern* p1;
-							p1 = ((GtkMatePattern*) (gee_list_get (GEE_LIST (p1_collection), p1_it)));
-							{
-								gee_collection_add (GEE_COLLECTION (patterns_to_include), p1);
-								(p1 == NULL ? NULL : (p1 = (g_object_unref (p1), NULL)));
+	any_included = TRUE;
+	while (any_included) {
+		/* stdout.printf("repo replacement pass\n");*/
+		any_included = FALSE;
+		{
+			GeeArrayList* p_collection;
+			int p_it;
+			p_collection = self->patterns;
+			for (p_it = 0; p_it < gee_collection_get_size (GEE_COLLECTION (p_collection)); p_it = p_it + 1) {
+				GtkMatePattern* p;
+				p = ((GtkMatePattern*) (gee_list_get (GEE_LIST (p_collection), p_it)));
+				{
+					if (GTK_MATE_IS_INCLUDE_PATTERN (p) && g_str_has_prefix (p->name, "#")) {
+						char* _tmp0;
+						char* reponame;
+						GeeArrayList* ps;
+						gee_collection_add (GEE_COLLECTION (include_patterns), p);
+						_tmp0 = NULL;
+						reponame = (_tmp0 = g_utf8_offset_to_pointer (p->name, ((glong) (1))), g_strndup (_tmp0, g_utf8_offset_to_pointer (_tmp0, ((glong) ((((gint) (strlen (p->name)))) - 1))) - _tmp0));
+						ps = ((GeeArrayList*) (gee_map_get (GEE_MAP (g->repository), reponame)));
+						/* stdout.printf("(%s) getting reponame: %s (%d)\n", this.name, reponame, ps.size);*/
+						{
+							GeeArrayList* p1_collection;
+							int p1_it;
+							p1_collection = ps;
+							for (p1_it = 0; p1_it < gee_collection_get_size (GEE_COLLECTION (p1_collection)); p1_it = p1_it + 1) {
+								GtkMatePattern* p1;
+								p1 = ((GtkMatePattern*) (gee_list_get (GEE_LIST (p1_collection), p1_it)));
+								{
+									any_included = TRUE;
+									gee_collection_add (GEE_COLLECTION (patterns_to_include), p1);
+									(p1 == NULL ? NULL : (p1 = (g_object_unref (p1), NULL)));
+								}
 							}
 						}
+						reponame = (g_free (reponame), NULL);
+						(ps == NULL ? NULL : (ps = (g_object_unref (ps), NULL)));
 					}
-					reponame = (g_free (reponame), NULL);
-					(ps == NULL ? NULL : (ps = (g_object_unref (ps), NULL)));
+					(p == NULL ? NULL : (p = (g_object_unref (p), NULL)));
 				}
-				(p == NULL ? NULL : (p = (g_object_unref (p), NULL)));
 			}
 		}
+		gtk_mate_double_pattern_remove_patterns (self, include_patterns);
+		gtk_mate_double_pattern_add_patterns (self, patterns_to_include);
+		gee_collection_clear (GEE_COLLECTION (include_patterns));
+		gee_collection_clear (GEE_COLLECTION (patterns_to_include));
 	}
-	gtk_mate_double_pattern_remove_patterns (self, include_patterns);
-	gtk_mate_double_pattern_add_patterns (self, patterns_to_include);
 	(include_patterns == NULL ? NULL : (include_patterns = (g_object_unref (include_patterns), NULL)));
 	(patterns_to_include == NULL ? NULL : (patterns_to_include = (g_object_unref (patterns_to_include), NULL)));
 }
@@ -396,12 +406,14 @@ void gtk_mate_double_pattern_replace_base_and_self_includes (GtkMateDoublePatter
 	GeeArrayList* include_patterns;
 	GeeArrayList* patterns_to_include;
 	gboolean already_self;
+	GtkMateGrammar* ng;
 	g_return_if_fail (GTK_MATE_IS_DOUBLE_PATTERN (self));
 	g_return_if_fail (GTK_MATE_IS_GRAMMAR (g));
 	include_patterns = gee_array_list_new (GTK_MATE_TYPE_PATTERN, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
 	patterns_to_include = gee_array_list_new (GTK_MATE_TYPE_PATTERN, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
 	already_self = FALSE;
 	/* some patterns have $self twice*/
+	ng = NULL;
 	{
 		GeeArrayList* p_collection;
 		int p_it;
@@ -410,22 +422,46 @@ void gtk_mate_double_pattern_replace_base_and_self_includes (GtkMateDoublePatter
 			GtkMatePattern* p;
 			p = ((GtkMatePattern*) (gee_list_get (GEE_LIST (p_collection), p_it)));
 			{
-				if (GTK_MATE_IS_INCLUDE_PATTERN (p) && g_str_has_prefix (p->name, "$")) {
-					gee_collection_add (GEE_COLLECTION (include_patterns), p);
-					if ((_vala_strcmp0 (p->name, "$self") == 0 || _vala_strcmp0 (p->name, "$base") == 0) && !already_self) {
-						already_self = TRUE;
-						{
-							GeeArrayList* p_collection;
-							int p_it;
-							p_collection = g->patterns;
-							for (p_it = 0; p_it < gee_collection_get_size (GEE_COLLECTION (p_collection)); p_it = p_it + 1) {
-								GtkMatePattern* p;
-								p = ((GtkMatePattern*) (gee_list_get (GEE_LIST (p_collection), p_it)));
-								{
-									gee_collection_add (GEE_COLLECTION (patterns_to_include), p);
-									(p == NULL ? NULL : (p = (g_object_unref (p), NULL)));
+				if (GTK_MATE_IS_INCLUDE_PATTERN (p)) {
+					if (g_str_has_prefix (p->name, "$")) {
+						gee_collection_add (GEE_COLLECTION (include_patterns), p);
+						if ((_vala_strcmp0 (p->name, "$self") == 0 || _vala_strcmp0 (p->name, "$base") == 0) && !already_self) {
+							already_self = TRUE;
+							{
+								GeeArrayList* p_collection;
+								int p_it;
+								p_collection = g->patterns;
+								for (p_it = 0; p_it < gee_collection_get_size (GEE_COLLECTION (p_collection)); p_it = p_it + 1) {
+									GtkMatePattern* p;
+									p = ((GtkMatePattern*) (gee_list_get (GEE_LIST (p_collection), p_it)));
+									{
+										gee_collection_add (GEE_COLLECTION (patterns_to_include), p);
+										(p == NULL ? NULL : (p = (g_object_unref (p), NULL)));
+									}
 								}
 							}
+						}
+					} else {
+						GtkMateGrammar* _tmp0;
+						_tmp0 = NULL;
+						if ((ng = (_tmp0 = gtk_mate_grammar_find_by_scope_name (p->name), (ng == NULL ? NULL : (ng = (g_object_unref (ng), NULL))), _tmp0)) != NULL) {
+							gtk_mate_grammar_init_for_use (ng);
+							gee_collection_add (GEE_COLLECTION (include_patterns), p);
+							{
+								GeeArrayList* p_collection;
+								int p_it;
+								p_collection = ng->patterns;
+								for (p_it = 0; p_it < gee_collection_get_size (GEE_COLLECTION (p_collection)); p_it = p_it + 1) {
+									GtkMatePattern* p;
+									p = ((GtkMatePattern*) (gee_list_get (GEE_LIST (p_collection), p_it)));
+									{
+										gee_collection_add (GEE_COLLECTION (patterns_to_include), p);
+										(p == NULL ? NULL : (p = (g_object_unref (p), NULL)));
+									}
+								}
+							}
+						} else {
+							fprintf (stdout, "(%s) unknown include pattern: %s\n", GTK_MATE_PATTERN (self)->name, p->name);
 						}
 					}
 				}
@@ -437,6 +473,7 @@ void gtk_mate_double_pattern_replace_base_and_self_includes (GtkMateDoublePatter
 	gtk_mate_double_pattern_add_patterns (self, patterns_to_include);
 	(include_patterns == NULL ? NULL : (include_patterns = (g_object_unref (include_patterns), NULL)));
 	(patterns_to_include == NULL ? NULL : (patterns_to_include = (g_object_unref (patterns_to_include), NULL)));
+	(ng == NULL ? NULL : (ng = (g_object_unref (ng), NULL)));
 }
 
 

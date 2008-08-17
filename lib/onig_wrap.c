@@ -251,6 +251,7 @@ OnigurumaRegex* oniguruma_regex_make (const char* pattern, OnigOptionType* optio
 	_tmp2 = NULL;
 	_tmp0 = NULL;
 	r = (_tmp1 = onig_new (&_tmp0, c_pattern, (c_pattern + strlen (pattern)), options, ((gint) (ONIG_ENCODING_ASCII)), ONIG_SYNTAX_DEFAULT, &err_info), rx1 = (_tmp2 = _tmp0, (rx1 == NULL ? NULL : (rx1 = ( (rx1), NULL))), _tmp2), _tmp1);
+	rx->matches_start_of_line = g_str_has_prefix (pattern, "^");
 	if (r < 0) {
 		OnigurumaOnigError* _tmp3;
 		OnigurumaRegex* _tmp4;

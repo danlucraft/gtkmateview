@@ -85,7 +85,8 @@ namespace Gtk.Mate {
 		public Oniguruma.Match? scan_for_match(int from, Pattern p) {
 			Oniguruma.Match match;
 			if (p is SinglePattern) {
-				match = ((SinglePattern) p).match.search(line, from, line_length);
+				var sp = (SinglePattern) p;
+				match = sp.match.search(line, from, line_length);
 			}
 			else if (p is DoublePattern) {
 				match = ((DoublePattern) p).begin.search(line, from, line_length);
@@ -124,8 +125,12 @@ namespace Gtk.Mate {
 			}
 			foreach (var p in ((DoublePattern) current_scope.pattern).patterns) {
 				int position_now = position;
+				int position_prev = position-1;
 				Oniguruma.Match match;
-				while ((match = scan_for_match(position_now, p)) != null) {
+				while ((match = scan_for_match(position_now, p)) != null &&
+					   position_now != position_prev // some regex's have zero width (meta.selector.css)
+					) {
+					position_prev = position_now;
 					stdout.printf("matched: %s (%d-%d)\n", p.name, match.begin(0), match.end(0));
 					var nm = new Marker();
 					nm.pattern = p;
