@@ -97,22 +97,27 @@ namespace Gtk.Mate {
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line1(line_ix);
 			int length = (int) line.length;//buffer.get_line_length(line_ix);
-			stdout.printf("parse line: %d (%d): '%s'\n", line_ix, length, line);
+			stdout.printf("\nparse line: %d (%d): '%s'\n", line_ix, length, line);
 			var current_scope = this.root.scope_at(line_ix, -1);
 			stdout.printf("scope_at returns: %s\n", current_scope.name);
 			var scanner = new Scanner(current_scope, line, length);
 			int i = 0;
 			Scope s;
 			foreach (Marker m in scanner) {
+				var expected_scope = get_expected_scope(current_scope, line_ix, scanner.position);
+				if (expected_scope != null)
+					stdout.printf("expected_scope: %s\n", expected_scope.name);
+				else
+					stdout.printf("no expected scope\n");
 				stdout.printf("scope: %s\n", m.pattern.name);
 				if (m.is_close_scope) {
-					close_scope(scanner, line_ix, line, m);
+					close_scope(scanner, expected_scope, line_ix, line, m);
 				}
 				else if (m.pattern is DoublePattern) {
-					open_scope(scanner, line_ix, line, length, m);
+					open_scope(scanner, expected_scope, line_ix, line, length, m);
 				}
 				else {
-					single_scope(scanner, line_ix, line, length, m);
+					single_scope(scanner, expected_scope, line_ix, line, length, m);
 				}
 //				stdout.printf("pretty: %s\n", s.pretty(0));
 				scanner.position = m.match.end(0);
@@ -120,44 +125,87 @@ namespace Gtk.Mate {
 			return false;
 		}
 
-		public void close_scope(Scanner scanner, int line_ix, string line, Marker m) {
+		public Scope? get_expected_scope(Scope current_scope, int line, int line_offset) {
+			// stdout.printf("get_expected_scope(%s, %d, %d)\n", current_scope.name, line, line_offset);
+			var expected_scope = current_scope.first_child_after(TextLoc.make(line, line_offset));
+			// stdout.printf("first_child_after: %s\n", expected_scope.name);
+			assert(expected_scope != current_scope);
+			if (expected_scope != null) {
+				if (expected_scope.start_line() != line)
+					expected_scope = null;
+				while (expected_scope != null && expected_scope.is_capture) {
+					expected_scope = expected_scope.parent;
+				}
+			}
+			return expected_scope;
+		}
+
+		public void close_scope(Scanner scanner, Scope? expected_scope, int line_ix, string line, Marker m) {
+			// if (scanner.current_scope.end_mark != null &&
+			// 	TextLoc.equal(scanner.current_scope.end_loc(), TextLoc.make(line_ix, m.match.end(0))) &&
+			// 	TextLoc.equal(scanner.current_scope.inner_end_loc(), TextLoc.make(line_ix, m.from)) &&
+				
+				
 			stdout.printf("closing scope at %d\n", m.from);
 			scanner.current_scope.inner_end_mark_set(line_ix, m.from, true);
 			scanner.current_scope.end_mark_set(line_ix, m.match.end(0), true);
 			scanner.current_scope.is_open = false;
+			scanner.current_scope.end_match_string = line.substring(m.from, m.match.end(0)-m.from);
+			stdout.printf("end_match_string: '%s'\n", scanner.current_scope.end_match_string);
 			handle_captures(line_ix, line, scanner.current_scope, m);
 			scanner.current_scope = scanner.current_scope.parent;
 		}
 
-		public void open_scope(Scanner scanner, int line_ix, string line, int length, Marker m) {
+		public void open_scope(Scanner scanner, Scope? expected_scope, int line_ix, string line, int length, Marker m) {
 			stdout.printf("[opening with %d patterns], \n", ((DoublePattern) m.pattern).patterns.size);
 			var s = new Scope(this.buffer, m.pattern.name);
 			s.pattern = m.pattern;
 			s.open_match = m.match;
 			s.start_mark_set(line_ix, m.from, false);
 			s.inner_start_mark_set(line_ix, int.min(m.match.end(0), length), false);
+			s.begin_match_string = line.substring(m.from, m.match.end(0)-m.from);
+			stdout.printf("begin_match_string: '%s'\n", s.begin_match_string);
 			var end_iter = buffer.end_iter();
 			var end_line = end_iter.get_line();
 			var end_line_offset = end_iter.get_line_offset();
 			s.inner_end_mark_set(end_line, end_line_offset, false);
 			s.end_mark_set(end_line, end_line_offset, false);
 			s.is_open = true;
+			s.is_capture = false;
 			scanner.current_scope.children.append(s);
 			s.parent = scanner.current_scope;
 			scanner.current_scope = s;
 			handle_captures(line_ix, line, s, m);
 		}
 
-		public void single_scope(Scanner scanner, int line_ix, string line, int length, Marker m) {
+		public void single_scope(Scanner scanner, Scope? expected_scope, int line_ix, string line, int length, Marker m) {
 			var s = new Scope(this.buffer, m.pattern.name);
 			s.pattern = m.pattern;
 			s.open_match = m.match;
 			s.start_mark_set(line_ix, m.from, false);
 			s.end_mark_set(line_ix, int.min(m.match.end(0), length), true);
 			s.is_open = false;
+			s.is_capture = false;
+			s.begin_match_string = line.substring(m.from, m.match.end(0)-m.from);
+			stdout.printf("_match_string: '%s'\n", s.begin_match_string);
 			s.parent = scanner.current_scope;
-			scanner.current_scope.children.append(s);
-			handle_captures(line_ix, line, s, m);
+			if (expected_scope != null) {
+				if (s.surface_identical_to(expected_scope)) {
+					// expected_scope.each_child {|c| closed_scopes << c}
+				}
+				else {
+					handle_captures(line_ix, line, s, m);
+					if (s.overlaps_with(expected_scope)) {
+						scanner.current_scope.delete_child(expected_scope);
+						// removed_scopes << expected_scope
+					}
+					scanner.current_scope.add_child(s);
+				}
+			}
+			else {
+				handle_captures(line_ix, line, s, m);
+				scanner.current_scope.children.append(s);
+			}
 		}
 
 		// Opens scopes for captures AND creates closing regexp from
@@ -165,7 +213,6 @@ namespace Gtk.Mate {
 		public void handle_captures(int line_ix, string line, Scope scope, Marker m) {
 			make_closing_regex(line, scope, m);
 			collect_child_captures(line_ix, scope, m);
-			stdout.printf("handle_captures:out\n");
 		}
 
 		public Oniguruma.Regex? make_closing_regex(string line, Scope scope, Marker m) {
@@ -182,16 +229,16 @@ namespace Gtk.Mate {
 				bool found = false;
 				while ((match = rx.search(dp.end_string, pos, (int) dp.end_string.length)) != null) {
 					found = true;
-					src.append(dp.end_string.substring(pos, match.begin(0)));
-					var numstr = dp.end_string.substring(match.begin(1), match.end(1));
+					src.append(dp.end_string.substring(pos, match.begin(0)-pos));
+					var numstr = dp.end_string.substring(match.begin(1), match.end(1)-match.begin(1));
 					var num = numstr.to_int();
 					stdout.printf("capture found: %d\n", num);
-					var capstr = line.substring(m.match.begin(num), m.match.end(num)-1);
+					var capstr = line.substring(m.match.begin(num), m.match.end(num)-m.match.begin(num));
 					src.append(capstr);
 					pos = match.end(1);
 				}
 				if (found)
-					src.append(dp.end_string.substring(pos, dp.end_string.length));
+					src.append(dp.end_string.substring(pos, dp.end_string.length-pos));
 				else
 					src.append(dp.end_string);
 				stdout.printf("src: '%s'\n", src.str);
@@ -201,7 +248,6 @@ namespace Gtk.Mate {
 		}
 		
 		public void collect_child_captures(int line_ix, Scope scope, Marker m) {
-			stdout.printf("collect_child_captures:in\n");
 			Scope s;
 			HashMap<int, string> captures;
 			if (m.pattern is SinglePattern) {
@@ -220,7 +266,6 @@ namespace Gtk.Mate {
 			}
 			var capture_scopes = new ArrayList<Scope>();
 			// create capture scopes
-			stdout.printf("before foreah capture key\n");
 			if (captures != null) {
 				foreach (int cap in captures.get_keys()) {
 					if (m.match.begin(cap) != -1) {
@@ -228,11 +273,11 @@ namespace Gtk.Mate {
 						s.start_mark_set(line_ix, m.match.begin(cap), false);
 						s.end_mark_set(line_ix, m.match.end(cap), true);
 						s.is_open = false;
+						s.is_capture = true;
 						capture_scopes.add(s);
 					}
 				}
 			}
-			stdout.printf("after foreah capture key\n");
 			// Now we arrange the capture scopes into a tree under the matched
 			// scope. We do this by processing the captures in order of offset and 
 			// length. For each capture, we check to see if it is a child of an already 
@@ -269,7 +314,6 @@ namespace Gtk.Mate {
 				placed_scopes.add(s);
 				capture_scopes.remove(s);
 			}
-			stdout.printf("collect_child_captures:out\n");
 		}
 
 		public void connect_buffer_signals() {

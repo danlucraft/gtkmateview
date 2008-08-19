@@ -2,7 +2,7 @@
 
 require 'spec/spec_helper'
 
-describe Gtk::Mate::Parser, "when parsing Ruby" do
+describe Gtk::Mate::Parser, "when parsing Ruby from scratch" do
   before(:each) do
     @mb = Gtk::Mate::Buffer.new
     @mb.set_grammar_by_name("Ruby")
