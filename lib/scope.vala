@@ -95,15 +95,22 @@ namespace Gtk.Mate {
 			}
 		}
 
-		public bool surface_identical_to(Scope other) {
+		public bool surface_identical_to_modulo_ending(Scope other) {
 			if (name == other.name &&
 				pattern == other.pattern &&
 				TextLoc.equal(start_loc(), other.start_loc()) &&
-				TextLoc.equal(end_loc(), other.end_loc()) &&
 				TextLoc.equal(inner_start_loc(), other.inner_start_loc()) &&
+				begin_match_string == other.begin_match_string) {
+				return true;
+			}
+			return false;
+		}
+
+		public bool surface_identical_to(Scope other) {
+			if (surface_identical_to_modulo_ending(other) &&
+				TextLoc.equal(end_loc(), other.end_loc()) &&
 				TextLoc.equal(inner_end_loc(), other.inner_end_loc()) &&
-				begin_match_string == other.begin_match_string &&
-				end_match_string == other.end_match_string) {
+				begin_match_string == other.begin_match_string) {
 				return true;
 			}
 			return false;

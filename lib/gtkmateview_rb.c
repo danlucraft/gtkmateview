@@ -2214,6 +2214,26 @@ static VALUE rb_gtk_mate_scope_is_root(VALUE self) {
     return _rb_return;
 }
 
+static VALUE rb_gtk_mate_scope_surface_identical_to_modulo_ending(VALUE self, VALUE other) {
+    GtkMateScope* gtk_mate_scope = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    GtkMateScope* _c_other;
+    _c_other = _GTK_MATE_SCOPE_SELF(other);
+    // Method#body
+    
+    gboolean _c_return;
+    _c_return = gtk_mate_scope_surface_identical_to_modulo_ending(gtk_mate_scope, _c_other);
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+          if (_c_return == TRUE)
+          _rb_return = Qtrue;
+      else
+          _rb_return = Qfalse;
+
+    return _rb_return;
+}
+
 static VALUE rb_gtk_mate_scope_surface_identical_to(VALUE self, VALUE other) {
     GtkMateScope* gtk_mate_scope = RVAL2GOBJ(self);
     // Method#type_checks
@@ -5547,6 +5567,7 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_scope, "indent", rb_gtk_mate_scope_get_indent, 0);
     rb_define_method(rbc_gtk_mate_scope, "indent=", rb_gtk_mate_scope_set_indent, 1);
     rb_define_method(rbc_gtk_mate_scope, "is_root", rb_gtk_mate_scope_is_root, 0);
+    rb_define_method(rbc_gtk_mate_scope, "surface_identical_to_modulo_ending", rb_gtk_mate_scope_surface_identical_to_modulo_ending, 1);
     rb_define_method(rbc_gtk_mate_scope, "surface_identical_to", rb_gtk_mate_scope_surface_identical_to, 1);
     rb_define_method(rbc_gtk_mate_scope, "scope_at", rb_gtk_mate_scope_scope_at, 2);
     rb_define_method(rbc_gtk_mate_scope, "first_child_after", rb_gtk_mate_scope_first_child_after, 1);

@@ -120,27 +120,38 @@ gint gtk_mate_scope_compare_by_loc (GtkMateScope* a, GtkMateScope* b, void* data
 }
 
 
-gboolean gtk_mate_scope_surface_identical_to (GtkMateScope* self, GtkMateScope* other) {
-	GtkMateTextLoc* _tmp7;
-	GtkMateTextLoc* _tmp6;
-	GtkMateTextLoc* _tmp5;
-	GtkMateTextLoc* _tmp4;
+gboolean gtk_mate_scope_surface_identical_to_modulo_ending (GtkMateScope* self, GtkMateScope* other) {
 	GtkMateTextLoc* _tmp3;
 	GtkMateTextLoc* _tmp2;
 	GtkMateTextLoc* _tmp1;
 	GtkMateTextLoc* _tmp0;
-	gboolean _tmp8;
+	gboolean _tmp4;
 	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), FALSE);
 	g_return_val_if_fail (GTK_MATE_IS_SCOPE (other), FALSE);
-	_tmp7 = NULL;
-	_tmp6 = NULL;
-	_tmp5 = NULL;
-	_tmp4 = NULL;
 	_tmp3 = NULL;
 	_tmp2 = NULL;
 	_tmp1 = NULL;
 	_tmp0 = NULL;
-	if ((_tmp8 = _vala_strcmp0 (self->priv->_name, other->priv->_name) == 0 && self->pattern == other->pattern && gtk_mate_text_loc_equal ((_tmp0 = gtk_mate_scope_start_loc (self)), (_tmp1 = gtk_mate_scope_start_loc (other))) && gtk_mate_text_loc_equal ((_tmp2 = gtk_mate_scope_end_loc (self)), (_tmp3 = gtk_mate_scope_end_loc (other))) && gtk_mate_text_loc_equal ((_tmp4 = gtk_mate_scope_inner_start_loc (self)), (_tmp5 = gtk_mate_scope_inner_start_loc (other))) && gtk_mate_text_loc_equal ((_tmp6 = gtk_mate_scope_inner_end_loc (self)), (_tmp7 = gtk_mate_scope_inner_end_loc (other))) && _vala_strcmp0 (self->begin_match_string, other->begin_match_string) == 0 && _vala_strcmp0 (self->end_match_string, other->end_match_string) == 0, (_tmp7 == NULL ? NULL : (_tmp7 = (g_object_unref (_tmp7), NULL))), (_tmp6 == NULL ? NULL : (_tmp6 = (g_object_unref (_tmp6), NULL))), (_tmp5 == NULL ? NULL : (_tmp5 = (g_object_unref (_tmp5), NULL))), (_tmp4 == NULL ? NULL : (_tmp4 = (g_object_unref (_tmp4), NULL))), (_tmp3 == NULL ? NULL : (_tmp3 = (g_object_unref (_tmp3), NULL))), (_tmp2 == NULL ? NULL : (_tmp2 = (g_object_unref (_tmp2), NULL))), (_tmp1 == NULL ? NULL : (_tmp1 = (g_object_unref (_tmp1), NULL))), (_tmp0 == NULL ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL))), _tmp8)) {
+	if ((_tmp4 = _vala_strcmp0 (self->priv->_name, other->priv->_name) == 0 && self->pattern == other->pattern && gtk_mate_text_loc_equal ((_tmp0 = gtk_mate_scope_start_loc (self)), (_tmp1 = gtk_mate_scope_start_loc (other))) && gtk_mate_text_loc_equal ((_tmp2 = gtk_mate_scope_inner_start_loc (self)), (_tmp3 = gtk_mate_scope_inner_start_loc (other))) && _vala_strcmp0 (self->begin_match_string, other->begin_match_string) == 0, (_tmp3 == NULL ? NULL : (_tmp3 = (g_object_unref (_tmp3), NULL))), (_tmp2 == NULL ? NULL : (_tmp2 = (g_object_unref (_tmp2), NULL))), (_tmp1 == NULL ? NULL : (_tmp1 = (g_object_unref (_tmp1), NULL))), (_tmp0 == NULL ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL))), _tmp4)) {
+		return TRUE;
+	}
+	return FALSE;
+}
+
+
+gboolean gtk_mate_scope_surface_identical_to (GtkMateScope* self, GtkMateScope* other) {
+	GtkMateTextLoc* _tmp3;
+	GtkMateTextLoc* _tmp2;
+	GtkMateTextLoc* _tmp1;
+	GtkMateTextLoc* _tmp0;
+	gboolean _tmp4;
+	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), FALSE);
+	g_return_val_if_fail (GTK_MATE_IS_SCOPE (other), FALSE);
+	_tmp3 = NULL;
+	_tmp2 = NULL;
+	_tmp1 = NULL;
+	_tmp0 = NULL;
+	if ((_tmp4 = gtk_mate_scope_surface_identical_to_modulo_ending (self, other) && gtk_mate_text_loc_equal ((_tmp0 = gtk_mate_scope_end_loc (self)), (_tmp1 = gtk_mate_scope_end_loc (other))) && gtk_mate_text_loc_equal ((_tmp2 = gtk_mate_scope_inner_end_loc (self)), (_tmp3 = gtk_mate_scope_inner_end_loc (other))) && _vala_strcmp0 (self->begin_match_string, other->begin_match_string) == 0, (_tmp3 == NULL ? NULL : (_tmp3 = (g_object_unref (_tmp3), NULL))), (_tmp2 == NULL ? NULL : (_tmp2 = (g_object_unref (_tmp2), NULL))), (_tmp1 == NULL ? NULL : (_tmp1 = (g_object_unref (_tmp1), NULL))), (_tmp0 == NULL ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL))), _tmp4)) {
 		return TRUE;
 	}
 	return FALSE;

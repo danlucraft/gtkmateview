@@ -70,6 +70,7 @@ GtkMateScope* gtk_mate_scope_new (GtkMateBuffer* buf, const char* name);
 gboolean gtk_mate_scope_is_root (GtkMateScope* self);
 gint gtk_mate_scope_compare (GtkMateScope* a, GtkMateScope* b, void* data);
 gint gtk_mate_scope_compare_by_loc (GtkMateScope* a, GtkMateScope* b, void* data);
+gboolean gtk_mate_scope_surface_identical_to_modulo_ending (GtkMateScope* self, GtkMateScope* other);
 gboolean gtk_mate_scope_surface_identical_to (GtkMateScope* self, GtkMateScope* other);
 GtkMateScope* gtk_mate_scope_scope_at (GtkMateScope* self, gint line, gint line_offset);
 GtkMateScope* gtk_mate_scope_first_child_after (GtkMateScope* self, GtkMateTextLoc* loc);

@@ -141,19 +141,29 @@ namespace Gtk.Mate {
 		}
 
 		public void close_scope(Scanner scanner, Scope? expected_scope, int line_ix, string line, Marker m) {
-			// if (scanner.current_scope.end_mark != null &&
-			// 	TextLoc.equal(scanner.current_scope.end_loc(), TextLoc.make(line_ix, m.match.end(0))) &&
-			// 	TextLoc.equal(scanner.current_scope.inner_end_loc(), TextLoc.make(line_ix, m.from)) &&
-				
-				
-			stdout.printf("closing scope at %d\n", m.from);
-			scanner.current_scope.inner_end_mark_set(line_ix, m.from, true);
-			scanner.current_scope.end_mark_set(line_ix, m.match.end(0), true);
-			scanner.current_scope.is_open = false;
-			scanner.current_scope.end_match_string = line.substring(m.from, m.match.end(0)-m.from);
-			stdout.printf("end_match_string: '%s'\n", scanner.current_scope.end_match_string);
-			handle_captures(line_ix, line, scanner.current_scope, m);
+			var end_match_string = line.substring(m.from, m.match.end(0)-m.from);
+			if (scanner.current_scope.end_mark != null &&
+				TextLoc.equal(scanner.current_scope.end_loc(), TextLoc.make(line_ix, m.match.end(0))) &&
+				TextLoc.equal(scanner.current_scope.inner_end_loc(), TextLoc.make(line_ix, m.from)) &&
+				scanner.current_scope.end_match_string == end_match_string) {
+				// we have already parsed this line and this scope ends here
+			}
+			else {
+				stdout.printf("closing scope at %d\n", m.from);
+				scanner.current_scope.inner_end_mark_set(line_ix, m.from, true);
+				scanner.current_scope.end_mark_set(line_ix, m.match.end(0), true);
+				scanner.current_scope.is_open = false;
+				scanner.current_scope.end_match_string = end_match_string;
+				stdout.printf("end_match_string: '%s'\n", scanner.current_scope.end_match_string);
+				handle_captures(line_ix, line, scanner.current_scope, m);
+				if (expected_scope != null) {
+					scanner.current_scope.delete_child(expected_scope);
+					// @removed_scopes << expected_scope
+				}
+			}
 			scanner.current_scope = scanner.current_scope.parent;
+			// closed_scopes << current_scope
+			// all_scopes << current_scope
 		}
 
 		public void open_scope(Scanner scanner, Scope? expected_scope, int line_ix, string line, int length, Marker m) {
@@ -172,10 +182,30 @@ namespace Gtk.Mate {
 			s.end_mark_set(end_line, end_line_offset, false);
 			s.is_open = true;
 			s.is_capture = false;
-			scanner.current_scope.children.append(s);
 			s.parent = scanner.current_scope;
-			scanner.current_scope = s;
 			handle_captures(line_ix, line, s, m);
+			if (expected_scope != null) {
+				// check mod ending scopes as the new one will not have a closing marker
+				// but the expected one will:
+				if (s.surface_identical_to_modulo_ending(expected_scope)) {
+					stdout.printf("surface_identical_mod_ending: keep expected\n");
+					// don't need to do anything as we have already found this,
+					// but let's keep the old scope since it will have children and what not.
+					// expected_scope.each_child {|c| closed_scopes << c}
+				}
+				else {
+					stdout.printf("surface_NOT_identical_mod_ending: replace expected\n");
+					if (s.overlaps_with(expected_scope)) {
+						scanner.current_scope.delete_child(expected_scope);
+						// removed_scopes << expected_scope
+					}
+					scanner.current_scope.add_child(s);
+				}
+			}
+			else {
+				scanner.current_scope.add_child(s);
+				scanner.current_scope = s;
+			}
 		}
 
 		public void single_scope(Scanner scanner, Scope? expected_scope, int line_ix, string line, int length, Marker m) {
@@ -204,7 +234,7 @@ namespace Gtk.Mate {
 			}
 			else {
 				handle_captures(line_ix, line, s, m);
-				scanner.current_scope.children.append(s);
+				scanner.current_scope.add_child(s);
 			}
 		}
 

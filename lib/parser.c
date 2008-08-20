@@ -38,6 +38,7 @@ static void _gtk_mate_parser_delete_range_handler_gtk_text_buffer_delete_range (
 static gpointer gtk_mate_parser_parent_class = NULL;
 static void gtk_mate_parser_finalize (GObject * obj);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
+static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
@@ -311,29 +312,50 @@ GtkMateScope* gtk_mate_parser_get_expected_scope (GtkMateParser* self, GtkMateSc
 
 
 void gtk_mate_parser_close_scope (GtkMateParser* self, GtkMateScanner* scanner, GtkMateScope* expected_scope, gint line_ix, const char* line, GtkMateMarker* m) {
-	char* _tmp1;
 	char* _tmp0;
+	char* end_match_string;
+	GtkMateTextLoc* _tmp4;
+	GtkMateTextLoc* _tmp3;
+	GtkMateTextLoc* _tmp2;
+	GtkMateTextLoc* _tmp1;
+	gboolean _tmp5;
 	g_return_if_fail (GTK_MATE_IS_PARSER (self));
 	g_return_if_fail (GTK_MATE_IS_SCANNER (scanner));
 	g_return_if_fail (expected_scope == NULL || GTK_MATE_IS_SCOPE (expected_scope));
 	g_return_if_fail (line != NULL);
 	g_return_if_fail (GTK_MATE_IS_MARKER (m));
-	/* if (scanner.current_scope.end_mark != null &&
-	 TextLoc.equal(scanner.current_scope.end_loc(), TextLoc.make(line_ix, m.match.end(0))) &&
-	 TextLoc.equal(scanner.current_scope.inner_end_loc(), TextLoc.make(line_ix, m.from)) &&*/
-	fprintf (stdout, "closing scope at %d\n", m->from);
-	gtk_mate_scope_inner_end_mark_set (gtk_mate_scanner_get_current_scope (scanner), line_ix, m->from, TRUE);
-	gtk_mate_scope_end_mark_set (gtk_mate_scanner_get_current_scope (scanner), line_ix, oniguruma_match_end (m->match, 0), TRUE);
-	gtk_mate_scanner_get_current_scope (scanner)->is_open = FALSE;
-	_tmp1 = NULL;
 	_tmp0 = NULL;
-	gtk_mate_scanner_get_current_scope (scanner)->end_match_string = (_tmp1 = (_tmp0 = g_utf8_offset_to_pointer (line, ((glong) (m->from))), g_strndup (_tmp0, g_utf8_offset_to_pointer (_tmp0, ((glong) (oniguruma_match_end (m->match, 0) - m->from))) - _tmp0)), (gtk_mate_scanner_get_current_scope (scanner)->end_match_string = (g_free (gtk_mate_scanner_get_current_scope (scanner)->end_match_string), NULL)), _tmp1);
-	fprintf (stdout, "end_match_string: '%s'\n", gtk_mate_scanner_get_current_scope (scanner)->end_match_string);
-	gtk_mate_parser_handle_captures (self, line_ix, line, gtk_mate_scanner_get_current_scope (scanner), m);
+	end_match_string = (_tmp0 = g_utf8_offset_to_pointer (line, ((glong) (m->from))), g_strndup (_tmp0, g_utf8_offset_to_pointer (_tmp0, ((glong) (oniguruma_match_end (m->match, 0) - m->from))) - _tmp0));
+	_tmp4 = NULL;
+	_tmp3 = NULL;
+	_tmp2 = NULL;
+	_tmp1 = NULL;
+	if ((_tmp5 = gtk_mate_scanner_get_current_scope (scanner)->end_mark != NULL && gtk_mate_text_loc_equal ((_tmp1 = gtk_mate_scope_end_loc (gtk_mate_scanner_get_current_scope (scanner))), (_tmp2 = gtk_mate_text_loc_make (line_ix, oniguruma_match_end (m->match, 0)))) && gtk_mate_text_loc_equal ((_tmp3 = gtk_mate_scope_inner_end_loc (gtk_mate_scanner_get_current_scope (scanner))), (_tmp4 = gtk_mate_text_loc_make (line_ix, m->from))) && _vala_strcmp0 (gtk_mate_scanner_get_current_scope (scanner)->end_match_string, end_match_string) == 0, (_tmp4 == NULL ? NULL : (_tmp4 = (g_object_unref (_tmp4), NULL))), (_tmp3 == NULL ? NULL : (_tmp3 = (g_object_unref (_tmp3), NULL))), (_tmp2 == NULL ? NULL : (_tmp2 = (g_object_unref (_tmp2), NULL))), (_tmp1 == NULL ? NULL : (_tmp1 = (g_object_unref (_tmp1), NULL))), _tmp5)) {
+	} else {
+		char* _tmp7;
+		const char* _tmp6;
+		/* we have already parsed this line and this scope ends here*/
+		fprintf (stdout, "closing scope at %d\n", m->from);
+		gtk_mate_scope_inner_end_mark_set (gtk_mate_scanner_get_current_scope (scanner), line_ix, m->from, TRUE);
+		gtk_mate_scope_end_mark_set (gtk_mate_scanner_get_current_scope (scanner), line_ix, oniguruma_match_end (m->match, 0), TRUE);
+		gtk_mate_scanner_get_current_scope (scanner)->is_open = FALSE;
+		_tmp7 = NULL;
+		_tmp6 = NULL;
+		gtk_mate_scanner_get_current_scope (scanner)->end_match_string = (_tmp7 = (_tmp6 = end_match_string, (_tmp6 == NULL ? NULL : g_strdup (_tmp6))), (gtk_mate_scanner_get_current_scope (scanner)->end_match_string = (g_free (gtk_mate_scanner_get_current_scope (scanner)->end_match_string), NULL)), _tmp7);
+		fprintf (stdout, "end_match_string: '%s'\n", gtk_mate_scanner_get_current_scope (scanner)->end_match_string);
+		gtk_mate_parser_handle_captures (self, line_ix, line, gtk_mate_scanner_get_current_scope (scanner), m);
+		if (expected_scope != NULL) {
+			gtk_mate_scope_delete_child (gtk_mate_scanner_get_current_scope (scanner), expected_scope);
+		}
+	}
+	/* @removed_scopes << expected_scope*/
 	gtk_mate_scanner_set_current_scope (scanner, gtk_mate_scanner_get_current_scope (scanner)->parent);
+	end_match_string = (g_free (end_match_string), NULL);
 }
 
 
+/* closed_scopes << current_scope
+ all_scopes << current_scope*/
 void gtk_mate_parser_open_scope (GtkMateParser* self, GtkMateScanner* scanner, GtkMateScope* expected_scope, gint line_ix, const char* line, gint length, GtkMateMarker* m) {
 	GtkMateScope* s;
 	GtkMatePattern* _tmp1;
@@ -345,9 +367,8 @@ void gtk_mate_parser_open_scope (GtkMateParser* self, GtkMateScanner* scanner, G
 	GtkTextIter end_iter;
 	gint end_line;
 	gint end_line_offset;
-	GtkMateScope* _tmp6;
-	GtkMateScope* _tmp8;
 	GtkMateScope* _tmp7;
+	GtkMateScope* _tmp6;
 	g_return_if_fail (GTK_MATE_IS_PARSER (self));
 	g_return_if_fail (GTK_MATE_IS_SCANNER (scanner));
 	g_return_if_fail (expected_scope == NULL || GTK_MATE_IS_SCOPE (expected_scope));
@@ -374,13 +395,30 @@ void gtk_mate_parser_open_scope (GtkMateParser* self, GtkMateScanner* scanner, G
 	gtk_mate_scope_end_mark_set (s, end_line, end_line_offset, FALSE);
 	s->is_open = TRUE;
 	s->is_capture = FALSE;
-	_tmp6 = NULL;
-	g_sequence_append (gtk_mate_scope_get_children (gtk_mate_scanner_get_current_scope (scanner)), (_tmp6 = s, (_tmp6 == NULL ? NULL : g_object_ref (_tmp6))));
-	_tmp8 = NULL;
 	_tmp7 = NULL;
-	s->parent = (_tmp8 = (_tmp7 = gtk_mate_scanner_get_current_scope (scanner), (_tmp7 == NULL ? NULL : g_object_ref (_tmp7))), (s->parent == NULL ? NULL : (s->parent = (g_object_unref (s->parent), NULL))), _tmp8);
-	gtk_mate_scanner_set_current_scope (scanner, s);
+	_tmp6 = NULL;
+	s->parent = (_tmp7 = (_tmp6 = gtk_mate_scanner_get_current_scope (scanner), (_tmp6 == NULL ? NULL : g_object_ref (_tmp6))), (s->parent == NULL ? NULL : (s->parent = (g_object_unref (s->parent), NULL))), _tmp7);
 	gtk_mate_parser_handle_captures (self, line_ix, line, s, m);
+	if (expected_scope != NULL) {
+		/* check mod ending scopes as the new one will not have a closing marker
+		 but the expected one will:*/
+		if (gtk_mate_scope_surface_identical_to_modulo_ending (s, expected_scope)) {
+			fprintf (stdout, "surface_identical_mod_ending: keep expected\n");
+		} else {
+			/* don't need to do anything as we have already found this,
+			 but let's keep the old scope since it will have children and what not.
+			 expected_scope.each_child {|c| closed_scopes << c}*/
+			fprintf (stdout, "surface_NOT_identical_mod_ending: replace expected\n");
+			if (gtk_mate_scope_overlaps_with (s, expected_scope)) {
+				gtk_mate_scope_delete_child (gtk_mate_scanner_get_current_scope (scanner), expected_scope);
+			}
+			/* removed_scopes << expected_scope*/
+			gtk_mate_scope_add_child (gtk_mate_scanner_get_current_scope (scanner), s);
+		}
+	} else {
+		gtk_mate_scope_add_child (gtk_mate_scanner_get_current_scope (scanner), s);
+		gtk_mate_scanner_set_current_scope (scanner, s);
+	}
 	(s == NULL ? NULL : (s = (g_object_unref (s), NULL)));
 }
 
@@ -430,10 +468,8 @@ void gtk_mate_parser_single_scope (GtkMateParser* self, GtkMateScanner* scanner,
 			gtk_mate_scope_add_child (gtk_mate_scanner_get_current_scope (scanner), s);
 		}
 	} else {
-		GtkMateScope* _tmp8;
 		gtk_mate_parser_handle_captures (self, line_ix, line, s, m);
-		_tmp8 = NULL;
-		g_sequence_append (gtk_mate_scope_get_children (gtk_mate_scanner_get_current_scope (scanner)), (_tmp8 = s, (_tmp8 == NULL ? NULL : g_object_ref (_tmp8))));
+		gtk_mate_scope_add_child (gtk_mate_scanner_get_current_scope (scanner), s);
 	}
 	(s == NULL ? NULL : (s = (g_object_unref (s), NULL)));
 }
@@ -924,6 +960,17 @@ static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify 
 		}
 	}
 	g_free (array);
+}
+
+
+static int _vala_strcmp0 (const char * str1, const char * str2) {
+	if (str1 == NULL) {
+		return -(str1 != str2);
+	}
+	if (str2 == NULL) {
+		return (str1 != str2);
+	}
+	return strcmp (str1, str2);
 }
 
 

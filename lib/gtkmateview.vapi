@@ -87,6 +87,7 @@ namespace Gtk {
 			public bool is_root ();
 			public static int compare (Gtk.Mate.Scope a, Gtk.Mate.Scope b, void* data);
 			public static int compare_by_loc (Gtk.Mate.Scope a, Gtk.Mate.Scope b, void* data);
+			public bool surface_identical_to_modulo_ending (Gtk.Mate.Scope other);
 			public bool surface_identical_to (Gtk.Mate.Scope other);
 			public Gtk.Mate.Scope? scope_at (int line, int line_offset);
 			public Gtk.Mate.Scope? first_child_after (Gtk.Mate.TextLoc loc);
