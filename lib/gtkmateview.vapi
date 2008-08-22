@@ -95,6 +95,7 @@ namespace Gtk {
 			public bool overlaps_with (Gtk.Mate.Scope other);
 			public void add_child (Gtk.Mate.Scope s);
 			public void delete_child (Gtk.Mate.Scope s);
+			public Gee.ArrayList<Gtk.Mate.Scope> delete_any_on_line_not_in (int line_ix, Gee.ArrayList<Gtk.Mate.Scope> scopes);
 			public string pretty (int indent);
 			public void start_mark_set (int line, int line_offset, bool has_left_gravity);
 			public void inner_start_mark_set (int line, int line_offset, bool has_left_gravity);
@@ -120,6 +121,7 @@ namespace Gtk {
 			public Gtk.Mate.TextLoc inner_start_loc ();
 			public Gtk.Mate.TextLoc inner_end_loc ();
 			public Gtk.Mate.TextLoc end_loc ();
+			public Gtk.Mate.Scope root ();
 			public string? name { get; set; }
 			public Gtk.Mate.Buffer buffer { get; set; }
 			public GLib.Sequence<Gtk.Mate.Scope> children { get; }
@@ -186,6 +188,7 @@ namespace Gtk {
 			public static bool lt (Gtk.Mate.TextLoc t1, Gtk.Mate.TextLoc t2);
 			public static bool gte (Gtk.Mate.TextLoc t1, Gtk.Mate.TextLoc t2);
 			public static bool lte (Gtk.Mate.TextLoc t1, Gtk.Mate.TextLoc t2);
+			public string to_s ();
 			public TextLoc ();
 		}
 		[CCode (cheader_filename = "parser.h")]
@@ -198,13 +201,14 @@ namespace Gtk {
 			public void stop_parsing ();
 			public void start_parsing ();
 			public bool is_parsing ();
+			public void clear_line (int line_ix, Gtk.Mate.Scope start_scope, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes);
 			public Gtk.Mate.Scope? get_expected_scope (Gtk.Mate.Scope current_scope, int line, int line_offset);
-			public void close_scope (Gtk.Mate.Scanner scanner, Gtk.Mate.Scope? expected_scope, int line_ix, string line, Gtk.Mate.Marker m);
-			public void open_scope (Gtk.Mate.Scanner scanner, Gtk.Mate.Scope? expected_scope, int line_ix, string line, int length, Gtk.Mate.Marker m);
-			public void single_scope (Gtk.Mate.Scanner scanner, Gtk.Mate.Scope? expected_scope, int line_ix, string line, int length, Gtk.Mate.Marker m);
-			public void handle_captures (int line_ix, string line, Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
+			public void close_scope (Gtk.Mate.Scanner scanner, Gtk.Mate.Scope? expected_scope, int line_ix, string line, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes);
+			public void open_scope (Gtk.Mate.Scanner scanner, Gtk.Mate.Scope? expected_scope, int line_ix, string line, int length, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes);
+			public void single_scope (Gtk.Mate.Scanner scanner, Gtk.Mate.Scope? expected_scope, int line_ix, string line, int length, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes);
+			public void handle_captures (int line_ix, string line, Gtk.Mate.Scope scope, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes);
 			public Oniguruma.Regex? make_closing_regex (string line, Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
-			public void collect_child_captures (int line_ix, Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
+			public void collect_child_captures (int line_ix, Gtk.Mate.Scope scope, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes);
 			public void connect_buffer_signals ();
 			public void insert_text_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, string text, int length);
 			public void delete_range_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);

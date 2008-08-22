@@ -1,10 +1,10 @@
-lib/Makefile
+dist/Makefile
 lib/gtkmateview.gidl
-lib/gtkmateview.so
-lib/gtkmateview_rb.o
-lib/gtkmateview_rb.so
-lib/mkmf.log
-lib/plist.o
+dist/gtkmateview.so
+dist/gtkmateview_rb.so
+dist/mkmf.log
 lib/semantic.cache
 *.o
 *.so
+lib/*.c
+lib/*.h

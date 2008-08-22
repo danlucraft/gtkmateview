@@ -27,7 +27,7 @@ foo=<<HI
 HI
 puts "hello"
 END
-    1.times { @mb.type(1, 8, " ") }
+    5.times { @mb.type(1, 8, " ") }
     @mb.pretty.should == @mb.clean_reparse
   end
   
@@ -43,4 +43,30 @@ END
     @mb.type(0, 12, "o")
     @mb.pretty.should == @mb.clean_reparse
   end
+  
+  it "reparses when blank lines inserted" do
+    @mb.text = <<-END
+    class Red < Car
+      def foo
+      end
+    end
+    END
+    @mb.type(1, 0, "\n")
+    @mb.type(1, 0, "\n")
+    @mb.pretty.should == @mb.clean_reparse
+  end
+  
+  it "reparses lines with only whitespace changes, even when they have closing scopes" do
+    @mb.text = <<-END
+puts "hello"
+foo=<<HI
+  Here.foo
+  Here.foo
+HI
+puts "hello"
+END
+    1.times { @mb.type(4, 2, " ") }
+    @mb.pretty.should == @mb.clean_reparse
+  end
+  
 end

@@ -40,17 +40,6 @@ def fix_vala_c_sources(sources)
 end
 
 namespace :build do
-#   task :timestamp do
-#     ts = {}
-#     FileUtils.cd("lib") do
-#       Dir["*.vala"].each do |fn|
-#         ts[fn] = File.stat(fn).atime
-#       end
-#     end
-#     File.open("lib/timestamps", "w") do |f|
-#       f.puts ts.to_yaml
-#     end
-#   end
   
   task :clean do
     puts "cleaning..."
@@ -59,15 +48,8 @@ namespace :build do
 
   desc "build c files from vala"
   task :build_c do
-#     timestamps = YAML.load(File.read("lib/timestamps"))
-    
+    sources_to_compile = VALA_SOURCES.map{|n| n+".vala"}
     FileUtils.cd("lib") do
-      sources_to_compile = VALA_SOURCES.map{|n| n+".vala"}
-#       sources_to_compile = sources_to_compile.select do |fn|
-# #         p timestamps[fn]
-# #         p File.stat(fn).atime
-#         File.stat(fn).atime > timestamps[fn]
-#       end
       puts "compiling gtkmateview..."
       if sources_to_compile.empty?
         puts "  nothing to do."
@@ -77,6 +59,16 @@ namespace :build do
         fix_vala_c_sources(VALA_SOURCES)
       end
     end
+    VALA_SOURCES.each do |fn|
+      if %x{md5sum lib/#{fn}.c}.split(" ").first != %x{md5sum dist/#{fn}.c}.split(" ").first
+        puts "different #{fn}.c"
+        FileUtils.cp("lib/#{fn}.c", "dist/")
+      end
+      if %x{md5sum lib/#{fn}.h}.split(" ").first != %x{md5sum dist/#{fn}.h}.split(" ").first
+        puts "different #{fn}.h"
+        FileUtils.cp("lib/#{fn}.h", "dist/")
+      end
+    end
   end
   
   desc "build project from scratch"
@@ -84,7 +76,9 @@ namespace :build do
     FileUtils.cd("lib") do
       puts "running VALAR..."
       puts %x{ruby ../../valar/bin/valar gtkmateview.vapi --deps="gtk+-2.0,oniguruma,gtksourceview-2.0" --vapidirs="../vapi/oniguruma.vapi"}
-
+    end
+    FileUtils.mv("lib/gtkmateview_rb.c", "dist/")
+    FileUtils.cd("dist") do
       puts 
       puts "compiling gtkmateview_rb..."
       puts %x{ruby extconf.rb}

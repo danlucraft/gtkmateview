@@ -96,6 +96,10 @@ namespace Gtk.Mate {
 		}
 
 		public bool surface_identical_to_modulo_ending(Scope other) {
+			stdout.printf("%s == %s and %s == %s and %s == %s and %s == %s and %s == %s",
+						  name, other.name, pattern.name, other.pattern.name, start_loc().to_s(),
+						  other.start_loc().to_s(), inner_start_loc().to_s(), other.inner_start_loc().to_s(),
+						  begin_match_string, other.begin_match_string);
 			if (name == other.name &&
 				pattern == other.pattern &&
 				TextLoc.equal(start_loc(), other.start_loc()) &&
@@ -217,6 +221,32 @@ namespace Gtk.Mate {
 			}
 		}
 		
+		public ArrayList<Scope> delete_any_on_line_not_in(int line_ix, ArrayList<Scope> scopes) {
+			var start_scope = scope_at(line_ix, -1);
+			var removed_scopes = new ArrayList<Scope>();
+			GLib.SequenceIter iter = start_scope.children.get_begin_iter();
+			bool removed;
+			while (!iter.is_end()) {
+				removed = false;
+				var child = children.get(iter);
+				if (child.start_line() > line_ix) {
+					return removed_scopes;
+				}
+				if (child.start_line() == line_ix) {
+					if (!scopes.contains(child)) {
+						removed_scopes.add(child);
+						iter = iter.next();
+						start_scope.children.remove(iter.prev());
+						removed = true;
+					}
+				}
+				if (!removed) {
+					iter = iter.next();
+				}
+			}
+			return removed_scopes;
+		}
+
 		public string pretty(int indent) {
 			pretty_string = new StringBuilder("");
 			this.indent = indent;
@@ -391,6 +421,13 @@ namespace Gtk.Mate {
 				return dummy_end_loc;
 			else
 				return TextLoc.make(end_line(), end_line_offset());
+		}
+
+		public Scope root() {
+			if (parent == null)
+				return this;
+			else
+				return parent.root();
 		}
 	}
 }
