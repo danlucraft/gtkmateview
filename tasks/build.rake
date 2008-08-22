@@ -68,6 +68,8 @@ namespace :build do
         puts "different #{fn}.h"
         FileUtils.cp("lib/#{fn}.h", "dist/")
       end
+      FileUtils.rm_f("lib/#{fn}.h")
+      FileUtils.rm_f("lib/#{fn}.c")
     end
   end
   
