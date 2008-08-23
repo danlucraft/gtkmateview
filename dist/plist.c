@@ -19,6 +19,11 @@ enum  {
 static gpointer plist_string_parent_class = NULL;
 static void plist_string_finalize (GObject * obj);
 enum  {
+	PLIST_INTEGER_DUMMY_PROPERTY
+};
+static gpointer plist_integer_parent_class = NULL;
+static void plist_integer_finalize (GObject * obj);
+enum  {
 	PLIST_ARRAY_DUMMY_PROPERTY
 };
 static GObject * plist_array_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
@@ -48,6 +53,15 @@ PListNode* plist_node_parse_xml_node (xmlNode* node) {
 		_tmp0 = NULL;
 		string_node->str = (_tmp0 = xmlNodeGetContent (node), (string_node->str = (g_free (string_node->str), NULL)), _tmp0);
 		return PLIST_NODE (string_node);
+	}
+	if (_vala_strcmp0 (node->name, "integer") == 0) {
+		PListInteger* int_node;
+		char* _tmp2;
+		int_node = plist_integer_new ();
+		_tmp2 = NULL;
+		int_node->value = atoi ((_tmp2 = (xmlNodeGetContent (node))));
+		_tmp2 = (g_free (_tmp2), NULL);
+		return PLIST_NODE (int_node);
 	}
 	if (_vala_strcmp0 (node->name, "dict") == 0) {
 		return PLIST_NODE (plist_dict_parse_dict (node));
@@ -117,6 +131,40 @@ GType plist_string_get_type (void) {
 		plist_string_type_id = g_type_register_static (PLIST_TYPE_NODE, "PListString", &g_define_type_info, 0);
 	}
 	return plist_string_type_id;
+}
+
+
+PListInteger* plist_integer_new (void) {
+	PListInteger * self;
+	self = g_object_newv (PLIST_TYPE_INTEGER, 0, NULL);
+	return self;
+}
+
+
+static void plist_integer_class_init (PListIntegerClass * klass) {
+	plist_integer_parent_class = g_type_class_peek_parent (klass);
+	G_OBJECT_CLASS (klass)->finalize = plist_integer_finalize;
+}
+
+
+static void plist_integer_instance_init (PListInteger * self) {
+}
+
+
+static void plist_integer_finalize (GObject * obj) {
+	PListInteger * self;
+	self = PLIST_INTEGER (obj);
+	G_OBJECT_CLASS (plist_integer_parent_class)->finalize (obj);
+}
+
+
+GType plist_integer_get_type (void) {
+	static GType plist_integer_type_id = 0;
+	if (plist_integer_type_id == 0) {
+		static const GTypeInfo g_define_type_info = { sizeof (PListIntegerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) plist_integer_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (PListInteger), 0, (GInstanceInitFunc) plist_integer_instance_init };
+		plist_integer_type_id = g_type_register_static (PLIST_TYPE_NODE, "PListInteger", &g_define_type_info, 0);
+	}
+	return plist_integer_type_id;
 }
 
 

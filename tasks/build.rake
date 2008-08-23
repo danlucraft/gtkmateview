@@ -79,7 +79,9 @@ namespace :build do
       puts "running VALAR..."
       puts %x{ruby ../../valar/bin/valar gtkmateview.vapi --deps="gtk+-2.0,oniguruma,gtksourceview-2.0" --vapidirs="../vapi/oniguruma.vapi"}
     end
-    FileUtils.mv("lib/gtkmateview_rb.c", "dist/")
+    if %x{md5sum lib/gtkmateview_rb.c}.split(" ").first != %x{md5sum dist/gtkmateview_rb.c}.split(" ").first
+      FileUtils.mv("lib/gtkmateview_rb.c", "dist/")
+    end
     FileUtils.cd("dist") do
       puts 
       puts "compiling gtkmateview_rb..."

@@ -49,3 +49,14 @@ describe PList::String do
     @string.str.should be_an_instance_of(String)
   end
 end
+
+describe PList::Integer do
+  before(:each) do
+    @dict = PList.parse("spec/fixtures/Ruby.plist")
+  end
+
+  it "lets you get the Integer" do
+    int_node = @dict.get("dummy_integer")
+    int_node.value.should be_an_instance_of(Fixnum)
+  end
+end

@@ -28,6 +28,7 @@ namespace Gtk {
 			public string name;
 			public string comment;
 			public static Gee.ArrayList<Gtk.Mate.Pattern> all_patterns;
+			public bool disabled;
 			public static Gtk.Mate.Pattern? create_from_plist (Gee.ArrayList<Gtk.Mate.Pattern> all_patterns, PList.Dict pd);
 			public static Gee.HashMap<int,string> make_captures_from_plist (PList.Dict? pd);
 			public Pattern ();
@@ -96,6 +97,7 @@ namespace Gtk {
 			public void add_child (Gtk.Mate.Scope s);
 			public void delete_child (Gtk.Mate.Scope s);
 			public Gee.ArrayList<Gtk.Mate.Scope> delete_any_on_line_not_in (int line_ix, Gee.ArrayList<Gtk.Mate.Scope> scopes);
+			public void clear_after (int line_ix, int line_offset);
 			public string pretty (int indent);
 			public void start_mark_set (int line, int line_offset, bool has_left_gravity);
 			public void inner_start_mark_set (int line, int line_offset, bool has_left_gravity);
@@ -302,6 +304,11 @@ namespace PList {
 	public class String : PList.Node {
 		public string str;
 		public String ();
+	}
+	[CCode (cheader_filename = "plist.h")]
+	public class Integer : PList.Node {
+		public int value;
+		public Integer ();
 	}
 	[CCode (cheader_filename = "plist.h")]
 	public class Array : PList.Node {

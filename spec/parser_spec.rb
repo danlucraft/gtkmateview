@@ -25,13 +25,13 @@ end
     @mb.parser.root.pretty(0).should == <<END
 + source.ruby (0,0)-(4,0) open
   + meta.class.ruby (0,0)-(0,15) closed
-    + keyword.control.class.ruby (0,0)-(0,5) closed
-    + entity.name.type.class.ruby (0,6)-(0,15) closed
-      + entity.other.inherited-class.ruby (0,9)-(0,15) closed
-        + punctuation.separator.inheritance.ruby (0,10)-(0,11) closed
+    c keyword.control.class.ruby (0,0)-(0,5) closed
+    c entity.name.type.class.ruby (0,6)-(0,15) closed
+      c entity.other.inherited-class.ruby (0,9)-(0,15) closed
+        c punctuation.separator.inheritance.ruby (0,10)-(0,11) closed
   + meta.function.method.without-arguments.ruby (1,2)-(1,9) closed
-    + keyword.control.def.ruby (1,2)-(1,5) closed
-    + entity.name.function.ruby (1,6)-(1,9) closed
+    c keyword.control.def.ruby (1,2)-(1,5) closed
+    c entity.name.function.ruby (1,6)-(1,9) closed
   + keyword.control.ruby (2,2)-(2,5) closed
   + keyword.control.ruby (3,0)-(3,3) closed
 END

@@ -124,6 +124,8 @@ namespace Gtk.Mate {
 				}
 			}
 			foreach (var p in ((DoublePattern) current_scope.pattern).patterns) {
+				if (p.disabled)
+					continue;
 				int position_now = position;
 				int position_prev = position-1;
 				Oniguruma.Match match;

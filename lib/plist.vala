@@ -20,6 +20,11 @@ namespace PList {
 				string_node.str = node->get_content();
 				return string_node;
 			}
+			if (node->name == "integer") {
+				var int_node = new Integer();
+				int_node.value = (node->get_content()).to_int();
+				return int_node;
+			}
 			if (node->name == "dict") {
 				return Dict.parse_dict(node);
 			}
@@ -32,6 +37,10 @@ namespace PList {
 
 	public class String : Node {
 		public string str;
+	}
+
+	public class Integer : Node {
+		public int value;
 	}
 
 	public class Array : Node {

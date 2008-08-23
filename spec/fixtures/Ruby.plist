@@ -44,6 +44,8 @@
     ternary operator rule, precedence stuff, symbol rule.
     but also consider 'a.b?(:c)' ??
 </string>
+  <key>dummy_integer</key>
+  <integer>190</integer>
 	<key>fileTypes</key>
 	<array>
 		<string>rb</string>

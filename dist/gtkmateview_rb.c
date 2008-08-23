@@ -140,6 +140,11 @@ static VALUE rbc_plist_node;
 #define _PLIST_STRING_SELF(s) PLIST_STRING(RVAL2GOBJ(s))
 static VALUE rbc_plist_string;
 
+/****  PList.Integer wrapper *****/
+
+#define _PLIST_INTEGER_SELF(s) PLIST_INTEGER(RVAL2GOBJ(s))
+static VALUE rbc_plist_integer;
+
 /****  PList.Array wrapper *****/
 
 #define _PLIST_ARRAY_SELF(s) PLIST_ARRAY(RVAL2GOBJ(s))
@@ -868,6 +873,42 @@ static VALUE rb_gtk_mate_pattern_set_all_patterns(VALUE self, VALUE all_patterns
 
     // StaticMemberSet#body
     gtk_mate_pattern_all_patterns = _c_all_patterns; 
+    // Method#return_type_conversion
+    return Qnil;
+}
+
+static VALUE rb_gtk_mate_pattern_get_disabled(VALUE self) {
+    GtkMatePattern* gtk_mate_pattern = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // ValaMemberGet#body
+    gboolean _c_return = gtk_mate_pattern->disabled; 
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+          if (_c_return == TRUE)
+          _rb_return = Qtrue;
+      else
+          _rb_return = Qfalse;
+
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_pattern_set_disabled(VALUE self, VALUE disabled) {
+    GtkMatePattern* gtk_mate_pattern = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(disabled) != T_TRUE && TYPE(disabled) != T_FALSE) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected true or false");
+    }
+    // Method#argument_type_conversions
+    gboolean _c_disabled;
+          if (disabled == Qtrue)
+          _c_disabled = TRUE;
+      else
+          _c_disabled = FALSE;
+
+    // ValaMemberSet#body
+    gtk_mate_pattern->disabled = _c_disabled;
     // Method#return_type_conversion
     return Qnil;
 }
@@ -2421,6 +2462,29 @@ static VALUE rb_gtk_mate_scope_delete_any_on_line_not_in(VALUE self, VALUE line_
     }
 
     return _rb_return;
+}
+
+static VALUE rb_gtk_mate_scope_clear_after(VALUE self, VALUE line_ix, VALUE line_offset) {
+    GtkMateScope* gtk_mate_scope = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(line_ix) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    if (TYPE(line_offset) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    // Method#argument_type_conversions
+    int _c_line_ix;
+    _c_line_ix = FIX2INT(line_ix);
+    int _c_line_offset;
+    _c_line_offset = FIX2INT(line_offset);
+    // Method#body
+    
+    gtk_mate_scope_clear_after(gtk_mate_scope, _c_line_ix, _c_line_offset);
+    // Method#return_type_conversion
+    return Qnil;
 }
 
 static VALUE rb_gtk_mate_scope_pretty(VALUE self, VALUE indent) {
@@ -5272,6 +5336,44 @@ static VALUE rb_plist_string_set_str(VALUE self, VALUE str) {
 }
 
 
+/****  PList.Integer methods *****/
+
+
+static VALUE plist_integer_initialize(VALUE self) {
+
+    G_INITIALIZE(self, plist_integer_new ());
+    return Qnil;
+}
+
+static VALUE rb_plist_integer_get_value(VALUE self) {
+    PListInteger* plist_integer = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // ValaMemberGet#body
+    int _c_return = plist_integer->value; 
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+    _rb_return = INT2FIX(_c_return);
+    return _rb_return;
+}
+
+static VALUE rb_plist_integer_set_value(VALUE self, VALUE value) {
+    PListInteger* plist_integer = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(value) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    // Method#argument_type_conversions
+    int _c_value;
+    _c_value = FIX2INT(value);
+    // ValaMemberSet#body
+    plist_integer->value = _c_value;
+    // Method#return_type_conversion
+    return Qnil;
+}
+
+
 /****  PList.Array methods *****/
 
 
@@ -5832,6 +5934,10 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_plist_string, "initialize", plist_string_initialize, 0);
     rb_define_method(rbc_plist_string, "str", rb_plist_string_get_str, 0);
     rb_define_method(rbc_plist_string, "str=", rb_plist_string_set_str, 1);
+    rbc_plist_integer = G_DEF_CLASS(plist_integer_get_type(), "Integer", rbc_plist);
+    rb_define_method(rbc_plist_integer, "initialize", plist_integer_initialize, 0);
+    rb_define_method(rbc_plist_integer, "value", rb_plist_integer_get_value, 0);
+    rb_define_method(rbc_plist_integer, "value=", rb_plist_integer_set_value, 1);
     rbc_gtk_mate_view = G_DEF_CLASS(gtk_mate_view_get_type(), "View", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_view, "initialize", gtk_mate_view_initialize, 0);
     rbc_gtk_mate_theme = G_DEF_CLASS(gtk_mate_theme_get_type(), "Theme", rbc_gtk_mate);
@@ -5898,6 +6004,7 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_scope, "add_child", rb_gtk_mate_scope_add_child, 1);
     rb_define_method(rbc_gtk_mate_scope, "delete_child", rb_gtk_mate_scope_delete_child, 1);
     rb_define_method(rbc_gtk_mate_scope, "delete_any_on_line_not_in", rb_gtk_mate_scope_delete_any_on_line_not_in, 2);
+    rb_define_method(rbc_gtk_mate_scope, "clear_after", rb_gtk_mate_scope_clear_after, 2);
     rb_define_method(rbc_gtk_mate_scope, "pretty", rb_gtk_mate_scope_pretty, 1);
     rb_define_method(rbc_gtk_mate_scope, "start_mark_set", rb_gtk_mate_scope_start_mark_set, 3);
     rb_define_method(rbc_gtk_mate_scope, "inner_start_mark_set", rb_gtk_mate_scope_inner_start_mark_set, 3);
@@ -5962,14 +6069,20 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_marker, "pattern=", rb_gtk_mate_marker_set_pattern, 1);
     rb_define_method(rbc_gtk_mate_marker, "match", rb_gtk_mate_marker_get_match, 0);
     rb_define_method(rbc_gtk_mate_marker, "match=", rb_gtk_mate_marker_set_match, 1);
-    rbc_oniguruma_match = G_DEF_CLASS(oniguruma_match_get_type(), "Match", rbc_oniguruma);
-    rb_define_method(rbc_oniguruma_match, "initialize", oniguruma_match_initialize, 0);
-    rb_define_method(rbc_oniguruma_match, "begin", rb_oniguruma_match_begin, 1);
-    rb_define_method(rbc_oniguruma_match, "end", rb_oniguruma_match_end, 1);
     rbc_gtk_mate_bundle = G_DEF_CLASS(gtk_mate_bundle_get_type(), "Bundle", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_bundle, "initialize", gtk_mate_bundle_initialize, 1);
     rb_define_method(rbc_gtk_mate_bundle, "grammars", rb_gtk_mate_bundle_get_grammars, 0);
     rb_define_method(rbc_gtk_mate_bundle, "grammars=", rb_gtk_mate_bundle_set_grammars, 1);
+    rbc_oniguruma_match = G_DEF_CLASS(oniguruma_match_get_type(), "Match", rbc_oniguruma);
+    rb_define_method(rbc_oniguruma_match, "initialize", oniguruma_match_initialize, 0);
+    rb_define_method(rbc_oniguruma_match, "begin", rb_oniguruma_match_begin, 1);
+    rb_define_method(rbc_oniguruma_match, "end", rb_oniguruma_match_end, 1);
+    rbc_oniguruma_regex = G_DEF_CLASS(oniguruma_regex_get_type(), "Regex", rbc_oniguruma);
+    rb_define_method(rbc_oniguruma_regex, "initialize", oniguruma_regex_initialize, 0);
+    rb_define_method(rbc_oniguruma_regex, "matches_start_of_line", rb_oniguruma_regex_get_matches_start_of_line, 0);
+    rb_define_method(rbc_oniguruma_regex, "matches_start_of_line=", rb_oniguruma_regex_set_matches_start_of_line, 1);
+    rb_define_method(rbc_oniguruma_regex, "search", rb_oniguruma_regex_search, 3);
+    rb_define_singleton_method(rbc_oniguruma_regex, "make1", rb_oniguruma_regex_make1, 1);
     rbc_gtk_mate_buffer = G_DEF_CLASS(gtk_mate_buffer_get_type(), "Buffer", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_buffer, "initialize", gtk_mate_buffer_initialize, 0);
     rb_define_singleton_method(rbc_gtk_mate_buffer, "bundles", rb_gtk_mate_buffer_get_bundles, 0);
@@ -5990,12 +6103,16 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_buffer, "cursor_line", rb_gtk_mate_buffer_cursor_line, 0);
     rb_define_method(rbc_gtk_mate_buffer, "cursor_line_offset", rb_gtk_mate_buffer_cursor_line_offset, 0);
     rb_define_method(rbc_gtk_mate_buffer, "cursor_offset", rb_gtk_mate_buffer_cursor_offset, 0);
-    rbc_oniguruma_regex = G_DEF_CLASS(oniguruma_regex_get_type(), "Regex", rbc_oniguruma);
-    rb_define_method(rbc_oniguruma_regex, "initialize", oniguruma_regex_initialize, 0);
-    rb_define_method(rbc_oniguruma_regex, "matches_start_of_line", rb_oniguruma_regex_get_matches_start_of_line, 0);
-    rb_define_method(rbc_oniguruma_regex, "matches_start_of_line=", rb_oniguruma_regex_set_matches_start_of_line, 1);
-    rb_define_method(rbc_oniguruma_regex, "search", rb_oniguruma_regex_search, 3);
-    rb_define_singleton_method(rbc_oniguruma_regex, "make1", rb_oniguruma_regex_make1, 1);
+    rbc_gtk_mate_scanner = G_DEF_CLASS(gtk_mate_scanner_get_type(), "Scanner", rbc_gtk_mate);
+    rb_define_method(rbc_gtk_mate_scanner, "initialize", gtk_mate_scanner_initialize, 3);
+    rb_define_method(rbc_gtk_mate_scanner, "position", rb_gtk_mate_scanner_get_position, 0);
+    rb_define_method(rbc_gtk_mate_scanner, "position=", rb_gtk_mate_scanner_set_position, 1);
+    rb_define_method(rbc_gtk_mate_scanner, "cached_markers", rb_gtk_mate_scanner_get_cached_markers, 0);
+    rb_define_method(rbc_gtk_mate_scanner, "cached_markers=", rb_gtk_mate_scanner_set_cached_markers, 1);
+    rb_define_method(rbc_gtk_mate_scanner, "get_cached_marker", rb_gtk_mate_scanner_get_cached_marker, 0);
+    rb_define_method(rbc_gtk_mate_scanner, "remove_preceding_cached_markers", rb_gtk_mate_scanner_remove_preceding_cached_markers, 1);
+    rb_define_method(rbc_gtk_mate_scanner, "scan_for_match", rb_gtk_mate_scanner_scan_for_match, 2);
+    rb_define_method(rbc_gtk_mate_scanner, "find_next_marker", rb_gtk_mate_scanner_find_next_marker, 0);
     rbc_gtk_mate_text_loc = G_DEF_CLASS(gtk_mate_text_loc_get_type(), "TextLoc", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_text_loc, "initialize", gtk_mate_text_loc_initialize, 0);
     rb_define_method(rbc_gtk_mate_text_loc, "line", rb_gtk_mate_text_loc_get_line, 0);
@@ -6009,16 +6126,6 @@ void Init_gtkmateview_rb() {
     rb_define_singleton_method(rbc_gtk_mate_text_loc, "gte", rb_gtk_mate_text_loc_gte, 2);
     rb_define_singleton_method(rbc_gtk_mate_text_loc, "lte", rb_gtk_mate_text_loc_lte, 2);
     rb_define_method(rbc_gtk_mate_text_loc, "to_s", rb_gtk_mate_text_loc_to_s, 0);
-    rbc_gtk_mate_scanner = G_DEF_CLASS(gtk_mate_scanner_get_type(), "Scanner", rbc_gtk_mate);
-    rb_define_method(rbc_gtk_mate_scanner, "initialize", gtk_mate_scanner_initialize, 3);
-    rb_define_method(rbc_gtk_mate_scanner, "position", rb_gtk_mate_scanner_get_position, 0);
-    rb_define_method(rbc_gtk_mate_scanner, "position=", rb_gtk_mate_scanner_set_position, 1);
-    rb_define_method(rbc_gtk_mate_scanner, "cached_markers", rb_gtk_mate_scanner_get_cached_markers, 0);
-    rb_define_method(rbc_gtk_mate_scanner, "cached_markers=", rb_gtk_mate_scanner_set_cached_markers, 1);
-    rb_define_method(rbc_gtk_mate_scanner, "get_cached_marker", rb_gtk_mate_scanner_get_cached_marker, 0);
-    rb_define_method(rbc_gtk_mate_scanner, "remove_preceding_cached_markers", rb_gtk_mate_scanner_remove_preceding_cached_markers, 1);
-    rb_define_method(rbc_gtk_mate_scanner, "scan_for_match", rb_gtk_mate_scanner_scan_for_match, 2);
-    rb_define_method(rbc_gtk_mate_scanner, "find_next_marker", rb_gtk_mate_scanner_find_next_marker, 0);
     rbc_gtk_mate_grammar = G_DEF_CLASS(gtk_mate_grammar_get_type(), "Grammar", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_grammar, "initialize", gtk_mate_grammar_initialize, 1);
     rb_define_method(rbc_gtk_mate_grammar, "file_types", rb_gtk_mate_grammar_get_file_types, 0);
@@ -6054,6 +6161,8 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_pattern, "comment=", rb_gtk_mate_pattern_set_comment, 1);
     rb_define_singleton_method(rbc_gtk_mate_pattern, "all_patterns", rb_gtk_mate_pattern_get_all_patterns, 0);
     rb_define_singleton_method(rbc_gtk_mate_pattern, "all_patterns=", rb_gtk_mate_pattern_set_all_patterns, 1);
+    rb_define_method(rbc_gtk_mate_pattern, "disabled", rb_gtk_mate_pattern_get_disabled, 0);
+    rb_define_method(rbc_gtk_mate_pattern, "disabled=", rb_gtk_mate_pattern_set_disabled, 1);
     rb_define_singleton_method(rbc_gtk_mate_pattern, "create_from_plist", rb_gtk_mate_pattern_create_from_plist, 2);
     rb_define_singleton_method(rbc_gtk_mate_pattern, "make_captures_from_plist", rb_gtk_mate_pattern_make_captures_from_plist, 1);
     rbc_oniguruma_onig_error = G_DEF_CLASS(oniguruma_onig_error_get_type(), "OnigError", rbc_oniguruma);

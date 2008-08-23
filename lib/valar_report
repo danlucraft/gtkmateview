@@ -29,10 +29,12 @@ Gtk.Mate.Pattern
   * Gtk.Mate.Pattern                                     create_from_plist                   (Gee.ArrayList<Gtk.Mate.Pattern> all_patterns, PList.Dict pd)
   * Gee.ArrayList<Gtk.Mate.Pattern>                      get_all_patterns                    ()
   * string                                               get_comment                         ()
+  * bool                                                 get_disabled                        ()
   * string                                               get_name                            ()
   * Gee.HashMap<int,string>                              make_captures_from_plist            (PList.Dict pd)
   * void                                                 set_all_patterns                    (Gee.ArrayList<Gtk.Mate.Pattern> all_patterns)
   * void                                                 set_comment                         (string comment)
+  * void                                                 set_disabled                        (bool disabled)
   * void                                                 set_name                            (string name)
 Gtk.Mate.SinglePattern
   * Gtk.Mate.SinglePattern                               create_from_plist                   (Gee.ArrayList<Gtk.Mate.Pattern> all_patterns, PList.Dict pd)
@@ -68,6 +70,7 @@ Gtk.Mate.IncludePattern
 Gtk.Mate.Scope
 )
   * void                                                 add_child                           (Gtk.Mate.Scope s)
+  * void                                                 clear_after                         (int line_ix, int line_offset)
   x int                                                  compare                             (Gtk.Mate.Scope a, Gtk.Mate.Scope b, void* data)
   x int                                                  compare_by_loc                      (Gtk.Mate.Scope a, Gtk.Mate.Scope b, void* data)
   * bool                                                 contains_loc                        (Gtk.Mate.TextLoc loc)
@@ -291,6 +294,9 @@ PList.Node
 PList.String
   * string                                               get_str                             ()
   * void                                                 set_str                             (string str)
+PList.Integer
+  * int                                                  get_value                           ()
+  * void                                                 set_value                           (int value)
 PList.Array
   * PList.Node                                           get                                 (int ix)
   * Gee.ArrayList<PList.Node>                            get_array                           ()

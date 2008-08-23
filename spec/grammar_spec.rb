@@ -56,4 +56,12 @@ describe Gtk::Mate::Grammar do
     p = @apg.patterns.find{|p| p.name == "comment.line.number-sign.apache-config"}
     p.captures.should == {1 => "punctuation.definition.comment.apache-config"}
   end
+
+  it "should mark disabled patterns as disabled" do
+    b = Gtk::Mate::Buffer.bundles.find {|b| b.name == "HTML"}
+    html = b.grammars.find{|b| b.name == "HTML" }
+    html.init_for_use
+    smarty = html.all_patterns.find{|pt| pt.name == "source.smarty.embedded.html"}
+    smarty.disabled.should be_true
+  end
 end

@@ -94,10 +94,16 @@ namespace Gtk.Mate {
 				scope_changed = parse_line(line_ix++);
 				if (scope_changed) {
 					scope_ever_changed = true;
+					// In the old scheme this wasn't necessary because 
+					// the scope_at used a simple scan from the front. The GSequences
+					// on the other hand can get confused if the later scopes
+					// are inconsistent with earler ones. So we have to clear everything.
+					// TODO: figure out a way to OPTIMIZE this again.
+					root.clear_after(line_ix, -1);
 				}
 				stdout.printf("parse_line returned: %s\n", scope_changed ? "true" : "false");
+				stdout.printf("pretty:\n%s\n", root.pretty(2));
 			}
-//			if (scope_at(line_ix-1, int.MAX) != scope_at(line
 			return to_line;
 		}
 
@@ -110,6 +116,8 @@ namespace Gtk.Mate {
 			var start_scope = this.root.scope_at(line_ix, -1);
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
 			stdout.printf("scope_at returns: %s\n", start_scope.name);
+			if (start_scope == null)
+				stdout.printf("pretty:\n%s\n", root.pretty(2));
 			stdout.printf("end_scope1: %s\n", end_scope1.name);
 			var scanner = new Scanner(start_scope, line, length);
 			int i = 0;
@@ -138,7 +146,6 @@ namespace Gtk.Mate {
 			clear_line(line_ix, start_scope, all_scopes, closed_scopes);
 			var end_scope2 = this.root.scope_at(line_ix, int.MAX);
 			stdout.printf("end_scope2: %s\n", end_scope2.name);
-			stdout.printf("pretty:\n%s\n", root.pretty(2));
 			return (end_scope1 != end_scope2);
 		}
 		
@@ -149,6 +156,7 @@ namespace Gtk.Mate {
 			// delete them:
 			var cs = start_scope;
 			while (cs != null) {
+				stdout.printf("  removing_scopes from: %s\n", cs.name);
 				cs.delete_any_on_line_not_in(line_ix, all_scopes);
 				cs = cs.parent;
 			}
@@ -264,6 +272,7 @@ namespace Gtk.Mate {
 						closed_scopes.add(expected_scope.children.get(iter));
 						iter = iter.next();
 					}
+					scanner.current_scope = expected_scope;
 				}
 				else {
 					stdout.printf("surface_NOT_identical_mod_ending: replace expected\n");
@@ -272,6 +281,7 @@ namespace Gtk.Mate {
 						// removed_scopes << expected_scope
 					}
 					scanner.current_scope.add_child(s);
+					scanner.current_scope = s;
 				}
 			}
 			else {

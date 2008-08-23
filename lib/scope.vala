@@ -160,6 +160,7 @@ namespace Gtk.Mate {
 			if (children.get_length() == 0)
 				return null;
 			
+			// OPTIMIZE: should use g_sequence_search
 			GLib.SequenceIter iter = children.get_begin_iter();
 			while (!iter.is_end()) {
 				var child = children.get(iter);
@@ -222,9 +223,9 @@ namespace Gtk.Mate {
 		}
 		
 		public ArrayList<Scope> delete_any_on_line_not_in(int line_ix, ArrayList<Scope> scopes) {
-			var start_scope = scope_at(line_ix, -1);
+//			var start_scope = scope_at(line_ix, -1);
 			var removed_scopes = new ArrayList<Scope>();
-			GLib.SequenceIter iter = start_scope.children.get_begin_iter();
+			var iter = children.get_begin_iter();
 			bool removed;
 			while (!iter.is_end()) {
 				removed = false;
@@ -236,7 +237,7 @@ namespace Gtk.Mate {
 					if (!scopes.contains(child)) {
 						removed_scopes.add(child);
 						iter = iter.next();
-						start_scope.children.remove(iter.prev());
+						children.remove(iter.prev());
 						removed = true;
 					}
 				}
@@ -247,12 +248,31 @@ namespace Gtk.Mate {
 			return removed_scopes;
 		}
 
+		public void clear_after(int line_ix, int line_offset) {
+			var loc = TextLoc.make(line_ix, line_offset);
+			var s = new Scope(this.buffer, "");
+			s.dummy_start_loc = loc;
+			s.dummy_end_loc = loc;
+
+			var iter = children.search(s, (CompareDataFunc) Scope.compare_by_loc);
+			var prev_child = children.get(iter.prev());
+			if (TextLoc.gt(prev_child.end_loc(), loc)) {
+				prev_child.clear_after(line_ix, line_offset);
+			}
+			var end_iter = children.get_end_iter();
+			children.remove_range(iter, end_iter);
+		}
+
 		public string pretty(int indent) {
 			pretty_string = new StringBuilder("");
 			this.indent = indent;
 			for (int i = 0; i < this.indent; i++)
 				pretty_string.append("  ");
-			pretty_string.append("+ " + name);
+			if (is_capture)
+				pretty_string.append("c");
+			else
+				pretty_string.append("+");
+			pretty_string.append(" " + name);
 			if (pattern is DoublePattern && ((DoublePattern) pattern).content_name != null) 
 				pretty_string.append(" " + ((DoublePattern) pattern).content_name);
 			pretty_string.append(" (");

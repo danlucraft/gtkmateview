@@ -35,6 +35,17 @@ typedef struct _PListString PListString;
 typedef struct _PListStringClass PListStringClass;
 typedef struct _PListStringPrivate PListStringPrivate;
 
+#define PLIST_TYPE_INTEGER (plist_integer_get_type ())
+#define PLIST_INTEGER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PLIST_TYPE_INTEGER, PListInteger))
+#define PLIST_INTEGER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PLIST_TYPE_INTEGER, PListIntegerClass))
+#define PLIST_IS_INTEGER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PLIST_TYPE_INTEGER))
+#define PLIST_IS_INTEGER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PLIST_TYPE_INTEGER))
+#define PLIST_INTEGER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PLIST_TYPE_INTEGER, PListIntegerClass))
+
+typedef struct _PListInteger PListInteger;
+typedef struct _PListIntegerClass PListIntegerClass;
+typedef struct _PListIntegerPrivate PListIntegerPrivate;
+
 #define PLIST_TYPE_ARRAY (plist_array_get_type ())
 #define PLIST_ARRAY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PLIST_TYPE_ARRAY, PListArray))
 #define PLIST_ARRAY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PLIST_TYPE_ARRAY, PListArrayClass))
@@ -83,6 +94,16 @@ struct _PListStringClass {
 	PListNodeClass parent_class;
 };
 
+struct _PListInteger {
+	PListNode parent_instance;
+	PListIntegerPrivate * priv;
+	gint value;
+};
+
+struct _PListIntegerClass {
+	PListNodeClass parent_class;
+};
+
 struct _PListArray {
 	PListNode parent_instance;
 	PListArrayPrivate * priv;
@@ -110,6 +131,8 @@ PListNode* plist_node_new (void);
 GType plist_node_get_type (void);
 PListString* plist_string_new (void);
 GType plist_string_get_type (void);
+PListInteger* plist_integer_new (void);
+GType plist_integer_get_type (void);
 PListNode* plist_array_get (PListArray* self, gint ix);
 PListArray* plist_array_parse_array (xmlNode* node);
 PListArray* plist_array_new (void);

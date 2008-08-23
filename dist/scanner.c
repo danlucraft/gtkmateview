@@ -276,6 +276,10 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 				gint position_prev;
 				OnigurumaMatch* match;
 				OnigurumaMatch* _tmp9;
+				if (p->disabled) {
+					(p == NULL ? NULL : (p = (g_object_unref (p), NULL)));
+					continue;
+				}
 				position_now = self->position;
 				position_prev = self->position - 1;
 				match = NULL;

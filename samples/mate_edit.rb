@@ -1,7 +1,7 @@
 
 require 'gtk2'
 require 'gtksourceview2'
-require 'lib/gtkmateview_rb'
+require 'dist/gtkmateview_rb'
 
 win = Gtk::Window.new
 win.set_size_request(800, 600)
@@ -21,9 +21,15 @@ button_rb.signal_connect("clicked") do
   mv.buffer.set_grammar_by_name("Ruby")
 end
 
+button_file = Gtk::Button.new("Load file")
+button_file.signal_connect("clicked") do
+  mv.buffer.text = File.read("samples/rak")
+end
+
 toolbar = Gtk::HBox.new
 toolbar.pack_start(button_rb)
 toolbar.pack_start(button_gr)
+toolbar.pack_start(button_file)
 vb.pack_start(toolbar, false)
 vb.pack_start(mv)
 button_on = Gtk::Button.new("on")

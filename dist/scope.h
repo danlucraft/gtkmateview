@@ -80,6 +80,7 @@ gboolean gtk_mate_scope_overlaps_with (GtkMateScope* self, GtkMateScope* other);
 void gtk_mate_scope_add_child (GtkMateScope* self, GtkMateScope* s);
 void gtk_mate_scope_delete_child (GtkMateScope* self, GtkMateScope* s);
 GeeArrayList* gtk_mate_scope_delete_any_on_line_not_in (GtkMateScope* self, gint line_ix, GeeArrayList* scopes);
+void gtk_mate_scope_clear_after (GtkMateScope* self, gint line_ix, gint line_offset);
 char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent);
 void gtk_mate_scope_start_mark_set (GtkMateScope* self, gint line, gint line_offset, gboolean has_left_gravity);
 void gtk_mate_scope_inner_start_mark_set (GtkMateScope* self, gint line, gint line_offset, gboolean has_left_gravity);

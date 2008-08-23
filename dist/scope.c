@@ -273,6 +273,7 @@ GtkMateScope* gtk_mate_scope_first_child_after (GtkMateScope* self, GtkMateTextL
 	if (g_sequence_get_length (gtk_mate_scope_get_children (self)) == 0) {
 		return NULL;
 	}
+	/* OPTIMIZE: should use g_sequence_search*/
 	_tmp1 = NULL;
 	iter = (_tmp1 = g_sequence_get_begin_iter (gtk_mate_scope_get_children (self)), (_tmp1 == NULL ? NULL :  (_tmp1)));
 	while (!g_sequence_iter_is_end (iter)) {
@@ -393,7 +394,6 @@ void gtk_mate_scope_delete_child (GtkMateScope* self, GtkMateScope* s) {
 
 
 GeeArrayList* gtk_mate_scope_delete_any_on_line_not_in (GtkMateScope* self, gint line_ix, GeeArrayList* scopes) {
-	GtkMateScope* start_scope;
 	GeeArrayList* removed_scopes;
 	GSequenceIter* _tmp0;
 	GSequenceIter* iter;
@@ -401,10 +401,10 @@ GeeArrayList* gtk_mate_scope_delete_any_on_line_not_in (GtkMateScope* self, gint
 	GeeArrayList* _tmp7;
 	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
 	g_return_val_if_fail (GEE_IS_ARRAY_LIST (scopes), NULL);
-	start_scope = gtk_mate_scope_scope_at (self, line_ix, -1);
+	/*var start_scope = scope_at(line_ix, -1);*/
 	removed_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
 	_tmp0 = NULL;
-	iter = (_tmp0 = g_sequence_get_begin_iter (gtk_mate_scope_get_children (start_scope)), (_tmp0 == NULL ? NULL :  (_tmp0)));
+	iter = (_tmp0 = g_sequence_get_begin_iter (gtk_mate_scope_get_children (self)), (_tmp0 == NULL ? NULL :  (_tmp0)));
 	removed = FALSE;
 	while (!g_sequence_iter_is_end (iter)) {
 		GtkMateScope* _tmp1;
@@ -415,7 +415,7 @@ GeeArrayList* gtk_mate_scope_delete_any_on_line_not_in (GtkMateScope* self, gint
 		if (gtk_mate_scope_start_line (child) > line_ix) {
 			GeeArrayList* _tmp2;
 			_tmp2 = NULL;
-			return (_tmp2 = removed_scopes, (child == NULL ? NULL : (child = (g_object_unref (child), NULL))), (start_scope == NULL ? NULL : (start_scope = (g_object_unref (start_scope), NULL))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp2);
+			return (_tmp2 = removed_scopes, (child == NULL ? NULL : (child = (g_object_unref (child), NULL))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp2);
 		}
 		if (gtk_mate_scope_start_line (child) == line_ix) {
 			if (!gee_collection_contains (GEE_COLLECTION (scopes), child)) {
@@ -439,7 +439,50 @@ GeeArrayList* gtk_mate_scope_delete_any_on_line_not_in (GtkMateScope* self, gint
 		(child == NULL ? NULL : (child = (g_object_unref (child), NULL)));
 	}
 	_tmp7 = NULL;
-	return (_tmp7 = removed_scopes, (start_scope == NULL ? NULL : (start_scope = (g_object_unref (start_scope), NULL))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp7);
+	return (_tmp7 = removed_scopes, (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp7);
+}
+
+
+void gtk_mate_scope_clear_after (GtkMateScope* self, gint line_ix, gint line_offset) {
+	GtkMateTextLoc* loc;
+	GtkMateScope* s;
+	GtkMateTextLoc* _tmp1;
+	GtkMateTextLoc* _tmp0;
+	GtkMateTextLoc* _tmp3;
+	GtkMateTextLoc* _tmp2;
+	GSequenceIter* _tmp4;
+	GSequenceIter* iter;
+	GtkMateScope* _tmp5;
+	GtkMateScope* prev_child;
+	GtkMateTextLoc* _tmp6;
+	gboolean _tmp7;
+	GSequenceIter* _tmp8;
+	GSequenceIter* end_iter;
+	g_return_if_fail (GTK_MATE_IS_SCOPE (self));
+	loc = gtk_mate_text_loc_make (line_ix, line_offset);
+	s = g_object_ref_sink (gtk_mate_scope_new (self->priv->_buffer, ""));
+	_tmp1 = NULL;
+	_tmp0 = NULL;
+	s->dummy_start_loc = (_tmp1 = (_tmp0 = loc, (_tmp0 == NULL ? NULL : g_object_ref (_tmp0))), (s->dummy_start_loc == NULL ? NULL : (s->dummy_start_loc = (g_object_unref (s->dummy_start_loc), NULL))), _tmp1);
+	_tmp3 = NULL;
+	_tmp2 = NULL;
+	s->dummy_end_loc = (_tmp3 = (_tmp2 = loc, (_tmp2 == NULL ? NULL : g_object_ref (_tmp2))), (s->dummy_end_loc == NULL ? NULL : (s->dummy_end_loc = (g_object_unref (s->dummy_end_loc), NULL))), _tmp3);
+	_tmp4 = NULL;
+	iter = (_tmp4 = g_sequence_search (gtk_mate_scope_get_children (self), s, ((GCompareDataFunc) (gtk_mate_scope_compare_by_loc)), NULL), (_tmp4 == NULL ? NULL :  (_tmp4)));
+	_tmp5 = NULL;
+	prev_child = (_tmp5 = ((GtkMateScope*) (g_sequence_get (g_sequence_iter_prev (iter)))), (_tmp5 == NULL ? NULL : g_object_ref (_tmp5)));
+	_tmp6 = NULL;
+	if ((_tmp7 = gtk_mate_text_loc_gt ((_tmp6 = gtk_mate_scope_end_loc (prev_child)), loc), (_tmp6 == NULL ? NULL : (_tmp6 = (g_object_unref (_tmp6), NULL))), _tmp7)) {
+		gtk_mate_scope_clear_after (prev_child, line_ix, line_offset);
+	}
+	_tmp8 = NULL;
+	end_iter = (_tmp8 = g_sequence_get_end_iter (gtk_mate_scope_get_children (self)), (_tmp8 == NULL ? NULL :  (_tmp8)));
+	g_sequence_remove_range (iter, end_iter);
+	(loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL)));
+	(s == NULL ? NULL : (s = (g_object_unref (s), NULL)));
+	(iter == NULL ? NULL : (iter = ( (iter), NULL)));
+	(prev_child == NULL ? NULL : (prev_child = (g_object_unref (prev_child), NULL)));
+	(end_iter == NULL ? NULL : (end_iter = ( (end_iter), NULL)));
 }
 
 
@@ -461,8 +504,13 @@ char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent) {
 			g_string_append (self->pretty_string, "  ");
 		}
 	}
+	if (self->is_capture) {
+		g_string_append (self->pretty_string, "c");
+	} else {
+		g_string_append (self->pretty_string, "+");
+	}
 	_tmp1 = NULL;
-	g_string_append (self->pretty_string, (_tmp1 = g_strconcat ("+ ", self->priv->_name, NULL)));
+	g_string_append (self->pretty_string, (_tmp1 = g_strconcat (" ", self->priv->_name, NULL)));
 	_tmp1 = (g_free (_tmp1), NULL);
 	if (GTK_MATE_IS_DOUBLE_PATTERN (self->pattern) && (GTK_MATE_DOUBLE_PATTERN (self->pattern))->content_name != NULL) {
 		char* _tmp2;

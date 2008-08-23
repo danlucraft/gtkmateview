@@ -8,9 +8,10 @@ class Gtk::Mate::Buffer
     insert(get_iter_at_line_offset(line, line_offset), text)
   end
   
-#   def backspace(line, pos)
-#     buf.delete(buf.get_iter_at_line_offset(line, pos-1)
-#   end
+  def backspace(line, pos)
+    delete(get_iter_at_line_offset(line, pos-1),
+           get_iter_at_line_offset(line, pos))
+  end
   
   def clean_reparse
     newbuf = Gtk::Mate::Buffer.new

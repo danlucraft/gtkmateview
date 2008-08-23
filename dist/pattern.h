@@ -65,6 +65,7 @@ struct _GtkMatePattern {
 	GtkMatePatternPrivate * priv;
 	char* name;
 	char* comment;
+	gboolean disabled;
 };
 
 struct _GtkMatePatternClass {

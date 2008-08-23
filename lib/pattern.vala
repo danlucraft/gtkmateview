@@ -7,7 +7,8 @@ namespace Gtk.Mate {
 		public string name;
 		public string comment;
 		public static ArrayList<Pattern> all_patterns;
-
+		public bool disabled;
+		
 		public static Pattern? create_from_plist(ArrayList<Pattern> all_patterns, PList.Dict pd) {
 			PList.String? ns;
 			Pattern p;
@@ -60,6 +61,13 @@ namespace Gtk.Mate {
 			PList.Node? n = pd.get("captures");
 			PList.Dict? pcs, pcd;
 			pattern.captures = Pattern.make_captures_from_plist((PList.Dict?) n);
+
+			n = pd.get("disabled");
+			if (n != null && ((PList.Integer) n).value == 1)
+				pattern.disabled = true;
+			else
+				pattern.disabled = false;
+
 			all_patterns.add(pattern);
 			return pattern;
 		}
@@ -118,6 +126,14 @@ namespace Gtk.Mate {
 						pattern.patterns.add(subpattern);
 				}
 			}
+
+			n = pd.get("disabled");
+			if (n != null && ((PList.Integer) n).value == 1)
+				pattern.disabled = true;
+			else
+				pattern.disabled = false;
+
+
 			all_patterns.add(pattern);
 			return pattern;
 		}			
