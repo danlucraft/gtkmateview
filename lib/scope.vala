@@ -160,14 +160,12 @@ namespace Gtk.Mate {
 			if (children.get_length() == 0)
 				return null;
 			
-			// OPTIMIZE: should use g_sequence_search
-			var iter = children.get_begin_iter();
-			while (!iter.is_end()) {
-				var child = children.get(iter);
-				if (TextLoc.gte(child.start_loc(), loc))
-					return child;
-				iter = iter.next();
-			}
+			var s = new Scope(this.buffer, "");
+			s.dummy_start_loc = loc;
+			s.dummy_end_loc = loc;
+			var iter = children.search(s, (CompareDataFunc) Scope.compare_by_loc);
+			if (!iter.is_end())
+				return children.get(iter);
 			return null;
 		}
 
@@ -225,8 +223,13 @@ namespace Gtk.Mate {
 		public ArrayList<Scope> delete_any_on_line_not_in(int line_ix, ArrayList<Scope> scopes) {
 //			var start_scope = scope_at(line_ix, -1);
 			var removed_scopes = new ArrayList<Scope>();
-			var iter = children.get_begin_iter();
+//			var iter = children.get_begin_iter();
 			bool removed;
+			var s = new Scope(this.buffer, "");
+			var loc = TextLoc.make(line_ix, -1);
+			s.dummy_start_loc = loc;
+			s.dummy_end_loc = loc;
+			var iter = children.search(s, (CompareDataFunc) Scope.compare_by_loc);
 			while (!iter.is_end()) {
 				removed = false;
 				var child = children.get(iter);
@@ -416,14 +419,16 @@ namespace Gtk.Mate {
 			if (dummy_start_loc != null) {
 				return dummy_start_loc;
 			}
-			else {
-				return TextLoc.make(start_line(), start_line_offset());
+			else { 
+				var s_iter = start_iter();
+				return TextLoc.make(s_iter.get_line(), s_iter.get_line_offset());
 			}
 		}
 
 		public TextLoc inner_start_loc() {
 			if (inner_start_mark != null) {
-				return TextLoc.make(inner_start_line(), inner_start_line_offset());
+				var is_iter = inner_start_iter();
+				return TextLoc.make(is_iter.get_line(), is_iter.get_line_offset());
 			}
 			else {
 				return start_loc();
@@ -432,7 +437,8 @@ namespace Gtk.Mate {
 
 		public TextLoc inner_end_loc() {
 			if (inner_end_mark != null) {
-				return TextLoc.make(inner_end_line(), inner_end_line_offset());
+				var ie_iter = inner_end_iter();
+				return TextLoc.make(ie_iter.get_line(), ie_iter.get_line_offset());
 			}
 			else {
 				return end_loc();
@@ -440,10 +446,13 @@ namespace Gtk.Mate {
 		}
 
 		public TextLoc end_loc() {
-			if (dummy_end_loc != null)
+			if (dummy_end_loc != null) {
 				return dummy_end_loc;
-			else
-				return TextLoc.make(end_line(), end_line_offset());
+			}
+			else {
+				var e_iter = end_iter();
+				return TextLoc.make(e_iter.get_line(), e_iter.get_line_offset());
+			}
 		}
 
 		public Scope root() {
