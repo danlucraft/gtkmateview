@@ -96,10 +96,10 @@ namespace Gtk.Mate {
 		}
 
 		public bool surface_identical_to_modulo_ending(Scope other) {
-			stdout.printf("%s == %s and %s == %s and %s == %s and %s == %s and %s == %s",
-						  name, other.name, pattern.name, other.pattern.name, start_loc().to_s(),
-						  other.start_loc().to_s(), inner_start_loc().to_s(), other.inner_start_loc().to_s(),
-						  begin_match_string, other.begin_match_string);
+			// stdout.printf("%s == %s and %s == %s and %s == %s and %s == %s and %s == %s",
+			// 			  name, other.name, pattern.name, other.pattern.name, start_loc().to_s(),
+			// 			  other.start_loc().to_s(), inner_start_loc().to_s(), other.inner_start_loc().to_s(),
+			// 			  begin_match_string, other.begin_match_string);
 			if (name == other.name &&
 				pattern == other.pattern &&
 				TextLoc.equal(start_loc(), other.start_loc()) &&
@@ -161,7 +161,7 @@ namespace Gtk.Mate {
 				return null;
 			
 			// OPTIMIZE: should use g_sequence_search
-			GLib.SequenceIter iter = children.get_begin_iter();
+			var iter = children.get_begin_iter();
 			while (!iter.is_end()) {
 				var child = children.get(iter);
 				if (TextLoc.gte(child.start_loc(), loc))
@@ -207,7 +207,7 @@ namespace Gtk.Mate {
 			if (!iter.is_begin()) {
 				var prev_scope = children.get(iter.prev());
 				if (prev_scope == s) {
-					stdout.printf("leftremove\n");
+					// stdout.printf("leftremove\n");
 					children.remove(iter.prev());
 					return;
 				}
@@ -215,7 +215,7 @@ namespace Gtk.Mate {
 			if (!iter.is_end()) {
 				var next_scope = children.get(iter);
 				if (next_scope == s) {
-					stdout.printf("rightremove\n");
+ 					// stdout.printf("rightremove\n");
 					children.remove(iter);
 					return;
 				}
@@ -255,9 +255,12 @@ namespace Gtk.Mate {
 			s.dummy_end_loc = loc;
 
 			var iter = children.search(s, (CompareDataFunc) Scope.compare_by_loc);
-			var prev_child = children.get(iter.prev());
-			if (TextLoc.gt(prev_child.end_loc(), loc)) {
-				prev_child.clear_after(line_ix, line_offset);
+			var prev_iter = iter.prev();
+			if (!prev_iter.is_end()) {
+				var prev_child = children.get(iter.prev());
+				if (TextLoc.gt(prev_child.end_loc(), loc)) {
+					prev_child.clear_after(line_ix, line_offset);
+				}
 			}
 			var end_iter = children.get_end_iter();
 			children.remove_range(iter, end_iter);

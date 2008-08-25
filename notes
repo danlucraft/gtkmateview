@@ -1,2 +1,4 @@
 80817 Should content_names be their own scopes, or is it fine to just remember them on the pattern when needed?
-80809 Why do both $self and $base refer to the entire grammar? Shouldn't $self refer to the pattern itself? (See 
+80809 Why do both $self and $base refer to the entire grammar? Shouldn't $self refer to the pattern itself? (See a
+
+gcc --shared -fPIC -pg -o libgtkmateview.so $(pkg-config --cflags --libs gobject-2.0 gtksourceview-2.0 gee-1.0) -L. -L/usr/local/lib -Wl,-R/usr/local/lib -pg -L/usr/local/lib -I/usr/local/lib/ruby/1.8/i686-linux -lonig -ldl -lcrypt -lm -lc *.o

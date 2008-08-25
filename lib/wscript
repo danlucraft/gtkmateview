@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+
+def build(bld):
+	shlib = bld.create_obj('cc', 'shlib')
+        shlib.env['CCFLAGS'] = '-pg -g'
+        shlib.env['LINKFLAGS'] = '-pg -g'
+	shlib.target = 'gtkmateview'
+	shlib.source = 'buffer.vala bundle.vala grammar.vala gtkmateview.vala onig_wrap.vala parser.vala pattern.vala plist.vala range_set.vala scanner.vala scope.vala theme.vala view.vala'
+	shlib.uselib = 'GOBJECT GTKSOURCEVIEW2 GTK+ LIBXML GEE GLIB'
+	shlib.packages = 'gtk+-2.0 gee-1.0 glib-2.0 libxml-2.0 gtksourceview-2.0 oniguruma'
+	shlib.vapi_dirs = '../vapi'
+
+# 	stlib = bld.create_obj('cc', 'staticlib')
+#         stlib.env['CCFLAGS'] = '-pg -g'
+#         stlib.env['LINKFLAGS'] = '-pg -g'
+# 	stlib.target = 'gtkmateview'
+# 	stlib.source = 'buffer.vala bundle.vala grammar.vala gtkmateview.vala onig_wrap.vala parser.vala pattern.vala plist.vala range_set.vala scanner.vala scope.vala theme.vala view.vala'
+# 	stlib.uselib = 'GOBJECT GTKSOURCEVIEW2 GTK+ LIBXML GEE GLIB'
+# 	stlib.packages = 'gtk+-2.0 gee-1.0 glib-2.0 libxml-2.0 gtksourceview-2.0 oniguruma'
+# 	stlib.vapi_dirs = '../vapi'

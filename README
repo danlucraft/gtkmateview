@@ -1,0 +1,10 @@
+Basic waf[1] based project template for Vala[2]. To build and run the resulting
+binaries:
+
+    ./waf configure
+    ./waf
+    ./_build_/default/src/hello-gtk
+
+
+[1] http://code.google.com/p/waf/
+[2] http://live.gnome.org/Vala

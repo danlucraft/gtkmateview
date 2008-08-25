@@ -89,4 +89,10 @@ END
     8.times { |i| @mb.backspace(4, 10-i) }
     @mb.pretty.should == @mb.clean_reparse
   end
+
+  it "should interpolate an opening scope" do
+    @mb.text = "\"asdf{1+2}asdf\""
+    @mb.type(0, 5, "#")
+    @mb.pretty.should == @mb.clean_reparse
+  end
 end

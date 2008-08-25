@@ -1,7 +1,6 @@
 
 #include "scanner.h"
 #include <gee/collection.h>
-#include <stdio.h>
 #include <gee/list.h>
 
 
@@ -163,9 +162,9 @@ void gtk_mate_scanner_remove_preceding_cached_markers (GtkMateScanner* self, Gtk
 	g_return_if_fail (GTK_MATE_IS_MARKER (m));
 	ix = 0;
 	len = gee_collection_get_size (GEE_COLLECTION (self->cached_markers));
-	fprintf (stdout, "num cached: %d\n", len);
 	{
 		gint i;
+		/*stdout.printf("num cached: %d\n", len);*/
 		i = 0;
 		for (; i < len; i++, ix++) {
 			GtkMateMarker* cm;
@@ -180,10 +179,10 @@ void gtk_mate_scanner_remove_preceding_cached_markers (GtkMateScanner* self, Gtk
 			(cm == NULL ? NULL : (cm = (g_object_unref (cm), NULL)));
 		}
 	}
-	fprintf (stdout, "num cached after removals: %d\n", gee_collection_get_size (GEE_COLLECTION (self->cached_markers)));
 }
 
 
+/*stdout.printf("num cached after removals: %d\n", cached_markers.size);*/
 OnigurumaMatch* gtk_mate_scanner_scan_for_match (GtkMateScanner* self, gint from, GtkMatePattern* p) {
 	OnigurumaMatch* match;
 	g_return_val_if_fail (GTK_MATE_IS_SCANNER (self), NULL);
@@ -218,19 +217,19 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 	OnigurumaRegex* closing_regex;
 	GtkMateMarker* _tmp16;
 	g_return_val_if_fail (GTK_MATE_IS_SCANNER (self), NULL);
-	fprintf (stdout, "find_next_marker (current_scope is %s)\n", gtk_mate_scope_get_name (gtk_mate_scanner_get_current_scope (self)));
-	fprintf (stdout, "scanning: '%s' from %d to %d\n", self->priv->_line, self->position, self->priv->_line_length);
+	/*stdout.printf("find_next_marker (current_scope is %s)\n", current_scope.name);
+	stdout.printf("scanning: '%s' from %d to %d\n", line, position, line_length);*/
 	m = NULL;
 	best_length = 0;
 	new_length = 0;
 	_tmp0 = NULL;
 	if ((m = (_tmp0 = gtk_mate_scanner_get_cached_marker (self), (m == NULL ? NULL : (m = (g_object_unref (m), NULL))), _tmp0)) != NULL) {
-		fprintf (stdout, "got cached marker\n");
+		/*stdout.printf("got cached marker\n");*/
 		gee_collection_remove (GEE_COLLECTION (self->cached_markers), m);
 		gtk_mate_scanner_remove_preceding_cached_markers (self, m);
 		return m;
 	}
-	fprintf (stdout, "no cached marker\n");
+	/*stdout.printf("no cached marker\n");*/
 	g_assert (gee_collection_get_size (GEE_COLLECTION (self->cached_markers)) == 0);
 	_tmp2 = NULL;
 	closing_regex = (_tmp2 = gtk_mate_scanner_get_current_scope (self)->closing_regex, (_tmp2 == NULL ? NULL : g_object_ref (_tmp2)));
@@ -245,7 +244,7 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 			OnigurumaMatch* _tmp5;
 			GtkMateMarker* _tmp8;
 			GtkMateMarker* _tmp7;
-			fprintf (stdout, "closing match: %s (%d-%d)\n", gtk_mate_scope_get_name (gtk_mate_scanner_get_current_scope (self)), oniguruma_match_begin (match, 0), oniguruma_match_end (match, 0));
+			/*stdout.printf("closing match: %s (%d-%d)\n", current_scope.name, match.begin(0), match.end(0));*/
 			nm = g_object_ref_sink (gtk_mate_marker_new ());
 			_tmp4 = NULL;
 			_tmp3 = NULL;
@@ -292,7 +291,7 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 					OnigurumaMatch* _tmp12;
 					/* some regex's have zero width (meta.selector.css)*/
 					position_prev = position_now;
-					fprintf (stdout, "matched: %s (%d-%d)\n", p->name, oniguruma_match_begin (match, 0), oniguruma_match_end (match, 0));
+					/*stdout.printf("matched: %s (%d-%d)\n", p.name, match.begin(0), match.end(0));*/
 					nm = g_object_ref_sink (gtk_mate_marker_new ());
 					_tmp11 = NULL;
 					_tmp10 = NULL;

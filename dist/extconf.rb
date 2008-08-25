@@ -1,8 +1,8 @@
 
 # Loads mkmf which is used to make makefiles for Ruby extensions
 require 'mkmf-gnome2'
-
-# Give it a name
+# $CFLAGS = "-pg"
+$LDFLAGS = "-pg"
 extension_name = 'gtkmateview_rb'
 
 PKGConfig.have_package('gtk+-2.0')

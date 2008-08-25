@@ -1,6 +1,5 @@
 
 #include "scope.h"
-#include <stdio.h>
 #include <gee/collection.h>
 #include "buffer.h"
 #include "parser.h"
@@ -122,43 +121,22 @@ gint gtk_mate_scope_compare_by_loc (GtkMateScope* a, GtkMateScope* b, void* data
 
 
 gboolean gtk_mate_scope_surface_identical_to_modulo_ending (GtkMateScope* self, GtkMateScope* other) {
-	char* _tmp7;
-	GtkMateTextLoc* _tmp6;
-	char* _tmp5;
-	GtkMateTextLoc* _tmp4;
-	char* _tmp3;
+	GtkMateTextLoc* _tmp3;
 	GtkMateTextLoc* _tmp2;
-	char* _tmp1;
+	GtkMateTextLoc* _tmp1;
 	GtkMateTextLoc* _tmp0;
-	GtkMateTextLoc* _tmp11;
-	GtkMateTextLoc* _tmp10;
-	GtkMateTextLoc* _tmp9;
-	GtkMateTextLoc* _tmp8;
-	gboolean _tmp12;
+	gboolean _tmp4;
 	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), FALSE);
 	g_return_val_if_fail (GTK_MATE_IS_SCOPE (other), FALSE);
-	_tmp7 = NULL;
-	_tmp6 = NULL;
-	_tmp5 = NULL;
-	_tmp4 = NULL;
+	/* stdout.printf("%s == %s and %s == %s and %s == %s and %s == %s and %s == %s",
+	   name, other.name, pattern.name, other.pattern.name, start_loc().to_s(),
+	   other.start_loc().to_s(), inner_start_loc().to_s(), other.inner_start_loc().to_s(),
+	   begin_match_string, other.begin_match_string);*/
 	_tmp3 = NULL;
 	_tmp2 = NULL;
 	_tmp1 = NULL;
 	_tmp0 = NULL;
-	fprintf (stdout, "%s == %s and %s == %s and %s == %s and %s == %s and %s == %s", self->priv->_name, other->priv->_name, self->pattern->name, other->pattern->name, (_tmp1 = gtk_mate_text_loc_to_s ((_tmp0 = gtk_mate_scope_start_loc (self)))), (_tmp3 = gtk_mate_text_loc_to_s ((_tmp2 = gtk_mate_scope_start_loc (other)))), (_tmp5 = gtk_mate_text_loc_to_s ((_tmp4 = gtk_mate_scope_inner_start_loc (self)))), (_tmp7 = gtk_mate_text_loc_to_s ((_tmp6 = gtk_mate_scope_inner_start_loc (other)))), self->begin_match_string, other->begin_match_string);
-	_tmp7 = (g_free (_tmp7), NULL);
-	(_tmp6 == NULL ? NULL : (_tmp6 = (g_object_unref (_tmp6), NULL)));
-	_tmp5 = (g_free (_tmp5), NULL);
-	(_tmp4 == NULL ? NULL : (_tmp4 = (g_object_unref (_tmp4), NULL)));
-	_tmp3 = (g_free (_tmp3), NULL);
-	(_tmp2 == NULL ? NULL : (_tmp2 = (g_object_unref (_tmp2), NULL)));
-	_tmp1 = (g_free (_tmp1), NULL);
-	(_tmp0 == NULL ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL)));
-	_tmp11 = NULL;
-	_tmp10 = NULL;
-	_tmp9 = NULL;
-	_tmp8 = NULL;
-	if ((_tmp12 = _vala_strcmp0 (self->priv->_name, other->priv->_name) == 0 && self->pattern == other->pattern && gtk_mate_text_loc_equal ((_tmp8 = gtk_mate_scope_start_loc (self)), (_tmp9 = gtk_mate_scope_start_loc (other))) && gtk_mate_text_loc_equal ((_tmp10 = gtk_mate_scope_inner_start_loc (self)), (_tmp11 = gtk_mate_scope_inner_start_loc (other))) && _vala_strcmp0 (self->begin_match_string, other->begin_match_string) == 0, (_tmp11 == NULL ? NULL : (_tmp11 = (g_object_unref (_tmp11), NULL))), (_tmp10 == NULL ? NULL : (_tmp10 = (g_object_unref (_tmp10), NULL))), (_tmp9 == NULL ? NULL : (_tmp9 = (g_object_unref (_tmp9), NULL))), (_tmp8 == NULL ? NULL : (_tmp8 = (g_object_unref (_tmp8), NULL))), _tmp12)) {
+	if ((_tmp4 = _vala_strcmp0 (self->priv->_name, other->priv->_name) == 0 && self->pattern == other->pattern && gtk_mate_text_loc_equal ((_tmp0 = gtk_mate_scope_start_loc (self)), (_tmp1 = gtk_mate_scope_start_loc (other))) && gtk_mate_text_loc_equal ((_tmp2 = gtk_mate_scope_inner_start_loc (self)), (_tmp3 = gtk_mate_scope_inner_start_loc (other))) && _vala_strcmp0 (self->begin_match_string, other->begin_match_string) == 0, (_tmp3 == NULL ? NULL : (_tmp3 = (g_object_unref (_tmp3), NULL))), (_tmp2 == NULL ? NULL : (_tmp2 = (g_object_unref (_tmp2), NULL))), (_tmp1 == NULL ? NULL : (_tmp1 = (g_object_unref (_tmp1), NULL))), (_tmp0 == NULL ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL))), _tmp4)) {
 		return TRUE;
 	}
 	return FALSE;
@@ -367,7 +345,7 @@ void gtk_mate_scope_delete_child (GtkMateScope* self, GtkMateScope* s) {
 		_tmp1 = NULL;
 		prev_scope = (_tmp1 = ((GtkMateScope*) (g_sequence_get (g_sequence_iter_prev (iter)))), (_tmp1 == NULL ? NULL : g_object_ref (_tmp1)));
 		if (prev_scope == s) {
-			fprintf (stdout, "leftremove\n");
+			/* stdout.printf("leftremove\n");*/
 			g_sequence_remove (g_sequence_iter_prev (iter));
 			(prev_scope == NULL ? NULL : (prev_scope = (g_object_unref (prev_scope), NULL)));
 			(iter == NULL ? NULL : (iter = ( (iter), NULL)));
@@ -381,7 +359,7 @@ void gtk_mate_scope_delete_child (GtkMateScope* self, GtkMateScope* s) {
 		_tmp2 = NULL;
 		next_scope = (_tmp2 = ((GtkMateScope*) (g_sequence_get (iter))), (_tmp2 == NULL ? NULL : g_object_ref (_tmp2)));
 		if (next_scope == s) {
-			fprintf (stdout, "rightremove\n");
+			/* stdout.printf("rightremove\n");*/
 			g_sequence_remove (iter);
 			(next_scope == NULL ? NULL : (next_scope = (g_object_unref (next_scope), NULL)));
 			(iter == NULL ? NULL : (iter = ( (iter), NULL)));
@@ -452,11 +430,9 @@ void gtk_mate_scope_clear_after (GtkMateScope* self, gint line_ix, gint line_off
 	GtkMateTextLoc* _tmp2;
 	GSequenceIter* _tmp4;
 	GSequenceIter* iter;
-	GtkMateScope* _tmp5;
-	GtkMateScope* prev_child;
-	GtkMateTextLoc* _tmp6;
-	gboolean _tmp7;
-	GSequenceIter* _tmp8;
+	GSequenceIter* _tmp5;
+	GSequenceIter* prev_iter;
+	GSequenceIter* _tmp9;
 	GSequenceIter* end_iter;
 	g_return_if_fail (GTK_MATE_IS_SCOPE (self));
 	loc = gtk_mate_text_loc_make (line_ix, line_offset);
@@ -470,18 +446,27 @@ void gtk_mate_scope_clear_after (GtkMateScope* self, gint line_ix, gint line_off
 	_tmp4 = NULL;
 	iter = (_tmp4 = g_sequence_search (gtk_mate_scope_get_children (self), s, ((GCompareDataFunc) (gtk_mate_scope_compare_by_loc)), NULL), (_tmp4 == NULL ? NULL :  (_tmp4)));
 	_tmp5 = NULL;
-	prev_child = (_tmp5 = ((GtkMateScope*) (g_sequence_get (g_sequence_iter_prev (iter)))), (_tmp5 == NULL ? NULL : g_object_ref (_tmp5)));
-	_tmp6 = NULL;
-	if ((_tmp7 = gtk_mate_text_loc_gt ((_tmp6 = gtk_mate_scope_end_loc (prev_child)), loc), (_tmp6 == NULL ? NULL : (_tmp6 = (g_object_unref (_tmp6), NULL))), _tmp7)) {
-		gtk_mate_scope_clear_after (prev_child, line_ix, line_offset);
+	prev_iter = (_tmp5 = g_sequence_iter_prev (iter), (_tmp5 == NULL ? NULL :  (_tmp5)));
+	if (!g_sequence_iter_is_end (prev_iter)) {
+		GtkMateScope* _tmp6;
+		GtkMateScope* prev_child;
+		GtkMateTextLoc* _tmp7;
+		gboolean _tmp8;
+		_tmp6 = NULL;
+		prev_child = (_tmp6 = ((GtkMateScope*) (g_sequence_get (g_sequence_iter_prev (iter)))), (_tmp6 == NULL ? NULL : g_object_ref (_tmp6)));
+		_tmp7 = NULL;
+		if ((_tmp8 = gtk_mate_text_loc_gt ((_tmp7 = gtk_mate_scope_end_loc (prev_child)), loc), (_tmp7 == NULL ? NULL : (_tmp7 = (g_object_unref (_tmp7), NULL))), _tmp8)) {
+			gtk_mate_scope_clear_after (prev_child, line_ix, line_offset);
+		}
+		(prev_child == NULL ? NULL : (prev_child = (g_object_unref (prev_child), NULL)));
 	}
-	_tmp8 = NULL;
-	end_iter = (_tmp8 = g_sequence_get_end_iter (gtk_mate_scope_get_children (self)), (_tmp8 == NULL ? NULL :  (_tmp8)));
+	_tmp9 = NULL;
+	end_iter = (_tmp9 = g_sequence_get_end_iter (gtk_mate_scope_get_children (self)), (_tmp9 == NULL ? NULL :  (_tmp9)));
 	g_sequence_remove_range (iter, end_iter);
 	(loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL)));
 	(s == NULL ? NULL : (s = (g_object_unref (s), NULL)));
 	(iter == NULL ? NULL : (iter = ( (iter), NULL)));
-	(prev_child == NULL ? NULL : (prev_child = (g_object_unref (prev_child), NULL)));
+	(prev_iter == NULL ? NULL : (prev_iter = ( (prev_iter), NULL)));
 	(end_iter == NULL ? NULL : (end_iter = ( (end_iter), NULL)));
 }
 

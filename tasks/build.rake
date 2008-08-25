@@ -55,7 +55,7 @@ namespace :build do
         puts "  nothing to do."
       else
         puts valac="valac -C --library gtkmateview --pkg gtksourceview-2.0 --pkg libxml-2.0 --pkg gee-1.0 --pkg gtksourceview-2.0 --vapidir=./../vapi/ --pkg=oniguruma #{sources_to_compile.join(" ")}"
-        %x{#{valac}}
+        puts %x{#{valac}}
         fix_vala_c_sources(VALA_SOURCES)
       end
     end
@@ -74,7 +74,7 @@ namespace :build do
   end
   
   desc "build project from scratch"
-  task :all => [:clean, :build_c] do
+  task :all => [:build_c] do
     FileUtils.cd("lib") do
       puts "running VALAR..."
       puts %x{ruby ../../valar/bin/valar gtkmateview.vapi --deps="gtk+-2.0,oniguruma,gtksourceview-2.0" --vapidirs="../vapi/oniguruma.vapi"}

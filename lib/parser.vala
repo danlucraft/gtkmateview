@@ -86,7 +86,7 @@ namespace Gtk.Mate {
 		// more if necessary. Returns the index of the last line
 		// parsed.
 		private int parse_range(int from_line, int to_line) {
-			stdout.printf("parse_from(%d, %d)\n", from_line, to_line);
+			//stdout.printf("parse_from(%d, %d)\n", from_line, to_line);
 			int line_ix = from_line;
 			bool scope_changed = false;
 			bool scope_ever_changed = false;
@@ -101,8 +101,8 @@ namespace Gtk.Mate {
 					// TODO: figure out a way to OPTIMIZE this again.
 					root.clear_after(line_ix, -1);
 				}
-				stdout.printf("parse_line returned: %s\n", scope_changed ? "true" : "false");
-				stdout.printf("pretty:\n%s\n", root.pretty(2));
+				//stdout.printf("parse_line returned: %s\n", scope_changed ? "true" : "false");
+				//stdout.printf("pretty:\n%s\n", root.pretty(2));
 			}
 			return to_line;
 		}
@@ -112,13 +112,13 @@ namespace Gtk.Mate {
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line1(line_ix);
 			int length = (int) line.length;//buffer.get_line_length(line_ix);
-			stdout.printf("\nparse line: %d (%d): '%s'\n", line_ix, length, line);
+			//stdout.printf("\nparse line: %d (%d): '%s'\n", line_ix, length, line);
 			var start_scope = this.root.scope_at(line_ix, -1);
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
-			stdout.printf("scope_at returns: %s\n", start_scope.name);
-			if (start_scope == null)
-				stdout.printf("pretty:\n%s\n", root.pretty(2));
-			stdout.printf("end_scope1: %s\n", end_scope1.name);
+			//stdout.printf("scope_at returns: %s\n", start_scope.name);
+//			if (start_scope == null)
+				//stdout.printf("pretty:\n%s\n", root.pretty(2));
+			//stdout.printf("end_scope1: %s\n", end_scope1.name);
 			var scanner = new Scanner(start_scope, line, length);
 			int i = 0;
 			Scope s;
@@ -127,11 +127,11 @@ namespace Gtk.Mate {
 			all_scopes.add(start_scope);
 			foreach (Marker m in scanner) {
 				var expected_scope = get_expected_scope(scanner.current_scope, line_ix, scanner.position);
-				if (expected_scope != null)
-					stdout.printf("expected_scope: %s\n", expected_scope.name);
-				else
-					stdout.printf("no expected scope\n");
-				stdout.printf("scope: %s\n", m.pattern.name);
+//				if (expected_scope != null)
+					//stdout.printf("expected_scope: %s\n", expected_scope.name);
+//				else
+					//stdout.printf("no expected scope\n");
+				//stdout.printf("scope: %s\n", m.pattern.name);
 				if (m.is_close_scope) {
 					close_scope(scanner, expected_scope, line_ix, line, m, all_scopes, closed_scopes);
 				}
@@ -145,7 +145,7 @@ namespace Gtk.Mate {
 			}
 			clear_line(line_ix, start_scope, all_scopes, closed_scopes);
 			var end_scope2 = this.root.scope_at(line_ix, int.MAX);
-			stdout.printf("end_scope2: %s\n", end_scope2.name);
+			//stdout.printf("end_scope2: %s\n", end_scope2.name);
 			return (end_scope1 != end_scope2);
 		}
 		
@@ -156,7 +156,7 @@ namespace Gtk.Mate {
 			// delete them:
 			var cs = start_scope;
 			while (cs != null) {
-				stdout.printf("  removing_scopes from: %s\n", cs.name);
+				//stdout.printf("  removing_scopes from: %s\n", cs.name);
 				cs.delete_any_on_line_not_in(line_ix, all_scopes);
 				cs = cs.parent;
 			}
@@ -190,9 +190,9 @@ namespace Gtk.Mate {
 		}
 
 		public Scope? get_expected_scope(Scope current_scope, int line, int line_offset) {
-			// stdout.printf("get_expected_scope(%s, %d, %d)\n", current_scope.name, line, line_offset);
+			// //stdout.printf("get_expected_scope(%s, %d, %d)\n", current_scope.name, line, line_offset);
 			var expected_scope = current_scope.first_child_after(TextLoc.make(line, line_offset));
-			// stdout.printf("first_child_after: %s\n", expected_scope.name);
+			// //stdout.printf("first_child_after: %s\n", expected_scope.name);
 			assert(expected_scope != current_scope);
 			if (expected_scope != null) {
 				if (expected_scope.start_line() != line)
@@ -215,15 +215,15 @@ namespace Gtk.Mate {
 				TextLoc.equal(scanner.current_scope.inner_end_loc(), TextLoc.make(line_ix, m.from)) &&
 				scanner.current_scope.end_match_string == end_match_string) {
 				// we have already parsed this line and this scope ends here
-				stdout.printf("closing scope matches expected\n");
+				//stdout.printf("closing scope matches expected\n");
 			}
 			else {
-				stdout.printf("closing scope at %d\n", m.from);
+				//stdout.printf("closing scope at %d\n", m.from);
 				scanner.current_scope.inner_end_mark_set(line_ix, m.from, true);
 				scanner.current_scope.end_mark_set(line_ix, m.match.end(0), true);
 				scanner.current_scope.is_open = false;
 				scanner.current_scope.end_match_string = end_match_string;
-				stdout.printf("end_match_string: '%s'\n", scanner.current_scope.end_match_string);
+				//stdout.printf("end_match_string: '%s'\n", scanner.current_scope.end_match_string);
 				handle_captures(line_ix, line, scanner.current_scope, m, all_scopes, closed_scopes);
 				if (expected_scope != null) {
 					scanner.current_scope.delete_child(expected_scope);
@@ -240,14 +240,14 @@ namespace Gtk.Mate {
 							   ArrayList<Scope> all_scopes,
 							   ArrayList<Scope> closed_scopes
 			) {
-			stdout.printf("[opening with %d patterns], \n", ((DoublePattern) m.pattern).patterns.size);
+			//stdout.printf("[opening with %d patterns], \n", ((DoublePattern) m.pattern).patterns.size);
 			var s = new Scope(this.buffer, m.pattern.name);
 			s.pattern = m.pattern;
 			s.open_match = m.match;
 			s.start_mark_set(line_ix, m.from, false);
 			s.inner_start_mark_set(line_ix, int.min(m.match.end(0), length), true); // had right gravity in Ruby version. Important?
 			s.begin_match_string = line.substring(m.from, m.match.end(0)-m.from);
-			stdout.printf("begin_match_string: '%s'\n", s.begin_match_string);
+			//stdout.printf("begin_match_string: '%s'\n", s.begin_match_string);
 			var end_iter = buffer.end_iter();
 			var end_line = end_iter.get_line();
 			var end_line_offset = end_iter.get_line_offset();
@@ -263,11 +263,11 @@ namespace Gtk.Mate {
 				// check mod ending scopes as the new one will not have a closing marker
 				// but the expected one will:
 				if (s.surface_identical_to_modulo_ending(expected_scope)) {
-					stdout.printf("surface_identical_mod_ending: keep expected\n");
+					//stdout.printf("surface_identical_mod_ending: keep expected\n");
 					// don't need to do anything as we have already found this,
 					// but let's keep the old scope since it will have children and what not.
 					new_scope = expected_scope;
-					GLib.SequenceIter iter = expected_scope.children.get_begin_iter();
+					var iter = expected_scope.children.get_begin_iter();
 					while (!iter.is_end()) {
 						closed_scopes.add(expected_scope.children.get(iter));
 						iter = iter.next();
@@ -275,7 +275,7 @@ namespace Gtk.Mate {
 					scanner.current_scope = expected_scope;
 				}
 				else {
-					stdout.printf("surface_NOT_identical_mod_ending: replace expected\n");
+					//stdout.printf("surface_NOT_identical_mod_ending: replace expected\n");
 					if (s.overlaps_with(expected_scope)) {
 						scanner.current_scope.delete_child(expected_scope);
 						// removed_scopes << expected_scope
@@ -304,13 +304,13 @@ namespace Gtk.Mate {
 			s.is_open = false;
 			s.is_capture = false;
 			s.begin_match_string = line.substring(m.from, m.match.end(0)-m.from);
-			stdout.printf("_match_string: '%s'\n", s.begin_match_string);
+			//stdout.printf("_match_string: '%s'\n", s.begin_match_string);
 			s.parent = scanner.current_scope;
 			var new_scope = s;
 			if (expected_scope != null) {
 				if (s.surface_identical_to(expected_scope)) {
 					new_scope = expected_scope;
-					GLib.SequenceIter iter = expected_scope.children.get_begin_iter();
+					var iter = expected_scope.children.get_begin_iter();
 					while (!iter.is_end()) {
 						closed_scopes.add(expected_scope.children.get(iter));
 						iter = iter.next();
@@ -346,7 +346,7 @@ namespace Gtk.Mate {
 			// end
 			if (m.pattern is DoublePattern && !m.is_close_scope) {
 				var dp = (DoublePattern) m.pattern;
-				stdout.printf("making closing regex: %s (%d)\n", dp.end_string, (int) dp.end_string.length);
+				//stdout.printf("making closing regex: %s (%d)\n", dp.end_string, (int) dp.end_string.length);
 				var rx = Oniguruma.Regex.make1("\\\\(\\d+)");
 				Oniguruma.Match match;
 				int pos = 0;
@@ -357,7 +357,7 @@ namespace Gtk.Mate {
 					src.append(dp.end_string.substring(pos, match.begin(0)-pos));
 					var numstr = dp.end_string.substring(match.begin(1), match.end(1)-match.begin(1));
 					var num = numstr.to_int();
-					stdout.printf("capture found: %d\n", num);
+					//stdout.printf("capture found: %d\n", num);
 					var capstr = line.substring(m.match.begin(num), m.match.end(num)-m.match.begin(num));
 					src.append(capstr);
 					pos = match.end(1);
@@ -366,7 +366,7 @@ namespace Gtk.Mate {
 					src.append(dp.end_string.substring(pos, dp.end_string.length-pos));
 				else
 					src.append(dp.end_string);
-				stdout.printf("src: '%s'\n", src.str);
+				//stdout.printf("src: '%s'\n", src.str);
 				scope.closing_regex = Oniguruma.Regex.make1(src.str);
 			}
 			return null;
@@ -454,16 +454,16 @@ namespace Gtk.Mate {
 		}
 
 		public void insert_text_handler(Buffer bf, TextIter pos, string text, int length) {
-			//stdout.printf("insert_text(pos, \"%s\", %d)\n", text, length);
+			////stdout.printf("insert_text(pos, \"%s\", %d)\n", text, length);
 			var ss = text.split("\n");
 			int num_lines = -1;
 			foreach (var s in ss) num_lines++;
-			//stdout.printf("add_change(%d, %d)\n", pos.get_line(), pos.get_line() + num_lines);
+			////stdout.printf("add_change(%d, %d)\n", pos.get_line(), pos.get_line() + num_lines);
 			changes.add(pos.get_line(), pos.get_line() + num_lines);
 		}
 		
 		public void delete_range_handler(Buffer bf, TextIter pos, TextIter pos2) {
-			//stdout.printf("delete_range(%d, %d)\n", pos.get_offset(), pos2.get_offset());
+			////stdout.printf("delete_range(%d, %d)\n", pos.get_offset(), pos2.get_offset());
 			changes.add(pos.get_line(), pos.get_line());
 		}
 
@@ -490,7 +490,7 @@ namespace Gtk.Mate {
 			grammar.init_for_use();
 
 			var p = new Parser();
-			//stdout.printf("grammar: %s\n", grammar.name);
+			////stdout.printf("grammar: %s\n", grammar.name);
 			p.grammar = grammar;
 			p.buffer = buffer;
 			p.changes = new RangeSet();
