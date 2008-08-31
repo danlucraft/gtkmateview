@@ -16,6 +16,10 @@ namespace Oniguruma {
 		public RegexT rx {get; set;}
 		public Region rg {get; set;}
 
+		public int num_captures() {
+			return this.rg.num_regs;
+		}
+
 		public int begin(int capture) {
 			if (capture >= this.rg.num_regs || capture < 0)
 				return -1;

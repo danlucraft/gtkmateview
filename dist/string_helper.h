@@ -7,6 +7,7 @@
 #include <glib-object.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gee/arraylist.h>
 
 G_BEGIN_DECLS
 
@@ -24,22 +25,19 @@ typedef struct _StringHelperPrivate StringHelperPrivate;
 
 /* Started: 30 Aug 08*/
 struct _StringHelper {
-	GTypeInstance parent_instance;
-	volatile int ref_count;
+	GObject parent_instance;
 	StringHelperPrivate * priv;
 };
 
 struct _StringHelperClass {
-	GTypeClass parent_class;
-	void (*finalize) (StringHelper *self);
+	GObjectClass parent_class;
 };
 
 
 char* string_helper_gsub (const char* start_string, const char* match_string, const char* replacement_string);
+GeeArrayList* string_helper_occurrences (const char* s, const char* t);
 StringHelper* string_helper_new (void);
 GType string_helper_get_type (void);
-gpointer string_helper_ref (gpointer instance);
-void string_helper_unref (gpointer instance);
 
 
 G_END_DECLS

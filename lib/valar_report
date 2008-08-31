@@ -189,8 +189,11 @@ Gtk.Mate.Grammar
   * void                                                 set_scope_name                      (string scope_name)
 Gtk.Mate.View
 Gtk.Mate.Matcher
+  * int                                                  compare_match                       (string scope_string, Oniguruma.Match m1, Oniguruma.Match m2)
+  x bool                                                 match                               (string selector_string, string scope_string, out Oniguruma.Match)
   * bool                                                 test_match                          (string selector_string, string scope_string)
-  * bool                                                 test_match_re                       (Oniguruma.Regex positive_selector_regex, Gee.ArrayList<Oniguruma.Regex> negative_selector_regex, string scope_string)
+  x bool                                                 test_match_re                       (Oniguruma.Regex positive_selector_regex, Gee.ArrayList<Oniguruma.Regex> negative_selector_regex, string scope_string, out Oniguruma.Match)
+  * string                                               test_rank                           (string selector_a, string selector_b, string scope_string)
 Gtk.Mate.Buffer
   x Gtk.TextIter                                         cursor_iter                         ()
   * int                                                  cursor_line                         ()
@@ -299,6 +302,7 @@ Oniguruma.OnigError
 Oniguruma.Match
   * int                                                  begin                               (int capture)
   * int                                                  end                                 (int capture)
+  * int                                                  num_captures                        ()
 Oniguruma.Regex
   * bool                                                 get_matches_start_of_line           ()
   x Oniguruma.Regex                                      make                                (string pattern, Oniguruma.OnigOptionType options, out Oniguruma.OnigError)
@@ -346,4 +350,5 @@ RangeSet.Range
   * void                                                 set_a                               (int a)
   * void                                                 set_b                               (int b)
 StringHelper
-  not convertible
+  * string                                               gsub                                (string start_string, string match_string, string replacement_string)
+  * Gee.ArrayList<int>                                   occurrences                         (string s, string t)

@@ -70,6 +70,12 @@ GType oniguruma_onig_error_get_type (void) {
 }
 
 
+gint oniguruma_match_num_captures (OnigurumaMatch* self) {
+	g_return_val_if_fail (ONIGURUMA_IS_MATCH (self), 0);
+	return self->priv->_rg->num_regs;
+}
+
+
 gint oniguruma_match_begin (OnigurumaMatch* self, gint capture) {
 	g_return_val_if_fail (ONIGURUMA_IS_MATCH (self), 0);
 	if (capture >= self->priv->_rg->num_regs || capture < 0) {

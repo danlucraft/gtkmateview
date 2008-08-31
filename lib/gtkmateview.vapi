@@ -163,8 +163,11 @@ namespace Gtk {
 		}
 		[CCode (cheader_filename = "matcher.h")]
 		public class Matcher : Gtk.Object {
+			public static int compare_match (string scope_string, Oniguruma.Match m1, Oniguruma.Match m2);
+			public static string test_rank (string selector_a, string selector_b, string scope_string);
 			public static bool test_match (string selector_string, string scope_string);
-			public static bool test_match_re (Oniguruma.Regex positive_selector_regex, Gee.ArrayList<Oniguruma.Regex> negative_selector_regex, string scope_string);
+			public static bool match (string selector_string, string scope_string, out Oniguruma.Match match);
+			public static bool test_match_re (Oniguruma.Regex positive_selector_regex, Gee.ArrayList<Oniguruma.Regex> negative_selector_regex, string scope_string, out Oniguruma.Match match);
 			public Matcher ();
 		}
 		[CCode (cheader_filename = "buffer.h")]
@@ -302,6 +305,7 @@ namespace Oniguruma {
 	}
 	[CCode (cheader_filename = "onig_wrap.h")]
 	public class Match : GLib.Object {
+		public int num_captures ();
 		public int begin (int capture);
 		public int end (int capture);
 		public Match ();
@@ -380,8 +384,9 @@ public class RangeSet : GLib.Object, Gee.Iterable<RangeSet.Range> {
 		public Range ();
 	}
 }
-[CCode (ref_function = "string_helper_ref", unref_function = "string_helper_unref", cheader_filename = "string_helper.h")]
-public class StringHelper {
+[CCode (cheader_filename = "string_helper.h")]
+public class StringHelper : GLib.Object {
 	public static string gsub (string start_string, string match_string, string replacement_string);
+	public static Gee.ArrayList<int> occurrences (string s, string t);
 	public StringHelper ();
 }
