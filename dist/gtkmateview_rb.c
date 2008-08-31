@@ -5593,6 +5593,7 @@ static VALUE rb_gtk_mate_colourer_colour_scope(VALUE self, VALUE scope, VALUE in
 }
 
 static VALUE rb_gtk_mate_colourer_set_tag_properties(VALUE self, VALUE scope, VALUE tag, VALUE setting) {
+    GtkMateColourer* gtk_mate_colourer = RVAL2GOBJ(self);
     // Method#type_checks
     // Method#argument_type_conversions
     GtkMateScope* _c_scope;
@@ -5603,7 +5604,7 @@ static VALUE rb_gtk_mate_colourer_set_tag_properties(VALUE self, VALUE scope, VA
     _c_setting = _GTK_MATE_THEME_SETTING_SELF(setting);
     // Method#body
     
-    gtk_mate_colourer_set_tag_properties(_c_scope, _c_tag, _c_setting);
+    gtk_mate_colourer_set_tag_properties(gtk_mate_colourer, _c_scope, _c_tag, _c_setting);
     // Method#return_type_conversion
     return Qnil;
 }
@@ -5629,9 +5630,9 @@ static VALUE rb_gtk_mate_colourer_char_to_hex(VALUE self, VALUE ch) {
 
 static VALUE rb_gtk_mate_colourer_merge_colour(VALUE self, VALUE parent_colour, VALUE colour) {
     // Method#type_checks
-    if (TYPE(parent_colour) != T_STRING) {
+    if (TYPE(parent_colour) != T_STRING && parent_colour != Qnil) {
         VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected a string");
+        rb_raise(rb_arg_error, "expected a string or nil");
     }
     if (TYPE(colour) != T_STRING) {
         VALUE rb_arg_error = rb_eval_string("ArgumentError");
@@ -5639,7 +5640,11 @@ static VALUE rb_gtk_mate_colourer_merge_colour(VALUE self, VALUE parent_colour, 
     }
     // Method#argument_type_conversions
     char * _c_parent_colour;
-    _c_parent_colour = g_strdup(STR2CSTR(parent_colour));
+    if (parent_colour == Qnil)
+        _c_parent_colour = NULL;
+    else {
+        _c_parent_colour = g_strdup(STR2CSTR(parent_colour));
+    }
     char * _c_colour;
     _c_colour = g_strdup(STR2CSTR(colour));
     // Method#body
@@ -6968,7 +6973,7 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_colourer, "set_global_settings", rb_gtk_mate_colourer_set_global_settings, 1);
     rb_define_method(rbc_gtk_mate_colourer, "colour_line_with_scopes", rb_gtk_mate_colourer_colour_line_with_scopes, 1);
     rb_define_method(rbc_gtk_mate_colourer, "colour_scope", rb_gtk_mate_colourer_colour_scope, 2);
-    rb_define_singleton_method(rbc_gtk_mate_colourer, "set_tag_properties", rb_gtk_mate_colourer_set_tag_properties, 3);
+    rb_define_method(rbc_gtk_mate_colourer, "set_tag_properties", rb_gtk_mate_colourer_set_tag_properties, 3);
     rb_define_singleton_method(rbc_gtk_mate_colourer, "char_to_hex", rb_gtk_mate_colourer_char_to_hex, 1);
     rb_define_singleton_method(rbc_gtk_mate_colourer, "merge_colour", rb_gtk_mate_colourer_merge_colour, 2);
     rb_define_method(rbc_gtk_mate_colourer, "uncolour_scopes", rb_gtk_mate_colourer_uncolour_scopes, 1);

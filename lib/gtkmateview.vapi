@@ -291,9 +291,9 @@ namespace Gtk {
 			public Gdk.Color parse_colour (string colour);
 			public void colour_line_with_scopes (Gee.ArrayList<Gtk.Mate.Scope> scopes);
 			public void colour_scope (Gtk.Mate.Scope scope, bool inner);
-			public static void set_tag_properties (Gtk.Mate.Scope scope, Gtk.TextTag tag, Gtk.Mate.ThemeSetting setting);
+			public void set_tag_properties (Gtk.Mate.Scope scope, Gtk.TextTag tag, Gtk.Mate.ThemeSetting setting);
 			public static int char_to_hex (unichar ch);
-			public static string? merge_colour (string parent_colour, string colour);
+			public static string? merge_colour (string? parent_colour, string colour);
 			public void uncolour_scopes (Gee.ArrayList<Gtk.Mate.Scope> scopes);
 			public void uncolour_scope (Gtk.Mate.Scope scope, bool recurse);
 			public Gtk.Mate.Buffer buffer { get; set; }

@@ -39,7 +39,7 @@ GtkMateColourer* gtk_mate_colourer_new (GtkMateBuffer* buffer);
 GdkColor gtk_mate_colourer_parse_colour (GtkMateColourer* self, const char* colour);
 void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayList* scopes);
 void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope, gboolean inner);
-void gtk_mate_colourer_set_tag_properties (GtkMateScope* scope, GtkTextTag* tag, GtkMateThemeSetting* setting);
+void gtk_mate_colourer_set_tag_properties (GtkMateColourer* self, GtkMateScope* scope, GtkTextTag* tag, GtkMateThemeSetting* setting);
 gint gtk_mate_colourer_char_to_hex (gunichar ch);
 char* gtk_mate_colourer_merge_colour (const char* parent_colour, const char* colour);
 void gtk_mate_colourer_uncolour_scopes (GtkMateColourer* self, GeeArrayList* scopes);

@@ -49,11 +49,19 @@ namespace Gtk.Mate {
 				return 0;
 			if (val < ixs[0])
 				return 0;
-			for (var i = 0; i < ixs.size; i++) {
-				if (val > ixs[i])
-					return i+1;
+			if (ixs.size == 1) {
+				if (val > ixs[0])
+					return 1;
+				else
+					return 0;
 			}
-			return ixs.size;
+			else {
+				for (var i = 0; i < ixs.size-1; i++) {
+					if (val > ixs[i] && val < ixs[i+1])
+						return i+1;
+				}
+				return ixs.size;
+			}
 		}
 
 		// this method is mainly for testing in the Ruby specs
@@ -89,13 +97,13 @@ namespace Gtk.Mate {
 				foreach (var sub_selector_string in positives_and_negatives) {
 					if (pos_rx == null) {
 						var s1 = StringHelper.gsub(sub_selector_string.strip(), ".", "\\.");
-						var s2 = StringHelper.gsub(s1, " ", ").*(");
+						var s2 = StringHelper.gsub(s1, " ", ").* .*(");
 						// stdout.printf("positive '%s' -> '%s'\n", selector_string, "("+s2+")");
 						pos_rx = Oniguruma.Regex.make1("("+s2+")");
 					}
 					else {
 						var s1 = StringHelper.gsub(sub_selector_string.strip(), ".", "\\.");
-						var s2 = StringHelper.gsub(s1, " ", ".*");
+						var s2 = StringHelper.gsub(s1, " ", ".* .*");
 						// stdout.printf("negative '%s' -> '%s'\n", selector_string, s2);
 						neg_rxs.add(Oniguruma.Regex.make1(s2));
 					}

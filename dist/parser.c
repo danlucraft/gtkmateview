@@ -937,12 +937,17 @@ void gtk_mate_parser_collect_child_captures (GtkMateParser* self, gint line_ix, 
 		}
 		if (parent_scope != NULL) {
 			GtkMateScope* _tmp18;
+			GtkMateScope* _tmp20;
+			GtkMateScope* _tmp19;
 			_tmp18 = NULL;
 			g_sequence_append (gtk_mate_scope_get_children (parent_scope), (_tmp18 = s, (_tmp18 == NULL ? NULL : g_object_ref (_tmp18))));
-		} else {
-			GtkMateScope* _tmp19;
+			_tmp20 = NULL;
 			_tmp19 = NULL;
-			g_sequence_append (gtk_mate_scope_get_children (scope), (_tmp19 = s, (_tmp19 == NULL ? NULL : g_object_ref (_tmp19))));
+			s->parent = (_tmp20 = (_tmp19 = parent_scope, (_tmp19 == NULL ? NULL : g_object_ref (_tmp19))), (s->parent == NULL ? NULL : (s->parent = (g_object_unref (s->parent), NULL))), _tmp20);
+		} else {
+			GtkMateScope* _tmp21;
+			_tmp21 = NULL;
+			g_sequence_append (gtk_mate_scope_get_children (scope), (_tmp21 = s, (_tmp21 == NULL ? NULL : g_object_ref (_tmp21))));
 		}
 		gee_collection_add (GEE_COLLECTION (placed_scopes), s);
 		gee_collection_remove (GEE_COLLECTION (capture_scopes), s);

@@ -310,6 +310,7 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 	g_return_val_if_fail (GTK_MATE_IS_THEME (self), NULL);
 	g_return_val_if_fail (GTK_MATE_IS_SCOPE (scope), NULL);
 	scope_name = gtk_mate_scope_hierarchy_names (scope, inner);
+	fprintf (stdout, "  finding settings for '%s'\n", scope_name);
 	current_m = NULL;
 	m = NULL;
 	current = NULL;
@@ -340,7 +341,7 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 						_tmp5 = NULL;
 						current_m = (_tmp6 = (_tmp5 = m, (_tmp5 == NULL ? NULL : g_object_ref (_tmp5))), (current_m == NULL ? NULL : (current_m = (g_object_unref (current_m), NULL))), _tmp6);
 					} else {
-						if (gtk_mate_matcher_compare_match (scope_name, current_m, m) > 0) {
+						if (gtk_mate_matcher_compare_match (scope_name, current_m, m) < 0) {
 							GtkMateThemeSetting* _tmp8;
 							GtkMateThemeSetting* _tmp7;
 							OnigurumaMatch* _tmp10;

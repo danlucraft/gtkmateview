@@ -8,20 +8,15 @@ namespace Gtk.Mate {
 		public Theme theme {get; set;}
 		
 		public void set_global_settings(Gtk.Mate.View view) {
-			stdout.printf("construct colourer\n");
-			stdout.printf("bg colour1\n");
 			string bg_colour = theme.global_settings.get("background");
 			if (bg_colour != null && bg_colour != "") {
-				stdout.printf("bg colour1\n");
 				bg_colour = Colourer.merge_colour("#FFFFFF", bg_colour);
-				stdout.printf("bg colour: %s\n", bg_colour);
 				((Gtk.Widget) view).modify_base(Gtk.StateType.NORMAL, parse_colour(bg_colour));
 			}
 
 			string fg_colour = theme.global_settings.get("foreground");
 			if (fg_colour != null && fg_colour != "") {
 				fg_colour = Colourer.merge_colour("#FFFFFF", fg_colour);
-				stdout.printf("fg colour: %s\n", fg_colour);
 				((Gtk.Widget) view).modify_text(Gtk.StateType.NORMAL, parse_colour(fg_colour));
 			}
 		}
@@ -59,7 +54,7 @@ namespace Gtk.Mate {
 		}
 
 		public void colour_scope(Scope scope, bool inner) {
-			stdout.printf("  colouring %s\n", scope.name);
+			stdout.printf("colour_scope: %s (%s)\n", scope.name, inner ? "true" : "false");
 			int priority = scope.priority();
 			TextTag tag;
 			TextIter start_iter, end_iter;
@@ -86,7 +81,7 @@ namespace Gtk.Mate {
 			ThemeSetting setting;
 			string tag_name;
 			if (tag == null) {
-				setting = theme.settings_for_scope(scope, false);
+				setting = theme.settings_for_scope(scope, inner);
 				if (setting == null) {
 					tag_name = "gmv(%d):default".printf(priority-1);
 				}
@@ -114,17 +109,20 @@ namespace Gtk.Mate {
 			buffer.apply_tag(tag, start_iter, end_iter);
 		}
 
-		public static void set_tag_properties(Scope scope, TextTag tag, ThemeSetting setting) {
+		public void set_tag_properties(Scope scope, TextTag tag, ThemeSetting setting) {
 			string font_style = setting.settings.get("fontStyle");
-			if (font_style == "italic")
-				tag.style = Pango.Style.ITALIC;
+			stdout.printf("fontStyle: %s\n", font_style);
+			if (font_style == "italic") {
+				tag.style = Pango.Style.ITALIC | tag.style;
+				stdout.printf("isitalic\n");
+			}
 			else
-				tag.style = Pango.Style.NORMAL;
+				tag.style = Pango.Style.NORMAL | tag.style;
 
 			if (font_style == "underline")
-				tag.style = Pango.Underline.SINGLE;
+				tag.style = Pango.Underline.SINGLE | tag.style;
 			else
-				tag.style = Pango.Underline.NONE;
+				tag.style = Pango.Underline.NONE | tag.style;
 			
 			string foreground = setting.settings.get("foreground");
 			if (foreground != null && foreground != "") {
@@ -133,6 +131,9 @@ namespace Gtk.Mate {
 			string background = setting.settings.get("background");
 			if (background != null && background != "") {
 				var parent_bg = scope.nearest_background_colour();
+				if (parent_bg == null) {
+					parent_bg = theme.global_settings.get("background");
+				}
 				var merged_colour = Colourer.merge_colour(parent_bg, background);
 				if (merged_colour != null) {
 					scope.bg_colour = merged_colour;
@@ -150,7 +151,7 @@ namespace Gtk.Mate {
 		
         // Here parent_colour is like '#FFFFFF' and
         // colour is like '#000000DD'.
-		public static string? merge_colour(string parent_colour, string colour) {
+		public static string? merge_colour(string? parent_colour, string colour) {
 			int pre_r, pre_g, pre_b;
 			int post_r, post_g, post_b;
 			int opacity;

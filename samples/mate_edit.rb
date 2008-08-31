@@ -25,7 +25,7 @@ end
 button_rb = Gtk::Button.new("Ruby")
 button_rb.signal_connect("clicked") do 
   mv.buffer.set_grammar_by_name("Ruby")
-  mv.set_theme_by_name("Cobalt")
+  mv.set_theme_by_name("Twilight")
 end
 
 button_file = Gtk::Button.new("Load file")

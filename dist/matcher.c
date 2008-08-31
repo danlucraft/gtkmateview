@@ -90,16 +90,24 @@ static gint gtk_mate_matcher_sorted_ix (GeeArrayList* ixs, gint val) {
 	if (val < GPOINTER_TO_INT (gee_list_get (((GeeList*) (ixs)), 0))) {
 		return 0;
 	}
-	{
-		gint i;
-		i = 0;
-		for (; i < gee_collection_get_size (GEE_COLLECTION (ixs)); i++) {
-			if (val > GPOINTER_TO_INT (gee_list_get (((GeeList*) (ixs)), i))) {
-				return i + 1;
+	if (gee_collection_get_size (GEE_COLLECTION (ixs)) == 1) {
+		if (val > GPOINTER_TO_INT (gee_list_get (((GeeList*) (ixs)), 0))) {
+			return 1;
+		} else {
+			return 0;
+		}
+	} else {
+		{
+			gint i;
+			i = 0;
+			for (; i < gee_collection_get_size (GEE_COLLECTION (ixs)) - 1; i++) {
+				if (val > GPOINTER_TO_INT (gee_list_get (((GeeList*) (ixs)), i)) && val < GPOINTER_TO_INT (gee_list_get (((GeeList*) (ixs)), i + 1))) {
+					return i + 1;
+				}
 			}
 		}
+		return gee_collection_get_size (GEE_COLLECTION (ixs));
 	}
-	return gee_collection_get_size (GEE_COLLECTION (ixs));
 }
 
 
@@ -228,7 +236,7 @@ gboolean gtk_mate_matcher_match (const char* selector_string, const char* scope_
 								char* _tmp3;
 								char* _tmp2;
 								s1 = string_helper_gsub (g_strstrip (sub_selector_string), ".", "\\.");
-								s2 = string_helper_gsub (s1, " ", ").*(");
+								s2 = string_helper_gsub (s1, " ", ").* .*(");
 								/* stdout.printf("positive '%s' -> '%s'\n", selector_string, "("+s2+")");*/
 								_tmp4 = NULL;
 								_tmp3 = NULL;
@@ -243,7 +251,7 @@ gboolean gtk_mate_matcher_match (const char* selector_string, const char* scope_
 								char* s2;
 								OnigurumaRegex* _tmp5;
 								s1 = string_helper_gsub (g_strstrip (sub_selector_string), ".", "\\.");
-								s2 = string_helper_gsub (s1, " ", ".*");
+								s2 = string_helper_gsub (s1, " ", ".* .*");
 								/* stdout.printf("negative '%s' -> '%s'\n", selector_string, s2);*/
 								_tmp5 = NULL;
 								gee_collection_add (GEE_COLLECTION (neg_rxs), (_tmp5 = oniguruma_regex_make1 (s2)));

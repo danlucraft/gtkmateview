@@ -481,6 +481,7 @@ namespace Gtk.Mate {
 				}
 				if (parent_scope != null) {
 					parent_scope.children.append(s);
+					s.parent = parent_scope;
 				}
 				else {
 					scope.children.append(s);

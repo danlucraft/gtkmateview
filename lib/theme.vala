@@ -108,6 +108,7 @@ namespace Gtk.Mate {
 		// (see 13.5 of Textmate manual)
 		public ThemeSetting settings_for_scope(Scope scope, bool inner) {
 			string scope_name = scope.hierarchy_names(inner);
+			stdout.printf("  finding settings for '%s'\n", scope_name);
 			Oniguruma.Match current_m, m;
 			ThemeSetting current;
 			foreach (var setting in settings) {
@@ -117,7 +118,7 @@ namespace Gtk.Mate {
 						current = setting;
 						current_m = m;
 					}
-					else if (Matcher.compare_match(scope_name, current_m, m) > 0) {
+					else if (Matcher.compare_match(scope_name, current_m, m) < 0) {
 						current = setting;
 						current_m = m;
 					}

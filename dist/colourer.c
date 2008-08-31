@@ -1,7 +1,7 @@
 
 #include "colourer.h"
-#include <stdio.h>
 #include <gee/map.h>
+#include <stdio.h>
 #include <pango/pango.h>
 #include "buffer.h"
 #include "scope.h"
@@ -39,16 +39,12 @@ void gtk_mate_colourer_set_global_settings (GtkMateColourer* self, GtkMateView* 
 	char* fg_colour;
 	g_return_if_fail (GTK_MATE_IS_COLOURER (self));
 	g_return_if_fail (GTK_MATE_IS_VIEW (view));
-	fprintf (stdout, "construct colourer\n");
-	fprintf (stdout, "bg colour1\n");
 	bg_colour = ((char*) (gee_map_get (GEE_MAP (self->priv->_theme->global_settings), "background")));
 	if (bg_colour != NULL && _vala_strcmp0 (bg_colour, "") != 0) {
 		char* _tmp0;
 		GdkColor _tmp1 = {0};
-		fprintf (stdout, "bg colour1\n");
 		_tmp0 = NULL;
 		bg_colour = (_tmp0 = gtk_mate_colourer_merge_colour ("#FFFFFF", bg_colour), (bg_colour = (g_free (bg_colour), NULL)), _tmp0);
-		fprintf (stdout, "bg colour: %s\n", bg_colour);
 		gtk_widget_modify_base ((GTK_WIDGET (view)), GTK_STATE_NORMAL, (_tmp1 = gtk_mate_colourer_parse_colour (self, bg_colour), &_tmp1));
 	}
 	fg_colour = ((char*) (gee_map_get (GEE_MAP (self->priv->_theme->global_settings), "foreground")));
@@ -57,7 +53,6 @@ void gtk_mate_colourer_set_global_settings (GtkMateColourer* self, GtkMateView* 
 		GdkColor _tmp3 = {0};
 		_tmp2 = NULL;
 		fg_colour = (_tmp2 = gtk_mate_colourer_merge_colour ("#FFFFFF", fg_colour), (fg_colour = (g_free (fg_colour), NULL)), _tmp2);
-		fprintf (stdout, "fg colour: %s\n", fg_colour);
 		gtk_widget_modify_text ((GTK_WIDGET (view)), GTK_STATE_NORMAL, (_tmp3 = gtk_mate_colourer_parse_colour (self, fg_colour), &_tmp3));
 	}
 	bg_colour = (g_free (bg_colour), NULL);
@@ -133,7 +128,7 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 	GtkTextTagTable* tag_table;
 	g_return_if_fail (GTK_MATE_IS_COLOURER (self));
 	g_return_if_fail (GTK_MATE_IS_SCOPE (scope));
-	fprintf (stdout, "  colouring %s\n", gtk_mate_scope_get_name (scope));
+	fprintf (stdout, "colour_scope: %s (%s)\n", gtk_mate_scope_get_name (scope), (inner ? "true" : "false"));
 	priority = gtk_mate_scope_priority (scope);
 	tag = NULL;
 	fprintf (stdout, "  priority: %d\n", priority);
@@ -166,7 +161,7 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 	if (tag == NULL) {
 		GtkMateThemeSetting* _tmp4;
 		_tmp4 = NULL;
-		setting = (_tmp4 = gtk_mate_theme_settings_for_scope (self->priv->_theme, scope, FALSE), (setting == NULL ? NULL : (setting = (g_object_unref (setting), NULL))), _tmp4);
+		setting = (_tmp4 = gtk_mate_theme_settings_for_scope (self->priv->_theme, scope, inner), (setting == NULL ? NULL : (setting = (g_object_unref (setting), NULL))), _tmp4);
 		if (setting == NULL) {
 			char* _tmp5;
 			_tmp5 = NULL;
@@ -195,7 +190,7 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 	}
 	fprintf (stdout, "      tag: '%s'\n", tag_name);
 	if (setting != NULL) {
-		gtk_mate_colourer_set_tag_properties (scope, tag, setting);
+		gtk_mate_colourer_set_tag_properties (self, scope, tag, setting);
 	}
 	if (inner) {
 		GtkTextTag* _tmp13;
@@ -218,27 +213,34 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 }
 
 
-void gtk_mate_colourer_set_tag_properties (GtkMateScope* scope, GtkTextTag* tag, GtkMateThemeSetting* setting) {
+void gtk_mate_colourer_set_tag_properties (GtkMateColourer* self, GtkMateScope* scope, GtkTextTag* tag, GtkMateThemeSetting* setting) {
 	char* font_style;
 	char* foreground;
 	char* background;
+	g_return_if_fail (GTK_MATE_IS_COLOURER (self));
 	g_return_if_fail (GTK_MATE_IS_SCOPE (scope));
 	g_return_if_fail (GTK_IS_TEXT_TAG (tag));
 	g_return_if_fail (GTK_MATE_IS_THEME_SETTING (setting));
 	font_style = ((char*) (gee_map_get (GEE_MAP (setting->settings), "fontStyle")));
+	fprintf (stdout, "fontStyle: %s\n", font_style);
 	if (_vala_strcmp0 (font_style, "italic") == 0) {
-		PangoStyle _tmp0;
-		g_object_set (tag, "style", PANGO_STYLE_ITALIC, NULL);
-	} else {
 		PangoStyle _tmp1;
-		g_object_set (tag, "style", PANGO_STYLE_NORMAL, NULL);
-	}
-	if (_vala_strcmp0 (font_style, "underline") == 0) {
-		PangoStyle _tmp2;
-		g_object_set (tag, "style", PANGO_UNDERLINE_SINGLE, NULL);
+		PangoStyle _tmp0;
+		g_object_set (tag, "style", PANGO_STYLE_ITALIC | (g_object_get (G_OBJECT (tag), "style", &_tmp1, NULL), _tmp1), NULL);
+		fprintf (stdout, "isitalic\n");
 	} else {
 		PangoStyle _tmp3;
-		g_object_set (tag, "style", PANGO_UNDERLINE_NONE, NULL);
+		PangoStyle _tmp2;
+		g_object_set (tag, "style", PANGO_STYLE_NORMAL | (g_object_get (G_OBJECT (tag), "style", &_tmp3, NULL), _tmp3), NULL);
+	}
+	if (_vala_strcmp0 (font_style, "underline") == 0) {
+		PangoStyle _tmp5;
+		PangoStyle _tmp4;
+		g_object_set (tag, "style", PANGO_UNDERLINE_SINGLE | (g_object_get (G_OBJECT (tag), "style", &_tmp5, NULL), _tmp5), NULL);
+	} else {
+		PangoStyle _tmp7;
+		PangoStyle _tmp6;
+		g_object_set (tag, "style", PANGO_UNDERLINE_NONE | (g_object_get (G_OBJECT (tag), "style", &_tmp7, NULL), _tmp7), NULL);
 	}
 	foreground = ((char*) (gee_map_get (GEE_MAP (setting->settings), "foreground")));
 	if (foreground != NULL && _vala_strcmp0 (foreground, "") != 0) {
@@ -249,13 +251,18 @@ void gtk_mate_colourer_set_tag_properties (GtkMateScope* scope, GtkTextTag* tag,
 		char* parent_bg;
 		char* merged_colour;
 		parent_bg = gtk_mate_scope_nearest_background_colour (scope);
+		if (parent_bg == NULL) {
+			char* _tmp8;
+			_tmp8 = NULL;
+			parent_bg = (_tmp8 = ((char*) (gee_map_get (GEE_MAP (self->priv->_theme->global_settings), "background"))), (parent_bg = (g_free (parent_bg), NULL)), _tmp8);
+		}
 		merged_colour = gtk_mate_colourer_merge_colour (parent_bg, background);
 		if (merged_colour != NULL) {
-			char* _tmp5;
-			const char* _tmp4;
-			_tmp5 = NULL;
-			_tmp4 = NULL;
-			scope->bg_colour = (_tmp5 = (_tmp4 = merged_colour, (_tmp4 == NULL ? NULL : g_strdup (_tmp4))), (scope->bg_colour = (g_free (scope->bg_colour), NULL)), _tmp5);
+			char* _tmp10;
+			const char* _tmp9;
+			_tmp10 = NULL;
+			_tmp9 = NULL;
+			scope->bg_colour = (_tmp10 = (_tmp9 = merged_colour, (_tmp9 == NULL ? NULL : g_strdup (_tmp9))), (scope->bg_colour = (g_free (scope->bg_colour), NULL)), _tmp10);
 			g_object_set (tag, "background", merged_colour, NULL);
 		}
 		parent_bg = (g_free (parent_bg), NULL);
@@ -290,7 +297,6 @@ char* gtk_mate_colourer_merge_colour (const char* parent_colour, const char* col
 	gint new_b;
 	char* new_colour;
 	char* _tmp5;
-	g_return_val_if_fail (parent_colour != NULL, NULL);
 	g_return_val_if_fail (colour != NULL, NULL);
 	pre_r = 0;
 	pre_g = 0;
