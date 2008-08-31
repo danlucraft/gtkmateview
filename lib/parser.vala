@@ -41,6 +41,7 @@ namespace Gtk.Mate {
 	
 	public class Parser : Object {
 		public Grammar grammar {get; set;}
+		public Colourer colourer {get; set;}
 		public Mate.Buffer buffer {get; set;}
 		public Mate.Scope root;
 		public RangeSet changes;
@@ -79,6 +80,7 @@ namespace Gtk.Mate {
 				if (range.b > parsed_upto)
 					parsed_upto = parse_range(range.a, range.b);
 			}
+//			stdout.printf("%s\n", root.pretty(0));
 			changes.ranges.clear();
 		}
 
@@ -146,6 +148,9 @@ namespace Gtk.Mate {
 			clear_line(line_ix, start_scope, all_scopes, closed_scopes);
 			var end_scope2 = this.root.scope_at(line_ix, int.MAX);
 			//stdout.printf("end_scope2: %s\n", end_scope2.name);
+			if (colourer != null) {
+				colourer.colour_line_with_scopes(all_scopes);
+			}
 			return (end_scope1 != end_scope2);
 		}
 		
@@ -401,6 +406,7 @@ namespace Gtk.Mate {
 						s.end_mark_set(line_ix, m.match.end(cap), true);
 						s.is_open = false;
 						s.is_capture = true;
+						s.parent = scope;
 						capture_scopes.add(s);
 						all_scopes.add(s);
 						closed_scopes.add(s);
@@ -494,6 +500,7 @@ namespace Gtk.Mate {
 			p.grammar = grammar;
 			p.buffer = buffer;
 			p.changes = new RangeSet();
+			p.colourer = new Colourer(buffer);
 			p.deactivation_level = 0;
 			p.make_root();
 			p.connect_buffer_signals();

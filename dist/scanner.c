@@ -2,6 +2,7 @@
 #include "scanner.h"
 #include <gee/collection.h>
 #include <gee/list.h>
+#include "scope.h"
 
 
 

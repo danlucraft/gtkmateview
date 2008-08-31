@@ -7,7 +7,10 @@ namespace Gtk.Mate {
 		public string name;
 		public string scope;
 		public HashMap<string, string> settings;
-		
+		public Oniguruma.Regex positive_rx;
+		public Oniguruma.Regex negative_rx;
+		public int specificity;
+
 		public static ThemeSetting create_from_plist(PList.Dict dict) {
 			var tsetting = new ThemeSetting();
 			
@@ -26,6 +29,11 @@ namespace Gtk.Mate {
 
 			return tsetting;
 		}
+
+		public void compile_scope_matchers() {
+			stdout.printf("compiling '%s'\n", scope);
+			
+		}
 	}
 	
 	public class Theme : Object {
@@ -35,9 +43,12 @@ namespace Gtk.Mate {
 		public string name;
 		public HashMap<string, string> global_settings;
 		public ArrayList<ThemeSetting> settings;
+		public bool is_initialized;
 
 		public static Theme create_from_plist(PList.Dict dict) {
 			var theme = new Theme();
+			theme.is_initialized = false;
+
 			PList.Node? nm = dict.get("name");
 			if (nm != null)
 				theme.name = ((PList.String) nm).str;
@@ -64,6 +75,16 @@ namespace Gtk.Mate {
 			return theme;
 		}
 
+		public void init_for_use() {
+			if (is_initialized)
+				return;
+			is_initialized = true;
+			stdout.printf("initializing theme for use: %s\n", name);
+			foreach (var setting in settings) {
+				setting.compile_scope_matchers();
+			}
+		}
+
 		public static ArrayList<string>? theme_filenames() {
 			var names = new ArrayList<string>();
 			var share_dir = Gtk.Mate.textmate_share_dir();
@@ -81,6 +102,11 @@ namespace Gtk.Mate {
 				stdout.printf("couldn't open: %s\n", share_dir+"/Bundles");
 			}
 			return null;
+		}
+
+		public ArrayList<ThemeSetting> settings_for_scope(Scope scope) {
+			
+			return new ArrayList<ThemeSetting>();
 		}
 	}
 }

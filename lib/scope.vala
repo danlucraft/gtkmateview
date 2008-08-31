@@ -44,9 +44,12 @@ namespace Gtk.Mate {
 		public StringBuilder pretty_string;
 		public int indent;
 
+		public bool is_coloured {get; set;}
+
 		public Scope(Mate.Buffer buf, string? name) {
 			this.name = name;
 			this.buffer = buf;
+			this.is_coloured = false;
 		}
 
 		public bool is_root() {
@@ -460,6 +463,13 @@ namespace Gtk.Mate {
 				return this;
 			else
 				return parent.root();
+		}
+		
+		public int priority() {
+			if (parent == null)
+				return 1;
+			else
+				return parent.priority() + 1;
 		}
 	}
 }

@@ -12,7 +12,7 @@
 #include <gee/iterator.h>
 #include "pattern.h"
 #include "onig_wrap.h"
-#include "scope.h"
+#include "theme.h"
 
 G_BEGIN_DECLS
 

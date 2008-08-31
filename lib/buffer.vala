@@ -52,6 +52,17 @@ namespace Gtk.Mate {
 			return null;
 		}
 
+		public bool set_theme_by_name(string name) {
+			foreach (var theme in Theme.themes) {
+				if (theme.name == name) {
+					theme.init_for_use();
+					parser.colourer.theme = theme;
+					return true;
+				}
+			}
+			return false;
+		}
+		
 		// HELPER METHODS
 		
 		// Offset from start of document -> Iter

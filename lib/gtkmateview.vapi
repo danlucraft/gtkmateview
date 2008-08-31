@@ -9,7 +9,11 @@ namespace Gtk {
 			public string name;
 			public string scope;
 			public Gee.HashMap<string,string> settings;
+			public Oniguruma.Regex positive_rx;
+			public Oniguruma.Regex negative_rx;
+			public int specificity;
 			public static Gtk.Mate.ThemeSetting create_from_plist (PList.Dict dict);
+			public void compile_scope_matchers ();
 			public ThemeSetting ();
 		}
 		[CCode (cheader_filename = "theme.h")]
@@ -19,8 +23,11 @@ namespace Gtk {
 			public string name;
 			public Gee.HashMap<string,string> global_settings;
 			public Gee.ArrayList<Gtk.Mate.ThemeSetting> settings;
+			public bool is_initialized;
 			public static Gtk.Mate.Theme create_from_plist (PList.Dict dict);
+			public void init_for_use ();
 			public static Gee.ArrayList<string>? theme_filenames ();
+			public Gee.ArrayList<Gtk.Mate.ThemeSetting> settings_for_scope (Gtk.Mate.Scope scope);
 			public Theme ();
 		}
 		[CCode (cheader_filename = "pattern.h")]
@@ -124,9 +131,11 @@ namespace Gtk {
 			public Gtk.Mate.TextLoc inner_end_loc ();
 			public Gtk.Mate.TextLoc end_loc ();
 			public Gtk.Mate.Scope root ();
+			public int priority ();
 			public string? name { get; set; }
 			public Gtk.Mate.Buffer buffer { get; set; }
 			public GLib.Sequence<Gtk.Mate.Scope> children { get; }
+			public bool is_coloured { get; set; }
 		}
 		[CCode (cheader_filename = "grammar.h")]
 		public class Grammar : Gtk.Object {
@@ -152,6 +161,12 @@ namespace Gtk {
 		public class View : Gtk.SourceView {
 			public View ();
 		}
+		[CCode (cheader_filename = "matcher.h")]
+		public class Matcher : Gtk.Object {
+			public static bool test_match (string selector_string, string scope_string);
+			public static bool test_match_re (Oniguruma.Regex positive_selector_regex, Gee.ArrayList<Oniguruma.Regex> negative_selector_regex, string scope_string);
+			public Matcher ();
+		}
 		[CCode (cheader_filename = "buffer.h")]
 		public class Buffer : Gtk.SourceBuffer {
 			public static Gee.ArrayList<Gtk.Mate.Bundle> bundles;
@@ -159,6 +174,7 @@ namespace Gtk {
 			public Gtk.Mate.Parser parser;
 			public int set_grammar_by_name (string name);
 			public string? set_grammar_by_extension (string extension);
+			public bool set_theme_by_name (string name);
 			public Gtk.TextIter iter_ (int offset);
 			public Gtk.TextIter start_iter ();
 			public Gtk.TextIter end_iter ();
@@ -221,6 +237,7 @@ namespace Gtk {
 			public static Gtk.Mate.Parser create (Gtk.Mate.Grammar grammar, Gtk.Mate.Buffer buffer);
 			public Parser ();
 			public Gtk.Mate.Grammar grammar { get; set; }
+			public Gtk.Mate.Colourer colourer { get; set; }
 			public Gtk.Mate.Buffer buffer { get; set; }
 		}
 		[CCode (cheader_filename = "scanner.h")]
@@ -256,6 +273,14 @@ namespace Gtk {
 			public Gee.ArrayList<Gtk.Mate.Grammar> grammars;
 			public Bundle (string name);
 			public string name { get; set; }
+		}
+		[CCode (cheader_filename = "colourer.h")]
+		public class Colourer : Gtk.Object {
+			public Colourer (Gtk.Mate.Buffer buffer);
+			public void colour_line_with_scopes (Gee.ArrayList<Gtk.Mate.Scope> scopes);
+			public void colour_scope (Gtk.Mate.Scope scope, bool colour_inner);
+			public Gtk.Mate.Buffer buffer { get; set; }
+			public Gtk.Mate.Theme theme { get; set; }
 		}
 		[CCode (cheader_filename = "gtkmateview.h")]
 		public static int load_bundles ();
@@ -354,4 +379,9 @@ public class RangeSet : GLib.Object, Gee.Iterable<RangeSet.Range> {
 		public int b;
 		public Range ();
 	}
+}
+[CCode (ref_function = "string_helper_ref", unref_function = "string_helper_unref", cheader_filename = "string_helper.h")]
+public class StringHelper {
+	public static string gsub (string start_string, string match_string, string replacement_string);
+	public StringHelper ();
 }

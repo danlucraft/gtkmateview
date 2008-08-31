@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
-#include "scope.h"
+#include "theme.h"
 
 G_BEGIN_DECLS
 
@@ -38,6 +38,7 @@ extern GeeArrayList* gtk_mate_buffer_bundles;
 extern GeeArrayList* gtk_mate_buffer_themes;
 gint gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* name);
 char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char* extension);
+gboolean gtk_mate_buffer_set_theme_by_name (GtkMateBuffer* self, const char* name);
 GtkTextIter gtk_mate_buffer_iter_ (GtkMateBuffer* self, gint offset);
 GtkTextIter gtk_mate_buffer_start_iter (GtkMateBuffer* self);
 GtkTextIter gtk_mate_buffer_end_iter (GtkMateBuffer* self);

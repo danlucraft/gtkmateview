@@ -5,25 +5,36 @@ Gtk.Mate
   * void                                                 load_themes                         ()
   * string                                               textmate_share_dir                  ()
 Gtk.Mate.ThemeSetting
+  * void                                                 compile_scope_matchers              ()
   * Gtk.Mate.ThemeSetting                                create_from_plist                   (PList.Dict dict)
   * string                                               get_name                            ()
+  * Oniguruma.Regex                                      get_negative_rx                     ()
+  * Oniguruma.Regex                                      get_positive_rx                     ()
   * string                                               get_scope                           ()
   * Gee.HashMap<string,string>                           get_settings                        ()
+  * int                                                  get_specificity                     ()
   * void                                                 set_name                            (string name)
+  * void                                                 set_negative_rx                     (Oniguruma.Regex negative_rx)
+  * void                                                 set_positive_rx                     (Oniguruma.Regex positive_rx)
   * void                                                 set_scope                           (string scope)
   * void                                                 set_settings                        (Gee.HashMap<string,string> settings)
+  * void                                                 set_specificity                     (int specificity)
 Gtk.Mate.Theme
   * Gtk.Mate.Theme                                       create_from_plist                   (PList.Dict dict)
   * string                                               get_author                          ()
   * Gee.HashMap<string,string>                           get_global_settings                 ()
+  * bool                                                 get_is_initialized                  ()
   * string                                               get_name                            ()
   * Gee.ArrayList<Gtk.Mate.ThemeSetting>                 get_settings                        ()
   * Gee.ArrayList<Gtk.Mate.Theme>                        get_themes                          ()
+  * void                                                 init_for_use                        ()
   * void                                                 set_author                          (string author)
   * void                                                 set_global_settings                 (Gee.HashMap<string,string> global_settings)
+  * void                                                 set_is_initialized                  (bool is_initialized)
   * void                                                 set_name                            (string name)
   * void                                                 set_settings                        (Gee.ArrayList<Gtk.Mate.ThemeSetting> settings)
   * void                                                 set_themes                          (Gee.ArrayList<Gtk.Mate.Theme> themes)
+  * Gee.ArrayList<Gtk.Mate.ThemeSetting>                 settings_for_scope                  (Gtk.Mate.Scope scope)
   * Gee.ArrayList<string>?                               theme_filenames                     ()
 Gtk.Mate.Pattern
   * Gtk.Mate.Pattern                                     create_from_plist                   (Gee.ArrayList<Gtk.Mate.Pattern> all_patterns, PList.Dict pd)
@@ -118,6 +129,7 @@ Gtk.Mate.Scope
   * bool                                                 is_root                             ()
   * bool                                                 overlaps_with                       (Gtk.Mate.Scope other)
   * string                                               pretty                              (int indent)
+  * int                                                  priority                            ()
   * Gtk.Mate.Scope                                       root                                ()
   * Gtk.Mate.Scope                                       scope_at                            (int line, int line_offset)
   * void                                                 set_begin_match_string              (string begin_match_string)
@@ -176,6 +188,9 @@ Gtk.Mate.Grammar
   * void                                                 set_repository                      (Gee.HashMap<string,Gee.ArrayList<Gtk.Mate.Pattern>> repository)
   * void                                                 set_scope_name                      (string scope_name)
 Gtk.Mate.View
+Gtk.Mate.Matcher
+  * bool                                                 test_match                          (string selector_string, string scope_string)
+  * bool                                                 test_match_re                       (Oniguruma.Regex positive_selector_regex, Gee.ArrayList<Oniguruma.Regex> negative_selector_regex, string scope_string)
 Gtk.Mate.Buffer
   x Gtk.TextIter                                         cursor_iter                         ()
   * int                                                  cursor_line                         ()
@@ -201,6 +216,7 @@ Gtk.Mate.Buffer
   * string                                               set_grammar_by_extension            (string extension)
   * int                                                  set_grammar_by_name                 (string name)
   * void                                                 set_parser                          (Gtk.Mate.Parser parser)
+  * bool                                                 set_theme_by_name                   (string name)
   * void                                                 set_themes                          (Gee.ArrayList<Gtk.Mate.Theme> themes)
   x Gtk.TextIter                                         start_iter                          ()
   * Gtk.TextMark                                         start_mark                          ()
@@ -270,6 +286,10 @@ Gtk.Mate.Bundle
 )
   * Gee.ArrayList<Gtk.Mate.Grammar>                      get_grammars                        ()
   * void                                                 set_grammars                        (Gee.ArrayList<Gtk.Mate.Grammar> grammars)
+Gtk.Mate.Colourer
+)
+  * void                                                 colour_line_with_scopes             (Gee.ArrayList<Gtk.Mate.Scope> scopes)
+  * void                                                 colour_scope                        (Gtk.Mate.Scope scope, bool colour_inner)
 Oniguruma
 Oniguruma.OnigError
   * int                                                  get_code                            ()
@@ -325,3 +345,5 @@ RangeSet.Range
   * int                                                  get_b                               ()
   * void                                                 set_a                               (int a)
   * void                                                 set_b                               (int b)
+StringHelper
+  not convertible

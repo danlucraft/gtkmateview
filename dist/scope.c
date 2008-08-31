@@ -11,6 +11,7 @@ struct _GtkMateScopePrivate {
 	char* _name;
 	GtkMateBuffer* _buffer;
 	GSequence* _children;
+	gboolean _is_coloured;
 };
 
 #define GTK_MATE_SCOPE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GTK_MATE_TYPE_SCOPE, GtkMateScopePrivate))
@@ -18,7 +19,8 @@ enum  {
 	GTK_MATE_SCOPE_DUMMY_PROPERTY,
 	GTK_MATE_SCOPE_NAME,
 	GTK_MATE_SCOPE_BUFFER,
-	GTK_MATE_SCOPE_CHILDREN
+	GTK_MATE_SCOPE_CHILDREN,
+	GTK_MATE_SCOPE_IS_COLOURED
 };
 static gpointer gtk_mate_scope_parent_class = NULL;
 static void gtk_mate_scope_finalize (GObject * obj);
@@ -32,6 +34,7 @@ GtkMateScope* gtk_mate_scope_new (GtkMateBuffer* buf, const char* name) {
 	self = g_object_newv (GTK_MATE_TYPE_SCOPE, 0, NULL);
 	gtk_mate_scope_set_name (self, name);
 	gtk_mate_scope_set_buffer (self, buf);
+	gtk_mate_scope_set_is_coloured (self, FALSE);
 	return self;
 }
 
@@ -810,6 +813,16 @@ GtkMateScope* gtk_mate_scope_root (GtkMateScope* self) {
 }
 
 
+gint gtk_mate_scope_priority (GtkMateScope* self) {
+	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), 0);
+	if (self->parent == NULL) {
+		return 1;
+	} else {
+		return gtk_mate_scope_priority (self->parent) + 1;
+	}
+}
+
+
 const char* gtk_mate_scope_get_name (GtkMateScope* self) {
 	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
 	return self->priv->_name;
@@ -855,6 +868,19 @@ GSequence* gtk_mate_scope_get_children (GtkMateScope* self) {
 }
 
 
+gboolean gtk_mate_scope_get_is_coloured (GtkMateScope* self) {
+	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), FALSE);
+	return self->priv->_is_coloured;
+}
+
+
+void gtk_mate_scope_set_is_coloured (GtkMateScope* self, gboolean value) {
+	g_return_if_fail (GTK_MATE_IS_SCOPE (self));
+	self->priv->_is_coloured = value;
+	g_object_notify (((GObject *) (self)), "is-coloured");
+}
+
+
 static void gtk_mate_scope_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	GtkMateScope * self;
 	self = GTK_MATE_SCOPE (object);
@@ -867,6 +893,9 @@ static void gtk_mate_scope_get_property (GObject * object, guint property_id, GV
 		break;
 		case GTK_MATE_SCOPE_CHILDREN:
 		g_value_set_pointer (value, gtk_mate_scope_get_children (self));
+		break;
+		case GTK_MATE_SCOPE_IS_COLOURED:
+		g_value_set_boolean (value, gtk_mate_scope_get_is_coloured (self));
 		break;
 		default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -885,6 +914,9 @@ static void gtk_mate_scope_set_property (GObject * object, guint property_id, co
 		case GTK_MATE_SCOPE_BUFFER:
 		gtk_mate_scope_set_buffer (self, g_value_get_object (value));
 		break;
+		case GTK_MATE_SCOPE_IS_COLOURED:
+		gtk_mate_scope_set_is_coloured (self, g_value_get_boolean (value));
+		break;
 		default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 		break;
@@ -901,6 +933,7 @@ static void gtk_mate_scope_class_init (GtkMateScopeClass * klass) {
 	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_SCOPE_NAME, g_param_spec_string ("name", "name", "name", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_SCOPE_BUFFER, g_param_spec_object ("buffer", "buffer", "buffer", GTK_MATE_TYPE_BUFFER, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_SCOPE_CHILDREN, g_param_spec_pointer ("children", "children", "children", G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_SCOPE_IS_COLOURED, g_param_spec_boolean ("is-coloured", "is-coloured", "is-coloured", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 }
 
 

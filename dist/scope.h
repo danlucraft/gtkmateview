@@ -10,23 +10,10 @@
 #include <gee/arraylist.h>
 #include "pattern.h"
 #include "onig_wrap.h"
+#include "theme.h"
 
 G_BEGIN_DECLS
 
-typedef struct _GtkMateScope GtkMateScope;
-typedef struct _GtkMateScopeClass GtkMateScopeClass;
-typedef struct _GtkMateTextLoc GtkMateTextLoc;
-typedef struct _GtkMateTextLocClass GtkMateTextLocClass;
-typedef struct _GtkMateParser GtkMateParser;
-typedef struct _GtkMateParserClass GtkMateParserClass;
-typedef struct _GtkMateMarker GtkMateMarker;
-typedef struct _GtkMateMarkerClass GtkMateMarkerClass;
-typedef struct _GtkMateScanner GtkMateScanner;
-typedef struct _GtkMateScannerClass GtkMateScannerClass;
-typedef struct _GtkMateScannerIterator GtkMateScannerIterator;
-typedef struct _GtkMateScannerIteratorClass GtkMateScannerIteratorClass;
-typedef struct _GtkMateBuffer GtkMateBuffer;
-typedef struct _GtkMateBufferClass GtkMateBufferClass;
 
 #define GTK_MATE_TYPE_SCOPE (gtk_mate_scope_get_type ())
 #define GTK_MATE_SCOPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_MATE_TYPE_SCOPE, GtkMateScope))
@@ -107,11 +94,14 @@ GtkMateTextLoc* gtk_mate_scope_inner_start_loc (GtkMateScope* self);
 GtkMateTextLoc* gtk_mate_scope_inner_end_loc (GtkMateScope* self);
 GtkMateTextLoc* gtk_mate_scope_end_loc (GtkMateScope* self);
 GtkMateScope* gtk_mate_scope_root (GtkMateScope* self);
+gint gtk_mate_scope_priority (GtkMateScope* self);
 const char* gtk_mate_scope_get_name (GtkMateScope* self);
 void gtk_mate_scope_set_name (GtkMateScope* self, const char* value);
 GtkMateBuffer* gtk_mate_scope_get_buffer (GtkMateScope* self);
 void gtk_mate_scope_set_buffer (GtkMateScope* self, GtkMateBuffer* value);
 GSequence* gtk_mate_scope_get_children (GtkMateScope* self);
+gboolean gtk_mate_scope_get_is_coloured (GtkMateScope* self);
+void gtk_mate_scope_set_is_coloured (GtkMateScope* self, gboolean value);
 GType gtk_mate_scope_get_type (void);
 
 

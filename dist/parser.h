@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gee/arraylist.h>
-#include "scope.h"
+#include "theme.h"
 #include "range_set.h"
 #include "onig_wrap.h"
 #include "grammar.h"
@@ -91,6 +91,8 @@ GtkMateParser* gtk_mate_parser_create (GtkMateGrammar* grammar, GtkMateBuffer* b
 GtkMateParser* gtk_mate_parser_new (void);
 GtkMateGrammar* gtk_mate_parser_get_grammar (GtkMateParser* self);
 void gtk_mate_parser_set_grammar (GtkMateParser* self, GtkMateGrammar* value);
+GtkMateColourer* gtk_mate_parser_get_colourer (GtkMateParser* self);
+void gtk_mate_parser_set_colourer (GtkMateParser* self, GtkMateColourer* value);
 GtkMateBuffer* gtk_mate_parser_get_buffer (GtkMateParser* self);
 void gtk_mate_parser_set_buffer (GtkMateParser* self, GtkMateBuffer* value);
 GType gtk_mate_parser_get_type (void);
