@@ -57,12 +57,11 @@ void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayL
 			GtkMateScope* scope;
 			scope = ((GtkMateScope*) (gee_list_get (GEE_LIST (scope_collection), scope_it)));
 			{
-				fprintf (stdout, "colouring scope: %s\n", gtk_mate_scope_get_name (scope));
 				if (scope->parent == NULL) {
-					fprintf (stdout, "  no parent\n");
 					(scope == NULL ? NULL : (scope = (g_object_unref (scope), NULL)));
 					continue;
 				}
+				fprintf (stdout, "colouring scope: %s\n", gtk_mate_scope_get_name (scope));
 				if (gtk_mate_scope_get_name (scope) == NULL && scope->pattern != NULL && (GTK_MATE_IS_SINGLE_PATTERN (scope->pattern) || (GTK_MATE_DOUBLE_PATTERN (scope->pattern))->content_name == NULL)) {
 					fprintf (stdout, "  no pattern name\n");
 					(scope == NULL ? NULL : (scope = (g_object_unref (scope), NULL)));
@@ -189,10 +188,16 @@ void gtk_mate_colourer_set_tag_properties (GtkMateScope* scope, GtkTextTag* tag,
 	if (_vala_strcmp0 (font_style, "italic") == 0) {
 		PangoStyle _tmp0;
 		g_object_set (tag, "style", PANGO_STYLE_ITALIC, NULL);
+	} else {
+		PangoStyle _tmp1;
+		g_object_set (tag, "style", PANGO_STYLE_NORMAL, NULL);
 	}
 	if (_vala_strcmp0 (font_style, "underline") == 0) {
-		PangoStyle _tmp1;
+		PangoStyle _tmp2;
 		g_object_set (tag, "style", PANGO_UNDERLINE_SINGLE, NULL);
+	} else {
+		PangoStyle _tmp3;
+		g_object_set (tag, "style", PANGO_UNDERLINE_NONE, NULL);
 	}
 	foreground = ((char*) (gee_map_get (GEE_MAP (setting->settings), "foreground")));
 	if (foreground != NULL && _vala_strcmp0 (foreground, "") != 0) {
@@ -202,14 +207,16 @@ void gtk_mate_colourer_set_tag_properties (GtkMateScope* scope, GtkTextTag* tag,
 	if (background != NULL && _vala_strcmp0 (background, "") != 0) {
 		char* parent_bg;
 		char* merged_colour;
-		char* _tmp3;
-		const char* _tmp2;
 		parent_bg = gtk_mate_scope_nearest_background_colour (scope);
 		merged_colour = gtk_mate_colourer_merge_colour (parent_bg, background);
-		_tmp3 = NULL;
-		_tmp2 = NULL;
-		scope->bg_colour = (_tmp3 = (_tmp2 = merged_colour, (_tmp2 == NULL ? NULL : g_strdup (_tmp2))), (scope->bg_colour = (g_free (scope->bg_colour), NULL)), _tmp3);
-		g_object_set (tag, "background", merged_colour, NULL);
+		if (merged_colour != NULL) {
+			char* _tmp5;
+			const char* _tmp4;
+			_tmp5 = NULL;
+			_tmp4 = NULL;
+			scope->bg_colour = (_tmp5 = (_tmp4 = merged_colour, (_tmp4 == NULL ? NULL : g_strdup (_tmp4))), (scope->bg_colour = (g_free (scope->bg_colour), NULL)), _tmp5);
+			g_object_set (tag, "background", merged_colour, NULL);
+		}
 		parent_bg = (g_free (parent_bg), NULL);
 		merged_colour = (g_free (merged_colour), NULL);
 	}
@@ -286,6 +293,57 @@ char* gtk_mate_colourer_merge_colour (const char* parent_colour, const char* col
 	}
 	_tmp5 = NULL;
 	return (_tmp5 = g_strdup ("#000000"), (new_colour = (g_free (new_colour), NULL)), _tmp5);
+}
+
+
+void gtk_mate_colourer_uncolour_scopes (GtkMateColourer* self, GeeArrayList* scopes) {
+	g_return_if_fail (GTK_MATE_IS_COLOURER (self));
+	g_return_if_fail (GEE_IS_ARRAY_LIST (scopes));
+	{
+		GeeArrayList* scope_collection;
+		int scope_it;
+		scope_collection = scopes;
+		for (scope_it = 0; scope_it < gee_collection_get_size (GEE_COLLECTION (scope_collection)); scope_it = scope_it + 1) {
+			GtkMateScope* scope;
+			scope = ((GtkMateScope*) (gee_list_get (GEE_LIST (scope_collection), scope_it)));
+			{
+				gtk_mate_colourer_uncolour_scope (self, scope, TRUE);
+				(scope == NULL ? NULL : (scope = (g_object_unref (scope), NULL)));
+			}
+		}
+	}
+}
+
+
+void gtk_mate_colourer_uncolour_scope (GtkMateColourer* self, GtkMateScope* scope, gboolean recurse) {
+	g_return_if_fail (GTK_MATE_IS_COLOURER (self));
+	g_return_if_fail (GTK_MATE_IS_SCOPE (scope));
+	if (scope->inner_tag != NULL) {
+		GtkTextIter _tmp1 = {0};
+		GtkTextIter _tmp0 = {0};
+		gtk_text_buffer_remove_tag (GTK_TEXT_BUFFER (self->priv->_buffer), scope->inner_tag, (_tmp0 = gtk_mate_scope_inner_start_iter (scope), &_tmp0), (_tmp1 = gtk_mate_scope_inner_end_iter (scope), &_tmp1));
+	}
+	if (scope->tag != NULL) {
+		GtkTextIter _tmp3 = {0};
+		GtkTextIter _tmp2 = {0};
+		gtk_text_buffer_remove_tag (GTK_TEXT_BUFFER (self->priv->_buffer), scope->tag, (_tmp2 = gtk_mate_scope_start_iter (scope), &_tmp2), (_tmp3 = gtk_mate_scope_end_iter (scope), &_tmp3));
+	}
+	gtk_mate_scope_set_is_coloured (scope, FALSE);
+	if (recurse) {
+		GSequenceIter* _tmp4;
+		GSequenceIter* iter;
+		_tmp4 = NULL;
+		iter = (_tmp4 = g_sequence_get_begin_iter (gtk_mate_scope_get_children (scope)), (_tmp4 == NULL ? NULL :  (_tmp4)));
+		while (!g_sequence_iter_is_end (iter)) {
+			GSequenceIter* _tmp6;
+			GSequenceIter* _tmp5;
+			gtk_mate_colourer_uncolour_scope (self, ((GtkMateScope*) (g_sequence_get (iter))), recurse);
+			_tmp6 = NULL;
+			_tmp5 = NULL;
+			iter = (_tmp6 = (_tmp5 = g_sequence_iter_next (iter), (_tmp5 == NULL ? NULL :  (_tmp5))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp6);
+		}
+		(iter == NULL ? NULL : (iter = ( (iter), NULL)));
+	}
 }
 
 

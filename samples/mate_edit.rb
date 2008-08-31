@@ -16,6 +16,12 @@ button_gr.signal_connect("clicked") do
   p mv.buffer.set_grammar_by_extension("poipoi")
 end
 
+button_tree = Gtk::Button.new("tree")
+button_tree.signal_connect("clicked") do 
+  puts mv.buffer.parser.root.pretty(0)
+  puts
+end
+
 button_rb = Gtk::Button.new("Ruby")
 button_rb.signal_connect("clicked") do 
   mv.buffer.set_grammar_by_name("Ruby")
@@ -31,6 +37,7 @@ toolbar = Gtk::HBox.new
 toolbar.pack_start(button_rb)
 toolbar.pack_start(button_gr)
 toolbar.pack_start(button_file)
+toolbar.pack_start(button_tree)
 vb.pack_start(toolbar, false)
 vb.pack_start(mv)
 button_on = Gtk::Button.new("on")

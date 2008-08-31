@@ -95,4 +95,12 @@ END
     @mb.type(0, 5, "#")
     @mb.pretty.should == @mb.clean_reparse
   end
+
+  it "should reparse closing scopes" do
+    @mb.text = "fo=<<HI\nHI"
+    puts @mb.parser.root.pretty(0)
+    @mb.type(1, 2, "\n")
+    puts @mb.parser.root.pretty(0)
+    @mb.pretty.should == @mb.clean_reparse
+  end
 end

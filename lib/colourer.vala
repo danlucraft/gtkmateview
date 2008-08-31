@@ -15,11 +15,10 @@ namespace Gtk.Mate {
 			if (theme == null)
 				return;
 			foreach (var scope in scopes) {
-				stdout.printf("colouring scope: %s\n", scope.name);
 				if (scope.parent == null) {
-					stdout.printf("  no parent\n");
 					continue;
 				}
+				stdout.printf("colouring scope: %s\n", scope.name);
 				if (scope.name == null && scope.pattern != null &&
 					(scope.pattern is SinglePattern || ((DoublePattern) scope.pattern).content_name == null)) {
 					stdout.printf("  no pattern name\n");
@@ -93,8 +92,13 @@ namespace Gtk.Mate {
 			string font_style = setting.settings.get("fontStyle");
 			if (font_style == "italic")
 				tag.style = Pango.Style.ITALIC;
+			else
+				tag.style = Pango.Style.NORMAL;
+
 			if (font_style == "underline")
 				tag.style = Pango.Underline.SINGLE;
+			else
+				tag.style = Pango.Underline.NONE;
 			
 			string foreground = setting.settings.get("foreground");
 			if (foreground != null && foreground != "") {
@@ -148,6 +152,28 @@ namespace Gtk.Mate {
 				return new_colour;
 			}
 			return "#000000";
+		}
+
+		public void uncolour_scopes(ArrayList<Scope> scopes) {
+			foreach (var scope in scopes)
+				uncolour_scope(scope, true);
+		}
+		
+		public void uncolour_scope(Scope scope, bool recurse) {
+			if (scope.inner_tag != null) {
+				buffer.remove_tag(scope.inner_tag, scope.inner_start_iter(), scope.inner_end_iter());
+			}
+			if (scope.tag != null) {
+				buffer.remove_tag(scope.tag, scope.start_iter(), scope.end_iter());
+			}
+			scope.is_coloured = false;
+			if (recurse) {
+				GLib.SequenceIter iter = scope.children.get_begin_iter();
+				while (!iter.is_end()) {
+					uncolour_scope(scope.children.get(iter), recurse);
+					iter = iter.next();
+				}
+			}
 		}
 	}
 }

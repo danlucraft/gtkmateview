@@ -114,7 +114,7 @@ namespace Gtk.Mate {
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line1(line_ix);
 			int length = (int) line.length;//buffer.get_line_length(line_ix);
-			//stdout.printf("\nparse line: %d (%d): '%s'\n", line_ix, length, line);
+			// stdout.printf("\nparse line: %d (%d): '%s'\n", line_ix, length, line);
 			var start_scope = this.root.scope_at(line_ix, -1);
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
 			//stdout.printf("scope_at returns: %s\n", start_scope.name);
@@ -126,43 +126,53 @@ namespace Gtk.Mate {
 			Scope s;
 			var all_scopes = new ArrayList<Scope>();
 			var closed_scopes = new ArrayList<Scope>();
+			var removed_scopes = new ArrayList<Scope>();
 			all_scopes.add(start_scope);
 			foreach (Marker m in scanner) {
 				var expected_scope = get_expected_scope(scanner.current_scope, line_ix, scanner.position);
-//				if (expected_scope != null)
-					//stdout.printf("expected_scope: %s\n", expected_scope.name);
-//				else
-					//stdout.printf("no expected scope\n");
-				//stdout.printf("scope: %s\n", m.pattern.name);
+				// if (expected_scope != null)
+				// 	stdout.printf("expected_scope: %s\n", expected_scope.name);
+				// else
+				// 	stdout.printf("no expected scope\n");
+				// stdout.printf("  scope: %s\n", m.pattern.name);
 				if (m.is_close_scope) {
-					close_scope(scanner, expected_scope, line_ix, line, m, all_scopes, closed_scopes);
+					close_scope(scanner, expected_scope, line_ix, line, m, 
+								all_scopes, closed_scopes, removed_scopes);
 				}
 				else if (m.pattern is DoublePattern) {
-					open_scope(scanner, expected_scope, line_ix, line, length, m, all_scopes, closed_scopes);
+					open_scope(scanner, expected_scope, line_ix, line, length, m, 
+							   all_scopes, closed_scopes, removed_scopes);
 				}
 				else {
-					single_scope(scanner, expected_scope, line_ix, line, length, m, all_scopes, closed_scopes);
+					single_scope(scanner, expected_scope, line_ix, line, length, m, 
+								 all_scopes, closed_scopes, removed_scopes);
 				}
 				scanner.position = m.match.end(0);
 			}
-			clear_line(line_ix, start_scope, all_scopes, closed_scopes);
+			clear_line(line_ix, start_scope, all_scopes, closed_scopes, removed_scopes);
 			var end_scope2 = this.root.scope_at(line_ix, int.MAX);
 			//stdout.printf("end_scope2: %s\n", end_scope2.name);
 			if (colourer != null) {
+				colourer.uncolour_scopes(removed_scopes);
 				colourer.colour_line_with_scopes(all_scopes);
 			}
+			// stdout.printf("%s\n", this.root.pretty(0));
 			return (end_scope1 != end_scope2);
 		}
 		
 		public void clear_line(int line_ix, Scope start_scope, 
 							   ArrayList<Scope> all_scopes, 
-							   ArrayList<Scope> closed_scopes) {
+							   ArrayList<Scope> closed_scopes, 
+							   ArrayList<Scope> removed_scopes) {
 			// If we are reparsing, we might find that some scopes have disappeared,
 			// delete them:
 			var cs = start_scope;
 			while (cs != null) {
 				//stdout.printf("  removing_scopes from: %s\n", cs.name);
-				cs.delete_any_on_line_not_in(line_ix, all_scopes);
+				var removed = cs.delete_any_on_line_not_in(line_ix, all_scopes);
+				foreach (var rs in removed) {
+					removed_scopes.add(rs);
+				}
 				cs = cs.parent;
 			}
 			// @removed_scopes += removed_scopes
@@ -182,6 +192,7 @@ namespace Gtk.Mate {
 				if (!closed_scopes.contains(s)) {
 					if (s.is_capture) {
 						s.parent.delete_child(s);
+						removed_scopes.add(s);
 						// @removed_scopes << s
 					}
 					else {
@@ -212,7 +223,8 @@ namespace Gtk.Mate {
 		public void close_scope(Scanner scanner, Scope? expected_scope, 
 								int line_ix, string line, Marker m,
 								ArrayList<Scope> all_scopes,
-								ArrayList<Scope> closed_scopes
+								ArrayList<Scope> closed_scopes, 
+								ArrayList<Scope> removed_scopes
 			) {
 			var end_match_string = line.substring(m.from, m.match.end(0)-m.from);
 			if (scanner.current_scope.end_mark != null &&
@@ -220,10 +232,25 @@ namespace Gtk.Mate {
 				TextLoc.equal(scanner.current_scope.inner_end_loc(), TextLoc.make(line_ix, m.from)) &&
 				scanner.current_scope.end_match_string == end_match_string) {
 				// we have already parsed this line and this scope ends here
-				//stdout.printf("closing scope matches expected\n");
+
+				// Re-add the captures from the end of the current scope to the 
+				// tracking arrays
+				var iter = scanner.current_scope.children.get_begin_iter();
+				while (!iter.is_end()) {
+					var child = scanner.current_scope.children.get(iter);
+					if (child.is_capture && 
+						child.start_line() == line_ix) {
+						if (!closed_scopes.contains(child))
+							closed_scopes.add(child);
+						if (!all_scopes.contains(child))
+							all_scopes.add(child);
+					}
+					iter = iter.next();
+				}
+				// stdout.printf("closing scope matches expected\n");
 			}
 			else {
-				//stdout.printf("closing scope at %d\n", m.from);
+				// stdout.printf("closing scope at %d\n", m.from);
 				scanner.current_scope.inner_end_mark_set(line_ix, m.from, true);
 				scanner.current_scope.end_mark_set(line_ix, m.match.end(0), true);
 				scanner.current_scope.is_open = false;
@@ -232,6 +259,7 @@ namespace Gtk.Mate {
 				handle_captures(line_ix, line, scanner.current_scope, m, all_scopes, closed_scopes);
 				if (expected_scope != null) {
 					scanner.current_scope.delete_child(expected_scope);
+					removed_scopes.add(expected_scope);
 					// @removed_scopes << expected_scope
 				}
 			}
@@ -243,7 +271,8 @@ namespace Gtk.Mate {
 		public void open_scope(Scanner scanner, Scope? expected_scope, 
 							   int line_ix, string line, int length, Marker m,
 							   ArrayList<Scope> all_scopes,
-							   ArrayList<Scope> closed_scopes
+							   ArrayList<Scope> closed_scopes, 
+							   ArrayList<Scope> removed_scopes
 			) {
 			//stdout.printf("[opening with %d patterns], \n", ((DoublePattern) m.pattern).patterns.size);
 			var s = new Scope(this.buffer, m.pattern.name);
@@ -284,6 +313,7 @@ namespace Gtk.Mate {
 					if (s.overlaps_with(expected_scope)) {
 						scanner.current_scope.delete_child(expected_scope);
 						// removed_scopes << expected_scope
+						removed_scopes.add(expected_scope);
 					}
 					scanner.current_scope.add_child(s);
 					scanner.current_scope = s;
@@ -299,7 +329,8 @@ namespace Gtk.Mate {
 		public void single_scope(Scanner scanner, Scope? expected_scope, 
 								 int line_ix, string line, int length, Marker m,
 								 ArrayList<Scope> all_scopes,
-								 ArrayList<Scope> closed_scopes
+								 ArrayList<Scope> closed_scopes, 
+								 ArrayList<Scope> removed_scopes
 			) {
 			var s = new Scope(this.buffer, m.pattern.name);
 			s.pattern = m.pattern;
@@ -326,6 +357,7 @@ namespace Gtk.Mate {
 					if (s.overlaps_with(expected_scope)) {
 						scanner.current_scope.delete_child(expected_scope);
 						// removed_scopes << expected_scope
+						removed_scopes.add(expected_scope);
 					}
 					scanner.current_scope.add_child(s);
 				}
