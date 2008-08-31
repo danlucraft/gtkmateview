@@ -1,7 +1,6 @@
 
 #include "parser.h"
 #include <gee/collection.h>
-#include <stdio.h>
 #include <gee/hashmap.h>
 #include <gee/map.h>
 #include "colourer.h"
@@ -264,8 +263,8 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	g_return_val_if_fail (GTK_MATE_IS_PARSER (self), FALSE);
 	line = gtk_mate_buffer_get_line1 (self->priv->_buffer, line_ix);
 	length = ((gint) (string_get_length (line)));
-	/*buffer.get_line_length(line_ix);*/
-	fprintf (stdout, "\nparse line: %d (%d): '%s'\n", line_ix, length, line);
+	/*buffer.get_line_length(line_ix);
+	 stdout.printf("\nparse line: %d (%d): '%s'\n", line_ix, length, line);*/
 	start_scope = gtk_mate_scope_scope_at (self->root, line_ix, -1);
 	end_scope1 = gtk_mate_scope_scope_at (self->root, line_ix, G_MAXINT);
 	/*stdout.printf("scope_at returns: %s\n", start_scope.name);

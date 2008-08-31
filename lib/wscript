@@ -5,7 +5,7 @@ def build(bld):
         shlib.env['CCFLAGS'] = '-pg -g'
         shlib.env['LINKFLAGS'] = '-pg -g'
 	shlib.target = 'gtkmateview'
-	shlib.source = 'buffer.vala bundle.vala grammar.vala gtkmateview.vala onig_wrap.vala parser.vala pattern.vala plist.vala range_set.vala scanner.vala scope.vala theme.vala view.vala'
+	shlib.source = 'buffer.vala bundle.vala grammar.vala gtkmateview.vala onig_wrap.vala parser.vala pattern.vala plist.vala range_set.vala scanner.vala scope.vala theme.vala view.vala colourer.vala matcher.vala string_helper.vala'
 	shlib.uselib = 'GOBJECT GTKSOURCEVIEW2 GTK+ LIBXML GEE GLIB'
 	shlib.packages = 'gtk+-2.0 gee-1.0 glib-2.0 libxml-2.0 gtksourceview-2.0 oniguruma'
 	shlib.vapi_dirs = '../vapi'

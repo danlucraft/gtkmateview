@@ -79,7 +79,7 @@ namespace Gtk.Mate {
 			if (is_initialized)
 				return;
 			is_initialized = true;
-			stdout.printf("initializing theme for use: %s\n", name);
+			// stdout.printf("initializing theme for use: %s\n", name);
 			foreach (var setting in settings) {
 				setting.compile_scope_matchers();
 			}
@@ -108,12 +108,12 @@ namespace Gtk.Mate {
 		// (see 13.5 of Textmate manual)
 		public ThemeSetting settings_for_scope(Scope scope, bool inner) {
 			string scope_name = scope.hierarchy_names(inner);
-			stdout.printf("  finding settings for '%s'\n", scope_name);
+			// stdout.printf("  finding settings for '%s'\n", scope_name);
 			Oniguruma.Match current_m, m;
 			ThemeSetting current;
 			foreach (var setting in settings) {
 				if (Matcher.match(setting.selector, scope_name, out m)) {
-					stdout.printf("    setting '%s' with selector '%s'\n", setting.name, setting.selector);
+					// stdout.printf("    setting '%s' with selector '%s'\n", setting.name, setting.selector);
 					if (current == null) {
 						current = setting;
 						current_m = m;
@@ -128,7 +128,7 @@ namespace Gtk.Mate {
 				// stdout.printf("none match\n");
 			}
 			else {
-				stdout.printf("    best: '%s'\n", current.name);
+				// stdout.printf("    best: '%s'\n", current.name);
 			}
 			return current;
 		}

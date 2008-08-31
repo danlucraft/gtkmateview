@@ -218,7 +218,7 @@ void gtk_mate_theme_init_for_use (GtkMateTheme* self) {
 		return;
 	}
 	self->is_initialized = TRUE;
-	fprintf (stdout, "initializing theme for use: %s\n", self->name);
+	/* stdout.printf("initializing theme for use: %s\n", name);*/
 	{
 		GeeArrayList* setting_collection;
 		int setting_it;
@@ -310,7 +310,7 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 	g_return_val_if_fail (GTK_MATE_IS_THEME (self), NULL);
 	g_return_val_if_fail (GTK_MATE_IS_SCOPE (scope), NULL);
 	scope_name = gtk_mate_scope_hierarchy_names (scope, inner);
-	fprintf (stdout, "  finding settings for '%s'\n", scope_name);
+	/* stdout.printf("  finding settings for '%s'\n", scope_name);*/
 	current_m = NULL;
 	m = NULL;
 	current = NULL;
@@ -328,7 +328,7 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 				_tmp2 = NULL;
 				_tmp0 = NULL;
 				if ((_tmp1 = gtk_mate_matcher_match (setting->selector, scope_name, &_tmp0), m = (_tmp2 = _tmp0, (m == NULL ? NULL : (m = (g_object_unref (m), NULL))), _tmp2), _tmp1)) {
-					fprintf (stdout, "    setting '%s' with selector '%s'\n", setting->name, setting->selector);
+					/* stdout.printf("    setting '%s' with selector '%s'\n", setting.name, setting.selector);*/
 					if (current == NULL) {
 						GtkMateThemeSetting* _tmp4;
 						GtkMateThemeSetting* _tmp3;
@@ -361,9 +361,9 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 	}
 	if (current == NULL) {
 	} else {
-		/* stdout.printf("none match\n");*/
-		fprintf (stdout, "    best: '%s'\n", current->name);
 	}
+	/* stdout.printf("none match\n");
+	 stdout.printf("    best: '%s'\n", current.name);*/
 	_tmp11 = NULL;
 	return (_tmp11 = current, (scope_name = (g_free (scope_name), NULL)), (current_m == NULL ? NULL : (current_m = (g_object_unref (current_m), NULL))), (m == NULL ? NULL : (m = (g_object_unref (m), NULL))), _tmp11);
 }

@@ -5,7 +5,7 @@ def build(bld):
         prog.env['CCFLAGS'] = '-pg -g'
         prog.env['LINKFLAGS'] = '-pg -g'
 	prog.target = 'gmv_prof'
-	prog.source = 'gmv_prof.vala ../lib/buffer.vala ../lib/bundle.vala ../lib/grammar.vala ../lib/gtkmateview.vala ../lib/onig_wrap.vala ../lib/parser.vala ../lib/pattern.vala ../lib/plist.vala ../lib/range_set.vala ../lib/scanner.vala ../lib/scope.vala ../lib/theme.vala ../lib/view.vala'
+	prog.source = 'gmv_prof.vala ../lib/buffer.vala ../lib/bundle.vala ../lib/grammar.vala ../lib/gtkmateview.vala ../lib/onig_wrap.vala ../lib/parser.vala ../lib/pattern.vala ../lib/plist.vala ../lib/range_set.vala ../lib/scanner.vala ../lib/scope.vala ../lib/theme.vala ../lib/view.vala ../lib/colourer.vala ../lib/matcher.vala ../lib/string_helper.vala'
 	prog.includes = '../lib/'
         prog.libs = 'libonig'
 	prog.uselib = 'GTK+ GLIB GOBJECT GTKSOURCEVIEW2 LIBXML GEE onig'

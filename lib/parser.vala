@@ -115,7 +115,7 @@ namespace Gtk.Mate {
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line1(line_ix);
 			int length = (int) line.length;//buffer.get_line_length(line_ix);
-			stdout.printf("\nparse line: %d (%d): '%s'\n", line_ix, length, line);
+			// stdout.printf("\nparse line: %d (%d): '%s'\n", line_ix, length, line);
 			var start_scope = this.root.scope_at(line_ix, -1);
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
 			//stdout.printf("scope_at returns: %s\n", start_scope.name);
