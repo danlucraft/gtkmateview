@@ -161,6 +161,8 @@ namespace Gtk {
 		}
 		[CCode (cheader_filename = "view.h")]
 		public class View : Gtk.SourceView {
+			public bool set_theme_by_name (string name);
+			public void set_global_theme_settings ();
 			public View ();
 		}
 		[CCode (cheader_filename = "matcher.h")]
@@ -179,7 +181,6 @@ namespace Gtk {
 			public Gtk.Mate.Parser parser;
 			public int set_grammar_by_name (string name);
 			public string? set_grammar_by_extension (string extension);
-			public bool set_theme_by_name (string name);
 			public Gtk.TextIter iter_ (int offset);
 			public Gtk.TextIter start_iter ();
 			public Gtk.TextIter end_iter ();
@@ -285,7 +286,9 @@ namespace Gtk {
 		}
 		[CCode (cheader_filename = "colourer.h")]
 		public class Colourer : Gtk.Object {
+			public void set_global_settings (Gtk.Mate.View view);
 			public Colourer (Gtk.Mate.Buffer buffer);
+			public Gdk.Color parse_colour (string colour);
 			public void colour_line_with_scopes (Gee.ArrayList<Gtk.Mate.Scope> scopes);
 			public void colour_scope (Gtk.Mate.Scope scope, bool inner);
 			public static void set_tag_properties (Gtk.Mate.Scope scope, Gtk.TextTag tag, Gtk.Mate.ThemeSetting setting);

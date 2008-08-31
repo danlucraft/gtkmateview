@@ -4,7 +4,6 @@
 #include "grammar.h"
 #include "parser.h"
 #include "onig_wrap.h"
-#include "colourer.h"
 #include "gtkmateview.h"
 
 
@@ -182,31 +181,6 @@ char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char*
 	self->parser = (_tmp14 = NULL, (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp14);
 	_tmp15 = NULL;
 	return (_tmp15 = NULL, (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), (first_line = (g_free (first_line), NULL)), _tmp15);
-}
-
-
-gboolean gtk_mate_buffer_set_theme_by_name (GtkMateBuffer* self, const char* name) {
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), FALSE);
-	g_return_val_if_fail (name != NULL, FALSE);
-	{
-		GeeArrayList* theme_collection;
-		int theme_it;
-		theme_collection = gtk_mate_theme_themes;
-		for (theme_it = 0; theme_it < gee_collection_get_size (GEE_COLLECTION (theme_collection)); theme_it = theme_it + 1) {
-			GtkMateTheme* theme;
-			theme = ((GtkMateTheme*) (gee_list_get (GEE_LIST (theme_collection), theme_it)));
-			{
-				if (_vala_strcmp0 (theme->name, name) == 0) {
-					gboolean _tmp0;
-					gtk_mate_theme_init_for_use (theme);
-					gtk_mate_colourer_set_theme (gtk_mate_parser_get_colourer (self->parser), theme);
-					return (_tmp0 = TRUE, (theme == NULL ? NULL : (theme = (g_object_unref (theme), NULL))), _tmp0);
-				}
-				(theme == NULL ? NULL : (theme = (g_object_unref (theme), NULL)));
-			}
-		}
-	}
-	return FALSE;
 }
 
 

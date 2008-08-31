@@ -3668,6 +3668,41 @@ static VALUE gtk_mate_view_initialize(VALUE self) {
     return Qnil;
 }
 
+static VALUE rb_gtk_mate_view_set_theme_by_name(VALUE self, VALUE name) {
+    GtkMateView* gtk_mate_view = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(name) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    // Method#argument_type_conversions
+    char * _c_name;
+    _c_name = g_strdup(STR2CSTR(name));
+    // Method#body
+    
+    gboolean _c_return;
+    _c_return = gtk_mate_view_set_theme_by_name(gtk_mate_view, _c_name);
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+          if (_c_return == TRUE)
+          _rb_return = Qtrue;
+      else
+          _rb_return = Qfalse;
+
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_view_set_global_theme_settings(VALUE self) {
+    GtkMateView* gtk_mate_view = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // Method#body
+    
+    gtk_mate_view_set_global_theme_settings(gtk_mate_view);
+    // Method#return_type_conversion
+    return Qnil;
+}
+
 
 /****  Gtk.Mate.Matcher methods *****/
 
@@ -3954,30 +3989,6 @@ static VALUE rb_gtk_mate_buffer_set_grammar_by_extension(VALUE self, VALUE exten
       }
 
     }
-    return _rb_return;
-}
-
-static VALUE rb_gtk_mate_buffer_set_theme_by_name(VALUE self, VALUE name) {
-    GtkMateBuffer* gtk_mate_buffer = RVAL2GOBJ(self);
-    // Method#type_checks
-    if (TYPE(name) != T_STRING) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected a string");
-    }
-    // Method#argument_type_conversions
-    char * _c_name;
-    _c_name = g_strdup(STR2CSTR(name));
-    // Method#body
-    
-    gboolean _c_return;
-    _c_return = gtk_mate_buffer_set_theme_by_name(gtk_mate_buffer, _c_name);
-    // Method#return_type_conversion
-    VALUE _rb_return; 
-          if (_c_return == TRUE)
-          _rb_return = Qtrue;
-      else
-          _rb_return = Qfalse;
-
     return _rb_return;
 }
 
@@ -5516,6 +5527,19 @@ static VALUE gtk_mate_colourer_initialize(VALUE self, VALUE buffer) {
     return Qnil;
 }
 
+static VALUE rb_gtk_mate_colourer_set_global_settings(VALUE self, VALUE view) {
+    GtkMateColourer* gtk_mate_colourer = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    GtkMateView* _c_view;
+    _c_view = _GTK_MATE_VIEW_SELF(view);
+    // Method#body
+    
+    gtk_mate_colourer_set_global_settings(gtk_mate_colourer, _c_view);
+    // Method#return_type_conversion
+    return Qnil;
+}
+
 static VALUE rb_gtk_mate_colourer_colour_line_with_scopes(VALUE self, VALUE scopes) {
     GtkMateColourer* gtk_mate_colourer = RVAL2GOBJ(self);
     // Method#type_checks
@@ -6693,6 +6717,8 @@ void Init_gtkmateview_rb() {
     rb_define_singleton_method(rbc_string_helper, "occurrences", rb_string_helper_occurrences, 2);
     rbc_gtk_mate_view = G_DEF_CLASS(gtk_mate_view_get_type(), "View", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_view, "initialize", gtk_mate_view_initialize, 0);
+    rb_define_method(rbc_gtk_mate_view, "set_theme_by_name", rb_gtk_mate_view_set_theme_by_name, 1);
+    rb_define_method(rbc_gtk_mate_view, "set_global_theme_settings", rb_gtk_mate_view_set_global_theme_settings, 0);
     rbc_plist_integer = G_DEF_CLASS(plist_integer_get_type(), "Integer", rbc_plist);
     rb_define_method(rbc_plist_integer, "initialize", plist_integer_initialize, 0);
     rb_define_method(rbc_plist_integer, "value", rb_plist_integer_get_value, 0);
@@ -6833,7 +6859,6 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_buffer, "parser=", rb_gtk_mate_buffer_set_parser, 1);
     rb_define_method(rbc_gtk_mate_buffer, "set_grammar_by_name", rb_gtk_mate_buffer_set_grammar_by_name, 1);
     rb_define_method(rbc_gtk_mate_buffer, "set_grammar_by_extension", rb_gtk_mate_buffer_set_grammar_by_extension, 1);
-    rb_define_method(rbc_gtk_mate_buffer, "set_theme_by_name", rb_gtk_mate_buffer_set_theme_by_name, 1);
     rb_define_method(rbc_gtk_mate_buffer, "start_mark", rb_gtk_mate_buffer_start_mark, 0);
     rb_define_method(rbc_gtk_mate_buffer, "end_mark", rb_gtk_mate_buffer_end_mark, 0);
     rb_define_method(rbc_gtk_mate_buffer, "cursor_mark", rb_gtk_mate_buffer_cursor_mark, 0);
@@ -6940,6 +6965,7 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_grammar, "init_for_use", rb_gtk_mate_grammar_init_for_use, 0);
     rbc_gtk_mate_colourer = G_DEF_CLASS(gtk_mate_colourer_get_type(), "Colourer", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_colourer, "initialize", gtk_mate_colourer_initialize, 1);
+    rb_define_method(rbc_gtk_mate_colourer, "set_global_settings", rb_gtk_mate_colourer_set_global_settings, 1);
     rb_define_method(rbc_gtk_mate_colourer, "colour_line_with_scopes", rb_gtk_mate_colourer_colour_line_with_scopes, 1);
     rb_define_method(rbc_gtk_mate_colourer, "colour_scope", rb_gtk_mate_colourer_colour_scope, 2);
     rb_define_singleton_method(rbc_gtk_mate_colourer, "set_tag_properties", rb_gtk_mate_colourer_set_tag_properties, 3);

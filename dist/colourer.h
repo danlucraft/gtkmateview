@@ -5,9 +5,11 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
-#include <gee/arraylist.h>
+#include <gdk/gdk.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gee/arraylist.h>
+#include "view.h"
 #include "theme.h"
 
 G_BEGIN_DECLS
@@ -32,7 +34,9 @@ struct _GtkMateColourerClass {
 };
 
 
+void gtk_mate_colourer_set_global_settings (GtkMateColourer* self, GtkMateView* view);
 GtkMateColourer* gtk_mate_colourer_new (GtkMateBuffer* buffer);
+GdkColor gtk_mate_colourer_parse_colour (GtkMateColourer* self, const char* colour);
 void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayList* scopes);
 void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope, gboolean inner);
 void gtk_mate_colourer_set_tag_properties (GtkMateScope* scope, GtkTextTag* tag, GtkMateThemeSetting* setting);

@@ -34,12 +34,52 @@ static glong string_get_length (const char* self) {
 }
 
 
+void gtk_mate_colourer_set_global_settings (GtkMateColourer* self, GtkMateView* view) {
+	char* bg_colour;
+	char* fg_colour;
+	g_return_if_fail (GTK_MATE_IS_COLOURER (self));
+	g_return_if_fail (GTK_MATE_IS_VIEW (view));
+	fprintf (stdout, "construct colourer\n");
+	fprintf (stdout, "bg colour1\n");
+	bg_colour = ((char*) (gee_map_get (GEE_MAP (self->priv->_theme->global_settings), "background")));
+	if (bg_colour != NULL && _vala_strcmp0 (bg_colour, "") != 0) {
+		char* _tmp0;
+		GdkColor _tmp1 = {0};
+		fprintf (stdout, "bg colour1\n");
+		_tmp0 = NULL;
+		bg_colour = (_tmp0 = gtk_mate_colourer_merge_colour ("#FFFFFF", bg_colour), (bg_colour = (g_free (bg_colour), NULL)), _tmp0);
+		fprintf (stdout, "bg colour: %s\n", bg_colour);
+		gtk_widget_modify_base ((GTK_WIDGET (view)), GTK_STATE_NORMAL, (_tmp1 = gtk_mate_colourer_parse_colour (self, bg_colour), &_tmp1));
+	}
+	fg_colour = ((char*) (gee_map_get (GEE_MAP (self->priv->_theme->global_settings), "foreground")));
+	if (fg_colour != NULL && _vala_strcmp0 (fg_colour, "") != 0) {
+		char* _tmp2;
+		GdkColor _tmp3 = {0};
+		_tmp2 = NULL;
+		fg_colour = (_tmp2 = gtk_mate_colourer_merge_colour ("#FFFFFF", fg_colour), (fg_colour = (g_free (fg_colour), NULL)), _tmp2);
+		fprintf (stdout, "fg colour: %s\n", fg_colour);
+		gtk_widget_modify_text ((GTK_WIDGET (view)), GTK_STATE_NORMAL, (_tmp3 = gtk_mate_colourer_parse_colour (self, fg_colour), &_tmp3));
+	}
+	bg_colour = (g_free (bg_colour), NULL);
+	fg_colour = (g_free (fg_colour), NULL);
+}
+
+
 GtkMateColourer* gtk_mate_colourer_new (GtkMateBuffer* buffer) {
 	GtkMateColourer * self;
 	g_return_val_if_fail (GTK_MATE_IS_BUFFER (buffer), NULL);
 	self = g_object_newv (GTK_MATE_TYPE_COLOURER, 0, NULL);
 	gtk_mate_colourer_set_buffer (self, buffer);
 	return self;
+}
+
+
+GdkColor gtk_mate_colourer_parse_colour (GtkMateColourer* self, const char* colour) {
+	GdkColor c = {0};
+	0;
+	0;
+	gdk_color_parse (colour, &c);
+	return c;
 }
 
 

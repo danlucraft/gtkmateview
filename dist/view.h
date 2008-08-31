@@ -5,6 +5,8 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gtksourceview/gtksourceview.h>
+#include <stdlib.h>
+#include <string.h>
 
 G_BEGIN_DECLS
 
@@ -30,6 +32,8 @@ struct _GtkMateViewClass {
 };
 
 
+gboolean gtk_mate_view_set_theme_by_name (GtkMateView* self, const char* name);
+void gtk_mate_view_set_global_theme_settings (GtkMateView* self);
 GtkMateView* gtk_mate_view_new (void);
 GType gtk_mate_view_get_type (void);
 

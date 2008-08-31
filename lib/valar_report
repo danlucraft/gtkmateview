@@ -190,6 +190,8 @@ Gtk.Mate.Grammar
   * void                                                 set_repository                      (Gee.HashMap<string,Gee.ArrayList<Gtk.Mate.Pattern>> repository)
   * void                                                 set_scope_name                      (string scope_name)
 Gtk.Mate.View
+  * void                                                 set_global_theme_settings           ()
+  * bool                                                 set_theme_by_name                   (string name)
 Gtk.Mate.Matcher
   * int                                                  compare_match                       (string scope_string, Oniguruma.Match m1, Oniguruma.Match m2)
   x bool                                                 match                               (string selector_string, string scope_string, out Oniguruma.Match)
@@ -221,7 +223,6 @@ Gtk.Mate.Buffer
   * string                                               set_grammar_by_extension            (string extension)
   * int                                                  set_grammar_by_name                 (string name)
   * void                                                 set_parser                          (Gtk.Mate.Parser parser)
-  * bool                                                 set_theme_by_name                   (string name)
   * void                                                 set_themes                          (Gee.ArrayList<Gtk.Mate.Theme> themes)
   x Gtk.TextIter                                         start_iter                          ()
   * Gtk.TextMark                                         start_mark                          ()
@@ -302,6 +303,8 @@ Gtk.Mate.Colourer
   * void                                                 colour_line_with_scopes             (Gee.ArrayList<Gtk.Mate.Scope> scopes)
   * void                                                 colour_scope                        (Gtk.Mate.Scope scope, bool inner)
   * string                                               merge_colour                        (string parent_colour, string colour)
+  x Gdk.Color                                            parse_colour                        (string colour)
+  * void                                                 set_global_settings                 (Gtk.Mate.View view)
   * void                                                 set_tag_properties                  (Gtk.Mate.Scope scope, Gtk.TextTag tag, Gtk.Mate.ThemeSetting setting)
   * void                                                 uncolour_scope                      (Gtk.Mate.Scope scope, bool recurse)
   * void                                                 uncolour_scopes                     (Gee.ArrayList<Gtk.Mate.Scope> scopes)

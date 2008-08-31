@@ -6,9 +6,34 @@ namespace Gtk.Mate {
 	public class Colourer : Object {
 		public Buffer buffer {get; set;}
 		public Theme theme {get; set;}
+		
+		public void set_global_settings(Gtk.Mate.View view) {
+			stdout.printf("construct colourer\n");
+			stdout.printf("bg colour1\n");
+			string bg_colour = theme.global_settings.get("background");
+			if (bg_colour != null && bg_colour != "") {
+				stdout.printf("bg colour1\n");
+				bg_colour = Colourer.merge_colour("#FFFFFF", bg_colour);
+				stdout.printf("bg colour: %s\n", bg_colour);
+				((Gtk.Widget) view).modify_base(Gtk.StateType.NORMAL, parse_colour(bg_colour));
+			}
+
+			string fg_colour = theme.global_settings.get("foreground");
+			if (fg_colour != null && fg_colour != "") {
+				fg_colour = Colourer.merge_colour("#FFFFFF", fg_colour);
+				stdout.printf("fg colour: %s\n", fg_colour);
+				((Gtk.Widget) view).modify_text(Gtk.StateType.NORMAL, parse_colour(fg_colour));
+			}
+		}
 
 		public Colourer(Gtk.Mate.Buffer buffer) {
 			this.buffer = buffer;
+		}
+
+		public Gdk.Color parse_colour(string colour) {
+			Gdk.Color c;
+			Gdk.Color.parse(colour, out c);
+			return c;
 		}
 
 		public void colour_line_with_scopes(ArrayList<Scope> scopes) {
