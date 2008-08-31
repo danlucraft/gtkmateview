@@ -7,7 +7,7 @@ namespace Gtk {
 		[CCode (cheader_filename = "theme.h")]
 		public class ThemeSetting : Gtk.Object {
 			public string name;
-			public string scope;
+			public string selector;
 			public Gee.HashMap<string,string> settings;
 			public Oniguruma.Regex positive_rx;
 			public Oniguruma.Regex negative_rx;
@@ -27,7 +27,7 @@ namespace Gtk {
 			public static Gtk.Mate.Theme create_from_plist (PList.Dict dict);
 			public void init_for_use ();
 			public static Gee.ArrayList<string>? theme_filenames ();
-			public Gee.ArrayList<Gtk.Mate.ThemeSetting> settings_for_scope (Gtk.Mate.Scope scope);
+			public Gtk.Mate.ThemeSetting settings_for_scope (Gtk.Mate.Scope scope, bool inner);
 			public Theme ();
 		}
 		[CCode (cheader_filename = "pattern.h")]
@@ -82,7 +82,7 @@ namespace Gtk {
 			public Gtk.TextTag tag;
 			public Gtk.TextTag inner_tag;
 			public bool is_open;
-			public string bg_color;
+			public string bg_colour;
 			public bool is_capture;
 			public Gtk.Mate.TextLoc dummy_start_loc;
 			public Gtk.Mate.TextLoc dummy_end_loc;
@@ -132,6 +132,8 @@ namespace Gtk {
 			public Gtk.Mate.TextLoc end_loc ();
 			public Gtk.Mate.Scope root ();
 			public int priority ();
+			public string hierarchy_names (bool inner);
+			public string? nearest_background_colour ();
 			public string? name { get; set; }
 			public Gtk.Mate.Buffer buffer { get; set; }
 			public GLib.Sequence<Gtk.Mate.Scope> children { get; }
@@ -281,7 +283,10 @@ namespace Gtk {
 		public class Colourer : Gtk.Object {
 			public Colourer (Gtk.Mate.Buffer buffer);
 			public void colour_line_with_scopes (Gee.ArrayList<Gtk.Mate.Scope> scopes);
-			public void colour_scope (Gtk.Mate.Scope scope, bool colour_inner);
+			public void colour_scope (Gtk.Mate.Scope scope, bool inner);
+			public static void set_tag_properties (Gtk.Mate.Scope scope, Gtk.TextTag tag, Gtk.Mate.ThemeSetting setting);
+			public static int char_to_hex (unichar ch);
+			public static string merge_colour (string parent_colour, string colour);
 			public Gtk.Mate.Buffer buffer { get; set; }
 			public Gtk.Mate.Theme theme { get; set; }
 		}

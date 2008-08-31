@@ -28,6 +28,8 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
+/* public static int id_count = 0;
+ public int id;*/
 GtkMateScope* gtk_mate_scope_new (GtkMateBuffer* buf, const char* name) {
 	GtkMateScope * self;
 	g_return_val_if_fail (GTK_MATE_IS_BUFFER (buf), NULL);
@@ -823,6 +825,71 @@ gint gtk_mate_scope_priority (GtkMateScope* self) {
 }
 
 
+char* gtk_mate_scope_hierarchy_names (GtkMateScope* self, gboolean inner) {
+	char* self_name;
+	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	self_name = NULL;
+	/* stdout.printf("'%s'.hierarchy_names(%s)\n", name, inner ? "true" : "false");*/
+	if (GTK_MATE_IS_DOUBLE_PATTERN (self->pattern) && (GTK_MATE_DOUBLE_PATTERN (self->pattern))->content_name != NULL && inner) {
+		char* _tmp1;
+		char* _tmp0;
+		_tmp1 = NULL;
+		_tmp0 = NULL;
+		self_name = (_tmp1 = g_strconcat ((_tmp0 = g_strconcat (self->priv->_name, " ", NULL)), (GTK_MATE_DOUBLE_PATTERN (self->pattern))->content_name, NULL), (self_name = (g_free (self_name), NULL)), _tmp1);
+		_tmp0 = (g_free (_tmp0), NULL);
+	} else {
+		char* _tmp3;
+		const char* _tmp2;
+		_tmp3 = NULL;
+		_tmp2 = NULL;
+		self_name = (_tmp3 = (_tmp2 = self->priv->_name, (_tmp2 == NULL ? NULL : g_strdup (_tmp2))), (self_name = (g_free (self_name), NULL)), _tmp3);
+	}
+	if (self->parent != NULL) {
+		gboolean next_inner;
+		char* _tmp5;
+		char* _tmp4;
+		char* _tmp6;
+		char* _tmp7;
+		next_inner = FALSE;
+		if (self->is_capture) {
+			next_inner = FALSE;
+		} else {
+			next_inner = TRUE;
+		}
+		_tmp5 = NULL;
+		_tmp4 = NULL;
+		_tmp6 = NULL;
+		_tmp7 = NULL;
+		return (_tmp7 = (_tmp6 = g_strconcat ((_tmp5 = g_strconcat ((_tmp4 = gtk_mate_scope_hierarchy_names (self->parent, next_inner)), " ", NULL)), self_name, NULL), (_tmp5 = (g_free (_tmp5), NULL)), (_tmp4 = (g_free (_tmp4), NULL)), _tmp6), (self_name = (g_free (self_name), NULL)), _tmp7);
+	} else {
+		return self_name;
+	}
+	self_name = (g_free (self_name), NULL);
+}
+
+
+/* public int scope_id() {
+ if (id == null) {
+ Scope.id_count++;
+ id = Scope.id_count;
+ }
+ return id;
+ }*/
+char* gtk_mate_scope_nearest_background_colour (GtkMateScope* self) {
+	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	if (self->bg_colour == NULL) {
+		if (self->parent != NULL) {
+			return gtk_mate_scope_nearest_background_colour (self->parent);
+		}
+		return NULL;
+	} else {
+		const char* _tmp2;
+		_tmp2 = NULL;
+		return (_tmp2 = self->bg_colour, (_tmp2 == NULL ? NULL : g_strdup (_tmp2)));
+	}
+}
+
+
 const char* gtk_mate_scope_get_name (GtkMateScope* self) {
 	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
 	return self->priv->_name;
@@ -957,7 +1024,7 @@ static void gtk_mate_scope_finalize (GObject * obj) {
 	(self->end_mark == NULL ? NULL : (self->end_mark = (g_object_unref (self->end_mark), NULL)));
 	(self->tag == NULL ? NULL : (self->tag = (g_object_unref (self->tag), NULL)));
 	(self->inner_tag == NULL ? NULL : (self->inner_tag = (g_object_unref (self->inner_tag), NULL)));
-	self->bg_color = (g_free (self->bg_color), NULL);
+	self->bg_colour = (g_free (self->bg_colour), NULL);
 	(self->dummy_start_loc == NULL ? NULL : (self->dummy_start_loc = (g_object_unref (self->dummy_start_loc), NULL)));
 	(self->dummy_end_loc == NULL ? NULL : (self->dummy_end_loc = (g_object_unref (self->dummy_end_loc), NULL)));
 	self->begin_match_string = (g_free (self->begin_match_string), NULL);

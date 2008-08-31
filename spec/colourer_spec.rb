@@ -10,5 +10,6 @@ describe Gtk::Mate::Colourer do
 
   it "should asdf" do
     @mb.text = "def foo"
+    puts @mb.parser.root.pretty(0)
   end
 end

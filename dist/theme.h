@@ -57,7 +57,7 @@ struct _GtkMateThemeSetting {
 	GtkObject parent_instance;
 	GtkMateThemeSettingPrivate * priv;
 	char* name;
-	char* scope;
+	char* selector;
 	GeeHashMap* settings;
 	OnigurumaRegex* positive_rx;
 	OnigurumaRegex* negative_rx;
@@ -91,7 +91,7 @@ extern GeeArrayList* gtk_mate_theme_themes;
 GtkMateTheme* gtk_mate_theme_create_from_plist (PListDict* dict);
 void gtk_mate_theme_init_for_use (GtkMateTheme* self);
 GeeArrayList* gtk_mate_theme_theme_filenames (void);
-GeeArrayList* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkMateScope* scope);
+GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkMateScope* scope, gboolean inner);
 GtkMateTheme* gtk_mate_theme_new (void);
 GType gtk_mate_theme_get_type (void);
 

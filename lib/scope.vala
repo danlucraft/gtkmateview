@@ -20,7 +20,7 @@ namespace Gtk.Mate {
 		public TextTag inner_tag;
 		public bool is_open;
 
-		public string bg_color;
+		public string bg_colour;
 		public bool is_capture;
 		
 		// these are for when we want to compare scopes without
@@ -45,6 +45,9 @@ namespace Gtk.Mate {
 		public int indent;
 
 		public bool is_coloured {get; set;}
+
+		// public static int id_count = 0;
+		// public int id;
 
 		public Scope(Mate.Buffer buf, string? name) {
 			this.name = name;
@@ -470,6 +473,51 @@ namespace Gtk.Mate {
 				return 1;
 			else
 				return parent.priority() + 1;
+		}
+
+		public string hierarchy_names(bool inner) {
+			string self_name;
+			// stdout.printf("'%s'.hierarchy_names(%s)\n", name, inner ? "true" : "false");
+			if (pattern is DoublePattern &&
+				((DoublePattern) pattern).content_name != null &&
+				inner) {
+				self_name = name + " " + ((DoublePattern) pattern).content_name;
+			}
+			else {
+				self_name = name;
+			}
+			if (parent != null) {
+				bool next_inner;
+				if (is_capture)
+					next_inner = false;
+				else
+					next_inner = true;
+				return parent.hierarchy_names(next_inner) + " " + self_name;
+			}
+			else {
+				return self_name;
+			}
+		}
+
+		// public int scope_id() {
+		// 	if (id == null) {
+		// 		Scope.id_count++;
+		// 		id = Scope.id_count;
+		// 	}
+		// 	return id;
+		// }
+
+		public string? nearest_background_colour() {
+			if (bg_colour == null) {
+				if (parent != null) {
+					return parent.nearest_background_colour();
+				}
+				return null;
+			}
+			else {
+				return bg_colour;
+			}
+			
 		}
 	}
 }

@@ -5,6 +5,7 @@
 #include <gee/collection.h>
 #include "gtkmateview.h"
 #include "scope.h"
+#include "matcher.h"
 
 
 
@@ -48,7 +49,7 @@ GtkMateThemeSetting* gtk_mate_theme_setting_create_from_plist (PListDict* dict) 
 		const char* _tmp3;
 		_tmp4 = NULL;
 		_tmp3 = NULL;
-		tsetting->scope = (_tmp4 = (_tmp3 = (PLIST_STRING (nm))->str, (_tmp3 == NULL ? NULL : g_strdup (_tmp3))), (tsetting->scope = (g_free (tsetting->scope), NULL)), _tmp4);
+		tsetting->selector = (_tmp4 = (_tmp3 = (PLIST_STRING (nm))->str, (_tmp3 == NULL ? NULL : g_strdup (_tmp3))), (tsetting->selector = (g_free (tsetting->selector), NULL)), _tmp4);
 	}
 	_tmp5 = NULL;
 	tsetting->settings = (_tmp5 = gee_hash_map_new (G_TYPE_STRING, ((GBoxedCopyFunc) (g_strdup)), g_free, G_TYPE_STRING, ((GBoxedCopyFunc) (g_strdup)), g_free, g_str_hash, g_str_equal, g_direct_equal), (tsetting->settings == NULL ? NULL : (tsetting->settings = (g_object_unref (tsetting->settings), NULL))), _tmp5);
@@ -79,7 +80,7 @@ GtkMateThemeSetting* gtk_mate_theme_setting_create_from_plist (PListDict* dict) 
 
 void gtk_mate_theme_setting_compile_scope_matchers (GtkMateThemeSetting* self) {
 	g_return_if_fail (GTK_MATE_IS_THEME_SETTING (self));
-	fprintf (stdout, "compiling '%s'\n", self->scope);
+	fprintf (stdout, "compiling '%s'\n", self->selector);
 }
 
 
@@ -104,7 +105,7 @@ static void gtk_mate_theme_setting_finalize (GObject * obj) {
 	GtkMateThemeSetting * self;
 	self = GTK_MATE_THEME_SETTING (obj);
 	self->name = (g_free (self->name), NULL);
-	self->scope = (g_free (self->scope), NULL);
+	self->selector = (g_free (self->selector), NULL);
 	(self->settings == NULL ? NULL : (self->settings = (g_object_unref (self->settings), NULL)));
 	(self->positive_rx == NULL ? NULL : (self->positive_rx = (g_object_unref (self->positive_rx), NULL)));
 	(self->negative_rx == NULL ? NULL : (self->negative_rx = (g_object_unref (self->negative_rx), NULL)));
@@ -299,10 +300,72 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
 }
 
 
-GeeArrayList* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkMateScope* scope) {
+/* TODO make this return multiple themes if they are identical
+ (see 13.5 of Textmate manual)*/
+GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkMateScope* scope, gboolean inner) {
+	char* scope_name;
+	OnigurumaMatch* current_m;
+	OnigurumaMatch* m;
+	GtkMateThemeSetting* current;
+	GtkMateThemeSetting* _tmp11;
 	g_return_val_if_fail (GTK_MATE_IS_THEME (self), NULL);
 	g_return_val_if_fail (GTK_MATE_IS_SCOPE (scope), NULL);
-	return gee_array_list_new (GTK_MATE_TYPE_THEME_SETTING, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
+	scope_name = gtk_mate_scope_hierarchy_names (scope, inner);
+	current_m = NULL;
+	m = NULL;
+	current = NULL;
+	{
+		GeeArrayList* setting_collection;
+		int setting_it;
+		setting_collection = self->settings;
+		for (setting_it = 0; setting_it < gee_collection_get_size (GEE_COLLECTION (setting_collection)); setting_it = setting_it + 1) {
+			GtkMateThemeSetting* setting;
+			setting = ((GtkMateThemeSetting*) (gee_list_get (GEE_LIST (setting_collection), setting_it)));
+			{
+				OnigurumaMatch* _tmp2;
+				gboolean _tmp1;
+				OnigurumaMatch* _tmp0;
+				_tmp2 = NULL;
+				_tmp0 = NULL;
+				if ((_tmp1 = gtk_mate_matcher_match (setting->selector, scope_name, &_tmp0), m = (_tmp2 = _tmp0, (m == NULL ? NULL : (m = (g_object_unref (m), NULL))), _tmp2), _tmp1)) {
+					fprintf (stdout, "    setting '%s' with selector '%s'\n", setting->name, setting->selector);
+					if (current == NULL) {
+						GtkMateThemeSetting* _tmp4;
+						GtkMateThemeSetting* _tmp3;
+						OnigurumaMatch* _tmp6;
+						OnigurumaMatch* _tmp5;
+						_tmp4 = NULL;
+						_tmp3 = NULL;
+						current = (_tmp4 = (_tmp3 = setting, (_tmp3 == NULL ? NULL : g_object_ref (_tmp3))), (current == NULL ? NULL : (current = (g_object_unref (current), NULL))), _tmp4);
+						_tmp6 = NULL;
+						_tmp5 = NULL;
+						current_m = (_tmp6 = (_tmp5 = m, (_tmp5 == NULL ? NULL : g_object_ref (_tmp5))), (current_m == NULL ? NULL : (current_m = (g_object_unref (current_m), NULL))), _tmp6);
+					} else {
+						if (gtk_mate_matcher_compare_match (scope_name, current_m, m) > 0) {
+							GtkMateThemeSetting* _tmp8;
+							GtkMateThemeSetting* _tmp7;
+							OnigurumaMatch* _tmp10;
+							OnigurumaMatch* _tmp9;
+							_tmp8 = NULL;
+							_tmp7 = NULL;
+							current = (_tmp8 = (_tmp7 = setting, (_tmp7 == NULL ? NULL : g_object_ref (_tmp7))), (current == NULL ? NULL : (current = (g_object_unref (current), NULL))), _tmp8);
+							_tmp10 = NULL;
+							_tmp9 = NULL;
+							current_m = (_tmp10 = (_tmp9 = m, (_tmp9 == NULL ? NULL : g_object_ref (_tmp9))), (current_m == NULL ? NULL : (current_m = (g_object_unref (current_m), NULL))), _tmp10);
+						}
+					}
+				}
+				(setting == NULL ? NULL : (setting = (g_object_unref (setting), NULL)));
+			}
+		}
+	}
+	if (current == NULL) {
+	} else {
+		/* stdout.printf("none match\n");*/
+		fprintf (stdout, "    best: '%s'\n", current->name);
+	}
+	_tmp11 = NULL;
+	return (_tmp11 = current, (scope_name = (g_free (scope_name), NULL)), (current_m == NULL ? NULL : (current_m = (g_object_unref (current_m), NULL))), (m == NULL ? NULL : (m = (g_object_unref (m), NULL))), _tmp11);
 }
 
 

@@ -158,6 +158,7 @@ char* gtk_mate_matcher_test_rank (const char* selector_a, const char* selector_b
 }
 
 
+/* this method is mainly for testing in the Ruby specs*/
 gboolean gtk_mate_matcher_test_match (const char* selector_string, const char* scope_string) {
 	OnigurumaMatch* m;
 	OnigurumaMatch* _tmp2;
@@ -207,7 +208,7 @@ gboolean gtk_mate_matcher_match (const char* selector_string, const char* scope_
 				pos_rx = NULL;
 				neg_rxs = gee_array_list_new (ONIGURUMA_TYPE_REGEX, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
 				_tmp1 = NULL;
-				positives_and_negatives = (_tmp1 = g_strsplit (selector_string1, "-", 0), positives_and_negatives_length1 = -1, _tmp1);
+				positives_and_negatives = (_tmp1 = g_strsplit (selector_string1, " -", 0), positives_and_negatives_length1 = -1, _tmp1);
 				{
 					char** sub_selector_string_collection;
 					int sub_selector_string_collection_length1;
@@ -271,6 +272,9 @@ gboolean gtk_mate_matcher_match (const char* selector_string, const char* scope_
 }
 
 
+/* public static void compile_re(string selector, out Oniguruma.Regex pos_re, 
+   out ArrayList<Oniguruma.Regex> neg_res) {
+ }*/
 gboolean gtk_mate_matcher_test_match_re (OnigurumaRegex* positive_selector_regex, GeeArrayList* negative_selector_regex, const char* scope_string, OnigurumaMatch** match) {
 	OnigurumaMatch* m;
 	g_return_val_if_fail (ONIGURUMA_IS_REGEX (positive_selector_regex), FALSE);

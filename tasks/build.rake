@@ -93,6 +93,6 @@ namespace :build do
 end
   
 Spec::Rake::SpecTask.new do |t|
-  t.spec_opts = ["-c", "-f s"]
+  t.spec_opts = ["-c"]#, "-f s"]
 end
 

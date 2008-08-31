@@ -5,7 +5,7 @@ using GLib;
 namespace Gtk.Mate {
 	public class ThemeSetting : Object {
 		public string name;
-		public string scope;
+		public string selector;
 		public HashMap<string, string> settings;
 		public Oniguruma.Regex positive_rx;
 		public Oniguruma.Regex negative_rx;
@@ -19,7 +19,7 @@ namespace Gtk.Mate {
 				tsetting.name = ((PList.String) nm).str;
 			nm = dict.get("scope");
 			if (nm != null)
-				tsetting.scope = ((PList.String) nm).str;
+				tsetting.selector = ((PList.String) nm).str;
 
 			tsetting.settings = new HashMap<string, string>(str_hash, str_equal);
 			PList.Dict pd = (PList.Dict) dict.get("settings");
@@ -31,7 +31,7 @@ namespace Gtk.Mate {
 		}
 
 		public void compile_scope_matchers() {
-			stdout.printf("compiling '%s'\n", scope);
+			stdout.printf("compiling '%s'\n", selector);
 			
 		}
 	}
@@ -104,9 +104,33 @@ namespace Gtk.Mate {
 			return null;
 		}
 
-		public ArrayList<ThemeSetting> settings_for_scope(Scope scope) {
-			
-			return new ArrayList<ThemeSetting>();
+		// TODO make this return multiple themes if they are identical
+		// (see 13.5 of Textmate manual)
+		public ThemeSetting settings_for_scope(Scope scope, bool inner) {
+			string scope_name = scope.hierarchy_names(inner);
+			Oniguruma.Match current_m, m;
+			ThemeSetting current;
+			foreach (var setting in settings) {
+				if (Matcher.match(setting.selector, scope_name, out m)) {
+					stdout.printf("    setting '%s' with selector '%s'\n",
+								  setting.name, setting.selector);
+					if (current == null) {
+						current = setting;
+						current_m = m;
+					}
+					else if (Matcher.compare_match(scope_name, current_m, m) > 0) {
+						current = setting;
+						current_m = m;
+					}
+				}
+			}
+			if (current == null) {
+				// stdout.printf("none match\n");
+			}
+			else {
+				stdout.printf("    best: '%s'\n", current.name);
+			}
+			return current;
 		}
 	}
 }

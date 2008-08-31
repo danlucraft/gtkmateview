@@ -1,8 +1,8 @@
 
 #include "colourer.h"
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <gee/map.h>
+#include <pango/pango.h>
 #include "buffer.h"
 #include "scope.h"
 #include "pattern.h"
@@ -10,6 +10,7 @@
 
 
 
+static glong string_get_length (const char* self);
 struct _GtkMateColourerPrivate {
 	GtkMateBuffer* _buffer;
 	GtkMateTheme* _theme;
@@ -23,7 +24,14 @@ enum  {
 };
 static gpointer gtk_mate_colourer_parent_class = NULL;
 static void gtk_mate_colourer_finalize (GObject * obj);
+static int _vala_strcmp0 (const char * str1, const char * str2);
 
+
+
+static glong string_get_length (const char* self) {
+	g_return_val_if_fail (self != NULL, 0L);
+	return g_utf8_strlen (self, -1);
+}
 
 
 GtkMateColourer* gtk_mate_colourer_new (GtkMateBuffer* buffer) {
@@ -76,9 +84,17 @@ void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayL
 }
 
 
-void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope, gboolean colour_inner) {
+void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope, gboolean inner) {
 	gint priority;
 	GtkTextTag* tag;
+	GtkTextIter start_iter = {0};
+	GtkTextIter end_iter = {0};
+	GtkMateThemeSetting* setting;
+	char* tag_name;
+	GtkTextTagTable* _tmp7;
+	GtkTextTagTable* tag_table;
+	GtkTextTag* _tmp9;
+	GtkTextTag* _tmp8;
 	g_return_if_fail (GTK_MATE_IS_COLOURER (self));
 	g_return_if_fail (GTK_MATE_IS_SCOPE (scope));
 	fprintf (stdout, "  colouring\n");
@@ -86,9 +102,7 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 	tag = NULL;
 	fprintf (stdout, "  priority: %d\n", priority);
 	gtk_mate_scope_set_is_coloured (scope, TRUE);
-	if (colour_inner) {
-		GtkTextIter start_iter;
-		GtkTextIter end_iter;
+	if (inner) {
 		start_iter = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, scope->inner_start_mark);
 		end_iter = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, scope->inner_end_mark);
 		if (scope->inner_tag != NULL) {
@@ -99,8 +113,6 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 			tag = (_tmp1 = (_tmp0 = scope->inner_tag, (_tmp0 == NULL ? NULL : g_object_ref (_tmp0))), (tag == NULL ? NULL : (tag = (g_object_unref (tag), NULL))), _tmp1);
 		}
 	} else {
-		GtkTextIter start_iter;
-		GtkTextIter end_iter;
 		start_iter = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, scope->start_mark);
 		end_iter = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, scope->end_mark);
 		if (scope->tag != NULL) {
@@ -111,12 +123,169 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 			tag = (_tmp3 = (_tmp2 = scope->tag, (_tmp2 == NULL ? NULL : g_object_ref (_tmp2))), (tag == NULL ? NULL : (tag = (g_object_unref (tag), NULL))), _tmp3);
 		}
 	}
+	/* TODO: allow for multiple settings that set different 
+	 parts of the style.*/
+	setting = NULL;
+	tag_name = NULL;
 	if (tag == NULL) {
-		GeeArrayList* settings;
-		settings = gtk_mate_theme_settings_for_scope (self->priv->_theme, scope);
-		(settings == NULL ? NULL : (settings = (g_object_unref (settings), NULL)));
+		GtkMateThemeSetting* _tmp4;
+		_tmp4 = NULL;
+		setting = (_tmp4 = gtk_mate_theme_settings_for_scope (self->priv->_theme, scope, FALSE), (setting == NULL ? NULL : (setting = (g_object_unref (setting), NULL))), _tmp4);
+		if (setting == NULL) {
+			char* _tmp5;
+			_tmp5 = NULL;
+			tag_name = (_tmp5 = g_strdup_printf ("gmv(%d):default", priority - 1), (tag_name = (g_free (tag_name), NULL)), _tmp5);
+		} else {
+			char* _tmp6;
+			_tmp6 = NULL;
+			tag_name = (_tmp6 = g_strdup_printf ("gmv(%d):%s", priority - 1, gtk_mate_scope_get_name (scope)), (tag_name = (g_free (tag_name), NULL)), _tmp6);
+		}
 	}
+	_tmp7 = NULL;
+	tag_table = (_tmp7 = gtk_text_buffer_get_tag_table (GTK_TEXT_BUFFER (self->priv->_buffer)), (_tmp7 == NULL ? NULL : g_object_ref (_tmp7)));
+	_tmp9 = NULL;
+	_tmp8 = NULL;
+	tag = (_tmp9 = (_tmp8 = gtk_text_tag_table_lookup (tag_table, tag_name), (_tmp8 == NULL ? NULL : g_object_ref (_tmp8))), (tag == NULL ? NULL : (tag = (g_object_unref (tag), NULL))), _tmp9);
+	if (tag == NULL) {
+		GtkTextTag* _tmp11;
+		GtkTextTag* _tmp10;
+		_tmp11 = NULL;
+		_tmp10 = NULL;
+		tag = (_tmp11 = (_tmp10 = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (self->priv->_buffer), tag_name, NULL), (_tmp10 == NULL ? NULL : g_object_ref (_tmp10))), (tag == NULL ? NULL : (tag = (g_object_unref (tag), NULL))), _tmp11);
+	}
+	fprintf (stdout, "tag: '%s'\n", tag_name);
+	if (setting != NULL) {
+		gtk_mate_colourer_set_tag_properties (scope, tag, setting);
+	}
+	if (inner) {
+		GtkTextTag* _tmp13;
+		GtkTextTag* _tmp12;
+		_tmp13 = NULL;
+		_tmp12 = NULL;
+		scope->inner_tag = (_tmp13 = (_tmp12 = tag, (_tmp12 == NULL ? NULL : g_object_ref (_tmp12))), (scope->inner_tag == NULL ? NULL : (scope->inner_tag = (g_object_unref (scope->inner_tag), NULL))), _tmp13);
+	} else {
+		GtkTextTag* _tmp15;
+		GtkTextTag* _tmp14;
+		_tmp15 = NULL;
+		_tmp14 = NULL;
+		scope->tag = (_tmp15 = (_tmp14 = tag, (_tmp14 == NULL ? NULL : g_object_ref (_tmp14))), (scope->tag == NULL ? NULL : (scope->tag = (g_object_unref (scope->tag), NULL))), _tmp15);
+	}
+	gtk_text_buffer_apply_tag (GTK_TEXT_BUFFER (self->priv->_buffer), tag, &start_iter, &end_iter);
 	(tag == NULL ? NULL : (tag = (g_object_unref (tag), NULL)));
+	(setting == NULL ? NULL : (setting = (g_object_unref (setting), NULL)));
+	tag_name = (g_free (tag_name), NULL);
+	(tag_table == NULL ? NULL : (tag_table = (g_object_unref (tag_table), NULL)));
+}
+
+
+void gtk_mate_colourer_set_tag_properties (GtkMateScope* scope, GtkTextTag* tag, GtkMateThemeSetting* setting) {
+	char* font_style;
+	char* foreground;
+	char* background;
+	g_return_if_fail (GTK_MATE_IS_SCOPE (scope));
+	g_return_if_fail (GTK_IS_TEXT_TAG (tag));
+	g_return_if_fail (GTK_MATE_IS_THEME_SETTING (setting));
+	font_style = ((char*) (gee_map_get (GEE_MAP (setting->settings), "fontStyle")));
+	if (_vala_strcmp0 (font_style, "italic") == 0) {
+		PangoStyle _tmp0;
+		g_object_set (tag, "style", PANGO_STYLE_ITALIC, NULL);
+	}
+	if (_vala_strcmp0 (font_style, "underline") == 0) {
+		PangoStyle _tmp1;
+		g_object_set (tag, "style", PANGO_UNDERLINE_SINGLE, NULL);
+	}
+	foreground = ((char*) (gee_map_get (GEE_MAP (setting->settings), "foreground")));
+	if (foreground != NULL && _vala_strcmp0 (foreground, "") != 0) {
+		g_object_set (tag, "foreground", foreground, NULL);
+	}
+	background = ((char*) (gee_map_get (GEE_MAP (setting->settings), "background")));
+	if (background != NULL && _vala_strcmp0 (background, "") != 0) {
+		char* parent_bg;
+		char* merged_colour;
+		char* _tmp3;
+		const char* _tmp2;
+		parent_bg = gtk_mate_scope_nearest_background_colour (scope);
+		merged_colour = gtk_mate_colourer_merge_colour (parent_bg, background);
+		_tmp3 = NULL;
+		_tmp2 = NULL;
+		scope->bg_colour = (_tmp3 = (_tmp2 = merged_colour, (_tmp2 == NULL ? NULL : g_strdup (_tmp2))), (scope->bg_colour = (g_free (scope->bg_colour), NULL)), _tmp3);
+		g_object_set (tag, "background", merged_colour, NULL);
+		parent_bg = (g_free (parent_bg), NULL);
+		merged_colour = (g_free (merged_colour), NULL);
+	}
+	font_style = (g_free (font_style), NULL);
+	foreground = (g_free (foreground), NULL);
+	background = (g_free (background), NULL);
+}
+
+
+gint gtk_mate_colourer_char_to_hex (gunichar ch) {
+	if (g_unichar_isxdigit (ch)) {
+		return g_unichar_xdigit_value (ch);
+	}
+	return 0;
+}
+
+
+/* Here parent_colour is like '#FFFFFF' and
+ colour is like '#000000DD'.*/
+char* gtk_mate_colourer_merge_colour (const char* parent_colour, const char* colour) {
+	gint pre_r;
+	gint pre_g;
+	gint pre_b;
+	gint post_r;
+	gint post_g;
+	gint post_b;
+	gint opacity;
+	gint new_r;
+	gint new_g;
+	gint new_b;
+	char* new_colour;
+	char* _tmp5;
+	g_return_val_if_fail (parent_colour != NULL, NULL);
+	g_return_val_if_fail (colour != NULL, NULL);
+	pre_r = 0;
+	pre_g = 0;
+	pre_b = 0;
+	post_r = 0;
+	post_g = 0;
+	post_b = 0;
+	opacity = 0;
+	new_r = 0;
+	new_g = 0;
+	new_b = 0;
+	new_colour = NULL;
+	if (parent_colour == NULL) {
+		char* _tmp0;
+		_tmp0 = NULL;
+		return (_tmp0 = NULL, (new_colour = (g_free (new_colour), NULL)), _tmp0);
+	}
+	if (string_get_length (colour) == 7) {
+		const char* _tmp1;
+		char* _tmp2;
+		_tmp1 = NULL;
+		_tmp2 = NULL;
+		return (_tmp2 = (_tmp1 = colour, (_tmp1 == NULL ? NULL : g_strdup (_tmp1))), (new_colour = (g_free (new_colour), NULL)), _tmp2);
+	}
+	if (string_get_length (colour) == 9) {
+		char* _tmp3;
+		pre_r = gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 1))) * 16 + gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 2)));
+		pre_g = gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 3))) * 16 + gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 4)));
+		pre_b = gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 5))) * 16 + gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 6)));
+		post_r = gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 1))) * 16 + gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 2)));
+		post_g = gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 3))) * 16 + gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 4)));
+		post_b = gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 5))) * 16 + gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 6)));
+		opacity = gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 7))) * 16 + gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 8)));
+		new_r = (pre_r * (255 - opacity) + post_r * opacity) / 255;
+		new_g = (pre_g * (255 - opacity) + post_g * opacity) / 255;
+		new_b = (pre_b * (255 - opacity) + post_b * opacity) / 255;
+		_tmp3 = NULL;
+		new_colour = (_tmp3 = g_strdup_printf ("#%.2x%.2x%.2x", ((guint) (new_r)), ((guint) (new_g)), ((guint) (new_b))), (new_colour = (g_free (new_colour), NULL)), _tmp3);
+		fprintf (stdout, "%s/%s/%s - %d,%d,%d\n", parent_colour, colour, new_colour, new_r, new_g, new_b);
+		return new_colour;
+	}
+	_tmp5 = NULL;
+	return (_tmp5 = g_strdup ("#000000"), (new_colour = (g_free (new_colour), NULL)), _tmp5);
 }
 
 
@@ -220,6 +389,17 @@ GType gtk_mate_colourer_get_type (void) {
 		gtk_mate_colourer_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateColourer", &g_define_type_info, 0);
 	}
 	return gtk_mate_colourer_type_id;
+}
+
+
+static int _vala_strcmp0 (const char * str1, const char * str2) {
+	if (str1 == NULL) {
+		return -(str1 != str2);
+	}
+	if (str2 == NULL) {
+		return (str1 != str2);
+	}
+	return strcmp (str1, str2);
 }
 
 

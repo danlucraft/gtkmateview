@@ -73,7 +73,8 @@ namespace Gtk.Mate {
 			}
 		}
 		
-		public static bool test_match(string selector_string, string scope_string){
+		// this method is mainly for testing in the Ruby specs
+		public static bool test_match(string selector_string, string scope_string) {
 			Oniguruma.Match m;
 			return match(selector_string, scope_string, out m);
 		}
@@ -84,7 +85,7 @@ namespace Gtk.Mate {
 			foreach (var selector_string1 in scope_ors1) {
 				Oniguruma.Regex pos_rx;
 				var neg_rxs = new ArrayList<Oniguruma.Regex>();
-				string[] positives_and_negatives = selector_string1.split("-");
+				string[] positives_and_negatives = selector_string1.split(" -");
 				foreach (var sub_selector_string in positives_and_negatives) {
 					if (pos_rx == null) {
 						var s1 = StringHelper.gsub(sub_selector_string.strip(), ".", "\\.");
@@ -104,6 +105,11 @@ namespace Gtk.Mate {
 			}
 			return false;
 		}
+
+		// public static void compile_re(string selector, out Oniguruma.Regex pos_re, 
+		// 							  out ArrayList<Oniguruma.Regex> neg_res) {
+			
+		// }
 
 		public static bool test_match_re(Oniguruma.Regex positive_selector_regex, 
 										 ArrayList<Oniguruma.Regex> negative_selector_regex,
