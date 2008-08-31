@@ -1,8 +1,8 @@
 
 #include "theme.h"
 #include <gee/map.h>
-#include <stdio.h>
 #include <gee/collection.h>
+#include <stdio.h>
 #include "gtkmateview.h"
 #include "scope.h"
 #include "matcher.h"
@@ -80,7 +80,6 @@ GtkMateThemeSetting* gtk_mate_theme_setting_create_from_plist (PListDict* dict) 
 
 void gtk_mate_theme_setting_compile_scope_matchers (GtkMateThemeSetting* self) {
 	g_return_if_fail (GTK_MATE_IS_THEME_SETTING (self));
-	fprintf (stdout, "compiling '%s'\n", self->selector);
 }
 
 
@@ -369,6 +368,7 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 }
 
 
+/* stdout.printf("compiling '%s'\n", selector);*/
 GtkMateTheme* gtk_mate_theme_new (void) {
 	GtkMateTheme * self;
 	self = g_object_newv (GTK_MATE_TYPE_THEME, 0, NULL);

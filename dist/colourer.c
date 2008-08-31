@@ -61,7 +61,6 @@ void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayL
 					(scope == NULL ? NULL : (scope = (g_object_unref (scope), NULL)));
 					continue;
 				}
-				fprintf (stdout, "colouring scope: %s\n", gtk_mate_scope_get_name (scope));
 				if (gtk_mate_scope_get_name (scope) == NULL && scope->pattern != NULL && (GTK_MATE_IS_SINGLE_PATTERN (scope->pattern) || (GTK_MATE_DOUBLE_PATTERN (scope->pattern))->content_name == NULL)) {
 					fprintf (stdout, "  no pattern name\n");
 					(scope == NULL ? NULL : (scope = (g_object_unref (scope), NULL)));
@@ -92,11 +91,9 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 	char* tag_name;
 	GtkTextTagTable* _tmp7;
 	GtkTextTagTable* tag_table;
-	GtkTextTag* _tmp9;
-	GtkTextTag* _tmp8;
 	g_return_if_fail (GTK_MATE_IS_COLOURER (self));
 	g_return_if_fail (GTK_MATE_IS_SCOPE (scope));
-	fprintf (stdout, "  colouring\n");
+	fprintf (stdout, "  colouring %s\n", gtk_mate_scope_get_name (scope));
 	priority = gtk_mate_scope_priority (scope);
 	tag = NULL;
 	fprintf (stdout, "  priority: %d\n", priority);
@@ -142,17 +139,21 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 	}
 	_tmp7 = NULL;
 	tag_table = (_tmp7 = gtk_text_buffer_get_tag_table (GTK_TEXT_BUFFER (self->priv->_buffer)), (_tmp7 == NULL ? NULL : g_object_ref (_tmp7)));
-	_tmp9 = NULL;
-	_tmp8 = NULL;
-	tag = (_tmp9 = (_tmp8 = gtk_text_tag_table_lookup (tag_table, tag_name), (_tmp8 == NULL ? NULL : g_object_ref (_tmp8))), (tag == NULL ? NULL : (tag = (g_object_unref (tag), NULL))), _tmp9);
 	if (tag == NULL) {
-		GtkTextTag* _tmp11;
-		GtkTextTag* _tmp10;
-		_tmp11 = NULL;
-		_tmp10 = NULL;
-		tag = (_tmp11 = (_tmp10 = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (self->priv->_buffer), tag_name, NULL), (_tmp10 == NULL ? NULL : g_object_ref (_tmp10))), (tag == NULL ? NULL : (tag = (g_object_unref (tag), NULL))), _tmp11);
+		GtkTextTag* _tmp9;
+		GtkTextTag* _tmp8;
+		_tmp9 = NULL;
+		_tmp8 = NULL;
+		tag = (_tmp9 = (_tmp8 = gtk_text_tag_table_lookup (tag_table, tag_name), (_tmp8 == NULL ? NULL : g_object_ref (_tmp8))), (tag == NULL ? NULL : (tag = (g_object_unref (tag), NULL))), _tmp9);
+		if (tag == NULL) {
+			GtkTextTag* _tmp11;
+			GtkTextTag* _tmp10;
+			_tmp11 = NULL;
+			_tmp10 = NULL;
+			tag = (_tmp11 = (_tmp10 = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (self->priv->_buffer), tag_name, NULL), (_tmp10 == NULL ? NULL : g_object_ref (_tmp10))), (tag == NULL ? NULL : (tag = (g_object_unref (tag), NULL))), _tmp11);
+		}
 	}
-	fprintf (stdout, "tag: '%s'\n", tag_name);
+	fprintf (stdout, "      tag: '%s'\n", tag_name);
 	if (setting != NULL) {
 		gtk_mate_colourer_set_tag_properties (scope, tag, setting);
 	}
@@ -318,6 +319,7 @@ void gtk_mate_colourer_uncolour_scopes (GtkMateColourer* self, GeeArrayList* sco
 void gtk_mate_colourer_uncolour_scope (GtkMateColourer* self, GtkMateScope* scope, gboolean recurse) {
 	g_return_if_fail (GTK_MATE_IS_COLOURER (self));
 	g_return_if_fail (GTK_MATE_IS_SCOPE (scope));
+	fprintf (stdout, "uncolour scope: %s\n", gtk_mate_scope_get_name (scope));
 	if (scope->inner_tag != NULL) {
 		GtkTextIter _tmp1 = {0};
 		GtkTextIter _tmp0 = {0};

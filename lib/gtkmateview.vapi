@@ -219,6 +219,7 @@ namespace Gtk {
 			public Gtk.Mate.Scope root;
 			public RangeSet changes;
 			public int deactivation_level;
+			public GLib.Sequence<Gtk.TextTag> tags;
 			public static Gtk.Mate.Parser current;
 			public void make_root ();
 			public void stop_parsing ();
@@ -232,6 +233,7 @@ namespace Gtk {
 			public void handle_captures (int line_ix, string line, Gtk.Mate.Scope scope, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes);
 			public Oniguruma.Regex? make_closing_regex (string line, Gtk.Mate.Scope scope, Gtk.Mate.Marker m);
 			public void collect_child_captures (int line_ix, Gtk.Mate.Scope scope, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes);
+			public void reset_table_priorities ();
 			public void connect_buffer_signals ();
 			public void insert_text_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, string text, int length);
 			public void delete_range_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);
@@ -239,6 +241,8 @@ namespace Gtk {
 			public void delete_range_after_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);
 			public static void static_insert_text_after_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, string text, int length);
 			public static void static_delete_range_after_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);
+			public static void static_tag_added_after_handler (Gtk.TextTagTable tt, Gtk.TextTag tag);
+			public static int tag_compare (Gtk.TextTag tag1, Gtk.TextTag tag2, void* data);
 			public static Gtk.Mate.Parser create (Gtk.Mate.Grammar grammar, Gtk.Mate.Buffer buffer);
 			public Parser ();
 			public Gtk.Mate.Grammar grammar { get; set; }

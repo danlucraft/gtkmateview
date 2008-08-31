@@ -31,7 +31,7 @@ namespace Gtk.Mate {
 		}
 
 		public void compile_scope_matchers() {
-			stdout.printf("compiling '%s'\n", selector);
+			// stdout.printf("compiling '%s'\n", selector);
 			
 		}
 	}
@@ -112,8 +112,7 @@ namespace Gtk.Mate {
 			ThemeSetting current;
 			foreach (var setting in settings) {
 				if (Matcher.match(setting.selector, scope_name, out m)) {
-					stdout.printf("    setting '%s' with selector '%s'\n",
-								  setting.name, setting.selector);
+					stdout.printf("    setting '%s' with selector '%s'\n", setting.name, setting.selector);
 					if (current == null) {
 						current = setting;
 						current_m = m;

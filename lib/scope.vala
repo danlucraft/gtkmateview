@@ -312,7 +312,7 @@ namespace Gtk.Mate {
 			while (!iter.is_end()) {
 				pretty_string.append(children.get(iter).pretty(this.indent));
 				iter = iter.next();
-			} 
+			}
 			this.indent -= 1;
 			return pretty_string.str;
 		}

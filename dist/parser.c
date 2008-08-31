@@ -1,6 +1,7 @@
 
 #include "parser.h"
 #include <gee/collection.h>
+#include <stdio.h>
 #include <gee/hashmap.h>
 #include <gee/map.h>
 #include "colourer.h"
@@ -263,8 +264,8 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	g_return_val_if_fail (GTK_MATE_IS_PARSER (self), FALSE);
 	line = gtk_mate_buffer_get_line1 (self->priv->_buffer, line_ix);
 	length = ((gint) (string_get_length (line)));
-	/*buffer.get_line_length(line_ix);
-	 stdout.printf("\nparse line: %d (%d): '%s'\n", line_ix, length, line);*/
+	/*buffer.get_line_length(line_ix);*/
+	fprintf (stdout, "\nparse line: %d (%d): '%s'\n", line_ix, length, line);
 	start_scope = gtk_mate_scope_scope_at (self->root, line_ix, -1);
 	end_scope1 = gtk_mate_scope_scope_at (self->root, line_ix, G_MAXINT);
 	/*stdout.printf("scope_at returns: %s\n", start_scope.name);
@@ -394,6 +395,9 @@ void gtk_mate_parser_clear_line (GtkMateParser* self, gint line_ix, GtkMateScope
 						GtkTextMark* _tmp6;
 						GtkTextMark* _tmp7;
 						/* @removed_scopes << s*/
+						if (self->priv->_colourer != NULL) {
+							gtk_mate_colourer_uncolour_scope (self->priv->_colourer, s, FALSE);
+						}
 						_tmp6 = NULL;
 						s->inner_end_mark = (_tmp6 = NULL, (s->inner_end_mark == NULL ? NULL : (s->inner_end_mark = (g_object_unref (s->inner_end_mark), NULL))), _tmp6);
 						_tmp7 = NULL;
@@ -497,6 +501,9 @@ void gtk_mate_parser_close_scope (GtkMateParser* self, GtkMateScanner* scanner, 
 		const char* _tmp10;
 		/* stdout.printf("closing scope matches expected\n");
 		 stdout.printf("closing scope at %d\n", m.from);*/
+		if (self->priv->_colourer != NULL) {
+			gtk_mate_colourer_uncolour_scope (self->priv->_colourer, gtk_mate_scanner_get_current_scope (scanner), FALSE);
+		}
 		gtk_mate_scope_inner_end_mark_set (gtk_mate_scanner_get_current_scope (scanner), line_ix, m->from, TRUE);
 		gtk_mate_scope_end_mark_set (gtk_mate_scanner_get_current_scope (scanner), line_ix, oniguruma_match_end (m->match, 0), TRUE);
 		gtk_mate_scanner_get_current_scope (scanner)->is_open = FALSE;
@@ -511,6 +518,8 @@ void gtk_mate_parser_close_scope (GtkMateParser* self, GtkMateScanner* scanner, 
 		}
 	}
 	/* @removed_scopes << expected_scope*/
+	gee_collection_add (GEE_COLLECTION (removed_scopes), gtk_mate_scanner_get_current_scope (scanner));
+	/* so it gets uncoloured*/
 	gee_collection_add (GEE_COLLECTION (closed_scopes), gtk_mate_scanner_get_current_scope (scanner));
 	gtk_mate_scanner_set_current_scope (scanner, gtk_mate_scanner_get_current_scope (scanner)->parent);
 	gee_collection_add (GEE_COLLECTION (all_scopes), gtk_mate_scanner_get_current_scope (scanner));
@@ -946,6 +955,27 @@ void gtk_mate_parser_collect_child_captures (GtkMateParser* self, gint line_ix, 
 }
 
 
+void gtk_mate_parser_reset_table_priorities (GtkMateParser* self) {
+	GSequenceIter* _tmp0;
+	GSequenceIter* iter;
+	gint i;
+	g_return_if_fail (GTK_MATE_IS_PARSER (self));
+	_tmp0 = NULL;
+	iter = (_tmp0 = g_sequence_get_begin_iter (self->tags), (_tmp0 == NULL ? NULL :  (_tmp0)));
+	i = 0;
+	while (!g_sequence_iter_is_end (iter)) {
+		GSequenceIter* _tmp2;
+		GSequenceIter* _tmp1;
+		((GtkTextTag*) (g_sequence_get (iter)))->priority = i;
+		i++;
+		_tmp2 = NULL;
+		_tmp1 = NULL;
+		iter = (_tmp2 = (_tmp1 = g_sequence_iter_next (iter), (_tmp1 == NULL ? NULL :  (_tmp1))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp2);
+	}
+	(iter == NULL ? NULL : (iter = ( (iter), NULL)));
+}
+
+
 static void _gtk_mate_parser_insert_text_handler_gtk_text_buffer_insert_text (GtkMateBuffer* _sender, GtkTextIter* pos, const char* text, gint length, gpointer self) {
 	gtk_mate_parser_insert_text_handler (self, _sender, pos, text, length);
 }
@@ -963,6 +993,7 @@ void gtk_mate_parser_connect_buffer_signals (GtkMateParser* self) {
 	/* remove when signal_connect_after works:*/
 	g_signal_connect_after (self->priv->_buffer, "insert_text", ((GCallback) (gtk_mate_parser_static_insert_text_after_handler)), NULL);
 	g_signal_connect_after (self->priv->_buffer, "delete_range", ((GCallback) (gtk_mate_parser_static_delete_range_after_handler)), NULL);
+	g_signal_connect_after (gtk_text_buffer_get_tag_table (GTK_TEXT_BUFFER (self->priv->_buffer)), "tag_added", ((GCallback) (gtk_mate_parser_static_tag_added_after_handler)), NULL);
 }
 
 
@@ -1041,12 +1072,51 @@ void gtk_mate_parser_static_delete_range_after_handler (GtkMateBuffer* bf, GtkTe
 }
 
 
+void gtk_mate_parser_static_tag_added_after_handler (GtkTextTagTable* tt, GtkTextTag* tag) {
+	char* _tmp1;
+	char* _tmp0;
+	g_return_if_fail (GTK_IS_TEXT_TAG_TABLE (tt));
+	g_return_if_fail (GTK_IS_TEXT_TAG (tag));
+	_tmp1 = NULL;
+	_tmp0 = NULL;
+	if ((g_object_get (G_OBJECT (tag), "name", &_tmp0, NULL), _tmp0) != NULL && g_str_has_prefix ((g_object_get (G_OBJECT (tag), "name", &_tmp1, NULL), _tmp1), "gmv(")) {
+		GtkTextTag* _tmp2;
+		_tmp2 = NULL;
+		g_sequence_insert_sorted (gtk_mate_parser_current->tags, (_tmp2 = tag, (_tmp2 == NULL ? NULL : g_object_ref (_tmp2))), ((GCompareDataFunc) (gtk_mate_parser_tag_compare)), NULL);
+	}
+	gtk_mate_parser_reset_table_priorities (gtk_mate_parser_current);
+}
+
+
+gint gtk_mate_parser_tag_compare (GtkTextTag* tag1, GtkTextTag* tag2, void* data) {
+	char* _tmp0;
+	gint pri1;
+	char* _tmp1;
+	gint pri2;
+	g_return_val_if_fail (GTK_IS_TEXT_TAG (tag1), 0);
+	g_return_val_if_fail (GTK_IS_TEXT_TAG (tag2), 0);
+	_tmp0 = NULL;
+	pri1 = g_unichar_digit_value (g_utf8_get_char (g_utf8_offset_to_pointer ((g_object_get (G_OBJECT (tag1), "name", &_tmp0, NULL), _tmp0), 4)));
+	_tmp1 = NULL;
+	pri2 = g_unichar_digit_value (g_utf8_get_char (g_utf8_offset_to_pointer ((g_object_get (G_OBJECT (tag2), "name", &_tmp1, NULL), _tmp1), 4)));
+	if (pri1 > pri2) {
+		return 1;
+	} else {
+		if (pri2 > pri1) {
+			return -1;
+		}
+	}
+	return 0;
+}
+
+
 GtkMateParser* gtk_mate_parser_create (GtkMateGrammar* grammar, GtkMateBuffer* buffer) {
 	GtkMateParser* p;
-	RangeSet* _tmp0;
-	GtkMateColourer* _tmp1;
+	GSequence* _tmp0;
+	RangeSet* _tmp1;
+	GtkMateColourer* _tmp2;
+	GtkMateParser* _tmp4;
 	GtkMateParser* _tmp3;
-	GtkMateParser* _tmp2;
 	g_return_val_if_fail (GTK_MATE_IS_GRAMMAR (grammar), NULL);
 	g_return_val_if_fail (GTK_MATE_IS_BUFFER (buffer), NULL);
 	gtk_mate_grammar_init_for_use (grammar);
@@ -1055,16 +1125,18 @@ GtkMateParser* gtk_mate_parser_create (GtkMateGrammar* grammar, GtkMateBuffer* b
 	gtk_mate_parser_set_grammar (p, grammar);
 	gtk_mate_parser_set_buffer (p, buffer);
 	_tmp0 = NULL;
-	p->changes = (_tmp0 = range_set_new (), (p->changes == NULL ? NULL : (p->changes = (g_object_unref (p->changes), NULL))), _tmp0);
+	p->tags = (_tmp0 = g_sequence_new (NULL), (p->tags == NULL ? NULL : (p->tags = (g_sequence_free (p->tags), NULL))), _tmp0);
 	_tmp1 = NULL;
-	gtk_mate_parser_set_colourer (p, (_tmp1 = g_object_ref_sink (gtk_mate_colourer_new (buffer))));
-	(_tmp1 == NULL ? NULL : (_tmp1 = (g_object_unref (_tmp1), NULL)));
+	p->changes = (_tmp1 = range_set_new (), (p->changes == NULL ? NULL : (p->changes = (g_object_unref (p->changes), NULL))), _tmp1);
+	_tmp2 = NULL;
+	gtk_mate_parser_set_colourer (p, (_tmp2 = g_object_ref_sink (gtk_mate_colourer_new (buffer))));
+	(_tmp2 == NULL ? NULL : (_tmp2 = (g_object_unref (_tmp2), NULL)));
 	p->deactivation_level = 0;
 	gtk_mate_parser_make_root (p);
 	gtk_mate_parser_connect_buffer_signals (p);
+	_tmp4 = NULL;
 	_tmp3 = NULL;
-	_tmp2 = NULL;
-	gtk_mate_parser_current = (_tmp3 = (_tmp2 = p, (_tmp2 == NULL ? NULL : g_object_ref (_tmp2))), (gtk_mate_parser_current == NULL ? NULL : (gtk_mate_parser_current = (g_object_unref (gtk_mate_parser_current), NULL))), _tmp3);
+	gtk_mate_parser_current = (_tmp4 = (_tmp3 = p, (_tmp3 == NULL ? NULL : g_object_ref (_tmp3))), (gtk_mate_parser_current == NULL ? NULL : (gtk_mate_parser_current = (g_object_unref (gtk_mate_parser_current), NULL))), _tmp4);
 	/* remove when signal_connect_after works*/
 	return p;
 }
@@ -1193,6 +1265,7 @@ static void gtk_mate_parser_finalize (GObject * obj) {
 	(self->priv->_buffer == NULL ? NULL : (self->priv->_buffer = (g_object_unref (self->priv->_buffer), NULL)));
 	(self->root == NULL ? NULL : (self->root = (g_object_unref (self->root), NULL)));
 	(self->changes == NULL ? NULL : (self->changes = (g_object_unref (self->changes), NULL)));
+	(self->tags == NULL ? NULL : (self->tags = (g_sequence_free (self->tags), NULL)));
 	G_OBJECT_CLASS (gtk_mate_parser_parent_class)->finalize (obj);
 }
 

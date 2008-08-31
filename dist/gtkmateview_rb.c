@@ -5060,6 +5060,17 @@ static VALUE rb_gtk_mate_parser_collect_child_captures(VALUE self, VALUE line_ix
     return Qnil;
 }
 
+static VALUE rb_gtk_mate_parser_reset_table_priorities(VALUE self) {
+    GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // Method#body
+    
+    gtk_mate_parser_reset_table_priorities(gtk_mate_parser);
+    // Method#return_type_conversion
+    return Qnil;
+}
+
 static VALUE rb_gtk_mate_parser_connect_buffer_signals(VALUE self) {
     GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
     // Method#type_checks
@@ -5067,6 +5078,20 @@ static VALUE rb_gtk_mate_parser_connect_buffer_signals(VALUE self) {
     // Method#body
     
     gtk_mate_parser_connect_buffer_signals(gtk_mate_parser);
+    // Method#return_type_conversion
+    return Qnil;
+}
+
+static VALUE rb_gtk_mate_parser_static_tag_added_after_handler(VALUE self, VALUE tt, VALUE tag) {
+    // Method#type_checks
+    // Method#argument_type_conversions
+    GtkTextTagTable* _c_tt;
+    _c_tt = _GTK_TEXT_TAG_TABLE_SELF(tt);
+    GtkTextTag* _c_tag;
+    _c_tag = _GTK_TEXT_TAG_SELF(tag);
+    // Method#body
+    
+    gtk_mate_parser_static_tag_added_after_handler(_c_tt, _c_tag);
     // Method#return_type_conversion
     return Qnil;
 }
@@ -6794,7 +6819,9 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_parser, "handle_captures", rb_gtk_mate_parser_handle_captures, 6);
     rb_define_method(rbc_gtk_mate_parser, "make_closing_regex", rb_gtk_mate_parser_make_closing_regex, 3);
     rb_define_method(rbc_gtk_mate_parser, "collect_child_captures", rb_gtk_mate_parser_collect_child_captures, 5);
+    rb_define_method(rbc_gtk_mate_parser, "reset_table_priorities", rb_gtk_mate_parser_reset_table_priorities, 0);
     rb_define_method(rbc_gtk_mate_parser, "connect_buffer_signals", rb_gtk_mate_parser_connect_buffer_signals, 0);
+    rb_define_singleton_method(rbc_gtk_mate_parser, "static_tag_added_after_handler", rb_gtk_mate_parser_static_tag_added_after_handler, 2);
     rb_define_singleton_method(rbc_gtk_mate_parser, "create", rb_gtk_mate_parser_create, 2);
     rbc_gtk_mate_buffer = G_DEF_CLASS(gtk_mate_buffer_get_type(), "Buffer", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_buffer, "initialize", gtk_mate_buffer_initialize, 0);

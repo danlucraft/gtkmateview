@@ -68,6 +68,7 @@ struct _GtkMateThemeSettingClass {
 	GtkObjectClass parent_class;
 };
 
+/* stdout.printf("compiling '%s'\n", selector);*/
 struct _GtkMateTheme {
 	GtkObject parent_instance;
 	GtkMateThemePrivate * priv;

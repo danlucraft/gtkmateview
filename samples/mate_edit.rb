@@ -30,7 +30,9 @@ end
 
 button_file = Gtk::Button.new("Load file")
 button_file.signal_connect("clicked") do
+  s = Time.now
   mv.buffer.text = File.read("samples/rak")
+  puts "took #{Time.now - s} seconds"
 end
 
 toolbar = Gtk::HBox.new

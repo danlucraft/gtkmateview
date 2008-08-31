@@ -51,6 +51,7 @@ struct _GtkMateParser {
 	GtkMateScope* root;
 	RangeSet* changes;
 	gint deactivation_level;
+	GSequence* tags;
 };
 
 struct _GtkMateParserClass {
@@ -80,6 +81,7 @@ void gtk_mate_parser_single_scope (GtkMateParser* self, GtkMateScanner* scanner,
 void gtk_mate_parser_handle_captures (GtkMateParser* self, gint line_ix, const char* line, GtkMateScope* scope, GtkMateMarker* m, GeeArrayList* all_scopes, GeeArrayList* closed_scopes);
 OnigurumaRegex* gtk_mate_parser_make_closing_regex (GtkMateParser* self, const char* line, GtkMateScope* scope, GtkMateMarker* m);
 void gtk_mate_parser_collect_child_captures (GtkMateParser* self, gint line_ix, GtkMateScope* scope, GtkMateMarker* m, GeeArrayList* all_scopes, GeeArrayList* closed_scopes);
+void gtk_mate_parser_reset_table_priorities (GtkMateParser* self);
 void gtk_mate_parser_connect_buffer_signals (GtkMateParser* self);
 void gtk_mate_parser_insert_text_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, const char* text, gint length);
 void gtk_mate_parser_delete_range_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, GtkTextIter* pos2);
@@ -87,6 +89,8 @@ void gtk_mate_parser_insert_text_after_handler (GtkMateParser* self, GtkMateBuff
 void gtk_mate_parser_delete_range_after_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, GtkTextIter* pos2);
 void gtk_mate_parser_static_insert_text_after_handler (GtkMateBuffer* bf, GtkTextIter* pos, const char* text, gint length);
 void gtk_mate_parser_static_delete_range_after_handler (GtkMateBuffer* bf, GtkTextIter* pos, GtkTextIter* pos2);
+void gtk_mate_parser_static_tag_added_after_handler (GtkTextTagTable* tt, GtkTextTag* tag);
+gint gtk_mate_parser_tag_compare (GtkTextTag* tag1, GtkTextTag* tag2, void* data);
 GtkMateParser* gtk_mate_parser_create (GtkMateGrammar* grammar, GtkMateBuffer* buffer);
 GtkMateParser* gtk_mate_parser_new (void);
 GtkMateGrammar* gtk_mate_parser_get_grammar (GtkMateParser* self);

@@ -18,7 +18,6 @@ namespace Gtk.Mate {
 				if (scope.parent == null) {
 					continue;
 				}
-				stdout.printf("colouring scope: %s\n", scope.name);
 				if (scope.name == null && scope.pattern != null &&
 					(scope.pattern is SinglePattern || ((DoublePattern) scope.pattern).content_name == null)) {
 					stdout.printf("  no pattern name\n");
@@ -35,7 +34,7 @@ namespace Gtk.Mate {
 		}
 
 		public void colour_scope(Scope scope, bool inner) {
-			stdout.printf("  colouring\n");
+			stdout.printf("  colouring %s\n", scope.name);
 			int priority = scope.priority();
 			TextTag tag;
 			TextIter start_iter, end_iter;
@@ -72,11 +71,13 @@ namespace Gtk.Mate {
 			}
 
 			var tag_table = buffer.get_tag_table();
-			tag = tag_table.lookup(tag_name);
 			if (tag == null) {
-				tag = buffer.create_tag(tag_name);
+				tag = tag_table.lookup(tag_name);
+				if (tag == null) {
+					tag = buffer.create_tag(tag_name);
+				}
 			}
-			stdout.printf("tag: '%s'\n", tag_name);
+			stdout.printf("      tag: '%s'\n", tag_name);
 			if (setting != null)
 				set_tag_properties(scope, tag, setting);
 			
@@ -160,6 +161,7 @@ namespace Gtk.Mate {
 		}
 		
 		public void uncolour_scope(Scope scope, bool recurse) {
+			stdout.printf("uncolour scope: %s\n", scope.name);
 			if (scope.inner_tag != null) {
 				buffer.remove_tag(scope.inner_tag, scope.inner_start_iter(), scope.inner_end_iter());
 			}

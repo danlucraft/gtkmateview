@@ -46,6 +46,7 @@ namespace Gtk.Mate {
 		public Mate.Scope root;
 		public RangeSet changes;
 		public int deactivation_level;
+		public Sequence<TextTag> tags;
 		
 		public void make_root() {
 			this.root = new Scope(this.buffer, this.grammar.scope_name);
@@ -114,7 +115,7 @@ namespace Gtk.Mate {
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line1(line_ix);
 			int length = (int) line.length;//buffer.get_line_length(line_ix);
-			// stdout.printf("\nparse line: %d (%d): '%s'\n", line_ix, length, line);
+			stdout.printf("\nparse line: %d (%d): '%s'\n", line_ix, length, line);
 			var start_scope = this.root.scope_at(line_ix, -1);
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
 			//stdout.printf("scope_at returns: %s\n", start_scope.name);
@@ -196,6 +197,8 @@ namespace Gtk.Mate {
 						// @removed_scopes << s
 					}
 					else {
+						if (colourer != null)
+							colourer.uncolour_scope(s, false);
 						s.inner_end_mark = null;
 						s.end_mark = null;
 						s.is_open = true;
@@ -251,6 +254,9 @@ namespace Gtk.Mate {
 			}
 			else {
 				// stdout.printf("closing scope at %d\n", m.from);
+				if (colourer != null) {
+					colourer.uncolour_scope(scanner.current_scope, false);
+				}
 				scanner.current_scope.inner_end_mark_set(line_ix, m.from, true);
 				scanner.current_scope.end_mark_set(line_ix, m.match.end(0), true);
 				scanner.current_scope.is_open = false;
@@ -263,6 +269,7 @@ namespace Gtk.Mate {
 					// @removed_scopes << expected_scope
 				}
 			}
+			removed_scopes.add(scanner.current_scope); // so it gets uncoloured
 			closed_scopes.add(scanner.current_scope);
 			scanner.current_scope = scanner.current_scope.parent;
 			all_scopes.add(scanner.current_scope);
@@ -483,12 +490,24 @@ namespace Gtk.Mate {
 			}
 		}
 
+		public void reset_table_priorities() {
+			GLib.SequenceIter iter = tags.get_begin_iter();
+			int i = 0;
+			while (!iter.is_end()) {
+				tags.get(iter).priority = i;
+				i++;
+				iter = iter.next();
+			}
+		}
+
 		public void connect_buffer_signals() {
 			buffer.insert_text += this.insert_text_handler;
 			buffer.delete_range += this.delete_range_handler;
 			// remove when signal_connect_after works:
 			Signal.connect_after(buffer, "insert_text", (GLib.Callback) Parser.static_insert_text_after_handler, null);
 			Signal.connect_after(buffer, "delete_range", (GLib.Callback) Parser.static_delete_range_after_handler, null);
+			Signal.connect_after(buffer.get_tag_table(), "tag_added", 
+								 (GLib.Callback) Parser.static_tag_added_after_handler, null);
 		}
 
 		public void insert_text_handler(Buffer bf, TextIter pos, string text, int length) {
@@ -515,13 +534,31 @@ namespace Gtk.Mate {
 				process_changes();
 		}
 
-		// These static methods are hack to get around Vala not supporting singal_connect_after_yet
+		// These static methods are hack to get around Vala not supporting signal_connect_after_yet
 		public static Parser current;
 		public static void static_insert_text_after_handler(Buffer bf, TextIter pos, string text, int length) {
 			Parser.current.insert_text_after_handler(bf, pos, text, length);
 		}
 		public static void static_delete_range_after_handler(Buffer bf, TextIter pos, TextIter pos2) {
 			Parser.current.delete_range_after_handler(bf, pos, pos2);
+		}
+		public static void static_tag_added_after_handler(TextTagTable tt, TextTag tag) {
+			if (tag.name != null && tag.name.has_prefix("gmv(")) {
+				Parser.current.tags.insert_sorted(tag, (CompareDataFunc) Parser.tag_compare);
+			}
+			Parser.current.reset_table_priorities();
+		}
+
+		public static int tag_compare(TextTag tag1, TextTag tag2, void* data) {
+			int pri1 = tag1.name[4].digit_value();
+			int pri2 = tag2.name[4].digit_value();
+			if (pri1 > pri2) {
+				return 1;
+			}
+			else if (pri2 > pri1) {
+				return -1;
+			}
+			return 0;
 		}
 
 		public static Parser create(Grammar grammar, Mate.Buffer buffer) {
@@ -531,6 +568,7 @@ namespace Gtk.Mate {
 			////stdout.printf("grammar: %s\n", grammar.name);
 			p.grammar = grammar;
 			p.buffer = buffer;
+			p.tags = new Sequence<TextTag>(null);
 			p.changes = new RangeSet();
 			p.colourer = new Colourer(buffer);
 			p.deactivation_level = 0;
