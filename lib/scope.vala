@@ -64,36 +64,16 @@ namespace Gtk.Mate {
 		// compare two Scope's. Returns 1 if a is later than b,
 		// -1 if a is before b and 0 if b is overlapping with a
 		public static int compare(Scope a, Scope b, void* data) {
-			TextIter a_start, b_start;
-			if (a.start_mark == null) {
-				if (b.start_mark == null)
-					return 0;
-				else 
-					return 1;
-			}
-			else if (b.start_mark == null)
-				return -1;
-		    var buf = a.start_mark.get_buffer();
-			buf.get_iter_at_mark(out a_start, a.start_mark);
-			buf.get_iter_at_mark(out b_start, b.start_mark);
-			if (a_start.get_line() > b_start.get_line())
-				return 1;
-			else if (a_start.get_line() < b_start.get_line())
-				return -1;
-			else if (a_start.get_line() == b_start.get_line()) {
-				if (a_start.get_line_offset() > b_start.get_line_offset())
-					return 1;
-				else if (a_start.get_line_offset() < b_start.get_line_offset())
-					return -1;
-			}
-			return 0;
+			return a.start_iter().compare(b.start_iter());
 		}
 
 		public static int compare_by_loc(Scope a, Scope b, void* data) {
-			if (TextLoc.lt(a.start_loc(), b.start_loc())) {
+			var a_start = a.start_loc();
+			var b_start = b.start_loc();
+			if (TextLoc.lt(a_start, b_start)) {
 				return -1;
 			}
-			else if (TextLoc.equal(a.start_loc(), b.start_loc())) {
+			else if (TextLoc.equal(a_start, b_start)) {
 				return 0;
 			}
 			else {
@@ -201,11 +181,11 @@ namespace Gtk.Mate {
 		}
 
 		public void add_child(Scope s) {
-			children.insert_sorted(s, (CompareDataFunc) Scope.compare_by_loc);
+			children.insert_sorted(s, (CompareDataFunc) Scope.compare);
 		}
 
 		public void delete_child(Scope s) {
-			var iter = children.search(s, (CompareDataFunc) Scope.compare_by_loc);
+			var iter = children.search(s, (CompareDataFunc) Scope.compare);
 			// The gsequence docs don't say whether iter will now be pointing to
 			// the equal element, so we have to look on the left and on the right.
 			if (!iter.is_begin()) {

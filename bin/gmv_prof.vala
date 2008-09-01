@@ -8,7 +8,7 @@ public class ProfTest : Object {
 		string content;
 		ulong len;
 		FileUtils.get_contents ("samples/rak", out content, out len);
-		for(var i = 0; i < 20; i++) {
+		for(var i = 0; i < 10; i++) {
 			var view = new Gtk.Mate.View();
 			var buf = new Gtk.Mate.Buffer();
 			view.buffer = buf;
