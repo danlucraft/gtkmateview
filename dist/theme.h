@@ -74,6 +74,7 @@ struct _GtkMateTheme {
 	GeeHashMap* global_settings;
 	GeeArrayList* settings;
 	gboolean is_initialized;
+	GeeHashMap* cached_setting_for_scopes;
 };
 
 struct _GtkMateThemeClass {

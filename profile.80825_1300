@@ -1,0 +1,1657 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 18.95      0.29     0.29  4676922     0.00     0.00  gtk_mate_scope_start_line
+ 18.30      0.57     0.28  7144433     0.00     0.00  gtk_mate_buffer_iter_from_mark
+  9.15      0.71     0.14  2471465     0.00     0.00  gtk_mate_scope_start_loc
+  7.84      0.83     0.12  2435605     0.00     0.00  gtk_mate_text_loc_lt
+  7.84      0.95     0.12     2606     0.05     0.43  gtk_mate_scope_first_child_after
+  6.54      1.05     0.10  2453270     0.00     0.00  gtk_mate_scope_start_line_offset
+  4.58      1.12     0.07  2402602     0.00     0.00  gtk_mate_text_loc_gte
+  3.92      1.18     0.06 24383517     0.00     0.00  gtk_mate_text_loc_get_type
+  3.92      1.24     0.06  2444142     0.00     0.00  gtk_mate_text_loc_gt
+  3.27      1.29     0.05  2435932     0.00     0.00  gtk_mate_text_loc_equal
+  2.61      1.33     0.04  2465066     0.00     0.00  gtk_mate_text_loc_new
+  2.61      1.37     0.04                             gtk_mate_text_loc_instance_init
+  1.96      1.40     0.03  2465066     0.00     0.00  gtk_mate_text_loc_make
+  1.96      1.43     0.03                             gtk_mate_text_loc_finalize
+  1.31      1.45     0.02      949     0.02     0.26  gtk_mate_scope_delete_any_on_line_not_in
+  0.98      1.47     0.01  9771968     0.00     0.00  gtk_mate_scope_get_type
+  0.65      1.48     0.01    40105     0.00     0.00  oniguruma_match_end
+  0.65      1.49     0.01     6015     0.00     0.00  gtk_mate_scope_end_line_offset
+  0.65      1.50     0.01     3432     0.00     0.01  gtk_mate_scanner_find_next_marker
+  0.65      1.50     0.01     2606     0.00     0.43  gtk_mate_parser_get_expected_scope
+  0.65      1.51     0.01                             gtk_mate_scope_finalize
+  0.33      1.52     0.01                             _vala_strcmp0
+  0.33      1.52     0.01                             gtk_mate_text_loc_class_init
+  0.33      1.53     0.01                             gtk_mate_text_loc_to_s
+  0.00      1.53     0.00   190499     0.00     0.00  gtk_mate_single_pattern_get_type
+  0.00      1.53     0.00   165118     0.00     0.00  gtk_mate_scanner_get_type
+  0.00      1.53     0.00   146315     0.00     0.00  gtk_mate_double_pattern_get_type
+  0.00      1.53     0.00   136660     0.00     0.00  gtk_mate_pattern_get_type
+  0.00      1.53     0.00   132155     0.00     0.00  oniguruma_regex_get_type
+  0.00      1.53     0.00   126619     0.00     0.00  oniguruma_regex_search
+  0.00      1.53     0.00   125830     0.00     0.00  gtk_mate_scanner_scan_for_match
+  0.00      1.53     0.00    94427     0.00     0.00  plist_dict_get_type
+  0.00      1.53     0.00    75068     0.00     0.00  _vala_strcmp0
+  0.00      1.53     0.00    73029     0.00     0.00  oniguruma_match_get_type
+  0.00      1.53     0.00    55792     0.00     0.00  plist_node_get_type
+  0.00      1.53     0.00    38256     0.00     0.00  plist_node_parse_xml_node
+  0.00      1.53     0.00    33482     0.00     0.00  plist_string_get_type
+  0.00      1.53     0.00    25824     0.00     0.00  gtk_mate_marker_get_type
+  0.00      1.53     0.00    20890     0.00     0.00  plist_string_new
+  0.00      1.53     0.00    17658     0.00     0.00  plist_dict_get
+  0.00      1.53     0.00    15618     0.00     0.00  plist_dict_new
+  0.00      1.53     0.00    15618     0.00     0.00  plist_dict_parse_dict
+  0.00      1.53     0.00    15197     0.00     0.00  gtk_mate_scanner_get_current_scope
+  0.00      1.53     0.00    15124     0.00     0.00  gtk_mate_scanner_iterator_get_type
+  0.00      1.53     0.00    15021     0.00     0.00  gtk_mate_scope_get_children
+  0.00      1.53     0.00    14698     0.00     0.00  gtk_mate_parser_get_type
+  0.00      1.53     0.00     8274     0.00     0.00  plist_array_get_type
+  0.00      1.53     0.00     8113     0.00     0.00  gtk_mate_include_pattern_get_type
+  0.00      1.53     0.00     7676     0.00     0.00  gtk_mate_buffer_get_type
+  0.00      1.53     0.00     7596     0.00     0.00  gtk_mate_buffer_iter_at_line_offset
+  0.00      1.53     0.00     7341     0.00     0.00  oniguruma_match_begin
+  0.00      1.53     0.00     6747     0.00     0.00  _vala_strcmp0
+  0.00      1.53     0.00     6138     0.00     0.00  gtk_mate_scope_end_line
+  0.00      1.53     0.00     6015     0.00     0.00  gtk_mate_scope_end_loc
+  0.00      1.53     0.00     6010     0.00     0.00  gtk_mate_scope_new
+  0.00      1.53     0.00     6010     0.00     0.00  gtk_mate_scope_set_buffer
+  0.00      1.53     0.00     6010     0.00     0.00  gtk_mate_scope_set_name
+  0.00      1.53     0.00     5688     0.00     0.00  gtk_mate_text_loc_lte
+  0.00      1.53     0.00     5574     0.00     0.00  oniguruma_match_new
+  0.00      1.53     0.00     5574     0.00     0.00  oniguruma_match_set_rg
+  0.00      1.53     0.00     5574     0.00     0.00  oniguruma_match_set_rx
+  0.00      1.53     0.00     5571     0.00     0.00  gtk_mate_marker_new
+  0.00      1.53     0.00     3479     0.00     0.00  gtk_mate_scope_end_mark_set
+  0.00      1.53     0.00     3432     0.00     0.00  gtk_mate_scanner_get_cached_marker
+  0.00      1.53     0.00     3160     0.00     0.00  gtk_mate_scope_start_mark_set
+  0.00      1.53     0.00     2841     0.00     0.00  gtk_mate_scope_contains_loc
+  0.00      1.53     0.00     2606     0.00     0.00  gtk_mate_parser_collect_child_captures
+  0.00      1.53     0.00     2606     0.00     0.00  gtk_mate_parser_handle_captures
+  0.00      1.53     0.00     2606     0.00     0.00  gtk_mate_parser_make_closing_regex
+  0.00      1.53     0.00     2606     0.00     0.00  gtk_mate_scanner_remove_preceding_cached_markers
+  0.00      1.53     0.00     2478     0.00     0.01  gtk_mate_scope_scope_at
+  0.00      1.53     0.00     2299     0.00     0.00  gtk_mate_grammar_get_type
+  0.00      1.53     0.00     2287     0.00     0.00  gtk_mate_scope_add_child
+  0.00      1.53     0.00     1968     0.00     0.00  gtk_mate_parser_single_scope
+  0.00      1.53     0.00     1914     0.00     0.00  plist_array_new
+  0.00      1.53     0.00     1914     0.00     0.00  plist_array_parse_array
+  0.00      1.53     0.00     1739     0.00     0.00  oniguruma_regex_make
+  0.00      1.53     0.00     1739     0.00     0.00  oniguruma_regex_make1
+  0.00      1.53     0.00     1739     0.00     0.00  oniguruma_regex_new
+  0.00      1.53     0.00     1733     0.00     0.00  oniguruma_regex_set_rx
+  0.00      1.53     0.00     1650     0.00     0.00  gtk_mate_buffer_line_start_iter
+  0.00      1.53     0.00     1643     0.00     0.00  gtk_mate_pattern_create_from_plist
+  0.00      1.53     0.00     1464     0.00     0.00  gtk_mate_scanner_set_current_scope
+  0.00      1.53     0.00     1464     0.00     0.00  gtk_mate_scanner_updated_current_scope
+  0.00      1.53     0.00     1342     0.00     0.00  gtk_mate_pattern_make_captures_from_plist
+  0.00      1.53     0.00     1151     0.00     0.00  string_get_length
+  0.00      1.53     0.00     1087     0.00     0.00  gtk_mate_scope_start_offset
+  0.00      1.53     0.00     1056     0.00     0.00  gtk_mate_double_pattern_add_patterns
+  0.00      1.53     0.00     1056     0.00     0.00  gtk_mate_double_pattern_remove_patterns
+  0.00      1.53     0.00     1003     0.00     0.00  gtk_mate_theme_setting_get_type
+  0.00      1.53     0.00     1001     0.00     0.00  gtk_mate_scope_end_offset
+  0.00      1.53     0.00      982     0.00     0.00  gtk_mate_theme_setting_create_from_plist
+  0.00      1.53     0.00      982     0.00     0.00  gtk_mate_theme_setting_new
+  0.00      1.53     0.00      931     0.00     0.00  gtk_mate_bundle_get_type
+  0.00      1.53     0.00      826     0.00     0.00  gtk_mate_buffer_get_line
+  0.00      1.53     0.00      826     0.00     0.00  gtk_mate_buffer_get_line1
+  0.00      1.53     0.00      826     0.00     0.30  gtk_mate_parser_clear_line
+  0.00      1.53     0.00      826     0.00     1.68  gtk_mate_parser_parse_line
+  0.00      1.53     0.00      826     0.00     0.00  gtk_mate_scanner_iterator_new
+  0.00      1.53     0.00      826     0.00     0.00  gtk_mate_scanner_iterator_set_scanner
+  0.00      1.53     0.00      826     0.00     0.00  gtk_mate_scanner_new
+  0.00      1.53     0.00      826     0.00     0.00  gtk_mate_scanner_set_line
+  0.00      1.53     0.00      826     0.00     0.00  gtk_mate_scanner_set_line_length
+  0.00      1.53     0.00      824     0.00     0.00  string_get_length
+  0.00      1.53     0.00      687     0.00     0.00  plist_dict_keys
+  0.00      1.53     0.00      661     0.00     0.00  gtk_mate_single_pattern_create_from_plist
+  0.00      1.53     0.00      661     0.00     0.00  gtk_mate_single_pattern_new
+  0.00      1.53     0.00      638     0.00     0.00  gtk_mate_scope_inner_end_mark_set
+  0.00      1.53     0.00      617     0.00     0.00  _vala_array_free
+  0.00      1.53     0.00      610     0.00     0.00  gtk_mate_include_pattern_create_from_plist
+  0.00      1.53     0.00      610     0.00     0.00  gtk_mate_include_pattern_new
+  0.00      1.53     0.00      373     0.00     0.00  gtk_mate_double_pattern_new
+  0.00      1.53     0.00      372     0.00     0.00  gtk_mate_double_pattern_create_from_plist
+  0.00      1.53     0.00      372     0.00     0.00  gtk_mate_double_pattern_replace_base_and_self_includes
+  0.00      1.53     0.00      372     0.00     0.00  gtk_mate_double_pattern_replace_include_patterns
+  0.00      1.53     0.00      372     0.00     0.00  gtk_mate_double_pattern_replace_repository_includes
+  0.00      1.53     0.00      323     0.00     0.00  gtk_mate_buffer_end_iter
+  0.00      1.53     0.00      319     0.00     0.00  gtk_mate_parser_close_scope
+  0.00      1.53     0.00      319     0.00     0.00  gtk_mate_parser_open_scope
+  0.00      1.53     0.00      319     0.00     0.00  gtk_mate_scope_inner_start_mark_set
+  0.00      1.53     0.00      291     0.00     0.00  _vala_strcmp0
+  0.00      1.53     0.00      185     0.00     0.00  plist_parse
+  0.00      1.53     0.00      164     0.00     0.00  gtk_mate_grammar_init_for_reference
+  0.00      1.53     0.00      164     0.00     0.00  gtk_mate_grammar_new
+  0.00      1.53     0.00      164     0.00     0.00  gtk_mate_grammar_set_name
+  0.00      1.53     0.00      164     0.00     0.00  gtk_mate_grammar_set_plist
+  0.00      1.53     0.00      157     0.00     0.00  gtk_mate_textmate_share_dir
+  0.00      1.53     0.00      155     0.00     0.00  _vala_array_free
+  0.00      1.53     0.00      155     0.00     0.00  gtk_mate_bundle_new
+  0.00      1.53     0.00      155     0.00     0.00  gtk_mate_bundle_set_name
+  0.00      1.53     0.00      151     0.00     0.00  _vala_array_free
+  0.00      1.53     0.00      133     0.00     0.00  gtk_mate_grammar_get_name
+  0.00      1.53     0.00      132     0.00     0.00  _vala_strcmp0
+  0.00      1.53     0.00       79     0.00     0.00  _vala_strcmp0
+  0.00      1.53     0.00       73     0.00     0.00  gtk_mate_grammar_init_for_use
+  0.00      1.53     0.00       72     0.00     0.00  gtk_mate_grammar_find_by_scope_name
+  0.00      1.53     0.00       70     0.00     0.00  _vala_array_free
+  0.00      1.53     0.00       23     0.00     0.00  gtk_mate_theme_get_type
+  0.00      1.53     0.00       21     0.00     0.00  gtk_mate_theme_create_from_plist
+  0.00      1.53     0.00       21     0.00     0.00  gtk_mate_theme_new
+  0.00      1.53     0.00       20     0.00     0.00  plist_integer_get_type
+  0.00      1.53     0.00       19     0.00     0.00  plist_integer_new
+  0.00      1.53     0.00       12     0.00     0.00  oniguruma_onig_error_get_type
+  0.00      1.53     0.00       12     0.00     0.00  range_set_get_type
+  0.00      1.53     0.00        6     0.00     0.00  gtk_mate_scope_clear_after
+  0.00      1.53     0.00        6     0.00     0.00  oniguruma_onig_error_new
+  0.00      1.53     0.00        5     0.00     0.00  range_set_range_get_type
+  0.00      1.53     0.00        2     0.00     0.00  gtk_mate_parser_is_parsing
+  0.00      1.53     0.00        2     0.00   695.00  gtk_mate_parser_parse_range
+  0.00      1.53     0.00        2     0.00   695.00  gtk_mate_parser_process_changes
+  0.00      1.53     0.00        2     0.00     0.00  range_set_add
+  0.00      1.53     0.00        2     0.00     0.00  range_set_is_empty
+  0.00      1.53     0.00        2     0.00     0.00  range_set_merge
+  0.00      1.53     0.00        2     0.00     0.00  range_set_range_new
+  0.00      1.53     0.00        1     0.00     0.00  _vala_array_free
+  0.00      1.53     0.00        1     0.00     0.00  gtk_mate_buffer_new
+  0.00      1.53     0.00        1     0.00     0.00  gtk_mate_buffer_set_grammar_by_name
+  0.00      1.53     0.00        1     0.00     0.00  gtk_mate_bundle_dirs
+  0.00      1.53     0.00        1     0.00     0.00  gtk_mate_load_bundles
+  0.00      1.53     0.00        1     0.00     0.00  gtk_mate_load_themes
+  0.00      1.53     0.00        1     0.00     0.00  gtk_mate_parser_connect_buffer_signals
+  0.00      1.53     0.00        1     0.00     0.00  gtk_mate_parser_create
+  0.00      1.53     0.00        1     0.00   695.00  gtk_mate_parser_delete_range_after_handler
+  0.00      1.53     0.00        1     0.00     0.00  gtk_mate_parser_delete_range_handler
+  0.00      1.53     0.00        1     0.00   695.00  gtk_mate_parser_insert_text_after_handler
+  0.00      1.53     0.00        1     0.00     0.00  gtk_mate_parser_insert_text_handler
+  0.00      1.53     0.00        1     0.00     0.00  gtk_mate_parser_make_root
+  0.00      1.53     0.00        1     0.00     0.00  gtk_mate_parser_new
+  0.00      1.53     0.00        1     0.00     0.00  gtk_mate_parser_set_buffer
+  0.00      1.53     0.00        1     0.00     0.00  gtk_mate_parser_set_grammar
+  0.00      1.53     0.00        1     0.00     0.00  gtk_mate_theme_theme_filenames
+  0.00      1.53     0.00        1     0.00     0.00  prof_test_main
+  0.00      1.53     0.00        1     0.00     0.00  range_set_new
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+ 
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this 
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 4 byte(s) for 0.65% of 1.53 seconds
+
+index % time    self  children    called     name
+                0.00    1.39       2/2           gtk_mate_parser_process_changes [2]
+[1]     90.8    0.00    1.39       2         gtk_mate_parser_parse_range [1]
+                0.00    1.39     826/826         gtk_mate_parser_parse_line [3]
+                0.00    0.00       6/6           gtk_mate_scope_clear_after [51]
+                0.00    0.00       2/14698       gtk_mate_parser_get_type [90]
+-----------------------------------------------
+                0.00    0.69       1/2           gtk_mate_parser_insert_text_after_handler [7]
+                0.00    0.69       1/2           gtk_mate_parser_delete_range_after_handler [6]
+[2]     90.8    0.00    1.39       2         gtk_mate_parser_process_changes [2]
+                0.00    1.39       2/2           gtk_mate_parser_parse_range [1]
+                0.00    0.00       2/14698       gtk_mate_parser_get_type [90]
+-----------------------------------------------
+                0.00    1.39     826/826         gtk_mate_parser_parse_range [1]
+[3]     90.8    0.00    1.39     826         gtk_mate_parser_parse_line [3]
+                0.01    1.12    2606/2606        gtk_mate_parser_get_expected_scope [4]
+                0.00    0.25     826/826         gtk_mate_parser_clear_line [15]
+                0.00    0.01    2478/2478        gtk_mate_scope_scope_at [29]
+                0.00    0.00    1968/1968        gtk_mate_parser_single_scope [40]
+                0.00    0.00     319/319         gtk_mate_parser_close_scope [41]
+                0.00    0.00    2606/40105       oniguruma_match_end [33]
+                0.00    0.00     319/319         gtk_mate_parser_open_scope [44]
+                0.00    0.00    1652/9771968     gtk_mate_scope_get_type [28]
+                0.00    0.00     826/826         gtk_mate_scanner_new [59]
+                0.00    0.00    2606/15197       gtk_mate_scanner_get_current_scope [88]
+                0.00    0.00    2287/146315      gtk_mate_double_pattern_get_type [73]
+                0.00    0.00     826/14698       gtk_mate_parser_get_type [90]
+                0.00    0.00     826/826         gtk_mate_buffer_get_line1 [120]
+                0.00    0.00     826/1151        string_get_length [112]
+-----------------------------------------------
+                0.01    1.12    2606/2606        gtk_mate_parser_parse_line [3]
+[4]     73.6    0.01    1.12    2606         gtk_mate_parser_get_expected_scope [4]
+                0.12    1.00    2606/2606        gtk_mate_scope_first_child_after [5]
+                0.00    0.00    2606/2465066     gtk_mate_text_loc_make [18]
+                0.00    0.00    2606/9771968     gtk_mate_scope_get_type [28]
+                0.00    0.00    2606/14698       gtk_mate_parser_get_type [90]
+-----------------------------------------------
+                0.12    1.00    2606/2606        gtk_mate_parser_get_expected_scope [4]
+[5]     72.9    0.12    1.00    2606         gtk_mate_scope_first_child_after [5]
+                0.14    0.52 2399755/2471465     gtk_mate_scope_start_loc [10]
+                0.07    0.27 2399755/2402602     gtk_mate_text_loc_gte [12]
+                0.00    0.00    5211/15021       gtk_mate_scope_get_children [50]
+                0.00    0.00    2606/24383517     gtk_mate_text_loc_get_type [21]
+                0.00    0.00    2606/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                0.00    0.69       1/1           gtk_mate_parser_static_delete_range_after_handler [8]
+[6]     45.4    0.00    0.69       1         gtk_mate_parser_delete_range_after_handler [6]
+                0.00    0.69       1/2           gtk_mate_parser_process_changes [2]
+                0.00    0.00       1/14698       gtk_mate_parser_get_type [90]
+                0.00    0.00       1/7676        gtk_mate_buffer_get_type [93]
+                0.00    0.00       1/2           gtk_mate_parser_is_parsing [157]
+                0.00    0.00       1/2           range_set_is_empty [159]
+-----------------------------------------------
+                0.00    0.69       1/1           gtk_mate_parser_static_insert_text_after_handler [9]
+[7]     45.4    0.00    0.69       1         gtk_mate_parser_insert_text_after_handler [7]
+                0.00    0.69       1/2           gtk_mate_parser_process_changes [2]
+                0.00    0.00       1/14698       gtk_mate_parser_get_type [90]
+                0.00    0.00       1/7676        gtk_mate_buffer_get_type [93]
+                0.00    0.00       1/2           gtk_mate_parser_is_parsing [157]
+                0.00    0.00       1/2           range_set_is_empty [159]
+-----------------------------------------------
+                                                 <spontaneous>
+[8]     45.4    0.00    0.69                 gtk_mate_parser_static_delete_range_after_handler [8]
+                0.00    0.69       1/1           gtk_mate_parser_delete_range_after_handler [6]
+                0.00    0.00       1/7676        gtk_mate_buffer_get_type [93]
+-----------------------------------------------
+                                                 <spontaneous>
+[9]     45.4    0.00    0.69                 gtk_mate_parser_static_insert_text_after_handler [9]
+                0.00    0.69       1/1           gtk_mate_parser_insert_text_after_handler [7]
+                0.00    0.00       1/7676        gtk_mate_buffer_get_type [93]
+-----------------------------------------------
+                0.00    0.00    2841/2471465     gtk_mate_scope_contains_loc [34]
+                0.00    0.00    2847/2471465     gtk_mate_scope_scope_at [29]
+                0.00    0.01   66022/2471465     gtk_mate_scope_compare_by_loc [25]
+                0.14    0.52 2399755/2471465     gtk_mate_scope_first_child_after [5]
+[10]    43.9    0.14    0.53 2471465         gtk_mate_scope_start_loc [10]
+                0.15    0.10 2453270/4676922     gtk_mate_scope_start_line [11]
+                0.10    0.10 2453270/2453270     gtk_mate_scope_start_line_offset [17]
+                0.03    0.05 2453270/2465066     gtk_mate_text_loc_make [18]
+                0.00    0.00 2471465/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                0.14    0.09 2223652/4676922     gtk_mate_scope_delete_any_on_line_not_in [16]
+                0.15    0.10 2453270/4676922     gtk_mate_scope_start_loc [10]
+[11]    31.4    0.29    0.19 4676922         gtk_mate_scope_start_line [11]
+                0.18    0.00 4676922/7144433     gtk_mate_buffer_iter_from_mark [13]
+                0.01    0.00 4676922/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                0.00    0.00    2847/2402602     gtk_mate_scope_scope_at [29]
+                0.07    0.27 2399755/2402602     gtk_mate_scope_first_child_after [5]
+[12]    22.5    0.07    0.27 2402602         gtk_mate_text_loc_gte [12]
+                0.12    0.14 2402602/2435605     gtk_mate_text_loc_lt [14]
+                0.01    0.00 4805204/24383517     gtk_mate_text_loc_get_type [21]
+-----------------------------------------------
+                0.00    0.00    1001/7144433     gtk_mate_scope_end_offset [48]
+                0.00    0.00    1087/7144433     gtk_mate_scope_start_offset [47]
+                0.00    0.00    6015/7144433     gtk_mate_scope_end_line_offset [31]
+                0.00    0.00    6138/7144433     gtk_mate_scope_end_line [45]
+                0.10    0.00 2453270/7144433     gtk_mate_scope_start_line_offset [17]
+                0.18    0.00 4676922/7144433     gtk_mate_scope_start_line [11]
+[13]    18.3    0.28    0.00 7144433         gtk_mate_buffer_iter_from_mark [13]
+-----------------------------------------------
+                0.00    0.00   33003/2435605     gtk_mate_scope_compare_by_loc [25]
+                0.12    0.14 2402602/2435605     gtk_mate_text_loc_gte [12]
+[14]    17.4    0.12    0.15 2435605         gtk_mate_text_loc_lt [14]
+                0.06    0.01 2435605/2444142     gtk_mate_text_loc_gt [19]
+                0.05    0.01 2435605/2435932     gtk_mate_text_loc_equal [20]
+                0.01    0.00 4871210/24383517     gtk_mate_text_loc_get_type [21]
+-----------------------------------------------
+                0.00    0.25     826/826         gtk_mate_parser_parse_line [3]
+[15]    16.2    0.00    0.25     826         gtk_mate_parser_clear_line [15]
+                0.02    0.23     949/949         gtk_mate_scope_delete_any_on_line_not_in [16]
+                0.00    0.00     123/6138        gtk_mate_scope_end_line [45]
+                0.00    0.00    1652/9771968     gtk_mate_scope_get_type [28]
+                0.00    0.00     826/14698       gtk_mate_parser_get_type [90]
+-----------------------------------------------
+                0.02    0.23     949/949         gtk_mate_parser_clear_line [15]
+[16]    16.2    0.02    0.23     949         gtk_mate_scope_delete_any_on_line_not_in [16]
+                0.14    0.09 2223652/4676922     gtk_mate_scope_start_line [11]
+                0.00    0.00    1898/9771968     gtk_mate_scope_get_type [28]
+                0.00    0.00     949/15021       gtk_mate_scope_get_children [50]
+-----------------------------------------------
+                0.10    0.10 2453270/2453270     gtk_mate_scope_start_loc [10]
+[17]    13.1    0.10    0.10 2453270         gtk_mate_scope_start_line_offset [17]
+                0.10    0.00 2453270/7144433     gtk_mate_buffer_iter_from_mark [13]
+                0.00    0.00 2453270/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                0.00    0.00       9/2465066     gtk_mate_scope_clear_after [51]
+                0.00    0.00     319/2465066     gtk_mate_parser_close_scope [41]
+                0.00    0.00    2606/2465066     gtk_mate_parser_get_expected_scope [4]
+                0.00    0.00    2847/2465066     gtk_mate_scope_scope_at [29]
+                0.00    0.00    6015/2465066     gtk_mate_scope_end_loc [30]
+                0.03    0.05 2453270/2465066     gtk_mate_scope_start_loc [10]
+[18]     5.0    0.03    0.05 2465066         gtk_mate_text_loc_make [18]
+                0.04    0.01 2465066/2465066     gtk_mate_text_loc_new [22]
+-----------------------------------------------
+                0.00    0.00       9/2444142     gtk_mate_scope_clear_after [51]
+                0.00    0.00    2840/2444142     gtk_mate_scope_contains_loc [34]
+                0.00    0.00    5688/2444142     gtk_mate_text_loc_lte [46]
+                0.06    0.01 2435605/2444142     gtk_mate_text_loc_lt [14]
+[19]     4.7    0.06    0.01 2444142         gtk_mate_text_loc_gt [19]
+                0.01    0.00 4888284/24383517     gtk_mate_text_loc_get_type [21]
+-----------------------------------------------
+                0.00    0.00       8/2435932     gtk_mate_scope_compare_by_loc [25]
+                0.00    0.00     319/2435932     gtk_mate_parser_close_scope [41]
+                0.05    0.01 2435605/2435932     gtk_mate_text_loc_lt [14]
+[20]     4.1    0.05    0.01 2435932         gtk_mate_text_loc_equal [20]
+                0.01    0.00 4871864/24383517     gtk_mate_text_loc_get_type [21]
+-----------------------------------------------
+                0.00    0.00    2606/24383517     gtk_mate_scope_first_child_after [5]
+                0.00    0.00    2841/24383517     gtk_mate_scope_contains_loc [34]
+                0.00    0.00   11376/24383517     gtk_mate_text_loc_lte [46]
+                0.01    0.00 2465066/24383517     gtk_mate_text_loc_new [22]
+                0.01    0.00 2465066/24383517     gtk_mate_text_loc_finalize [24]
+                0.01    0.00 4805204/24383517     gtk_mate_text_loc_gte [12]
+                0.01    0.00 4871210/24383517     gtk_mate_text_loc_lt [14]
+                0.01    0.00 4871864/24383517     gtk_mate_text_loc_equal [20]
+                0.01    0.00 4888284/24383517     gtk_mate_text_loc_gt [19]
+[21]     3.9    0.06    0.00 24383517         gtk_mate_text_loc_get_type [21]
+-----------------------------------------------
+                0.04    0.01 2465066/2465066     gtk_mate_text_loc_make [18]
+[22]     3.0    0.04    0.01 2465066         gtk_mate_text_loc_new [22]
+                0.01    0.00 2465066/24383517     gtk_mate_text_loc_get_type [21]
+-----------------------------------------------
+                                                 <spontaneous>
+[23]     2.6    0.04    0.00                 gtk_mate_text_loc_instance_init [23]
+-----------------------------------------------
+                                                 <spontaneous>
+[24]     2.4    0.03    0.01                 gtk_mate_text_loc_finalize [24]
+                0.01    0.00 2465066/24383517     gtk_mate_text_loc_get_type [21]
+-----------------------------------------------
+                                                 <spontaneous>
+[25]     1.4    0.00    0.02                 gtk_mate_scope_compare_by_loc [25]
+                0.00    0.01   66022/2471465     gtk_mate_scope_start_loc [10]
+                0.00    0.00   33003/2435605     gtk_mate_text_loc_lt [14]
+                0.00    0.00   66006/9771968     gtk_mate_scope_get_type [28]
+                0.00    0.00       8/2435932     gtk_mate_text_loc_equal [20]
+-----------------------------------------------
+                                                 <spontaneous>
+[26]     1.1    0.00    0.02                 gtk_mate_scanner_iterator_real_next [26]
+                0.01    0.01    3432/3432        gtk_mate_scanner_find_next_marker [27]
+                0.00    0.00    3432/15124       gtk_mate_scanner_iterator_get_type [89]
+-----------------------------------------------
+                0.01    0.01    3432/3432        gtk_mate_scanner_iterator_real_next [26]
+[27]     1.1    0.01    0.01    3432         gtk_mate_scanner_find_next_marker [27]
+                0.00    0.00   10799/40105       oniguruma_match_end [33]
+                0.00    0.00    2606/2606        gtk_mate_scanner_remove_preceding_cached_markers [38]
+                0.00    0.00    3432/3432        gtk_mate_scanner_get_cached_marker [39]
+                0.00    0.00  125830/125830      gtk_mate_scanner_scan_for_match [77]
+                0.00    0.00    5571/5571        gtk_mate_marker_new [99]
+                0.00    0.00    5571/7341        oniguruma_match_begin [95]
+                0.00    0.00    4189/15197       gtk_mate_scanner_get_current_scope [88]
+                0.00    0.00    3432/165118      gtk_mate_scanner_get_type [72]
+                0.00    0.00    1923/146315      gtk_mate_double_pattern_get_type [73]
+                0.00    0.00     467/126619      oniguruma_regex_search [76]
+-----------------------------------------------
+                0.00    0.00       1/9771968     gtk_mate_scanner_class_init [67]
+                0.00    0.00       9/9771968     gtk_mate_scope_clear_after [51]
+                0.00    0.00     319/9771968     gtk_mate_scope_inner_start_mark_set [61]
+                0.00    0.00     638/9771968     gtk_mate_scope_inner_end_mark_set [60]
+                0.00    0.00     826/9771968     gtk_mate_scanner_new [59]
+                0.00    0.00    1001/9771968     gtk_mate_scope_end_offset [48]
+                0.00    0.00    1087/9771968     gtk_mate_scope_start_offset [47]
+                0.00    0.00    1652/9771968     gtk_mate_parser_parse_line [3]
+                0.00    0.00    1652/9771968     gtk_mate_parser_clear_line [15]
+                0.00    0.00    1898/9771968     gtk_mate_scope_delete_any_on_line_not_in [16]
+                0.00    0.00    2606/9771968     gtk_mate_parser_get_expected_scope [4]
+                0.00    0.00    2606/9771968     gtk_mate_parser_handle_captures [42]
+                0.00    0.00    2606/9771968     gtk_mate_parser_make_closing_regex [56]
+                0.00    0.00    2606/9771968     gtk_mate_scope_first_child_after [5]
+                0.00    0.00    2841/9771968     gtk_mate_scope_contains_loc [34]
+                0.00    0.00    2847/9771968     gtk_mate_scope_scope_at [29]
+                0.00    0.00    2850/9771968     gtk_mate_scope_finalize [32]
+                0.00    0.00    3160/9771968     gtk_mate_scope_start_mark_set [58]
+                0.00    0.00    3479/9771968     gtk_mate_scope_end_mark_set [57]
+                0.00    0.00    4574/9771968     gtk_mate_scope_add_child [52]
+                0.00    0.00    6010/9771968     gtk_mate_scope_new [49]
+                0.00    0.00    6010/9771968     gtk_mate_scope_set_name [54]
+                0.00    0.00    6010/9771968     gtk_mate_scope_set_buffer [53]
+                0.00    0.00    6010/9771968     gtk_mate_scope_instance_init [55]
+                0.00    0.00    6015/9771968     gtk_mate_scope_end_line_offset [31]
+                0.00    0.00    6015/9771968     gtk_mate_scope_end_loc [30]
+                0.00    0.00    6138/9771968     gtk_mate_scope_end_line [45]
+                0.00    0.00    7818/9771968     gtk_mate_parser_collect_child_captures [43]
+                0.00    0.00   15021/9771968     gtk_mate_scope_get_children [50]
+                0.00    0.00   66006/9771968     gtk_mate_scope_compare_by_loc [25]
+                0.00    0.00 2453270/9771968     gtk_mate_scope_start_line_offset [17]
+                0.00    0.00 2471465/9771968     gtk_mate_scope_start_loc [10]
+                0.01    0.00 4676922/9771968     gtk_mate_scope_start_line [11]
+[28]     1.0    0.02    0.00 9771968         gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                                 369             gtk_mate_scope_scope_at [29]
+                0.00    0.01    2478/2478        gtk_mate_parser_parse_line [3]
+[29]     0.8    0.00    0.01    2478+369     gtk_mate_scope_scope_at [29]
+                0.00    0.01    2841/2841        gtk_mate_scope_contains_loc [34]
+                0.00    0.01    2847/6015        gtk_mate_scope_end_loc [30]
+                0.00    0.00    2847/2471465     gtk_mate_scope_start_loc [10]
+                0.00    0.00    2847/2402602     gtk_mate_text_loc_gte [12]
+                0.00    0.00    2847/5688        gtk_mate_text_loc_lte [46]
+                0.00    0.00    2847/2465066     gtk_mate_text_loc_make [18]
+                0.00    0.00    2841/6010        gtk_mate_scope_new [49]
+                0.00    0.00    5684/15021       gtk_mate_scope_get_children [50]
+                0.00    0.00    2847/9771968     gtk_mate_scope_get_type [28]
+                                 369             gtk_mate_scope_scope_at [29]
+-----------------------------------------------
+                0.00    0.00       9/6015        gtk_mate_scope_clear_after [51]
+                0.00    0.00     319/6015        gtk_mate_parser_close_scope [41]
+                0.00    0.01    2840/6015        gtk_mate_scope_contains_loc [34]
+                0.00    0.01    2847/6015        gtk_mate_scope_scope_at [29]
+[30]     0.7    0.00    0.01    6015         gtk_mate_scope_end_loc [30]
+                0.01    0.00    6015/6015        gtk_mate_scope_end_line_offset [31]
+                0.00    0.00    6015/6138        gtk_mate_scope_end_line [45]
+                0.00    0.00    6015/2465066     gtk_mate_text_loc_make [18]
+                0.00    0.00    6015/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                0.01    0.00    6015/6015        gtk_mate_scope_end_loc [30]
+[31]     0.7    0.01    0.00    6015         gtk_mate_scope_end_line_offset [31]
+                0.00    0.00    6015/7144433     gtk_mate_buffer_iter_from_mark [13]
+                0.00    0.00    6015/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                                                 <spontaneous>
+[32]     0.7    0.01    0.00                 gtk_mate_scope_finalize [32]
+                0.00    0.00    2850/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                0.00    0.00       9/40105       gtk_mate_parser_make_closing_regex [56]
+                0.00    0.00     872/40105       gtk_mate_parser_collect_child_captures [43]
+                0.00    0.00     954/40105       gtk_mate_parser_open_scope [44]
+                0.00    0.00     957/40105       gtk_mate_parser_close_scope [41]
+                0.00    0.00    2606/40105       gtk_mate_parser_parse_line [3]
+                0.00    0.00    5497/40105       gtk_mate_parser_single_scope [40]
+                0.00    0.00    7723/40105       gtk_mate_scanner_get_cached_marker [39]
+                0.00    0.00   10688/40105       gtk_mate_scanner_remove_preceding_cached_markers [38]
+                0.00    0.00   10799/40105       gtk_mate_scanner_find_next_marker [27]
+[33]     0.7    0.01    0.00   40105         oniguruma_match_end [33]
+                0.00    0.00   40105/73029       oniguruma_match_get_type [79]
+-----------------------------------------------
+                0.00    0.01    2841/2841        gtk_mate_scope_scope_at [29]
+[34]     0.4    0.00    0.01    2841         gtk_mate_scope_contains_loc [34]
+                0.00    0.01    2840/6015        gtk_mate_scope_end_loc [30]
+                0.00    0.00    2841/2471465     gtk_mate_scope_start_loc [10]
+                0.00    0.00    2841/5688        gtk_mate_text_loc_lte [46]
+                0.00    0.00    2840/2444142     gtk_mate_text_loc_gt [19]
+                0.00    0.00    2841/24383517     gtk_mate_text_loc_get_type [21]
+                0.00    0.00    2841/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                                                 <spontaneous>
+[35]     0.3    0.01    0.00                 gtk_mate_text_loc_class_init [35]
+-----------------------------------------------
+                                                 <spontaneous>
+[36]     0.3    0.01    0.00                 gtk_mate_text_loc_to_s [36]
+-----------------------------------------------
+                                                 <spontaneous>
+[37]     0.3    0.01    0.00                 _vala_strcmp0 [37]
+-----------------------------------------------
+                0.00    0.00    2606/2606        gtk_mate_scanner_find_next_marker [27]
+[38]     0.2    0.00    0.00    2606         gtk_mate_scanner_remove_preceding_cached_markers [38]
+                0.00    0.00   10688/40105       oniguruma_match_end [33]
+                0.00    0.00    2606/165118      gtk_mate_scanner_get_type [72]
+                0.00    0.00    2606/25824       gtk_mate_marker_get_type [83]
+-----------------------------------------------
+                0.00    0.00    3432/3432        gtk_mate_scanner_find_next_marker [27]
+[39]     0.1    0.00    0.00    3432         gtk_mate_scanner_get_cached_marker [39]
+                0.00    0.00    7723/40105       oniguruma_match_end [33]
+                0.00    0.00    3432/165118      gtk_mate_scanner_get_type [72]
+-----------------------------------------------
+                0.00    0.00    1968/1968        gtk_mate_parser_parse_line [3]
+[40]     0.1    0.00    0.00    1968         gtk_mate_parser_single_scope [40]
+                0.00    0.00    5497/40105       oniguruma_match_end [33]
+                0.00    0.00    1968/2606        gtk_mate_parser_handle_captures [42]
+                0.00    0.00    1968/2287        gtk_mate_scope_add_child [52]
+                0.00    0.00    1968/6010        gtk_mate_scope_new [49]
+                0.00    0.00    1968/3160        gtk_mate_scope_start_mark_set [58]
+                0.00    0.00    1968/3479        gtk_mate_scope_end_mark_set [57]
+                0.00    0.00    3936/15197       gtk_mate_scanner_get_current_scope [88]
+                0.00    0.00    1968/14698       gtk_mate_parser_get_type [90]
+                0.00    0.00    1968/165118      gtk_mate_scanner_get_type [72]
+                0.00    0.00    1968/25824       gtk_mate_marker_get_type [83]
+-----------------------------------------------
+                0.00    0.00     319/319         gtk_mate_parser_parse_line [3]
+[41]     0.1    0.00    0.00     319         gtk_mate_parser_close_scope [41]
+                0.00    0.00     319/6015        gtk_mate_scope_end_loc [30]
+                0.00    0.00     957/40105       oniguruma_match_end [33]
+                0.00    0.00     319/2606        gtk_mate_parser_handle_captures [42]
+                0.00    0.00     319/2465066     gtk_mate_text_loc_make [18]
+                0.00    0.00     319/2435932     gtk_mate_text_loc_equal [20]
+                0.00    0.00     319/638         gtk_mate_scope_inner_end_mark_set [60]
+                0.00    0.00     319/3479        gtk_mate_scope_end_mark_set [57]
+                0.00    0.00    3828/15197       gtk_mate_scanner_get_current_scope [88]
+                0.00    0.00     319/14698       gtk_mate_parser_get_type [90]
+                0.00    0.00     319/165118      gtk_mate_scanner_get_type [72]
+                0.00    0.00     319/25824       gtk_mate_marker_get_type [83]
+                0.00    0.00     319/1464        gtk_mate_scanner_set_current_scope [109]
+-----------------------------------------------
+                0.00    0.00     319/2606        gtk_mate_parser_close_scope [41]
+                0.00    0.00     319/2606        gtk_mate_parser_open_scope [44]
+                0.00    0.00    1968/2606        gtk_mate_parser_single_scope [40]
+[42]     0.0    0.00    0.00    2606         gtk_mate_parser_handle_captures [42]
+                0.00    0.00    2606/2606        gtk_mate_parser_collect_child_captures [43]
+                0.00    0.00    2606/2606        gtk_mate_parser_make_closing_regex [56]
+                0.00    0.00    2606/9771968     gtk_mate_scope_get_type [28]
+                0.00    0.00    2606/14698       gtk_mate_parser_get_type [90]
+                0.00    0.00    2606/25824       gtk_mate_marker_get_type [83]
+-----------------------------------------------
+                0.00    0.00    2606/2606        gtk_mate_parser_handle_captures [42]
+[43]     0.0    0.00    0.00    2606         gtk_mate_parser_collect_child_captures [43]
+                0.00    0.00     872/40105       oniguruma_match_end [33]
+                0.00    0.00    1087/1087        gtk_mate_scope_start_offset [47]
+                0.00    0.00    1001/1001        gtk_mate_scope_end_offset [48]
+                0.00    0.00    7818/9771968     gtk_mate_scope_get_type [28]
+                0.00    0.00     872/6010        gtk_mate_scope_new [49]
+                0.00    0.00     872/3160        gtk_mate_scope_start_mark_set [58]
+                0.00    0.00     872/3479        gtk_mate_scope_end_mark_set [57]
+                0.00    0.00     872/15021       gtk_mate_scope_get_children [50]
+                0.00    0.00    4574/190499      gtk_mate_single_pattern_get_type [71]
+                0.00    0.00    2606/14698       gtk_mate_parser_get_type [90]
+                0.00    0.00    2606/25824       gtk_mate_marker_get_type [83]
+                0.00    0.00    1755/7341        oniguruma_match_begin [95]
+                0.00    0.00    1382/146315      gtk_mate_double_pattern_get_type [73]
+-----------------------------------------------
+                0.00    0.00     319/319         gtk_mate_parser_parse_line [3]
+[44]     0.0    0.00    0.00     319         gtk_mate_parser_open_scope [44]
+                0.00    0.00     954/40105       oniguruma_match_end [33]
+                0.00    0.00     319/2606        gtk_mate_parser_handle_captures [42]
+                0.00    0.00     319/6010        gtk_mate_scope_new [49]
+                0.00    0.00     319/2287        gtk_mate_scope_add_child [52]
+                0.00    0.00     319/3160        gtk_mate_scope_start_mark_set [58]
+                0.00    0.00     319/319         gtk_mate_scope_inner_start_mark_set [61]
+                0.00    0.00     319/638         gtk_mate_scope_inner_end_mark_set [60]
+                0.00    0.00     319/3479        gtk_mate_scope_end_mark_set [57]
+                0.00    0.00     638/15197       gtk_mate_scanner_get_current_scope [88]
+                0.00    0.00     319/14698       gtk_mate_parser_get_type [90]
+                0.00    0.00     319/165118      gtk_mate_scanner_get_type [72]
+                0.00    0.00     319/25824       gtk_mate_marker_get_type [83]
+                0.00    0.00     319/323         gtk_mate_buffer_end_iter [136]
+                0.00    0.00     319/1464        gtk_mate_scanner_set_current_scope [109]
+-----------------------------------------------
+                0.00    0.00     123/6138        gtk_mate_parser_clear_line [15]
+                0.00    0.00    6015/6138        gtk_mate_scope_end_loc [30]
+[45]     0.0    0.00    0.00    6138         gtk_mate_scope_end_line [45]
+                0.00    0.00    6138/7144433     gtk_mate_buffer_iter_from_mark [13]
+                0.00    0.00    6138/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                0.00    0.00    2841/5688        gtk_mate_scope_contains_loc [34]
+                0.00    0.00    2847/5688        gtk_mate_scope_scope_at [29]
+[46]     0.0    0.00    0.00    5688         gtk_mate_text_loc_lte [46]
+                0.00    0.00    5688/2444142     gtk_mate_text_loc_gt [19]
+                0.00    0.00   11376/24383517     gtk_mate_text_loc_get_type [21]
+-----------------------------------------------
+                0.00    0.00    1087/1087        gtk_mate_parser_collect_child_captures [43]
+[47]     0.0    0.00    0.00    1087         gtk_mate_scope_start_offset [47]
+                0.00    0.00    1087/7144433     gtk_mate_buffer_iter_from_mark [13]
+                0.00    0.00    1087/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                0.00    0.00    1001/1001        gtk_mate_parser_collect_child_captures [43]
+[48]     0.0    0.00    0.00    1001         gtk_mate_scope_end_offset [48]
+                0.00    0.00    1001/7144433     gtk_mate_buffer_iter_from_mark [13]
+                0.00    0.00    1001/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                0.00    0.00       1/6010        gtk_mate_parser_make_root [64]
+                0.00    0.00       9/6010        gtk_mate_scope_clear_after [51]
+                0.00    0.00     319/6010        gtk_mate_parser_open_scope [44]
+                0.00    0.00     872/6010        gtk_mate_parser_collect_child_captures [43]
+                0.00    0.00    1968/6010        gtk_mate_parser_single_scope [40]
+                0.00    0.00    2841/6010        gtk_mate_scope_scope_at [29]
+[49]     0.0    0.00    0.00    6010         gtk_mate_scope_new [49]
+                0.00    0.00    6010/9771968     gtk_mate_scope_get_type [28]
+                0.00    0.00    6010/6010        gtk_mate_scope_set_name [54]
+                0.00    0.00    6010/6010        gtk_mate_scope_set_buffer [53]
+                0.00    0.00    6010/7676        gtk_mate_buffer_get_type [93]
+-----------------------------------------------
+                0.00    0.00      18/15021       gtk_mate_scope_clear_after [51]
+                0.00    0.00     872/15021       gtk_mate_parser_collect_child_captures [43]
+                0.00    0.00     949/15021       gtk_mate_scope_delete_any_on_line_not_in [16]
+                0.00    0.00    2287/15021       gtk_mate_scope_add_child [52]
+                0.00    0.00    5211/15021       gtk_mate_scope_first_child_after [5]
+                0.00    0.00    5684/15021       gtk_mate_scope_scope_at [29]
+[50]     0.0    0.00    0.00   15021         gtk_mate_scope_get_children [50]
+                0.00    0.00   15021/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                                   3             gtk_mate_scope_clear_after [51]
+                0.00    0.00       6/6           gtk_mate_parser_parse_range [1]
+[51]     0.0    0.00    0.00       6+3       gtk_mate_scope_clear_after [51]
+                0.00    0.00       9/6015        gtk_mate_scope_end_loc [30]
+                0.00    0.00       9/2465066     gtk_mate_text_loc_make [18]
+                0.00    0.00       9/2444142     gtk_mate_text_loc_gt [19]
+                0.00    0.00       9/6010        gtk_mate_scope_new [49]
+                0.00    0.00      18/15021       gtk_mate_scope_get_children [50]
+                0.00    0.00       9/9771968     gtk_mate_scope_get_type [28]
+                                   3             gtk_mate_scope_clear_after [51]
+-----------------------------------------------
+                0.00    0.00     319/2287        gtk_mate_parser_open_scope [44]
+                0.00    0.00    1968/2287        gtk_mate_parser_single_scope [40]
+[52]     0.0    0.00    0.00    2287         gtk_mate_scope_add_child [52]
+                0.00    0.00    4574/9771968     gtk_mate_scope_get_type [28]
+                0.00    0.00    2287/15021       gtk_mate_scope_get_children [50]
+-----------------------------------------------
+                0.00    0.00    6010/6010        gtk_mate_scope_new [49]
+[53]     0.0    0.00    0.00    6010         gtk_mate_scope_set_buffer [53]
+                0.00    0.00    6010/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                0.00    0.00    6010/6010        gtk_mate_scope_new [49]
+[54]     0.0    0.00    0.00    6010         gtk_mate_scope_set_name [54]
+                0.00    0.00    6010/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                                                 <spontaneous>
+[55]     0.0    0.00    0.00                 gtk_mate_scope_instance_init [55]
+                0.00    0.00    6010/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+                0.00    0.00    2606/2606        gtk_mate_parser_handle_captures [42]
+[56]     0.0    0.00    0.00    2606         gtk_mate_parser_make_closing_regex [56]
+                0.00    0.00    2606/9771968     gtk_mate_scope_get_type [28]
+                0.00    0.00       9/40105       oniguruma_match_end [33]
+                0.00    0.00    2925/146315      gtk_mate_double_pattern_get_type [73]
+                0.00    0.00    2606/14698       gtk_mate_parser_get_type [90]
+                0.00    0.00    2606/25824       gtk_mate_marker_get_type [83]
+                0.00    0.00     638/1739        oniguruma_regex_make1 [104]
+                0.00    0.00     325/1151        string_get_length [112]
+                0.00    0.00     322/126619      oniguruma_regex_search [76]
+                0.00    0.00      15/7341        oniguruma_match_begin [95]
+-----------------------------------------------
+                0.00    0.00       1/3479        gtk_mate_parser_make_root [64]
+                0.00    0.00     319/3479        gtk_mate_parser_close_scope [41]
+                0.00    0.00     319/3479        gtk_mate_parser_open_scope [44]
+                0.00    0.00     872/3479        gtk_mate_parser_collect_child_captures [43]
+                0.00    0.00    1968/3479        gtk_mate_parser_single_scope [40]
+[57]     0.0    0.00    0.00    3479         gtk_mate_scope_end_mark_set [57]
+                0.00    0.00    3479/9771968     gtk_mate_scope_get_type [28]
+                0.00    0.00    3479/7596        gtk_mate_buffer_iter_at_line_offset [94]
+-----------------------------------------------
+                0.00    0.00       1/3160        gtk_mate_parser_make_root [64]
+                0.00    0.00     319/3160        gtk_mate_parser_open_scope [44]
+                0.00    0.00     872/3160        gtk_mate_parser_collect_child_captures [43]
+                0.00    0.00    1968/3160        gtk_mate_parser_single_scope [40]
+[58]     0.0    0.00    0.00    3160         gtk_mate_scope_start_mark_set [58]
+                0.00    0.00    3160/9771968     gtk_mate_scope_get_type [28]
+                0.00    0.00    3160/7596        gtk_mate_buffer_iter_at_line_offset [94]
+-----------------------------------------------
+                0.00    0.00     826/826         gtk_mate_parser_parse_line [3]
+[59]     0.0    0.00    0.00     826         gtk_mate_scanner_new [59]
+                0.00    0.00     826/9771968     gtk_mate_scope_get_type [28]
+                0.00    0.00     826/165118      gtk_mate_scanner_get_type [72]
+                0.00    0.00     826/1464        gtk_mate_scanner_set_current_scope [109]
+                0.00    0.00     826/826         gtk_mate_scanner_set_line [123]
+                0.00    0.00     826/826         gtk_mate_scanner_set_line_length [124]
+-----------------------------------------------
+                0.00    0.00     319/638         gtk_mate_parser_close_scope [41]
+                0.00    0.00     319/638         gtk_mate_parser_open_scope [44]
+[60]     0.0    0.00    0.00     638         gtk_mate_scope_inner_end_mark_set [60]
+                0.00    0.00     638/9771968     gtk_mate_scope_get_type [28]
+                0.00    0.00     638/7596        gtk_mate_buffer_iter_at_line_offset [94]
+-----------------------------------------------
+                0.00    0.00     319/319         gtk_mate_parser_open_scope [44]
+[61]     0.0    0.00    0.00     319         gtk_mate_scope_inner_start_mark_set [61]
+                0.00    0.00     319/9771968     gtk_mate_scope_get_type [28]
+                0.00    0.00     319/7596        gtk_mate_buffer_iter_at_line_offset [94]
+-----------------------------------------------
+                0.00    0.00       1/1           prof_test_main [65]
+[62]     0.0    0.00    0.00       1         gtk_mate_buffer_set_grammar_by_name [62]
+                0.00    0.00       1/1           gtk_mate_parser_create [63]
+                0.00    0.00     132/133         gtk_mate_grammar_get_name [145]
+                0.00    0.00     132/132         _vala_strcmp0 [350]
+                0.00    0.00       1/7676        gtk_mate_buffer_get_type [93]
+-----------------------------------------------
+                0.00    0.00       1/1           gtk_mate_buffer_set_grammar_by_name [62]
+[63]     0.0    0.00    0.00       1         gtk_mate_parser_create [63]
+                0.00    0.00       1/1           gtk_mate_parser_make_root [64]
+                0.00    0.00       1/2299        gtk_mate_grammar_get_type [100]
+                0.00    0.00       1/7676        gtk_mate_buffer_get_type [93]
+                0.00    0.00       1/1           gtk_mate_parser_new [169]
+                0.00    0.00       1/1           gtk_mate_grammar_init_for_use <cycle 1> [146]
+                0.00    0.00       1/1           gtk_mate_parser_set_grammar [171]
+                0.00    0.00       1/1           gtk_mate_parser_set_buffer [170]
+                0.00    0.00       1/1           range_set_new [173]
+                0.00    0.00       1/1           gtk_mate_parser_connect_buffer_signals [166]
+-----------------------------------------------
+                0.00    0.00       1/1           gtk_mate_parser_create [63]
+[64]     0.0    0.00    0.00       1         gtk_mate_parser_make_root [64]
+                0.00    0.00       1/6010        gtk_mate_scope_new [49]
+                0.00    0.00       1/3160        gtk_mate_scope_start_mark_set [58]
+                0.00    0.00       1/3479        gtk_mate_scope_end_mark_set [57]
+                0.00    0.00       4/136660      gtk_mate_pattern_get_type [74]
+                0.00    0.00       2/323         gtk_mate_buffer_end_iter [136]
+                0.00    0.00       1/14698       gtk_mate_parser_get_type [90]
+                0.00    0.00       1/373         gtk_mate_double_pattern_new [131]
+                0.00    0.00       1/133         gtk_mate_grammar_get_name [145]
+-----------------------------------------------
+                0.00    0.00       1/1           main [66]
+[65]     0.0    0.00    0.00       1         prof_test_main [65]
+                0.00    0.00       1/1           gtk_mate_buffer_set_grammar_by_name [62]
+                0.00    0.00       1/1           gtk_mate_buffer_new [162]
+-----------------------------------------------
+                                                 <spontaneous>
+[66]     0.0    0.00    0.00                 main [66]
+                0.00    0.00       1/1           prof_test_main [65]
+-----------------------------------------------
+                                                 <spontaneous>
+[67]     0.0    0.00    0.00                 gtk_mate_scanner_class_init [67]
+                0.00    0.00       1/9771968     gtk_mate_scope_get_type [28]
+-----------------------------------------------
+[68]     0.0    0.00    0.00       1+816     <cycle 1 as a whole> [68]
+                0.00    0.00     372             gtk_mate_double_pattern_replace_include_patterns <cycle 1> [134]
+                0.00    0.00      73             gtk_mate_grammar_init_for_use <cycle 1> [146]
+-----------------------------------------------
+[69]     0.0    0.00    0.00     959+1056    <cycle 2 as a whole> [69]
+                0.00    0.00    1643             gtk_mate_pattern_create_from_plist <cycle 2> [108]
+-----------------------------------------------
+[70]     0.0    0.00    0.00     185+55603   <cycle 3 as a whole> [70]
+                0.00    0.00   38256             plist_node_parse_xml_node <cycle 3> [81]
+                0.00    0.00   15618             plist_dict_parse_dict <cycle 3> [87]
+-----------------------------------------------
+                0.00    0.00     661/190499      gtk_mate_single_pattern_new [128]
+                0.00    0.00    4574/190499      gtk_mate_parser_collect_child_captures [43]
+                0.00    0.00  185264/190499      gtk_mate_scanner_scan_for_match [77]
+[71]     0.0    0.00    0.00  190499         gtk_mate_single_pattern_get_type [71]
+                0.00    0.00       1/136660      gtk_mate_pattern_get_type [74]
+-----------------------------------------------
+                0.00    0.00       1/165118      gtk_mate_scanner_iterator_class_init [238]
+                0.00    0.00     319/165118      gtk_mate_parser_close_scope [41]
+                0.00    0.00     319/165118      gtk_mate_parser_open_scope [44]
+                0.00    0.00     826/165118      gtk_mate_scanner_new [59]
+                0.00    0.00     826/165118      gtk_mate_scanner_real_iterator [248]
+                0.00    0.00     826/165118      gtk_mate_scanner_set_line [123]
+                0.00    0.00     826/165118      gtk_mate_scanner_set_line_length [124]
+                0.00    0.00     826/165118      gtk_mate_scanner_instance_init [237]
+                0.00    0.00     826/165118      gtk_mate_scanner_finalize [232]
+                0.00    0.00    1464/165118      gtk_mate_scanner_updated_current_scope [110]
+                0.00    0.00    1464/165118      gtk_mate_scanner_set_current_scope [109]
+                0.00    0.00    1652/165118      gtk_mate_scanner_iterator_new [121]
+                0.00    0.00    1968/165118      gtk_mate_parser_single_scope [40]
+                0.00    0.00    2478/165118      gtk_mate_scanner_constructor [231]
+                0.00    0.00    2606/165118      gtk_mate_scanner_remove_preceding_cached_markers [38]
+                0.00    0.00    3432/165118      gtk_mate_scanner_get_cached_marker [39]
+                0.00    0.00    3432/165118      gtk_mate_scanner_find_next_marker [27]
+                0.00    0.00   15197/165118      gtk_mate_scanner_get_current_scope [88]
+                0.00    0.00  125830/165118      gtk_mate_scanner_scan_for_match [77]
+[72]     0.0    0.00    0.00  165118         gtk_mate_scanner_get_type [72]
+-----------------------------------------------
+                0.00    0.00     372/146315      gtk_mate_double_pattern_replace_include_patterns <cycle 1> [134]
+                0.00    0.00     372/146315      gtk_mate_double_pattern_replace_repository_includes [135]
+                0.00    0.00     372/146315      gtk_mate_double_pattern_replace_base_and_self_includes <cycle 1> [133]
+                0.00    0.00     373/146315      gtk_mate_double_pattern_new [131]
+                0.00    0.00    1056/146315      gtk_mate_double_pattern_remove_patterns [114]
+                0.00    0.00    1056/146315      gtk_mate_double_pattern_add_patterns [113]
+                0.00    0.00    1382/146315      gtk_mate_parser_collect_child_captures [43]
+                0.00    0.00    1405/146315      gtk_mate_grammar_init_for_use <cycle 1> [146]
+                0.00    0.00    1923/146315      gtk_mate_scanner_find_next_marker [27]
+                0.00    0.00    2287/146315      gtk_mate_parser_parse_line [3]
+                0.00    0.00    2925/146315      gtk_mate_parser_make_closing_regex [56]
+                0.00    0.00  132792/146315      gtk_mate_scanner_scan_for_match [77]
+[73]     0.0    0.00    0.00  146315         gtk_mate_double_pattern_get_type [73]
+                0.00    0.00       1/136660      gtk_mate_pattern_get_type [74]
+-----------------------------------------------
+                0.00    0.00       1/136660      gtk_mate_single_pattern_get_type [71]
+                0.00    0.00       1/136660      gtk_mate_double_pattern_get_type [73]
+                0.00    0.00       1/136660      gtk_mate_include_pattern_get_type [92]
+                0.00    0.00       4/136660      gtk_mate_parser_make_root [64]
+                0.00    0.00     192/136660      gtk_mate_grammar_init_for_use <cycle 1> [146]
+                0.00    0.00     481/136660      gtk_mate_pattern_finalize [228]
+                0.00    0.00     744/136660      gtk_mate_double_pattern_replace_repository_includes [135]
+                0.00    0.00     744/136660      gtk_mate_double_pattern_replace_base_and_self_includes <cycle 1> [133]
+                0.00    0.00    1643/136660      gtk_mate_pattern_create_from_plist <cycle 2> [108]
+                0.00    0.00    1830/136660      gtk_mate_include_pattern_create_from_plist [129]
+                0.00    0.00    1998/136660      gtk_mate_double_pattern_create_from_plist <cycle 2> [132]
+                0.00    0.00    3191/136660      gtk_mate_single_pattern_create_from_plist [127]
+                0.00    0.00  125830/136660      gtk_mate_scanner_scan_for_match [77]
+[74]     0.0    0.00    0.00  136660         gtk_mate_pattern_get_type [74]
+-----------------------------------------------
+                0.00    0.00     325/132155      oniguruma_regex_finalize [299]
+                0.00    0.00    1733/132155      oniguruma_regex_set_rx [106]
+                0.00    0.00    1739/132155      oniguruma_regex_new [105]
+                0.00    0.00    1739/132155      oniguruma_regex_instance_init [302]
+                0.00    0.00  126619/132155      oniguruma_regex_search [76]
+[75]     0.0    0.00    0.00  132155         oniguruma_regex_get_type [75]
+-----------------------------------------------
+                0.00    0.00     322/126619      gtk_mate_parser_make_closing_regex [56]
+                0.00    0.00     467/126619      gtk_mate_scanner_find_next_marker [27]
+                0.00    0.00  125830/126619      gtk_mate_scanner_scan_for_match [77]
+[76]     0.0    0.00    0.00  126619         oniguruma_regex_search [76]
+                0.00    0.00  126619/132155      oniguruma_regex_get_type [75]
+                0.00    0.00    5574/5574        oniguruma_match_new [96]
+                0.00    0.00    5574/5574        oniguruma_match_set_rg [97]
+                0.00    0.00    5574/5574        oniguruma_match_set_rx [98]
+-----------------------------------------------
+                0.00    0.00  125830/125830      gtk_mate_scanner_find_next_marker [27]
+[77]     0.0    0.00    0.00  125830         gtk_mate_scanner_scan_for_match [77]
+                0.00    0.00  185264/190499      gtk_mate_single_pattern_get_type [71]
+                0.00    0.00  132792/146315      gtk_mate_double_pattern_get_type [73]
+                0.00    0.00  125830/165118      gtk_mate_scanner_get_type [72]
+                0.00    0.00  125830/136660      gtk_mate_pattern_get_type [74]
+                0.00    0.00  125830/126619      oniguruma_regex_search [76]
+-----------------------------------------------
+                0.00    0.00       1/94427       gtk_mate_grammar_class_init [207]
+                0.00    0.00      21/94427       gtk_mate_load_themes [165]
+                0.00    0.00     164/94427       gtk_mate_grammar_new [139]
+                0.00    0.00     610/94427       gtk_mate_include_pattern_create_from_plist [129]
+                0.00    0.00     687/94427       plist_dict_keys [126]
+                0.00    0.00    1134/94427       gtk_mate_grammar_init_for_use <cycle 1> [146]
+                0.00    0.00    1143/94427       gtk_mate_theme_create_from_plist [149]
+                0.00    0.00    1322/94427       gtk_mate_single_pattern_create_from_plist [127]
+                0.00    0.00    1643/94427       gtk_mate_pattern_create_from_plist <cycle 2> [108]
+                0.00    0.00    1737/94427       gtk_mate_double_pattern_create_from_plist <cycle 2> [132]
+                0.00    0.00    1746/94427       gtk_mate_pattern_make_captures_from_plist [111]
+                0.00    0.00    1964/94427       gtk_mate_theme_setting_create_from_plist [116]
+                0.00    0.00    2125/94427       plist_dict_finalize [311]
+                0.00    0.00   15618/94427       plist_dict_new [86]
+                0.00    0.00   17658/94427       plist_dict_get [85]
+                0.00    0.00   46854/94427       plist_dict_constructor [310]
+[78]     0.0    0.00    0.00   94427         plist_dict_get_type [78]
+                0.00    0.00       1/55792       plist_node_get_type [80]
+-----------------------------------------------
+                0.00    0.00    3287/73029       oniguruma_match_finalize [289]
+                0.00    0.00    5574/73029       oniguruma_match_new [96]
+                0.00    0.00    5574/73029       oniguruma_match_set_rx [98]
+                0.00    0.00    5574/73029       oniguruma_match_set_rg [97]
+                0.00    0.00    5574/73029       oniguruma_match_instance_init [293]
+                0.00    0.00    7341/73029       oniguruma_match_begin [95]
+                0.00    0.00   40105/73029       oniguruma_match_end [33]
+[79]     0.0    0.00    0.00   73029         oniguruma_match_get_type [79]
+-----------------------------------------------
+                0.00    0.00       1/55792       plist_string_get_type [82]
+                0.00    0.00       1/55792       plist_integer_get_type [151]
+                0.00    0.00       1/55792       plist_array_get_type [91]
+                0.00    0.00       1/55792       plist_dict_get_type [78]
+                0.00    0.00    1914/55792       plist_array_constructor [305]
+                0.00    0.00   15618/55792       plist_dict_constructor [310]
+                0.00    0.00   38256/55792       plist_node_parse_xml_node <cycle 3> [81]
+[80]     0.0    0.00    0.00   55792         plist_node_get_type [80]
+-----------------------------------------------
+                                6997             plist_array_parse_array <cycle 3> [102]
+                               31259             plist_dict_parse_dict <cycle 3> [87]
+[81]     0.0    0.00    0.00   38256         plist_node_parse_xml_node <cycle 3> [81]
+                0.00    0.00   74883/75068       _vala_strcmp0 [344]
+                0.00    0.00   38256/55792       plist_node_get_type [80]
+                0.00    0.00   20890/20890       plist_string_new [84]
+                0.00    0.00      19/19          plist_integer_new [152]
+                               15433             plist_dict_parse_dict <cycle 3> [87]
+                                1914             plist_array_parse_array <cycle 3> [102]
+-----------------------------------------------
+                0.00    0.00      34/33482       gtk_mate_grammar_init_for_use <cycle 1> [146]
+                0.00    0.00     169/33482       gtk_mate_theme_create_from_plist [149]
+                0.00    0.00     610/33482       gtk_mate_include_pattern_create_from_plist [129]
+                0.00    0.00     840/33482       gtk_mate_grammar_init_for_reference [138]
+                0.00    0.00    1129/33482       gtk_mate_pattern_make_captures_from_plist [111]
+                0.00    0.00    1322/33482       gtk_mate_single_pattern_create_from_plist [127]
+                0.00    0.00    1488/33482       gtk_mate_double_pattern_create_from_plist <cycle 2> [132]
+                0.00    0.00    3377/33482       gtk_mate_theme_setting_create_from_plist [116]
+                0.00    0.00    3623/33482       plist_string_finalize [322]
+                0.00    0.00   20890/33482       plist_string_new [84]
+[82]     0.0    0.00    0.00   33482         plist_string_get_type [82]
+                0.00    0.00       1/55792       plist_node_get_type [80]
+-----------------------------------------------
+                0.00    0.00     319/25824       gtk_mate_parser_close_scope [41]
+                0.00    0.00     319/25824       gtk_mate_parser_open_scope [44]
+                0.00    0.00     826/25824       gtk_mate_scanner_real_iterator [248]
+                0.00    0.00     826/25824       gtk_mate_scanner_constructor [231]
+                0.00    0.00    1968/25824       gtk_mate_parser_single_scope [40]
+                0.00    0.00    2606/25824       gtk_mate_parser_handle_captures [42]
+                0.00    0.00    2606/25824       gtk_mate_parser_make_closing_regex [56]
+                0.00    0.00    2606/25824       gtk_mate_parser_collect_child_captures [43]
+                0.00    0.00    2606/25824       gtk_mate_scanner_remove_preceding_cached_markers [38]
+                0.00    0.00    5571/25824       gtk_mate_marker_new [99]
+                0.00    0.00    5571/25824       gtk_mate_marker_finalize [216]
+[83]     0.0    0.00    0.00   25824         gtk_mate_marker_get_type [83]
+-----------------------------------------------
+                0.00    0.00   20890/20890       plist_node_parse_xml_node <cycle 3> [81]
+[84]     0.0    0.00    0.00   20890         plist_string_new [84]
+                0.00    0.00   20890/33482       plist_string_get_type [82]
+-----------------------------------------------
+                0.00    0.00     559/17658       gtk_mate_grammar_init_for_use <cycle 1> [146]
+                0.00    0.00     610/17658       gtk_mate_include_pattern_create_from_plist [129]
+                0.00    0.00     984/17658       gtk_mate_grammar_init_for_reference [138]
+                0.00    0.00    1312/17658       gtk_mate_theme_create_from_plist [149]
+                0.00    0.00    2258/17658       gtk_mate_pattern_make_captures_from_plist [111]
+                0.00    0.00    2644/17658       gtk_mate_single_pattern_create_from_plist [127]
+                0.00    0.00    2946/17658       gtk_mate_theme_setting_create_from_plist [116]
+                0.00    0.00    2997/17658       gtk_mate_pattern_create_from_plist <cycle 2> [108]
+                0.00    0.00    3348/17658       gtk_mate_double_pattern_create_from_plist <cycle 2> [132]
+[85]     0.0    0.00    0.00   17658         plist_dict_get [85]
+                0.00    0.00   17658/94427       plist_dict_get_type [78]
+-----------------------------------------------
+                0.00    0.00   15618/15618       plist_dict_parse_dict <cycle 3> [87]
+[86]     0.0    0.00    0.00   15618         plist_dict_new [86]
+                0.00    0.00   15618/94427       plist_dict_get_type [78]
+-----------------------------------------------
+                               15433             plist_node_parse_xml_node <cycle 3> [81]
+                0.00    0.00     185/185         plist_parse [137]
+[87]     0.0    0.00    0.00   15618         plist_dict_parse_dict <cycle 3> [87]
+                0.00    0.00   15618/15618       plist_dict_new [86]
+                               31259             plist_node_parse_xml_node <cycle 3> [81]
+-----------------------------------------------
+                0.00    0.00     638/15197       gtk_mate_parser_open_scope [44]
+                0.00    0.00    2606/15197       gtk_mate_parser_parse_line [3]
+                0.00    0.00    3828/15197       gtk_mate_parser_close_scope [41]
+                0.00    0.00    3936/15197       gtk_mate_parser_single_scope [40]
+                0.00    0.00    4189/15197       gtk_mate_scanner_find_next_marker [27]
+[88]     0.0    0.00    0.00   15197         gtk_mate_scanner_get_current_scope [88]
+                0.00    0.00   15197/165118      gtk_mate_scanner_get_type [72]
+-----------------------------------------------
+                0.00    0.00     826/15124       gtk_mate_scanner_iterator_new [121]
+                0.00    0.00     826/15124       gtk_mate_scanner_iterator_set_scanner [122]
+                0.00    0.00     826/15124       gtk_mate_scanner_iterator_instance_init [244]
+                0.00    0.00     826/15124       gtk_mate_scanner_iterator_finalize [240]
+                0.00    0.00    2478/15124       gtk_mate_scanner_iterator_constructor [239]
+                0.00    0.00    2606/15124       gtk_mate_scanner_iterator_real_get [245]
+                0.00    0.00    3304/15124       gtk_mate_scanner_iterator_set_property [246]
+                0.00    0.00    3432/15124       gtk_mate_scanner_iterator_real_next [26]
+[89]     0.0    0.00    0.00   15124         gtk_mate_scanner_iterator_get_type [89]
+-----------------------------------------------
+                0.00    0.00       1/14698       gtk_mate_parser_make_root [64]
+                0.00    0.00       1/14698       gtk_mate_parser_connect_buffer_signals [166]
+                0.00    0.00       1/14698       gtk_mate_parser_insert_text_handler [168]
+                0.00    0.00       1/14698       gtk_mate_parser_delete_range_handler [167]
+                0.00    0.00       1/14698       gtk_mate_parser_insert_text_after_handler [7]
+                0.00    0.00       1/14698       gtk_mate_parser_delete_range_after_handler [6]
+                0.00    0.00       1/14698       gtk_mate_parser_new [169]
+                0.00    0.00       1/14698       gtk_mate_parser_set_grammar [171]
+                0.00    0.00       1/14698       gtk_mate_parser_set_buffer [170]
+                0.00    0.00       1/14698       gtk_mate_parser_instance_init [223]
+                0.00    0.00       2/14698       gtk_mate_parser_is_parsing [157]
+                0.00    0.00       2/14698       gtk_mate_parser_process_changes [2]
+                0.00    0.00       2/14698       gtk_mate_parser_parse_range [1]
+                0.00    0.00     319/14698       gtk_mate_parser_close_scope [41]
+                0.00    0.00     319/14698       gtk_mate_parser_open_scope [44]
+                0.00    0.00     826/14698       gtk_mate_parser_parse_line [3]
+                0.00    0.00     826/14698       gtk_mate_parser_clear_line [15]
+                0.00    0.00    1968/14698       gtk_mate_parser_single_scope [40]
+                0.00    0.00    2606/14698       gtk_mate_parser_get_expected_scope [4]
+                0.00    0.00    2606/14698       gtk_mate_parser_handle_captures [42]
+                0.00    0.00    2606/14698       gtk_mate_parser_make_closing_regex [56]
+                0.00    0.00    2606/14698       gtk_mate_parser_collect_child_captures [43]
+[90]     0.0    0.00    0.00   14698         gtk_mate_parser_get_type [90]
+-----------------------------------------------
+                0.00    0.00      21/8274        plist_array_finalize [306]
+                0.00    0.00      21/8274        gtk_mate_theme_create_from_plist [149]
+                0.00    0.00      84/8274        gtk_mate_grammar_init_for_use <cycle 1> [146]
+                0.00    0.00     151/8274        gtk_mate_grammar_init_for_reference [138]
+                0.00    0.00     341/8274        gtk_mate_double_pattern_create_from_plist <cycle 2> [132]
+                0.00    0.00    1914/8274        plist_array_new [101]
+                0.00    0.00    5742/8274        plist_array_constructor [305]
+[91]     0.0    0.00    0.00    8274         plist_array_get_type [91]
+                0.00    0.00       1/55792       plist_node_get_type [80]
+-----------------------------------------------
+                0.00    0.00     610/8113        gtk_mate_include_pattern_new [130]
+                0.00    0.00    2588/8113        gtk_mate_double_pattern_replace_base_and_self_includes <cycle 1> [133]
+                0.00    0.00    4915/8113        gtk_mate_double_pattern_replace_repository_includes [135]
+[92]     0.0    0.00    0.00    8113         gtk_mate_include_pattern_get_type [92]
+                0.00    0.00       1/136660      gtk_mate_pattern_get_type [74]
+-----------------------------------------------
+                0.00    0.00       1/7676        gtk_mate_buffer_set_grammar_by_name [62]
+                0.00    0.00       1/7676        gtk_mate_buffer_new [162]
+                0.00    0.00       1/7676        gtk_mate_parser_insert_text_handler [168]
+                0.00    0.00       1/7676        gtk_mate_parser_delete_range_handler [167]
+                0.00    0.00       1/7676        gtk_mate_parser_insert_text_after_handler [7]
+                0.00    0.00       1/7676        gtk_mate_parser_delete_range_after_handler [6]
+                0.00    0.00       1/7676        gtk_mate_parser_static_insert_text_after_handler [9]
+                0.00    0.00       1/7676        gtk_mate_parser_static_delete_range_after_handler [8]
+                0.00    0.00       1/7676        gtk_mate_parser_create [63]
+                0.00    0.00       1/7676        gtk_mate_parser_class_init [218]
+                0.00    0.00       1/7676        gtk_mate_scope_class_init [250]
+                0.00    0.00       3/7676        gtk_mate_buffer_constructor [180]
+                0.00    0.00     826/7676        gtk_mate_buffer_get_line [119]
+                0.00    0.00     826/7676        gtk_mate_buffer_get_line1 [120]
+                0.00    0.00    6010/7676        gtk_mate_scope_new [49]
+[93]     0.0    0.00    0.00    7676         gtk_mate_buffer_get_type [93]
+-----------------------------------------------
+                0.00    0.00     319/7596        gtk_mate_scope_inner_start_mark_set [61]
+                0.00    0.00     638/7596        gtk_mate_scope_inner_end_mark_set [60]
+                0.00    0.00    3160/7596        gtk_mate_scope_start_mark_set [58]
+                0.00    0.00    3479/7596        gtk_mate_scope_end_mark_set [57]
+[94]     0.0    0.00    0.00    7596         gtk_mate_buffer_iter_at_line_offset [94]
+-----------------------------------------------
+                0.00    0.00      15/7341        gtk_mate_parser_make_closing_regex [56]
+                0.00    0.00    1755/7341        gtk_mate_parser_collect_child_captures [43]
+                0.00    0.00    5571/7341        gtk_mate_scanner_find_next_marker [27]
+[95]     0.0    0.00    0.00    7341         oniguruma_match_begin [95]
+                0.00    0.00    7341/73029       oniguruma_match_get_type [79]
+-----------------------------------------------
+                0.00    0.00    5574/5574        oniguruma_regex_search [76]
+[96]     0.0    0.00    0.00    5574         oniguruma_match_new [96]
+                0.00    0.00    5574/73029       oniguruma_match_get_type [79]
+-----------------------------------------------
+                0.00    0.00    5574/5574        oniguruma_regex_search [76]
+[97]     0.0    0.00    0.00    5574         oniguruma_match_set_rg [97]
+                0.00    0.00    5574/73029       oniguruma_match_get_type [79]
+-----------------------------------------------
+                0.00    0.00    5574/5574        oniguruma_regex_search [76]
+[98]     0.0    0.00    0.00    5574         oniguruma_match_set_rx [98]
+                0.00    0.00    5574/73029       oniguruma_match_get_type [79]
+-----------------------------------------------
+                0.00    0.00    5571/5571        gtk_mate_scanner_find_next_marker [27]
+[99]     0.0    0.00    0.00    5571         gtk_mate_marker_new [99]
+                0.00    0.00    5571/25824       gtk_mate_marker_get_type [83]
+-----------------------------------------------
+                0.00    0.00       1/2299        gtk_mate_parser_create [63]
+                0.00    0.00       1/2299        gtk_mate_parser_class_init [218]
+                0.00    0.00      73/2299        gtk_mate_grammar_init_for_use <cycle 1> [146]
+                0.00    0.00     133/2299        gtk_mate_grammar_get_name [145]
+                0.00    0.00     155/2299        gtk_mate_bundle_constructor [198]
+                0.00    0.00     164/2299        gtk_mate_grammar_new [139]
+                0.00    0.00     164/2299        gtk_mate_grammar_init_for_reference [138]
+                0.00    0.00     164/2299        gtk_mate_grammar_set_name [140]
+                0.00    0.00     164/2299        gtk_mate_grammar_set_plist [141]
+                0.00    0.00     164/2299        gtk_mate_grammar_instance_init [211]
+                0.00    0.00     372/2299        gtk_mate_double_pattern_replace_include_patterns <cycle 1> [134]
+                0.00    0.00     372/2299        gtk_mate_double_pattern_replace_repository_includes [135]
+                0.00    0.00     372/2299        gtk_mate_double_pattern_replace_base_and_self_includes <cycle 1> [133]
+[100]    0.0    0.00    0.00    2299         gtk_mate_grammar_get_type [100]
+-----------------------------------------------
+                0.00    0.00    1914/1914        plist_array_parse_array <cycle 3> [102]
+[101]    0.0    0.00    0.00    1914         plist_array_new [101]
+                0.00    0.00    1914/8274        plist_array_get_type [91]
+-----------------------------------------------
+                                1914             plist_node_parse_xml_node <cycle 3> [81]
+[102]    0.0    0.00    0.00    1914         plist_array_parse_array <cycle 3> [102]
+                0.00    0.00    1914/1914        plist_array_new [101]
+                                6997             plist_node_parse_xml_node <cycle 3> [81]
+-----------------------------------------------
+                0.00    0.00    1739/1739        oniguruma_regex_make1 [104]
+[103]    0.0    0.00    0.00    1739         oniguruma_regex_make [103]
+                0.00    0.00    1739/1739        oniguruma_regex_new [105]
+                0.00    0.00    1733/1733        oniguruma_regex_set_rx [106]
+                0.00    0.00       6/6           oniguruma_onig_error_new [155]
+-----------------------------------------------
+                0.00    0.00      34/1739        gtk_mate_grammar_init_for_reference [138]
+                0.00    0.00      34/1739        gtk_mate_grammar_init_for_use <cycle 1> [146]
+                0.00    0.00     372/1739        gtk_mate_double_pattern_create_from_plist <cycle 2> [132]
+                0.00    0.00     638/1739        gtk_mate_parser_make_closing_regex [56]
+                0.00    0.00     661/1739        gtk_mate_single_pattern_create_from_plist [127]
+[104]    0.0    0.00    0.00    1739         oniguruma_regex_make1 [104]
+                0.00    0.00    1739/1739        oniguruma_regex_make [103]
+-----------------------------------------------
+                0.00    0.00    1739/1739        oniguruma_regex_make [103]
+[105]    0.0    0.00    0.00    1739         oniguruma_regex_new [105]
+                0.00    0.00    1739/132155      oniguruma_regex_get_type [75]
+-----------------------------------------------
+                0.00    0.00    1733/1733        oniguruma_regex_make [103]
+[106]    0.0    0.00    0.00    1733         oniguruma_regex_set_rx [106]
+                0.00    0.00    1733/132155      oniguruma_regex_get_type [75]
+-----------------------------------------------
+                0.00    0.00    1650/1650        gtk_mate_buffer_get_line [119]
+[107]    0.0    0.00    0.00    1650         gtk_mate_buffer_line_start_iter [107]
+-----------------------------------------------
+                                 684             gtk_mate_double_pattern_create_from_plist <cycle 2> [132]
+                0.00    0.00     959/959         gtk_mate_grammar_init_for_use <cycle 1> [146]
+[108]    0.0    0.00    0.00    1643         gtk_mate_pattern_create_from_plist <cycle 2> [108]
+                0.00    0.00    2997/17658       plist_dict_get [85]
+                0.00    0.00    1643/94427       plist_dict_get_type [78]
+                0.00    0.00    1643/136660      gtk_mate_pattern_get_type [74]
+                0.00    0.00     661/661         gtk_mate_single_pattern_create_from_plist [127]
+                0.00    0.00     610/610         gtk_mate_include_pattern_create_from_plist [129]
+                                 372             gtk_mate_double_pattern_create_from_plist <cycle 2> [132]
+-----------------------------------------------
+                0.00    0.00     319/1464        gtk_mate_parser_close_scope [41]
+                0.00    0.00     319/1464        gtk_mate_parser_open_scope [44]
+                0.00    0.00     826/1464        gtk_mate_scanner_new [59]
+[109]    0.0    0.00    0.00    1464         gtk_mate_scanner_set_current_scope [109]
+                0.00    0.00    1464/165118      gtk_mate_scanner_get_type [72]
+                0.00    0.00    1464/1464        gtk_mate_scanner_updated_current_scope [110]
+-----------------------------------------------
+                0.00    0.00    1464/1464        gtk_mate_scanner_set_current_scope [109]
+[110]    0.0    0.00    0.00    1464         gtk_mate_scanner_updated_current_scope [110]
+                0.00    0.00    1464/165118      gtk_mate_scanner_get_type [72]
+-----------------------------------------------
+                0.00    0.00     661/1342        gtk_mate_single_pattern_create_from_plist [127]
+                0.00    0.00     681/1342        gtk_mate_double_pattern_create_from_plist <cycle 2> [132]
+[111]    0.0    0.00    0.00    1342         gtk_mate_pattern_make_captures_from_plist [111]
+                0.00    0.00    2258/17658       plist_dict_get [85]
+                0.00    0.00    1746/94427       plist_dict_get_type [78]
+                0.00    0.00    1129/33482       plist_string_get_type [82]
+                0.00    0.00     617/687         plist_dict_keys [126]
+                0.00    0.00     617/617         _vala_array_free [346]
+-----------------------------------------------
+                0.00    0.00     325/1151        gtk_mate_parser_make_closing_regex [56]
+                0.00    0.00     826/1151        gtk_mate_parser_parse_line [3]
+[112]    0.0    0.00    0.00    1151         string_get_length [112]
+-----------------------------------------------
+                0.00    0.00     372/1056        gtk_mate_double_pattern_replace_base_and_self_includes <cycle 1> [133]
+                0.00    0.00     684/1056        gtk_mate_double_pattern_replace_repository_includes [135]
+[113]    0.0    0.00    0.00    1056         gtk_mate_double_pattern_add_patterns [113]
+                0.00    0.00    1056/146315      gtk_mate_double_pattern_get_type [73]
+-----------------------------------------------
+                0.00    0.00     372/1056        gtk_mate_double_pattern_replace_base_and_self_includes <cycle 1> [133]
+                0.00    0.00     684/1056        gtk_mate_double_pattern_replace_repository_includes [135]
+[114]    0.0    0.00    0.00    1056         gtk_mate_double_pattern_remove_patterns [114]
+                0.00    0.00    1056/146315      gtk_mate_double_pattern_get_type [73]
+-----------------------------------------------
+                0.00    0.00      21/1003        gtk_mate_theme_create_from_plist [149]
+                0.00    0.00     982/1003        gtk_mate_theme_setting_new [117]
+[115]    0.0    0.00    0.00    1003         gtk_mate_theme_setting_get_type [115]
+-----------------------------------------------
+                0.00    0.00     982/982         gtk_mate_theme_create_from_plist [149]
+[116]    0.0    0.00    0.00     982         gtk_mate_theme_setting_create_from_plist [116]
+                0.00    0.00    3377/33482       plist_string_get_type [82]
+                0.00    0.00    2946/17658       plist_dict_get [85]
+                0.00    0.00    1964/94427       plist_dict_get_type [78]
+                0.00    0.00     982/982         gtk_mate_theme_setting_new [117]
+-----------------------------------------------
+                0.00    0.00     982/982         gtk_mate_theme_setting_create_from_plist [116]
+[117]    0.0    0.00    0.00     982         gtk_mate_theme_setting_new [117]
+                0.00    0.00     982/1003        gtk_mate_theme_setting_get_type [115]
+-----------------------------------------------
+                0.00    0.00       1/931         gtk_mate_load_bundles [164]
+                0.00    0.00     155/931         gtk_mate_bundle_new [143]
+                0.00    0.00     155/931         gtk_mate_bundle_set_name [144]
+                0.00    0.00     155/931         gtk_mate_bundle_instance_init [202]
+                0.00    0.00     465/931         gtk_mate_bundle_constructor [198]
+[118]    0.0    0.00    0.00     931         gtk_mate_bundle_get_type [118]
+-----------------------------------------------
+                0.00    0.00     826/826         gtk_mate_buffer_get_line1 [120]
+[119]    0.0    0.00    0.00     826         gtk_mate_buffer_get_line [119]
+                0.00    0.00    1650/1650        gtk_mate_buffer_line_start_iter [107]
+                0.00    0.00     826/7676        gtk_mate_buffer_get_type [93]
+                0.00    0.00       2/323         gtk_mate_buffer_end_iter [136]
+-----------------------------------------------
+                0.00    0.00     826/826         gtk_mate_parser_parse_line [3]
+[120]    0.0    0.00    0.00     826         gtk_mate_buffer_get_line1 [120]
+                0.00    0.00     826/7676        gtk_mate_buffer_get_type [93]
+                0.00    0.00     826/826         gtk_mate_buffer_get_line [119]
+                0.00    0.00     824/824         string_get_length [125]
+-----------------------------------------------
+                0.00    0.00     826/826         gtk_mate_scanner_real_iterator [248]
+[121]    0.0    0.00    0.00     826         gtk_mate_scanner_iterator_new [121]
+                0.00    0.00    1652/165118      gtk_mate_scanner_get_type [72]
+                0.00    0.00     826/15124       gtk_mate_scanner_iterator_get_type [89]
+-----------------------------------------------
+                0.00    0.00     826/826         gtk_mate_scanner_iterator_set_property [246]
+[122]    0.0    0.00    0.00     826         gtk_mate_scanner_iterator_set_scanner [122]
+                0.00    0.00     826/15124       gtk_mate_scanner_iterator_get_type [89]
+-----------------------------------------------
+                0.00    0.00     826/826         gtk_mate_scanner_new [59]
+[123]    0.0    0.00    0.00     826         gtk_mate_scanner_set_line [123]
+                0.00    0.00     826/165118      gtk_mate_scanner_get_type [72]
+-----------------------------------------------
+                0.00    0.00     826/826         gtk_mate_scanner_new [59]
+[124]    0.0    0.00    0.00     826         gtk_mate_scanner_set_line_length [124]
+                0.00    0.00     826/165118      gtk_mate_scanner_get_type [72]
+-----------------------------------------------
+                0.00    0.00     824/824         gtk_mate_buffer_get_line1 [120]
+[125]    0.0    0.00    0.00     824         string_get_length [125]
+-----------------------------------------------
+                0.00    0.00      70/687         gtk_mate_theme_create_from_plist [149]
+                0.00    0.00     617/687         gtk_mate_pattern_make_captures_from_plist [111]
+[126]    0.0    0.00    0.00     687         plist_dict_keys [126]
+                0.00    0.00     687/94427       plist_dict_get_type [78]
+-----------------------------------------------
+                0.00    0.00     661/661         gtk_mate_pattern_create_from_plist <cycle 2> [108]
+[127]    0.0    0.00    0.00     661         gtk_mate_single_pattern_create_from_plist [127]
+                0.00    0.00    3191/136660      gtk_mate_pattern_get_type [74]
+                0.00    0.00    2644/17658       plist_dict_get [85]
+                0.00    0.00    1322/94427       plist_dict_get_type [78]
+                0.00    0.00    1322/33482       plist_string_get_type [82]
+                0.00    0.00     661/661         gtk_mate_single_pattern_new [128]
+                0.00    0.00     661/1739        oniguruma_regex_make1 [104]
+                0.00    0.00     661/1342        gtk_mate_pattern_make_captures_from_plist [111]
+-----------------------------------------------
+                0.00    0.00     661/661         gtk_mate_single_pattern_create_from_plist [127]
+[128]    0.0    0.00    0.00     661         gtk_mate_single_pattern_new [128]
+                0.00    0.00     661/190499      gtk_mate_single_pattern_get_type [71]
+-----------------------------------------------
+                0.00    0.00     610/610         gtk_mate_pattern_create_from_plist <cycle 2> [108]
+[129]    0.0    0.00    0.00     610         gtk_mate_include_pattern_create_from_plist [129]
+                0.00    0.00    1830/136660      gtk_mate_pattern_get_type [74]
+                0.00    0.00     610/94427       plist_dict_get_type [78]
+                0.00    0.00     610/610         gtk_mate_include_pattern_new [130]
+                0.00    0.00     610/33482       plist_string_get_type [82]
+                0.00    0.00     610/17658       plist_dict_get [85]
+-----------------------------------------------
+                0.00    0.00     610/610         gtk_mate_include_pattern_create_from_plist [129]
+[130]    0.0    0.00    0.00     610         gtk_mate_include_pattern_new [130]
+                0.00    0.00     610/8113        gtk_mate_include_pattern_get_type [92]
+-----------------------------------------------
+                0.00    0.00       1/373         gtk_mate_parser_make_root [64]
+                0.00    0.00     372/373         gtk_mate_double_pattern_create_from_plist <cycle 2> [132]
+[131]    0.0    0.00    0.00     373         gtk_mate_double_pattern_new [131]
+                0.00    0.00     373/146315      gtk_mate_double_pattern_get_type [73]
+-----------------------------------------------
+                                 372             gtk_mate_pattern_create_from_plist <cycle 2> [108]
+[132]    0.0    0.00    0.00     372         gtk_mate_double_pattern_create_from_plist <cycle 2> [132]
+                0.00    0.00    3348/17658       plist_dict_get [85]
+                0.00    0.00    1998/136660      gtk_mate_pattern_get_type [74]
+                0.00    0.00    1737/94427       plist_dict_get_type [78]
+                0.00    0.00    1488/33482       plist_string_get_type [82]
+                0.00    0.00     681/1342        gtk_mate_pattern_make_captures_from_plist [111]
+                0.00    0.00     372/373         gtk_mate_double_pattern_new [131]
+                0.00    0.00     372/1739        oniguruma_regex_make1 [104]
+                0.00    0.00     341/8274        plist_array_get_type [91]
+                0.00    0.00       1/20          plist_integer_get_type [151]
+                                 684             gtk_mate_pattern_create_from_plist <cycle 2> [108]
+-----------------------------------------------
+                                 372             gtk_mate_double_pattern_replace_include_patterns <cycle 1> [134]
+[133]    0.0    0.00    0.00     372         gtk_mate_double_pattern_replace_base_and_self_includes <cycle 1> [133]
+                0.00    0.00    2588/8113        gtk_mate_include_pattern_get_type [92]
+                0.00    0.00     744/136660      gtk_mate_pattern_get_type [74]
+                0.00    0.00     372/146315      gtk_mate_double_pattern_get_type [73]
+                0.00    0.00     372/2299        gtk_mate_grammar_get_type [100]
+                0.00    0.00     372/1056        gtk_mate_double_pattern_remove_patterns [114]
+                0.00    0.00     372/1056        gtk_mate_double_pattern_add_patterns [113]
+                0.00    0.00      79/79          _vala_strcmp0 [351]
+                0.00    0.00      72/72          gtk_mate_grammar_find_by_scope_name [147]
+                                  72             gtk_mate_grammar_init_for_use <cycle 1> [146]
+-----------------------------------------------
+                                 372             gtk_mate_grammar_init_for_use <cycle 1> [146]
+[134]    0.0    0.00    0.00     372         gtk_mate_double_pattern_replace_include_patterns <cycle 1> [134]
+                0.00    0.00     372/146315      gtk_mate_double_pattern_get_type [73]
+                0.00    0.00     372/2299        gtk_mate_grammar_get_type [100]
+                0.00    0.00     372/372         gtk_mate_double_pattern_replace_repository_includes [135]
+                                 372             gtk_mate_double_pattern_replace_base_and_self_includes <cycle 1> [133]
+-----------------------------------------------
+                0.00    0.00     372/372         gtk_mate_double_pattern_replace_include_patterns <cycle 1> [134]
+[135]    0.0    0.00    0.00     372         gtk_mate_double_pattern_replace_repository_includes [135]
+                0.00    0.00    4915/8113        gtk_mate_include_pattern_get_type [92]
+                0.00    0.00     744/136660      gtk_mate_pattern_get_type [74]
+                0.00    0.00     684/1056        gtk_mate_double_pattern_remove_patterns [114]
+                0.00    0.00     684/1056        gtk_mate_double_pattern_add_patterns [113]
+                0.00    0.00     372/146315      gtk_mate_double_pattern_get_type [73]
+                0.00    0.00     372/2299        gtk_mate_grammar_get_type [100]
+-----------------------------------------------
+                0.00    0.00       2/323         gtk_mate_buffer_get_line [119]
+                0.00    0.00       2/323         gtk_mate_parser_make_root [64]
+                0.00    0.00     319/323         gtk_mate_parser_open_scope [44]
+[136]    0.0    0.00    0.00     323         gtk_mate_buffer_end_iter [136]
+-----------------------------------------------
+                0.00    0.00      21/185         gtk_mate_load_themes [165]
+                0.00    0.00     164/185         gtk_mate_load_bundles [164]
+[137]    0.0    0.00    0.00     185         plist_parse [137]
+                0.00    0.00     185/75068       _vala_strcmp0 [344]
+                0.00    0.00     185/185         plist_dict_parse_dict <cycle 3> [87]
+-----------------------------------------------
+                0.00    0.00     164/164         gtk_mate_load_bundles [164]
+[138]    0.0    0.00    0.00     164         gtk_mate_grammar_init_for_reference [138]
+                0.00    0.00     984/17658       plist_dict_get [85]
+                0.00    0.00     840/33482       plist_string_get_type [82]
+                0.00    0.00     164/2299        gtk_mate_grammar_get_type [100]
+                0.00    0.00     164/164         gtk_mate_grammar_set_name [140]
+                0.00    0.00     151/8274        plist_array_get_type [91]
+                0.00    0.00     151/151         _vala_array_free [349]
+                0.00    0.00      34/1739        oniguruma_regex_make1 [104]
+-----------------------------------------------
+                0.00    0.00     164/164         gtk_mate_load_bundles [164]
+[139]    0.0    0.00    0.00     164         gtk_mate_grammar_new [139]
+                0.00    0.00     164/94427       plist_dict_get_type [78]
+                0.00    0.00     164/2299        gtk_mate_grammar_get_type [100]
+                0.00    0.00     164/164         gtk_mate_grammar_set_plist [141]
+-----------------------------------------------
+                0.00    0.00     164/164         gtk_mate_grammar_init_for_reference [138]
+[140]    0.0    0.00    0.00     164         gtk_mate_grammar_set_name [140]
+                0.00    0.00     164/2299        gtk_mate_grammar_get_type [100]
+-----------------------------------------------
+                0.00    0.00     164/164         gtk_mate_grammar_new [139]
+[141]    0.0    0.00    0.00     164         gtk_mate_grammar_set_plist [141]
+                0.00    0.00     164/2299        gtk_mate_grammar_get_type [100]
+-----------------------------------------------
+                0.00    0.00       1/157         gtk_mate_bundle_dirs [163]
+                0.00    0.00       1/157         gtk_mate_theme_theme_filenames [172]
+                0.00    0.00     155/157         gtk_mate_load_bundles [164]
+[142]    0.0    0.00    0.00     157         gtk_mate_textmate_share_dir [142]
+-----------------------------------------------
+                0.00    0.00     155/155         gtk_mate_load_bundles [164]
+[143]    0.0    0.00    0.00     155         gtk_mate_bundle_new [143]
+                0.00    0.00     155/931         gtk_mate_bundle_get_type [118]
+                0.00    0.00     155/155         gtk_mate_bundle_set_name [144]
+-----------------------------------------------
+                0.00    0.00     155/155         gtk_mate_bundle_new [143]
+[144]    0.0    0.00    0.00     155         gtk_mate_bundle_set_name [144]
+                0.00    0.00     155/931         gtk_mate_bundle_get_type [118]
+-----------------------------------------------
+                0.00    0.00       1/133         gtk_mate_parser_make_root [64]
+                0.00    0.00     132/133         gtk_mate_buffer_set_grammar_by_name [62]
+[145]    0.0    0.00    0.00     133         gtk_mate_grammar_get_name [145]
+                0.00    0.00     133/2299        gtk_mate_grammar_get_type [100]
+-----------------------------------------------
+                                  72             gtk_mate_double_pattern_replace_base_and_self_includes <cycle 1> [133]
+                0.00    0.00       1/1           gtk_mate_parser_create [63]
+[146]    0.0    0.00    0.00      73         gtk_mate_grammar_init_for_use <cycle 1> [146]
+                0.00    0.00    1405/146315      gtk_mate_double_pattern_get_type [73]
+                0.00    0.00    1134/94427       plist_dict_get_type [78]
+                0.00    0.00     959/959         gtk_mate_pattern_create_from_plist <cycle 2> [108]
+                0.00    0.00     559/17658       plist_dict_get [85]
+                0.00    0.00     192/136660      gtk_mate_pattern_get_type [74]
+                0.00    0.00      84/8274        plist_array_get_type [91]
+                0.00    0.00      73/2299        gtk_mate_grammar_get_type [100]
+                0.00    0.00      34/33482       plist_string_get_type [82]
+                0.00    0.00      34/1739        oniguruma_regex_make1 [104]
+                                 372             gtk_mate_double_pattern_replace_include_patterns <cycle 1> [134]
+-----------------------------------------------
+                0.00    0.00      72/72          gtk_mate_double_pattern_replace_base_and_self_includes <cycle 1> [133]
+[147]    0.0    0.00    0.00      72         gtk_mate_grammar_find_by_scope_name [147]
+                0.00    0.00    6747/6747        _vala_strcmp0 [345]
+-----------------------------------------------
+                0.00    0.00       1/23          gtk_mate_load_bundles [164]
+                0.00    0.00       1/23          gtk_mate_load_themes [165]
+                0.00    0.00      21/23          gtk_mate_theme_new [150]
+[148]    0.0    0.00    0.00      23         gtk_mate_theme_get_type [148]
+-----------------------------------------------
+                0.00    0.00      21/21          gtk_mate_load_themes [165]
+[149]    0.0    0.00    0.00      21         gtk_mate_theme_create_from_plist [149]
+                0.00    0.00    1312/17658       plist_dict_get [85]
+                0.00    0.00    1143/94427       plist_dict_get_type [78]
+                0.00    0.00     982/982         gtk_mate_theme_setting_create_from_plist [116]
+                0.00    0.00     169/33482       plist_string_get_type [82]
+                0.00    0.00      70/687         plist_dict_keys [126]
+                0.00    0.00      70/70          _vala_array_free [352]
+                0.00    0.00      21/21          gtk_mate_theme_new [150]
+                0.00    0.00      21/1003        gtk_mate_theme_setting_get_type [115]
+                0.00    0.00      21/8274        plist_array_get_type [91]
+-----------------------------------------------
+                0.00    0.00      21/21          gtk_mate_theme_create_from_plist [149]
+[150]    0.0    0.00    0.00      21         gtk_mate_theme_new [150]
+                0.00    0.00      21/23          gtk_mate_theme_get_type [148]
+-----------------------------------------------
+                0.00    0.00       1/20          gtk_mate_double_pattern_create_from_plist <cycle 2> [132]
+                0.00    0.00      19/20          plist_integer_new [152]
+[151]    0.0    0.00    0.00      20         plist_integer_get_type [151]
+                0.00    0.00       1/55792       plist_node_get_type [80]
+-----------------------------------------------
+                0.00    0.00      19/19          plist_node_parse_xml_node <cycle 3> [81]
+[152]    0.0    0.00    0.00      19         plist_integer_new [152]
+                0.00    0.00      19/20          plist_integer_get_type [151]
+-----------------------------------------------
+                0.00    0.00       6/12          oniguruma_onig_error_new [155]
+                0.00    0.00       6/12          oniguruma_onig_error_finalize [296]
+[153]    0.0    0.00    0.00      12         oniguruma_onig_error_get_type [153]
+-----------------------------------------------
+                0.00    0.00       1/12          range_set_new [173]
+                0.00    0.00       2/12          range_set_is_empty [159]
+                0.00    0.00       2/12          range_set_add [158]
+                0.00    0.00       2/12          range_set_merge [160]
+                0.00    0.00       2/12          range_set_real_iterator [341]
+                0.00    0.00       3/12          range_set_constructor [329]
+[154]    0.0    0.00    0.00      12         range_set_get_type [154]
+-----------------------------------------------
+                0.00    0.00       6/6           oniguruma_regex_make [103]
+[155]    0.0    0.00    0.00       6         oniguruma_onig_error_new [155]
+                0.00    0.00       6/12          oniguruma_onig_error_get_type [153]
+-----------------------------------------------
+                0.00    0.00       1/5           range_set_constructor [329]
+                0.00    0.00       2/5           range_set_range_new [161]
+                0.00    0.00       2/5           range_set_range_finalize [338]
+[156]    0.0    0.00    0.00       5         range_set_range_get_type [156]
+-----------------------------------------------
+                0.00    0.00       1/2           gtk_mate_parser_insert_text_after_handler [7]
+                0.00    0.00       1/2           gtk_mate_parser_delete_range_after_handler [6]
+[157]    0.0    0.00    0.00       2         gtk_mate_parser_is_parsing [157]
+                0.00    0.00       2/14698       gtk_mate_parser_get_type [90]
+-----------------------------------------------
+                0.00    0.00       1/2           gtk_mate_parser_insert_text_handler [168]
+                0.00    0.00       1/2           gtk_mate_parser_delete_range_handler [167]
+[158]    0.0    0.00    0.00       2         range_set_add [158]
+                0.00    0.00       2/12          range_set_get_type [154]
+                0.00    0.00       2/2           range_set_range_new [161]
+                0.00    0.00       2/2           range_set_merge [160]
+-----------------------------------------------
+                0.00    0.00       1/2           gtk_mate_parser_insert_text_after_handler [7]
+                0.00    0.00       1/2           gtk_mate_parser_delete_range_after_handler [6]
+[159]    0.0    0.00    0.00       2         range_set_is_empty [159]
+                0.00    0.00       2/12          range_set_get_type [154]
+-----------------------------------------------
+                0.00    0.00       2/2           range_set_add [158]
+[160]    0.0    0.00    0.00       2         range_set_merge [160]
+                0.00    0.00       2/12          range_set_get_type [154]
+-----------------------------------------------
+                0.00    0.00       2/2           range_set_add [158]
+[161]    0.0    0.00    0.00       2         range_set_range_new [161]
+                0.00    0.00       2/5           range_set_range_get_type [156]
+-----------------------------------------------
+                0.00    0.00       1/1           prof_test_main [65]
+[162]    0.0    0.00    0.00       1         gtk_mate_buffer_new [162]
+                0.00    0.00       1/7676        gtk_mate_buffer_get_type [93]
+-----------------------------------------------
+                0.00    0.00       1/1           gtk_mate_load_bundles [164]
+[163]    0.0    0.00    0.00       1         gtk_mate_bundle_dirs [163]
+                0.00    0.00       1/157         gtk_mate_textmate_share_dir [142]
+-----------------------------------------------
+                0.00    0.00       1/1           gtk_mate_buffer_constructor [180]
+[164]    0.0    0.00    0.00       1         gtk_mate_load_bundles [164]
+                0.00    0.00     291/291         _vala_strcmp0 [347]
+                0.00    0.00     164/185         plist_parse [137]
+                0.00    0.00     164/164         gtk_mate_grammar_new [139]
+                0.00    0.00     164/164         gtk_mate_grammar_init_for_reference [138]
+                0.00    0.00     155/155         gtk_mate_bundle_new [143]
+                0.00    0.00     155/155         _vala_array_free [348]
+                0.00    0.00     155/157         gtk_mate_textmate_share_dir [142]
+                0.00    0.00       1/931         gtk_mate_bundle_get_type [118]
+                0.00    0.00       1/23          gtk_mate_theme_get_type [148]
+                0.00    0.00       1/1           gtk_mate_bundle_dirs [163]
+-----------------------------------------------
+                0.00    0.00       1/1           gtk_mate_buffer_constructor [180]
+[165]    0.0    0.00    0.00       1         gtk_mate_load_themes [165]
+                0.00    0.00      21/185         plist_parse [137]
+                0.00    0.00      21/94427       plist_dict_get_type [78]
+                0.00    0.00      21/21          gtk_mate_theme_create_from_plist [149]
+                0.00    0.00       1/23          gtk_mate_theme_get_type [148]
+                0.00    0.00       1/1           gtk_mate_theme_theme_filenames [172]
+-----------------------------------------------
+                0.00    0.00       1/1           gtk_mate_parser_create [63]
+[166]    0.0    0.00    0.00       1         gtk_mate_parser_connect_buffer_signals [166]
+                0.00    0.00       1/14698       gtk_mate_parser_get_type [90]
+-----------------------------------------------
+                0.00    0.00       1/1           _gtk_mate_parser_delete_range_handler_gtk_text_buffer_delete_range [361]
+[167]    0.0    0.00    0.00       1         gtk_mate_parser_delete_range_handler [167]
+                0.00    0.00       1/14698       gtk_mate_parser_get_type [90]
+                0.00    0.00       1/7676        gtk_mate_buffer_get_type [93]
+                0.00    0.00       1/2           range_set_add [158]
+-----------------------------------------------
+                0.00    0.00       1/1           _gtk_mate_parser_insert_text_handler_gtk_text_buffer_insert_text [362]
+[168]    0.0    0.00    0.00       1         gtk_mate_parser_insert_text_handler [168]
+                0.00    0.00       1/14698       gtk_mate_parser_get_type [90]
+                0.00    0.00       1/7676        gtk_mate_buffer_get_type [93]
+                0.00    0.00       1/2           range_set_add [158]
+                0.00    0.00       1/1           _vala_array_free [353]
+-----------------------------------------------
+                0.00    0.00       1/1           gtk_mate_parser_create [63]
+[169]    0.0    0.00    0.00       1         gtk_mate_parser_new [169]
+                0.00    0.00       1/14698       gtk_mate_parser_get_type [90]
+-----------------------------------------------
+                0.00    0.00       1/1           gtk_mate_parser_create [63]
+[170]    0.0    0.00    0.00       1         gtk_mate_parser_set_buffer [170]
+                0.00    0.00       1/14698       gtk_mate_parser_get_type [90]
+-----------------------------------------------
+                0.00    0.00       1/1           gtk_mate_parser_create [63]
+[171]    0.0    0.00    0.00       1         gtk_mate_parser_set_grammar [171]
+                0.00    0.00       1/14698       gtk_mate_parser_get_type [90]
+-----------------------------------------------
+                0.00    0.00       1/1           gtk_mate_load_themes [165]
+[172]    0.0    0.00    0.00       1         gtk_mate_theme_theme_filenames [172]
+                0.00    0.00       1/157         gtk_mate_textmate_share_dir [142]
+-----------------------------------------------
+                0.00    0.00       1/1           gtk_mate_parser_create [63]
+[173]    0.0    0.00    0.00       1         range_set_new [173]
+                0.00    0.00       1/12          range_set_get_type [154]
+-----------------------------------------------
+                0.00    0.00     185/75068       plist_parse [137]
+                0.00    0.00   74883/75068       plist_node_parse_xml_node <cycle 3> [81]
+[344]    0.0    0.00    0.00   75068         _vala_strcmp0 [344]
+-----------------------------------------------
+                0.00    0.00    6747/6747        gtk_mate_grammar_find_by_scope_name [147]
+[345]    0.0    0.00    0.00    6747         _vala_strcmp0 [345]
+-----------------------------------------------
+                0.00    0.00     617/617         gtk_mate_pattern_make_captures_from_plist [111]
+[346]    0.0    0.00    0.00     617         _vala_array_free [346]
+-----------------------------------------------
+                0.00    0.00     291/291         gtk_mate_load_bundles [164]
+[347]    0.0    0.00    0.00     291         _vala_strcmp0 [347]
+-----------------------------------------------
+                0.00    0.00     155/155         gtk_mate_load_bundles [164]
+[348]    0.0    0.00    0.00     155         _vala_array_free [348]
+-----------------------------------------------
+                0.00    0.00     151/151         gtk_mate_grammar_init_for_reference [138]
+[349]    0.0    0.00    0.00     151         _vala_array_free [349]
+-----------------------------------------------
+                0.00    0.00     132/132         gtk_mate_buffer_set_grammar_by_name [62]
+[350]    0.0    0.00    0.00     132         _vala_strcmp0 [350]
+-----------------------------------------------
+                0.00    0.00      79/79          gtk_mate_double_pattern_replace_base_and_self_includes <cycle 1> [133]
+[351]    0.0    0.00    0.00      79         _vala_strcmp0 [351]
+-----------------------------------------------
+                0.00    0.00      70/70          gtk_mate_theme_create_from_plist [149]
+[352]    0.0    0.00    0.00      70         _vala_array_free [352]
+-----------------------------------------------
+                0.00    0.00       1/1           gtk_mate_parser_insert_text_handler [168]
+[353]    0.0    0.00    0.00       1         _vala_array_free [353]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+
+Index by function name
+
+ [349] _vala_array_free (grammar.c) [157] gtk_mate_parser_is_parsing [19] gtk_mate_text_loc_gt
+ [348] _vala_array_free (gtkmateview.c) [56] gtk_mate_parser_make_closing_regex [12] gtk_mate_text_loc_gte
+ [353] _vala_array_free (parser.c) [64] gtk_mate_parser_make_root [23] gtk_mate_text_loc_instance_init (parser.c)
+ [346] _vala_array_free (pattern.c) [169] gtk_mate_parser_new [14] gtk_mate_text_loc_lt
+ [352] _vala_array_free (theme.c) [44] gtk_mate_parser_open_scope [46] gtk_mate_text_loc_lte
+ [350] _vala_strcmp0 (buffer.c) [3] gtk_mate_parser_parse_line (parser.c) [18] gtk_mate_text_loc_make
+ [345] _vala_strcmp0 (grammar.c) [1] gtk_mate_parser_parse_range (parser.c) [22] gtk_mate_text_loc_new
+ [347] _vala_strcmp0 (gtkmateview.c) [2] gtk_mate_parser_process_changes (parser.c) [36] gtk_mate_text_loc_to_s
+ [351] _vala_strcmp0 (pattern.c) [170] gtk_mate_parser_set_buffer [142] gtk_mate_textmate_share_dir
+ [344] _vala_strcmp0 (plist.c) [171] gtk_mate_parser_set_grammar [149] gtk_mate_theme_create_from_plist
+  [37] _vala_strcmp0 (scope.c) [40] gtk_mate_parser_single_scope [148] gtk_mate_theme_get_type
+ [136] gtk_mate_buffer_end_iter [108] gtk_mate_pattern_create_from_plist [150] gtk_mate_theme_new
+ [119] gtk_mate_buffer_get_line [74] gtk_mate_pattern_get_type [116] gtk_mate_theme_setting_create_from_plist
+ [120] gtk_mate_buffer_get_line1 [111] gtk_mate_pattern_make_captures_from_plist [115] gtk_mate_theme_setting_get_type
+  [93] gtk_mate_buffer_get_type [27] gtk_mate_scanner_find_next_marker [117] gtk_mate_theme_setting_new
+  [94] gtk_mate_buffer_iter_at_line_offset [39] gtk_mate_scanner_get_cached_marker [172] gtk_mate_theme_theme_filenames
+  [13] gtk_mate_buffer_iter_from_mark [88] gtk_mate_scanner_get_current_scope [95] oniguruma_match_begin
+ [107] gtk_mate_buffer_line_start_iter [72] gtk_mate_scanner_get_type [33] oniguruma_match_end
+ [162] gtk_mate_buffer_new    [89] gtk_mate_scanner_iterator_get_type [79] oniguruma_match_get_type
+  [62] gtk_mate_buffer_set_grammar_by_name [121] gtk_mate_scanner_iterator_new [96] oniguruma_match_new
+ [163] gtk_mate_bundle_dirs  [122] gtk_mate_scanner_iterator_set_scanner [97] oniguruma_match_set_rg
+ [118] gtk_mate_bundle_get_type [59] gtk_mate_scanner_new [98] oniguruma_match_set_rx
+ [143] gtk_mate_bundle_new    [38] gtk_mate_scanner_remove_preceding_cached_markers [153] oniguruma_onig_error_get_type
+ [144] gtk_mate_bundle_set_name (bundle.c) [77] gtk_mate_scanner_scan_for_match [155] oniguruma_onig_error_new
+ [113] gtk_mate_double_pattern_add_patterns (pattern.c) [109] gtk_mate_scanner_set_current_scope [75] oniguruma_regex_get_type
+ [132] gtk_mate_double_pattern_create_from_plist [123] gtk_mate_scanner_set_line [103] oniguruma_regex_make
+  [73] gtk_mate_double_pattern_get_type [124] gtk_mate_scanner_set_line_length [104] oniguruma_regex_make1
+ [131] gtk_mate_double_pattern_new [110] gtk_mate_scanner_updated_current_scope (scanner.c) [105] oniguruma_regex_new
+ [114] gtk_mate_double_pattern_remove_patterns (pattern.c) [52] gtk_mate_scope_add_child [76] oniguruma_regex_search
+ [133] gtk_mate_double_pattern_replace_base_and_self_includes [51] gtk_mate_scope_clear_after [106] oniguruma_regex_set_rx
+ [134] gtk_mate_double_pattern_replace_include_patterns [34] gtk_mate_scope_contains_loc [91] plist_array_get_type
+ [135] gtk_mate_double_pattern_replace_repository_includes [16] gtk_mate_scope_delete_any_on_line_not_in [101] plist_array_new
+ [147] gtk_mate_grammar_find_by_scope_name [45] gtk_mate_scope_end_line [102] plist_array_parse_array
+ [145] gtk_mate_grammar_get_name [31] gtk_mate_scope_end_line_offset [85] plist_dict_get
+ [100] gtk_mate_grammar_get_type [30] gtk_mate_scope_end_loc [78] plist_dict_get_type
+ [138] gtk_mate_grammar_init_for_reference [57] gtk_mate_scope_end_mark_set [126] plist_dict_keys
+ [146] gtk_mate_grammar_init_for_use [48] gtk_mate_scope_end_offset [86] plist_dict_new
+ [139] gtk_mate_grammar_new   [32] gtk_mate_scope_finalize (scope.c) [87] plist_dict_parse_dict
+ [140] gtk_mate_grammar_set_name (grammar.c) [5] gtk_mate_scope_first_child_after [151] plist_integer_get_type
+ [141] gtk_mate_grammar_set_plist (grammar.c) [50] gtk_mate_scope_get_children [152] plist_integer_new
+ [129] gtk_mate_include_pattern_create_from_plist [28] gtk_mate_scope_get_type [80] plist_node_get_type
+  [92] gtk_mate_include_pattern_get_type [60] gtk_mate_scope_inner_end_mark_set [81] plist_node_parse_xml_node
+ [130] gtk_mate_include_pattern_new [61] gtk_mate_scope_inner_start_mark_set [137] plist_parse
+ [164] gtk_mate_load_bundles  [49] gtk_mate_scope_new     [82] plist_string_get_type
+ [165] gtk_mate_load_themes   [29] gtk_mate_scope_scope_at [84] plist_string_new
+  [83] gtk_mate_marker_get_type [53] gtk_mate_scope_set_buffer [65] prof_test_main
+  [99] gtk_mate_marker_new    [54] gtk_mate_scope_set_name [158] range_set_add
+  [15] gtk_mate_parser_clear_line [11] gtk_mate_scope_start_line [154] range_set_get_type
+  [41] gtk_mate_parser_close_scope [17] gtk_mate_scope_start_line_offset [159] range_set_is_empty
+  [43] gtk_mate_parser_collect_child_captures [10] gtk_mate_scope_start_loc [160] range_set_merge
+ [166] gtk_mate_parser_connect_buffer_signals [58] gtk_mate_scope_start_mark_set [173] range_set_new
+  [63] gtk_mate_parser_create [47] gtk_mate_scope_start_offset [156] range_set_range_get_type
+   [6] gtk_mate_parser_delete_range_after_handler [127] gtk_mate_single_pattern_create_from_plist [161] range_set_range_new
+ [167] gtk_mate_parser_delete_range_handler [71] gtk_mate_single_pattern_get_type [125] string_get_length (buffer.c)
+   [4] gtk_mate_parser_get_expected_scope [128] gtk_mate_single_pattern_new [112] string_get_length (parser.c)
+  [90] gtk_mate_parser_get_type [35] gtk_mate_text_loc_class_init (parser.c) [68] <cycle 1>
+  [42] gtk_mate_parser_handle_captures [20] gtk_mate_text_loc_equal [69] <cycle 2>
+   [7] gtk_mate_parser_insert_text_after_handler [24] gtk_mate_text_loc_finalize (parser.c) [70] <cycle 3>
+ [168] gtk_mate_parser_insert_text_handler [21] gtk_mate_text_loc_get_type

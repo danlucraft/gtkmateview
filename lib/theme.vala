@@ -52,6 +52,7 @@ namespace Gtk.Mate {
 		public HashMap<string, string> global_settings;
 		public ArrayList<ThemeSetting> settings;
 		public bool is_initialized;
+		public HashMap<string, ThemeSetting> cached_setting_for_scopes;
 
 		public static Theme create_from_plist(PList.Dict dict) {
 			var theme = new Theme();
@@ -89,6 +90,7 @@ namespace Gtk.Mate {
 				return;
 			is_initialized = true;
 			stdout.printf("initializing theme for use: %s\n", name);
+			this.cached_setting_for_scopes = new HashMap<string, ThemeSetting>(str_hash, str_equal);
 			foreach (var setting in settings) {
 				setting.compile_scope_matchers();
 			}
@@ -118,6 +120,11 @@ namespace Gtk.Mate {
 		public ThemeSetting settings_for_scope(Scope scope, bool inner) {
 			string scope_name = scope.hierarchy_names(inner);
 			//stdout.printf("  finding settings for '%s'\n", scope_name);
+			ThemeSetting cached;
+			if (this.cached_setting_for_scopes.contains(scope_name)) {
+				cached = this.cached_setting_for_scopes.get(scope_name);
+				return cached;
+			}
 			Oniguruma.Match current_m, m;
 			ThemeSetting current;
 			foreach (var setting in settings) {
@@ -139,6 +146,7 @@ namespace Gtk.Mate {
 			else {
 				//stdout.printf("    best: '%s'\n", current.name);
 			}
+			this.cached_setting_for_scopes.set(scope_name, current);
 			return current;
 		}
 	}

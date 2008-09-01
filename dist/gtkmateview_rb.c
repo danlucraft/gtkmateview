@@ -2350,6 +2350,84 @@ static VALUE rb_gtk_mate_theme_set_is_initialized(VALUE self, VALUE is_initializ
     return Qnil;
 }
 
+static VALUE rb_gtk_mate_theme_get_cached_setting_for_scopes(VALUE self) {
+    GtkMateTheme* gtk_mate_theme = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // ValaMemberGet#body
+    GeeHashMap* _c_return = gtk_mate_theme->cached_setting_for_scopes; 
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+        // HashMap#c_to_ruby(:after, "_c_return", "_rb_return")
+    if (_c_return == NULL) {
+        _rb_return = Qnil;
+    }
+    else {
+        _rb_return = rb_hash_new();
+        GeeSet* s_collection;
+        GeeIterator* s_it;
+        s_collection = gee_map_get_keys (GEE_MAP (_c_return));
+        s_it = gee_iterable_iterator (GEE_ITERABLE (s_collection));
+        while (gee_iterator_next (s_it)) {
+            char * s;
+            s = ((char *) (gee_iterator_get (s_it)));
+            {
+                GtkMateThemeSetting* v;
+                v =  ( (gee_map_get (GEE_MAP (_c_return), s)));
+                VALUE rb_s;
+                      if (s == NULL) {
+        rb_s = Qnil;
+      }
+      else {
+        rb_s = rb_str_new2(s);
+      }
+
+                VALUE rb_v;
+                rb_v = GOBJ2RVAL(v);
+                rb_hash_aset(_rb_return, rb_s, rb_v);
+//                s = (g_free (s), NULL);
+            }
+        }
+        (s_it == NULL ? NULL : (s_it = (g_object_unref (s_it), NULL)));
+        (s_collection == NULL ? NULL : (s_collection = (g_object_unref (s_collection), NULL)));
+    }
+
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_theme_set_cached_setting_for_scopes(VALUE self, VALUE cached_setting_for_scopes) {
+    GtkMateTheme* gtk_mate_theme = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(cached_setting_for_scopes) != T_HASH) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a hash");
+    }
+    // Method#argument_type_conversions
+    GeeHashMap* _c_cached_setting_for_scopes;
+        // HashMap#ruby_to_c(:before, "cached_setting_for_scopes", "_c_cached_setting_for_scopes")
+    _c_cached_setting_for_scopes = gee_hash_map_new (G_TYPE_STRING, ((GBoxedCopyFunc) (g_strdup)), g_free, GTK_MATE_TYPE_THEME_SETTING, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_str_hash, g_str_equal, g_direct_equal);
+    VALUE rb_keys = rb_funcall(cached_setting_for_scopes, rb_intern("keys"), 0);
+    int len_val39 = RARRAY_LEN(rb_keys);
+    {
+        gint i;
+        i = 0;
+        for (; i < len_val39; i++) {
+            VALUE _rb_key = rb_ary_entry(rb_keys, (long) i);
+            VALUE _rb_value = rb_hash_aref(cached_setting_for_scopes, _rb_key);
+            char * _c__rb_key;
+            _c__rb_key = g_strdup(STR2CSTR(_rb_key));
+            GtkMateThemeSetting* _c__rb_value;
+            _c__rb_value = _GTK_MATE_THEME_SETTING_SELF(_rb_value);
+            gee_map_set (GEE_MAP (_c_cached_setting_for_scopes), _c__rb_key,  (_c__rb_value));
+        }
+    }
+
+    // ValaMemberSet#body
+    gtk_mate_theme->cached_setting_for_scopes = _c_cached_setting_for_scopes;
+    // Method#return_type_conversion
+    return Qnil;
+}
+
 static VALUE rb_gtk_mate_theme_create_from_plist(VALUE self, VALUE dict) {
     // Method#type_checks
     // Method#argument_type_conversions
@@ -2390,20 +2468,20 @@ static VALUE rb_gtk_mate_theme_theme_filenames(VALUE self) {
         _rb_return = Qnil;
     }
     else {
-        int it_val39;
+        int it_val40;
         _rb_return = rb_ary_new2((long) gee_collection_get_size (GEE_COLLECTION (_c_return)));
-        for (it_val39 = 0; it_val39 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val39 = it_val39 + 1) {
-            char * i_val40;
-            i_val40 = (char *) (gee_list_get (GEE_LIST (_c_return), it_val39));
-            VALUE rb_ival40;
-                  if (i_val40 == NULL) {
-        rb_ival40 = Qnil;
+        for (it_val40 = 0; it_val40 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val40 = it_val40 + 1) {
+            char * i_val41;
+            i_val41 = (char *) (gee_list_get (GEE_LIST (_c_return), it_val40));
+            VALUE rb_ival41;
+                  if (i_val41 == NULL) {
+        rb_ival41 = Qnil;
       }
       else {
-        rb_ival40 = rb_str_new2(i_val40);
+        rb_ival41 = rb_str_new2(i_val41);
       }
 
-            rb_ary_store (_rb_return, it_val39, rb_ival40);
+            rb_ary_store (_rb_return, it_val40, rb_ival41);
         }
     }
 
@@ -3158,12 +3236,12 @@ static VALUE rb_gtk_mate_scope_delete_any_on_line_not_in(VALUE self, VALUE line_
     _c_line_ix = FIX2INT(line_ix);
     GeeArrayList* _c_scopes;
         // ArrayListType#ruby_to_c(:before, "scopes", "_c_scopes")
-    int len_val41 = RARRAY_LEN(scopes);
+    int len_val42 = RARRAY_LEN(scopes);
     _c_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val41; i++) {
+        for (; i < len_val42; i++) {
             VALUE _rb_el = rb_ary_entry(scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_scopes), (_c_el));
@@ -3181,14 +3259,14 @@ static VALUE rb_gtk_mate_scope_delete_any_on_line_not_in(VALUE self, VALUE line_
         _rb_return = Qnil;
     }
     else {
-        int it_val42;
+        int it_val43;
         _rb_return = rb_ary_new2((long) gee_collection_get_size (GEE_COLLECTION (_c_return)));
-        for (it_val42 = 0; it_val42 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val42 = it_val42 + 1) {
-            GtkMateScope* i_val43;
-            i_val43 =  (gee_list_get (GEE_LIST (_c_return), it_val42));
-            VALUE rb_ival43;
-            rb_ival43 = GOBJ2RVAL(i_val43);
-            rb_ary_store (_rb_return, it_val42, rb_ival43);
+        for (it_val43 = 0; it_val43 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val43 = it_val43 + 1) {
+            GtkMateScope* i_val44;
+            i_val44 =  (gee_list_get (GEE_LIST (_c_return), it_val43));
+            VALUE rb_ival44;
+            rb_ival44 = GOBJ2RVAL(i_val44);
+            rb_ary_store (_rb_return, it_val43, rb_ival44);
         }
     }
 
@@ -4083,12 +4161,12 @@ static VALUE rb_gtk_mate_parser_clear_line(VALUE self, VALUE line_ix, VALUE star
     _c_start_scope = _GTK_MATE_SCOPE_SELF(start_scope);
     GeeArrayList* _c_all_scopes;
         // ArrayListType#ruby_to_c(:before, "all_scopes", "_c_all_scopes")
-    int len_val44 = RARRAY_LEN(all_scopes);
+    int len_val45 = RARRAY_LEN(all_scopes);
     _c_all_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val44; i++) {
+        for (; i < len_val45; i++) {
             VALUE _rb_el = rb_ary_entry(all_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_all_scopes), (_c_el));
@@ -4097,12 +4175,12 @@ static VALUE rb_gtk_mate_parser_clear_line(VALUE self, VALUE line_ix, VALUE star
 
     GeeArrayList* _c_closed_scopes;
         // ArrayListType#ruby_to_c(:before, "closed_scopes", "_c_closed_scopes")
-    int len_val45 = RARRAY_LEN(closed_scopes);
+    int len_val46 = RARRAY_LEN(closed_scopes);
     _c_closed_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val45; i++) {
+        for (; i < len_val46; i++) {
             VALUE _rb_el = rb_ary_entry(closed_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_closed_scopes), (_c_el));
@@ -4111,12 +4189,12 @@ static VALUE rb_gtk_mate_parser_clear_line(VALUE self, VALUE line_ix, VALUE star
 
     GeeArrayList* _c_removed_scopes;
         // ArrayListType#ruby_to_c(:before, "removed_scopes", "_c_removed_scopes")
-    int len_val46 = RARRAY_LEN(removed_scopes);
+    int len_val47 = RARRAY_LEN(removed_scopes);
     _c_removed_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val46; i++) {
+        for (; i < len_val47; i++) {
             VALUE _rb_el = rb_ary_entry(removed_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_removed_scopes), (_c_el));
@@ -4202,12 +4280,12 @@ static VALUE rb_gtk_mate_parser_close_scope(VALUE self, VALUE scanner, VALUE exp
     _c_m = _GTK_MATE_MARKER_SELF(m);
     GeeArrayList* _c_all_scopes;
         // ArrayListType#ruby_to_c(:before, "all_scopes", "_c_all_scopes")
-    int len_val47 = RARRAY_LEN(all_scopes);
+    int len_val48 = RARRAY_LEN(all_scopes);
     _c_all_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val47; i++) {
+        for (; i < len_val48; i++) {
             VALUE _rb_el = rb_ary_entry(all_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_all_scopes), (_c_el));
@@ -4216,12 +4294,12 @@ static VALUE rb_gtk_mate_parser_close_scope(VALUE self, VALUE scanner, VALUE exp
 
     GeeArrayList* _c_closed_scopes;
         // ArrayListType#ruby_to_c(:before, "closed_scopes", "_c_closed_scopes")
-    int len_val48 = RARRAY_LEN(closed_scopes);
+    int len_val49 = RARRAY_LEN(closed_scopes);
     _c_closed_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val48; i++) {
+        for (; i < len_val49; i++) {
             VALUE _rb_el = rb_ary_entry(closed_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_closed_scopes), (_c_el));
@@ -4230,12 +4308,12 @@ static VALUE rb_gtk_mate_parser_close_scope(VALUE self, VALUE scanner, VALUE exp
 
     GeeArrayList* _c_removed_scopes;
         // ArrayListType#ruby_to_c(:before, "removed_scopes", "_c_removed_scopes")
-    int len_val49 = RARRAY_LEN(removed_scopes);
+    int len_val50 = RARRAY_LEN(removed_scopes);
     _c_removed_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val49; i++) {
+        for (; i < len_val50; i++) {
             VALUE _rb_el = rb_ary_entry(removed_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_removed_scopes), (_c_el));
@@ -4295,12 +4373,12 @@ static VALUE rb_gtk_mate_parser_open_scope(VALUE self, VALUE scanner, VALUE expe
     _c_m = _GTK_MATE_MARKER_SELF(m);
     GeeArrayList* _c_all_scopes;
         // ArrayListType#ruby_to_c(:before, "all_scopes", "_c_all_scopes")
-    int len_val50 = RARRAY_LEN(all_scopes);
+    int len_val51 = RARRAY_LEN(all_scopes);
     _c_all_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val50; i++) {
+        for (; i < len_val51; i++) {
             VALUE _rb_el = rb_ary_entry(all_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_all_scopes), (_c_el));
@@ -4309,12 +4387,12 @@ static VALUE rb_gtk_mate_parser_open_scope(VALUE self, VALUE scanner, VALUE expe
 
     GeeArrayList* _c_closed_scopes;
         // ArrayListType#ruby_to_c(:before, "closed_scopes", "_c_closed_scopes")
-    int len_val51 = RARRAY_LEN(closed_scopes);
+    int len_val52 = RARRAY_LEN(closed_scopes);
     _c_closed_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val51; i++) {
+        for (; i < len_val52; i++) {
             VALUE _rb_el = rb_ary_entry(closed_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_closed_scopes), (_c_el));
@@ -4323,12 +4401,12 @@ static VALUE rb_gtk_mate_parser_open_scope(VALUE self, VALUE scanner, VALUE expe
 
     GeeArrayList* _c_removed_scopes;
         // ArrayListType#ruby_to_c(:before, "removed_scopes", "_c_removed_scopes")
-    int len_val52 = RARRAY_LEN(removed_scopes);
+    int len_val53 = RARRAY_LEN(removed_scopes);
     _c_removed_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val52; i++) {
+        for (; i < len_val53; i++) {
             VALUE _rb_el = rb_ary_entry(removed_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_removed_scopes), (_c_el));
@@ -4388,12 +4466,12 @@ static VALUE rb_gtk_mate_parser_single_scope(VALUE self, VALUE scanner, VALUE ex
     _c_m = _GTK_MATE_MARKER_SELF(m);
     GeeArrayList* _c_all_scopes;
         // ArrayListType#ruby_to_c(:before, "all_scopes", "_c_all_scopes")
-    int len_val53 = RARRAY_LEN(all_scopes);
+    int len_val54 = RARRAY_LEN(all_scopes);
     _c_all_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val53; i++) {
+        for (; i < len_val54; i++) {
             VALUE _rb_el = rb_ary_entry(all_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_all_scopes), (_c_el));
@@ -4402,12 +4480,12 @@ static VALUE rb_gtk_mate_parser_single_scope(VALUE self, VALUE scanner, VALUE ex
 
     GeeArrayList* _c_closed_scopes;
         // ArrayListType#ruby_to_c(:before, "closed_scopes", "_c_closed_scopes")
-    int len_val54 = RARRAY_LEN(closed_scopes);
+    int len_val55 = RARRAY_LEN(closed_scopes);
     _c_closed_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val54; i++) {
+        for (; i < len_val55; i++) {
             VALUE _rb_el = rb_ary_entry(closed_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_closed_scopes), (_c_el));
@@ -4416,12 +4494,12 @@ static VALUE rb_gtk_mate_parser_single_scope(VALUE self, VALUE scanner, VALUE ex
 
     GeeArrayList* _c_removed_scopes;
         // ArrayListType#ruby_to_c(:before, "removed_scopes", "_c_removed_scopes")
-    int len_val55 = RARRAY_LEN(removed_scopes);
+    int len_val56 = RARRAY_LEN(removed_scopes);
     _c_removed_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val55; i++) {
+        for (; i < len_val56; i++) {
             VALUE _rb_el = rb_ary_entry(removed_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_removed_scopes), (_c_el));
@@ -4465,12 +4543,12 @@ static VALUE rb_gtk_mate_parser_handle_captures(VALUE self, VALUE line_ix, VALUE
     _c_m = _GTK_MATE_MARKER_SELF(m);
     GeeArrayList* _c_all_scopes;
         // ArrayListType#ruby_to_c(:before, "all_scopes", "_c_all_scopes")
-    int len_val56 = RARRAY_LEN(all_scopes);
+    int len_val57 = RARRAY_LEN(all_scopes);
     _c_all_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val56; i++) {
+        for (; i < len_val57; i++) {
             VALUE _rb_el = rb_ary_entry(all_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_all_scopes), (_c_el));
@@ -4479,12 +4557,12 @@ static VALUE rb_gtk_mate_parser_handle_captures(VALUE self, VALUE line_ix, VALUE
 
     GeeArrayList* _c_closed_scopes;
         // ArrayListType#ruby_to_c(:before, "closed_scopes", "_c_closed_scopes")
-    int len_val57 = RARRAY_LEN(closed_scopes);
+    int len_val58 = RARRAY_LEN(closed_scopes);
     _c_closed_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val57; i++) {
+        for (; i < len_val58; i++) {
             VALUE _rb_el = rb_ary_entry(closed_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_closed_scopes), (_c_el));
@@ -4550,12 +4628,12 @@ static VALUE rb_gtk_mate_parser_collect_child_captures(VALUE self, VALUE line_ix
     _c_m = _GTK_MATE_MARKER_SELF(m);
     GeeArrayList* _c_all_scopes;
         // ArrayListType#ruby_to_c(:before, "all_scopes", "_c_all_scopes")
-    int len_val58 = RARRAY_LEN(all_scopes);
+    int len_val59 = RARRAY_LEN(all_scopes);
     _c_all_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val58; i++) {
+        for (; i < len_val59; i++) {
             VALUE _rb_el = rb_ary_entry(all_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_all_scopes), (_c_el));
@@ -4564,12 +4642,12 @@ static VALUE rb_gtk_mate_parser_collect_child_captures(VALUE self, VALUE line_ix
 
     GeeArrayList* _c_closed_scopes;
         // ArrayListType#ruby_to_c(:before, "closed_scopes", "_c_closed_scopes")
-    int len_val59 = RARRAY_LEN(closed_scopes);
+    int len_val60 = RARRAY_LEN(closed_scopes);
     _c_closed_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val59; i++) {
+        for (; i < len_val60; i++) {
             VALUE _rb_el = rb_ary_entry(closed_scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_closed_scopes), (_c_el));
@@ -4683,14 +4761,14 @@ static VALUE rb_gtk_mate_matcher_get_neg_rxs(VALUE self) {
         _rb_return = Qnil;
     }
     else {
-        int it_val60;
+        int it_val61;
         _rb_return = rb_ary_new2((long) gee_collection_get_size (GEE_COLLECTION (_c_return)));
-        for (it_val60 = 0; it_val60 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val60 = it_val60 + 1) {
-            OnigurumaRegex* i_val61;
-            i_val61 =  (gee_list_get (GEE_LIST (_c_return), it_val60));
-            VALUE rb_ival61;
-            rb_ival61 = GOBJ2RVAL(i_val61);
-            rb_ary_store (_rb_return, it_val60, rb_ival61);
+        for (it_val61 = 0; it_val61 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val61 = it_val61 + 1) {
+            OnigurumaRegex* i_val62;
+            i_val62 =  (gee_list_get (GEE_LIST (_c_return), it_val61));
+            VALUE rb_ival62;
+            rb_ival62 = GOBJ2RVAL(i_val62);
+            rb_ary_store (_rb_return, it_val61, rb_ival62);
         }
     }
 
@@ -4707,12 +4785,12 @@ static VALUE rb_gtk_mate_matcher_set_neg_rxs(VALUE self, VALUE neg_rxs) {
     // Method#argument_type_conversions
     GeeArrayList* _c_neg_rxs;
         // ArrayListType#ruby_to_c(:before, "neg_rxs", "_c_neg_rxs")
-    int len_val62 = RARRAY_LEN(neg_rxs);
+    int len_val63 = RARRAY_LEN(neg_rxs);
     _c_neg_rxs = gee_array_list_new (ONIGURUMA_TYPE_REGEX, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val62; i++) {
+        for (; i < len_val63; i++) {
             VALUE _rb_el = rb_ary_entry(neg_rxs, (long) i);
             OnigurumaRegex* _c_el = _ONIGURUMA_REGEX_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_neg_rxs), (_c_el));
@@ -4834,14 +4912,14 @@ static VALUE rb_gtk_mate_matcher_compile(VALUE self, VALUE selector_string) {
         _rb_return = Qnil;
     }
     else {
-        int it_val63;
+        int it_val64;
         _rb_return = rb_ary_new2((long) gee_collection_get_size (GEE_COLLECTION (_c_return)));
-        for (it_val63 = 0; it_val63 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val63 = it_val63 + 1) {
-            GtkMateMatcher* i_val64;
-            i_val64 =  (gee_list_get (GEE_LIST (_c_return), it_val63));
-            VALUE rb_ival64;
-            rb_ival64 = GOBJ2RVAL(i_val64);
-            rb_ary_store (_rb_return, it_val63, rb_ival64);
+        for (it_val64 = 0; it_val64 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val64 = it_val64 + 1) {
+            GtkMateMatcher* i_val65;
+            i_val65 =  (gee_list_get (GEE_LIST (_c_return), it_val64));
+            VALUE rb_ival65;
+            rb_ival65 = GOBJ2RVAL(i_val65);
+            rb_ary_store (_rb_return, it_val64, rb_ival65);
         }
     }
 
@@ -4883,12 +4961,12 @@ static VALUE rb_gtk_mate_colourer_colour_line_with_scopes(VALUE self, VALUE scop
     // Method#argument_type_conversions
     GeeArrayList* _c_scopes;
         // ArrayListType#ruby_to_c(:before, "scopes", "_c_scopes")
-    int len_val65 = RARRAY_LEN(scopes);
+    int len_val66 = RARRAY_LEN(scopes);
     _c_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val65; i++) {
+        for (; i < len_val66; i++) {
             VALUE _rb_el = rb_ary_entry(scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_scopes), (_c_el));
@@ -5010,12 +5088,12 @@ static VALUE rb_gtk_mate_colourer_uncolour_scopes(VALUE self, VALUE scopes) {
     // Method#argument_type_conversions
     GeeArrayList* _c_scopes;
         // ArrayListType#ruby_to_c(:before, "scopes", "_c_scopes")
-    int len_val66 = RARRAY_LEN(scopes);
+    int len_val67 = RARRAY_LEN(scopes);
     _c_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val66; i++) {
+        for (; i < len_val67; i++) {
             VALUE _rb_el = rb_ary_entry(scopes, (long) i);
             GtkMateScope* _c_el = _GTK_MATE_SCOPE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_scopes), (_c_el));
@@ -5074,14 +5152,14 @@ static VALUE rb_gtk_mate_buffer_get_bundles(VALUE self) {
         _rb_return = Qnil;
     }
     else {
-        int it_val67;
+        int it_val68;
         _rb_return = rb_ary_new2((long) gee_collection_get_size (GEE_COLLECTION (_c_return)));
-        for (it_val67 = 0; it_val67 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val67 = it_val67 + 1) {
-            GtkMateBundle* i_val68;
-            i_val68 =  (gee_list_get (GEE_LIST (_c_return), it_val67));
-            VALUE rb_ival68;
-            rb_ival68 = GOBJ2RVAL(i_val68);
-            rb_ary_store (_rb_return, it_val67, rb_ival68);
+        for (it_val68 = 0; it_val68 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val68 = it_val68 + 1) {
+            GtkMateBundle* i_val69;
+            i_val69 =  (gee_list_get (GEE_LIST (_c_return), it_val68));
+            VALUE rb_ival69;
+            rb_ival69 = GOBJ2RVAL(i_val69);
+            rb_ary_store (_rb_return, it_val68, rb_ival69);
         }
     }
 
@@ -5097,12 +5175,12 @@ static VALUE rb_gtk_mate_buffer_set_bundles(VALUE self, VALUE bundles) {
     // Method#argument_type_conversions
     GeeArrayList* _c_bundles;
         // ArrayListType#ruby_to_c(:before, "bundles", "_c_bundles")
-    int len_val69 = RARRAY_LEN(bundles);
+    int len_val70 = RARRAY_LEN(bundles);
     _c_bundles = gee_array_list_new (GTK_MATE_TYPE_BUNDLE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val69; i++) {
+        for (; i < len_val70; i++) {
             VALUE _rb_el = rb_ary_entry(bundles, (long) i);
             GtkMateBundle* _c_el = _GTK_MATE_BUNDLE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_bundles), (_c_el));
@@ -5127,14 +5205,14 @@ static VALUE rb_gtk_mate_buffer_get_themes(VALUE self) {
         _rb_return = Qnil;
     }
     else {
-        int it_val70;
+        int it_val71;
         _rb_return = rb_ary_new2((long) gee_collection_get_size (GEE_COLLECTION (_c_return)));
-        for (it_val70 = 0; it_val70 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val70 = it_val70 + 1) {
-            GtkMateTheme* i_val71;
-            i_val71 =  (gee_list_get (GEE_LIST (_c_return), it_val70));
-            VALUE rb_ival71;
-            rb_ival71 = GOBJ2RVAL(i_val71);
-            rb_ary_store (_rb_return, it_val70, rb_ival71);
+        for (it_val71 = 0; it_val71 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val71 = it_val71 + 1) {
+            GtkMateTheme* i_val72;
+            i_val72 =  (gee_list_get (GEE_LIST (_c_return), it_val71));
+            VALUE rb_ival72;
+            rb_ival72 = GOBJ2RVAL(i_val72);
+            rb_ary_store (_rb_return, it_val71, rb_ival72);
         }
     }
 
@@ -5150,12 +5228,12 @@ static VALUE rb_gtk_mate_buffer_set_themes(VALUE self, VALUE themes) {
     // Method#argument_type_conversions
     GeeArrayList* _c_themes;
         // ArrayListType#ruby_to_c(:before, "themes", "_c_themes")
-    int len_val72 = RARRAY_LEN(themes);
+    int len_val73 = RARRAY_LEN(themes);
     _c_themes = gee_array_list_new (GTK_MATE_TYPE_THEME, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val72; i++) {
+        for (; i < len_val73; i++) {
             VALUE _rb_el = rb_ary_entry(themes, (long) i);
             GtkMateTheme* _c_el = _GTK_MATE_THEME_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_themes), (_c_el));
@@ -5445,14 +5523,14 @@ static VALUE rb_gtk_mate_bundle_get_grammars(VALUE self) {
         _rb_return = Qnil;
     }
     else {
-        int it_val73;
+        int it_val74;
         _rb_return = rb_ary_new2((long) gee_collection_get_size (GEE_COLLECTION (_c_return)));
-        for (it_val73 = 0; it_val73 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val73 = it_val73 + 1) {
-            GtkMateGrammar* i_val74;
-            i_val74 =  (gee_list_get (GEE_LIST (_c_return), it_val73));
-            VALUE rb_ival74;
-            rb_ival74 = GOBJ2RVAL(i_val74);
-            rb_ary_store (_rb_return, it_val73, rb_ival74);
+        for (it_val74 = 0; it_val74 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val74 = it_val74 + 1) {
+            GtkMateGrammar* i_val75;
+            i_val75 =  (gee_list_get (GEE_LIST (_c_return), it_val74));
+            VALUE rb_ival75;
+            rb_ival75 = GOBJ2RVAL(i_val75);
+            rb_ary_store (_rb_return, it_val74, rb_ival75);
         }
     }
 
@@ -5469,12 +5547,12 @@ static VALUE rb_gtk_mate_bundle_set_grammars(VALUE self, VALUE grammars) {
     // Method#argument_type_conversions
     GeeArrayList* _c_grammars;
         // ArrayListType#ruby_to_c(:before, "grammars", "_c_grammars")
-    int len_val75 = RARRAY_LEN(grammars);
+    int len_val76 = RARRAY_LEN(grammars);
     _c_grammars = gee_array_list_new (GTK_MATE_TYPE_GRAMMAR, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val75; i++) {
+        for (; i < len_val76; i++) {
             VALUE _rb_el = rb_ary_entry(grammars, (long) i);
             GtkMateGrammar* _c_el = _GTK_MATE_GRAMMAR_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_grammars), (_c_el));
@@ -5694,14 +5772,14 @@ static VALUE rb_gtk_mate_scanner_get_cached_markers(VALUE self) {
         _rb_return = Qnil;
     }
     else {
-        int it_val76;
+        int it_val77;
         _rb_return = rb_ary_new2((long) gee_collection_get_size (GEE_COLLECTION (_c_return)));
-        for (it_val76 = 0; it_val76 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val76 = it_val76 + 1) {
-            GtkMateMarker* i_val77;
-            i_val77 =  (gee_list_get (GEE_LIST (_c_return), it_val76));
-            VALUE rb_ival77;
-            rb_ival77 = GOBJ2RVAL(i_val77);
-            rb_ary_store (_rb_return, it_val76, rb_ival77);
+        for (it_val77 = 0; it_val77 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val77 = it_val77 + 1) {
+            GtkMateMarker* i_val78;
+            i_val78 =  (gee_list_get (GEE_LIST (_c_return), it_val77));
+            VALUE rb_ival78;
+            rb_ival78 = GOBJ2RVAL(i_val78);
+            rb_ary_store (_rb_return, it_val77, rb_ival78);
         }
     }
 
@@ -5718,12 +5796,12 @@ static VALUE rb_gtk_mate_scanner_set_cached_markers(VALUE self, VALUE cached_mar
     // Method#argument_type_conversions
     GeeArrayList* _c_cached_markers;
         // ArrayListType#ruby_to_c(:before, "cached_markers", "_c_cached_markers")
-    int len_val78 = RARRAY_LEN(cached_markers);
+    int len_val79 = RARRAY_LEN(cached_markers);
     _c_cached_markers = gee_array_list_new (GTK_MATE_TYPE_MARKER, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val78; i++) {
+        for (; i < len_val79; i++) {
             VALUE _rb_el = rb_ary_entry(cached_markers, (long) i);
             GtkMateMarker* _c_el = _GTK_MATE_MARKER_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_cached_markers), (_c_el));
@@ -6183,14 +6261,14 @@ static VALUE rb_plist_array_get_array(VALUE self) {
         _rb_return = Qnil;
     }
     else {
-        int it_val79;
+        int it_val80;
         _rb_return = rb_ary_new2((long) gee_collection_get_size (GEE_COLLECTION (_c_return)));
-        for (it_val79 = 0; it_val79 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val79 = it_val79 + 1) {
-            PListNode* i_val80;
-            i_val80 =  (gee_list_get (GEE_LIST (_c_return), it_val79));
-            VALUE rb_ival80;
-            rb_ival80 = GOBJ2RVAL(i_val80);
-            rb_ary_store (_rb_return, it_val79, rb_ival80);
+        for (it_val80 = 0; it_val80 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val80 = it_val80 + 1) {
+            PListNode* i_val81;
+            i_val81 =  (gee_list_get (GEE_LIST (_c_return), it_val80));
+            VALUE rb_ival81;
+            rb_ival81 = GOBJ2RVAL(i_val81);
+            rb_ary_store (_rb_return, it_val80, rb_ival81);
         }
     }
 
@@ -6207,12 +6285,12 @@ static VALUE rb_plist_array_set_array(VALUE self, VALUE array) {
     // Method#argument_type_conversions
     GeeArrayList* _c_array;
         // ArrayListType#ruby_to_c(:before, "array", "_c_array")
-    int len_val81 = RARRAY_LEN(array);
+    int len_val82 = RARRAY_LEN(array);
     _c_array = gee_array_list_new (PLIST_TYPE_NODE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val81; i++) {
+        for (; i < len_val82; i++) {
             VALUE _rb_el = rb_ary_entry(array, (long) i);
             PListNode* _c_el = _PLIST_NODE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_array), (_c_el));
@@ -6312,11 +6390,11 @@ static VALUE rb_plist_dict_set_map(VALUE self, VALUE map) {
         // HashMap#ruby_to_c(:before, "map", "_c_map")
     _c_map = gee_hash_map_new (G_TYPE_STRING, ((GBoxedCopyFunc) (g_strdup)), g_free, PLIST_TYPE_NODE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_str_hash, g_str_equal, g_direct_equal);
     VALUE rb_keys = rb_funcall(map, rb_intern("keys"), 0);
-    int len_val82 = RARRAY_LEN(rb_keys);
+    int len_val83 = RARRAY_LEN(rb_keys);
     {
         gint i;
         i = 0;
-        for (; i < len_val82; i++) {
+        for (; i < len_val83; i++) {
             VALUE _rb_key = rb_ary_entry(rb_keys, (long) i);
             VALUE _rb_value = rb_hash_aref(map, _rb_key);
             char * _c__rb_key;
@@ -6369,10 +6447,10 @@ static VALUE rb_plist_dict_keys(VALUE self) {
           }
           else {
               _rb_return = rb_ary_new2(_rb_return__length);
-              long val83;
-              for(val83 = 0; val83 < _rb_return__length; val83++) {
-                  rb_ary_store(_rb_return, val83, rb_str_new2(_c_return[val83]));
-//                g_free(_c_return[val83]);
+              long val84;
+              for(val84 = 0; val84 < _rb_return__length; val84++) {
+                  rb_ary_store(_rb_return, val84, rb_str_new2(_c_return[val84]));
+//                g_free(_c_return[val84]);
               }
           }
 
@@ -6413,14 +6491,14 @@ static VALUE rb_range_set_get_ranges(VALUE self) {
         _rb_return = Qnil;
     }
     else {
-        int it_val84;
+        int it_val85;
         _rb_return = rb_ary_new2((long) gee_collection_get_size (GEE_COLLECTION (_c_return)));
-        for (it_val84 = 0; it_val84 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val84 = it_val84 + 1) {
-            RangeSetRange* i_val85;
-            i_val85 =  (gee_list_get (GEE_LIST (_c_return), it_val84));
-            VALUE rb_ival85;
-            rb_ival85 = GOBJ2RVAL(i_val85);
-            rb_ary_store (_rb_return, it_val84, rb_ival85);
+        for (it_val85 = 0; it_val85 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val85 = it_val85 + 1) {
+            RangeSetRange* i_val86;
+            i_val86 =  (gee_list_get (GEE_LIST (_c_return), it_val85));
+            VALUE rb_ival86;
+            rb_ival86 = GOBJ2RVAL(i_val86);
+            rb_ary_store (_rb_return, it_val85, rb_ival86);
         }
     }
 
@@ -6437,12 +6515,12 @@ static VALUE rb_range_set_set_ranges(VALUE self, VALUE ranges) {
     // Method#argument_type_conversions
     GeeArrayList* _c_ranges;
         // ArrayListType#ruby_to_c(:before, "ranges", "_c_ranges")
-    int len_val86 = RARRAY_LEN(ranges);
+    int len_val87 = RARRAY_LEN(ranges);
     _c_ranges = gee_array_list_new (RANGE_SET_TYPE_RANGE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
     {
         gint i;
         i = 0;
-        for (; i < len_val86; i++) {
+        for (; i < len_val87; i++) {
             VALUE _rb_el = rb_ary_entry(ranges, (long) i);
             RangeSetRange* _c_el = _RANGE_SET_RANGE_SELF(_rb_el);
             gee_collection_add (GEE_COLLECTION (_c_ranges), (_c_el));
@@ -6752,14 +6830,14 @@ static VALUE rb_string_helper_occurrences(VALUE self, VALUE s, VALUE t) {
         _rb_return = Qnil;
     }
     else {
-        int it_val87;
+        int it_val88;
         _rb_return = rb_ary_new2((long) gee_collection_get_size (GEE_COLLECTION (_c_return)));
-        for (it_val87 = 0; it_val87 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val87 = it_val87 + 1) {
-            int i_val88;
-            i_val88 = GPOINTER_TO_INT (gee_list_get (GEE_LIST (_c_return), it_val87));
-            VALUE rb_ival88;
-            rb_ival88 = INT2FIX(i_val88);
-            rb_ary_store (_rb_return, it_val87, rb_ival88);
+        for (it_val88 = 0; it_val88 < gee_collection_get_size (GEE_COLLECTION (_c_return)); it_val88 = it_val88 + 1) {
+            int i_val89;
+            i_val89 = GPOINTER_TO_INT (gee_list_get (GEE_LIST (_c_return), it_val88));
+            VALUE rb_ival89;
+            rb_ival89 = INT2FIX(i_val89);
+            rb_ary_store (_rb_return, it_val88, rb_ival89);
         }
     }
 
@@ -6916,6 +6994,8 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_theme, "settings=", rb_gtk_mate_theme_set_settings, 1);
     rb_define_method(rbc_gtk_mate_theme, "is_initialized", rb_gtk_mate_theme_get_is_initialized, 0);
     rb_define_method(rbc_gtk_mate_theme, "is_initialized=", rb_gtk_mate_theme_set_is_initialized, 1);
+    rb_define_method(rbc_gtk_mate_theme, "cached_setting_for_scopes", rb_gtk_mate_theme_get_cached_setting_for_scopes, 0);
+    rb_define_method(rbc_gtk_mate_theme, "cached_setting_for_scopes=", rb_gtk_mate_theme_set_cached_setting_for_scopes, 1);
     rb_define_singleton_method(rbc_gtk_mate_theme, "create_from_plist", rb_gtk_mate_theme_create_from_plist, 1);
     rb_define_method(rbc_gtk_mate_theme, "init_for_use", rb_gtk_mate_theme_init_for_use, 0);
     rb_define_singleton_method(rbc_gtk_mate_theme, "theme_filenames", rb_gtk_mate_theme_theme_filenames, 0);

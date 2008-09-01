@@ -88,6 +88,7 @@ namespace Gtk {
 			public Gee.HashMap<string,string> global_settings;
 			public Gee.ArrayList<Gtk.Mate.ThemeSetting> settings;
 			public bool is_initialized;
+			public Gee.HashMap<string,Gtk.Mate.ThemeSetting> cached_setting_for_scopes;
 			public static Gtk.Mate.Theme create_from_plist (PList.Dict dict);
 			public void init_for_use ();
 			public static Gee.ArrayList<string>? theme_filenames ();

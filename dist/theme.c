@@ -248,12 +248,15 @@ GtkMateTheme* gtk_mate_theme_create_from_plist (PListDict* dict) {
 
 
 void gtk_mate_theme_init_for_use (GtkMateTheme* self) {
+	GeeHashMap* _tmp0;
 	g_return_if_fail (GTK_MATE_IS_THEME (self));
 	if (self->is_initialized) {
 		return;
 	}
 	self->is_initialized = TRUE;
 	fprintf (stdout, "initializing theme for use: %s\n", self->name);
+	_tmp0 = NULL;
+	self->cached_setting_for_scopes = (_tmp0 = gee_hash_map_new (G_TYPE_STRING, ((GBoxedCopyFunc) (g_strdup)), g_free, GTK_MATE_TYPE_THEME_SETTING, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_str_hash, g_str_equal, g_direct_equal), (self->cached_setting_for_scopes == NULL ? NULL : (self->cached_setting_for_scopes = (g_object_unref (self->cached_setting_for_scopes), NULL))), _tmp0);
 	{
 		GeeArrayList* setting_collection;
 		int setting_it;
@@ -338,14 +341,24 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
  (see 13.5 of Textmate manual)*/
 GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkMateScope* scope, gboolean inner) {
 	char* scope_name;
+	GtkMateThemeSetting* cached;
 	OnigurumaMatch* current_m;
 	OnigurumaMatch* m;
 	GtkMateThemeSetting* current;
-	GtkMateThemeSetting* _tmp11;
+	GtkMateThemeSetting* _tmp13;
 	g_return_val_if_fail (GTK_MATE_IS_THEME (self), NULL);
 	g_return_val_if_fail (GTK_MATE_IS_SCOPE (scope), NULL);
 	scope_name = gtk_mate_scope_hierarchy_names (scope, inner);
 	/*stdout.printf("  finding settings for '%s'\n", scope_name);*/
+	cached = NULL;
+	if (gee_map_contains (GEE_MAP (self->cached_setting_for_scopes), scope_name)) {
+		GtkMateThemeSetting* _tmp0;
+		GtkMateThemeSetting* _tmp1;
+		_tmp0 = NULL;
+		cached = (_tmp0 = ((GtkMateThemeSetting*) (gee_map_get (GEE_MAP (self->cached_setting_for_scopes), scope_name))), (cached == NULL ? NULL : (cached = (g_object_unref (cached), NULL))), _tmp0);
+		_tmp1 = NULL;
+		return (_tmp1 = cached, (scope_name = (g_free (scope_name), NULL)), _tmp1);
+	}
 	current_m = NULL;
 	m = NULL;
 	current = NULL;
@@ -357,36 +370,36 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 			GtkMateThemeSetting* setting;
 			setting = ((GtkMateThemeSetting*) (gee_list_get (GEE_LIST (setting_collection), setting_it)));
 			{
+				OnigurumaMatch* _tmp4;
+				gboolean _tmp3;
 				OnigurumaMatch* _tmp2;
-				gboolean _tmp1;
-				OnigurumaMatch* _tmp0;
+				_tmp4 = NULL;
 				_tmp2 = NULL;
-				_tmp0 = NULL;
-				if ((_tmp1 = gtk_mate_theme_setting_match (setting, scope_name, &_tmp0), m = (_tmp2 = _tmp0, (m == NULL ? NULL : (m = (g_object_unref (m), NULL))), _tmp2), _tmp1)) {
+				if ((_tmp3 = gtk_mate_theme_setting_match (setting, scope_name, &_tmp2), m = (_tmp4 = _tmp2, (m == NULL ? NULL : (m = (g_object_unref (m), NULL))), _tmp4), _tmp3)) {
 					/*stdout.printf("    setting '%s' with selector '%s'\n", setting.name, setting.selector);*/
 					if (current == NULL) {
-						GtkMateThemeSetting* _tmp4;
-						GtkMateThemeSetting* _tmp3;
-						OnigurumaMatch* _tmp6;
-						OnigurumaMatch* _tmp5;
-						_tmp4 = NULL;
-						_tmp3 = NULL;
-						current = (_tmp4 = (_tmp3 = setting, (_tmp3 == NULL ? NULL : g_object_ref (_tmp3))), (current == NULL ? NULL : (current = (g_object_unref (current), NULL))), _tmp4);
+						GtkMateThemeSetting* _tmp6;
+						GtkMateThemeSetting* _tmp5;
+						OnigurumaMatch* _tmp8;
+						OnigurumaMatch* _tmp7;
 						_tmp6 = NULL;
 						_tmp5 = NULL;
-						current_m = (_tmp6 = (_tmp5 = m, (_tmp5 == NULL ? NULL : g_object_ref (_tmp5))), (current_m == NULL ? NULL : (current_m = (g_object_unref (current_m), NULL))), _tmp6);
+						current = (_tmp6 = (_tmp5 = setting, (_tmp5 == NULL ? NULL : g_object_ref (_tmp5))), (current == NULL ? NULL : (current = (g_object_unref (current), NULL))), _tmp6);
+						_tmp8 = NULL;
+						_tmp7 = NULL;
+						current_m = (_tmp8 = (_tmp7 = m, (_tmp7 == NULL ? NULL : g_object_ref (_tmp7))), (current_m == NULL ? NULL : (current_m = (g_object_unref (current_m), NULL))), _tmp8);
 					} else {
 						if (gtk_mate_matcher_compare_match (scope_name, current_m, m) < 0) {
-							GtkMateThemeSetting* _tmp8;
-							GtkMateThemeSetting* _tmp7;
-							OnigurumaMatch* _tmp10;
-							OnigurumaMatch* _tmp9;
-							_tmp8 = NULL;
-							_tmp7 = NULL;
-							current = (_tmp8 = (_tmp7 = setting, (_tmp7 == NULL ? NULL : g_object_ref (_tmp7))), (current == NULL ? NULL : (current = (g_object_unref (current), NULL))), _tmp8);
+							GtkMateThemeSetting* _tmp10;
+							GtkMateThemeSetting* _tmp9;
+							OnigurumaMatch* _tmp12;
+							OnigurumaMatch* _tmp11;
 							_tmp10 = NULL;
 							_tmp9 = NULL;
-							current_m = (_tmp10 = (_tmp9 = m, (_tmp9 == NULL ? NULL : g_object_ref (_tmp9))), (current_m == NULL ? NULL : (current_m = (g_object_unref (current_m), NULL))), _tmp10);
+							current = (_tmp10 = (_tmp9 = setting, (_tmp9 == NULL ? NULL : g_object_ref (_tmp9))), (current == NULL ? NULL : (current = (g_object_unref (current), NULL))), _tmp10);
+							_tmp12 = NULL;
+							_tmp11 = NULL;
+							current_m = (_tmp12 = (_tmp11 = m, (_tmp11 == NULL ? NULL : g_object_ref (_tmp11))), (current_m == NULL ? NULL : (current_m = (g_object_unref (current_m), NULL))), _tmp12);
 						}
 					}
 				}
@@ -399,8 +412,9 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 	}
 	/*stdout.printf("none match\n");
 	stdout.printf("    best: '%s'\n", current.name);*/
-	_tmp11 = NULL;
-	return (_tmp11 = current, (scope_name = (g_free (scope_name), NULL)), (current_m == NULL ? NULL : (current_m = (g_object_unref (current_m), NULL))), (m == NULL ? NULL : (m = (g_object_unref (m), NULL))), _tmp11);
+	gee_map_set (GEE_MAP (self->cached_setting_for_scopes), scope_name, current);
+	_tmp13 = NULL;
+	return (_tmp13 = current, (scope_name = (g_free (scope_name), NULL)), (cached == NULL ? NULL : (cached = (g_object_unref (cached), NULL))), (current_m == NULL ? NULL : (current_m = (g_object_unref (current_m), NULL))), (m == NULL ? NULL : (m = (g_object_unref (m), NULL))), _tmp13);
 }
 
 
@@ -428,6 +442,7 @@ static void gtk_mate_theme_finalize (GObject * obj) {
 	self->name = (g_free (self->name), NULL);
 	(self->global_settings == NULL ? NULL : (self->global_settings = (g_object_unref (self->global_settings), NULL)));
 	(self->settings == NULL ? NULL : (self->settings = (g_object_unref (self->settings), NULL)));
+	(self->cached_setting_for_scopes == NULL ? NULL : (self->cached_setting_for_scopes = (g_object_unref (self->cached_setting_for_scopes), NULL)));
 	G_OBJECT_CLASS (gtk_mate_theme_parent_class)->finalize (obj);
 }
 
