@@ -9,6 +9,6 @@ def build(bld):
 	prog.includes = '../lib/'
         prog.libs = 'libonig'
 	prog.uselib = 'GTK+ GLIB GOBJECT GTKSOURCEVIEW2 LIBXML GEE onig'
-	prog.uselib_local = 'gtkmateview'
+#	prog.uselib_local = 'gtkmateview'
 	prog.packages = 'gtk+-2.0 gee-1.0 glib-2.0 libxml-2.0 gtksourceview-2.0 oniguruma'
 	prog.vapi_dirs = '../vapi'

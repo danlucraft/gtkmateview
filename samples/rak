@@ -822,3 +822,179 @@ Note that some extensions may appear in multiple types.  For example,
 END
 
 Rak.search
+#!/usr/bin/env ruby
+
+require 'rubygems'
+
+if RUBY_PLATFORM =~ /mswin/
+  begin
+    require 'win32console'
+  rescue LoadError
+    ARGV << "--nocolour"
+  end
+end
+
+require 'getoptlong'
+
+begin
+  require 'oniguruma'
+  require 'inline'
+  $use_onig = true
+rescue LoadError
+  $use_onig = false
+end
+
+$use_onig = false
+
+class Rak
+  VERSION = "0.9"
+  
+  FILE_COLOUR = "\033[1;31m"
+  MATCH_COLOUR = "\033[1;37m\033[41m"
+  CLEAR_COLOURS = "\033[0m"
+  
+  VERSION_INFO=<<END
+rak #{VERSION}
+
+Copyright 2008 Daniel Lucraft, all rights reserved. 
+Based on the perl tool 'ack' by Andy Lester.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Ruby.
+END
+  
+  FILE_TYPES = {
+    :asm         => %w( .s .S ),
+    :cc          => %w( .c .h .xs ),
+    :cpp         => %w( .cpp .cc .m .h .C .H ),
+    :csharp      => %w( .cs ),
+    :css         => %w( .css ),
+    :elisp       => %w( .el ),
+    :haskell     => %w( .hs .lhs ),
+    :hh          => %w( .h ),
+    :html        => %w( .htm .html .shtml ),
+    :lisp        => %w( .lisp ),
+    :java        => %w( .java properties ),
+    :js          => %w( .js ),
+    :jsp         => %w( .jsp .jspx .jhtm .jhtml ),
+    :make        => %w( Makefile ),
+    :mason       => %w( .mas .mhtml .mpl .mtxt ),
+    :ocaml       => %w( .ml .mli ),
+    :parrot      => %w( .pir .pasm .pmc .ops .pod .pg .tg ),
+    :perl        => %w( .pl .pm .pod .t ),
+    :php         => %w( .php .phpt .php3 .php4 .php5 ),
+    :prolog      => %w( .pl .ecl ),
+    :python      => %w( .py ),
+    :ruby        => %w( .rb .rhtml .rjs .rxml Rakefile .rake .erb .haml),
+    :scheme      => %w( .scm ),
+    :shell       => %w( .sh .bash .csh .ksh .zsh ),
+    :sql         => %w( .sql .ctl ),
+    :tcl         => %w( .tcl ),
+    :tex         => %w( .tex .cls .sty ),
+    :text        => %w( .txt .text ),
+    :tt          => %w( .tt .tt2 .ttml ),
+    :vala        => %w( .vala .vapi ),
+    :vb          => %w( .bas .cls .frm .ctl .vb .resx ),
+    :vim         => %w( .vim ),
+    :yaml        => %w( .yaml .yml ),
+    :xml         => %w( .xml .dtd .xslt )
+  }
+  
+  VC_DIRS = %w(blib CVS _darcs .git .pc RCS SCCS .svn pkg)
+  
+  class << self
+    attr_reader :opt
+  end
+  
+  def self.search
+    @opt = {}
+
+    # file types
+    opt[:includes] = []
+    opt[:excludes] = []
+    
+    FILE_TYPES.each do |type, exts|
+      if ARGV.delete('--'+type.to_s)
+        exts.each do |ext|
+          opt[:includes] << ext
+        end
+      end
+      if ARGV.delete('--no'+type.to_s)
+        exts.each do |ext|
+          opt[:excludes] << ext
+        end
+      end
+    end
+    
+      opts = GetoptLong.new(
+                            [ '--help', GetoptLong::OPTIONAL_ARGUMENT ],
+                            [ '--max-count', '-m', GetoptLong::REQUIRED_ARGUMENT ],
+                            [ '--files', '-f', GetoptLong::NO_ARGUMENT ],
+                            [ '--output', GetoptLong::REQUIRED_ARGUMENT ],
+                            [ '--version', GetoptLong::NO_ARGUMENT ],
+                            [ '-c', '--count', GetoptLong::NO_ARGUMENT ],
+                            [ '-h', '--no-filename', GetoptLong::NO_ARGUMENT ],
+                            [ '-i', '--ignore-case', GetoptLong::NO_ARGUMENT ],
+                            [ '-v', '--invert-match', GetoptLong::NO_ARGUMENT ],
+                            [ '-n', GetoptLong::NO_ARGUMENT ],
+                            [ '-Q', '--literal', GetoptLong::NO_ARGUMENT ],
+                            [ '-o', GetoptLong::NO_ARGUMENT ],
+                            [ '-w', '--word-regexp', GetoptLong::NO_ARGUMENT ],
+                            [ '--group', GetoptLong::NO_ARGUMENT ],
+                            [ '--nogroup', GetoptLong::NO_ARGUMENT ],
+                            [ '-l', '--files-with-matches', GetoptLong::NO_ARGUMENT ],
+                            [ '-L', '--files-without-matches', GetoptLong::NO_ARGUMENT ],
+                            [ '--passthru', GetoptLong::NO_ARGUMENT ],
+                            [ '-H', '--with-filename', GetoptLong::NO_ARGUMENT ],
+                            [ '--colour', GetoptLong::NO_ARGUMENT ],
+                            [ '--nocolour', GetoptLong::NO_ARGUMENT ],
+                            [ '--color', GetoptLong::NO_ARGUMENT ],
+                            [ '--nocolor', GetoptLong::NO_ARGUMENT ],
+                            [ '-a', '--all', GetoptLong::NO_ARGUMENT ],
+                            [ '--type', GetoptLong::REQUIRED_ARGUMENT ],
+                            [ '--sort-files', GetoptLong::NO_ARGUMENT ],
+                            [ '--follow', GetoptLong::NO_ARGUMENT ],
+                            [ '--nofollow', GetoptLong::NO_ARGUMENT ],
+                            [ '--after-context', '-A', GetoptLong::REQUIRED_ARGUMENT ],
+                            [ '--before-context', '-B', GetoptLong::REQUIRED_ARGUMENT ],
+                            [ '--context', '-C', GetoptLong::OPTIONAL_ARGUMENT ],
+                            [ '-g', GetoptLong::REQUIRED_ARGUMENT ],
+                            [ '-x', '--line-regexp', GetoptLong::NO_ARGUMENT ],
+                            [ '-s', '--line-start', GetoptLong::NO_ARGUMENT ],
+                            [ '-e', '--line-end', GetoptLong::NO_ARGUMENT ]
+                            )
+
+    dir = nil
+    
+    opt[:max_count] = nil
+    opt[:do_search] = true
+    opt[:print_filename] = true
+    opt[:print_line_number] = true
+    opt[:print_filelist] = false
+    opt[:print_output] = nil
+    opt[:print_highlighted] = true
+    opt[:print_num_matches] = false
+    opt[:ignore_case] = false
+    opt[:invert_match] = false
+    opt[:descend] = true
+    opt[:literal] = false
+    opt[:print_match] = false
+    opt[:match_whole_words] = false
+    opt[:match_whole_lines] = false
+    opt[:match_line_starts] = false
+    opt[:match_line_ends] = false
+    opt[:print_file_each_line] = false
+    opt[:print_file_if_match] = false
+    opt[:print_file_if_no_match] = false
+    opt[:print_entire_line_if_no_match] = false
+    opt[:colour] = true
+    opt[:all_files] = false
+    opt[:sort_files] = false
+    opt[:follow_symlinks] = false
+    opt[:after_context] = 0
+    opt[:before_context] = 0
+    opt[:collect_context] = false
+    opt[:filename_regex] = nil
+    opt[:filename_regex] = nil
+    
+    # if redirected (RAK_TEST allows us to redirect in testing and still 

@@ -40,11 +40,11 @@ namespace Gtk.Mate {
 				}
 				if (scope.name == null && scope.pattern != null &&
 					(scope.pattern is SinglePattern || ((DoublePattern) scope.pattern).content_name == null)) {
-					// stdout.printf("  no pattern name\n");
+					//stdout.printf("  no pattern name\n");
 					continue;
 				}
 				if (scope.is_coloured) {
-					// stdout.printf("  already coloured\n");
+					//stdout.printf("  already coloured\n");
 					continue;
 				}
 				colour_scope(scope, false);
@@ -54,24 +54,24 @@ namespace Gtk.Mate {
 		}
 
 		public void colour_scope(Scope scope, bool inner) {
-			// stdout.printf("colour_scope: %s (%s)\n", scope.name, inner ? "true" : "false");
+			//stdout.printf("colour_scope: %s (%s)\n", scope.name, inner ? "true" : "false");
 			int priority = scope.priority();
 			TextTag tag;
 			TextIter start_iter, end_iter;
 
-			// stdout.printf("  priority: %d\n", priority);
+			//stdout.printf("  priority: %d\n", priority);
 			scope.is_coloured = true;
 
 			if (inner) {
-				start_iter = buffer.iter_from_mark(scope.inner_start_mark);
-				end_iter = buffer.iter_from_mark(scope.inner_end_mark);
+				start_iter = scope.inner_start_iter();
+				end_iter = scope.inner_end_iter();
 				if (scope.inner_tag != null) {
 					tag = scope.inner_tag;
 				}
 			}
 			else {
-				start_iter = buffer.iter_from_mark(scope.start_mark);
-				end_iter = buffer.iter_from_mark(scope.end_mark);
+				start_iter = scope.start_iter();
+				end_iter = scope.end_iter();
 				if (scope.tag != null) {
 					tag = scope.tag;
 				}
@@ -97,7 +97,7 @@ namespace Gtk.Mate {
 					tag = buffer.create_tag(tag_name);
 				}
 			}
-			// stdout.printf("      tag: '%s'\n", tag_name);
+			//stdout.printf("      tag: '%s'\n", tag_name);
 			if (setting != null)
 				set_tag_properties(scope, tag, setting);
 			
@@ -111,10 +111,8 @@ namespace Gtk.Mate {
 
 		public void set_tag_properties(Scope scope, TextTag tag, ThemeSetting setting) {
 			string font_style = setting.settings.get("fontStyle");
-			// stdout.printf("fontStyle: %s\n", font_style);
 			if (font_style == "italic") {
 				tag.style = Pango.Style.ITALIC | tag.style;
-				// stdout.printf("isitalic\n");
 			}
 			else
 				tag.style = Pango.Style.NORMAL | tag.style;
@@ -187,7 +185,7 @@ namespace Gtk.Mate {
 		}
 		
 		public void uncolour_scope(Scope scope, bool recurse) {
-			// stdout.printf("uncolour scope: %s\n", scope.name);
+			//stdout.printf("uncolour scope: %s\n", scope.name);
 			if (scope.inner_tag != null) {
 				buffer.remove_tag(scope.inner_tag, scope.inner_start_iter(), scope.inner_end_iter());
 			}

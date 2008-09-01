@@ -96,12 +96,12 @@ void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayL
 					continue;
 				}
 				if (gtk_mate_scope_get_name (scope) == NULL && scope->pattern != NULL && (GTK_MATE_IS_SINGLE_PATTERN (scope->pattern) || (GTK_MATE_DOUBLE_PATTERN (scope->pattern))->content_name == NULL)) {
-					/* stdout.printf("  no pattern name\n");*/
+					/*stdout.printf("  no pattern name\n");*/
 					(scope == NULL ? NULL : (scope = (g_object_unref (scope), NULL)));
 					continue;
 				}
 				if (gtk_mate_scope_get_is_coloured (scope)) {
-					/* stdout.printf("  already coloured\n");*/
+					/*stdout.printf("  already coloured\n");*/
 					(scope == NULL ? NULL : (scope = (g_object_unref (scope), NULL)));
 					continue;
 				}
@@ -127,14 +127,14 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 	GtkTextTagTable* tag_table;
 	g_return_if_fail (GTK_MATE_IS_COLOURER (self));
 	g_return_if_fail (GTK_MATE_IS_SCOPE (scope));
-	/* stdout.printf("colour_scope: %s (%s)\n", scope.name, inner ? "true" : "false");*/
+	/*stdout.printf("colour_scope: %s (%s)\n", scope.name, inner ? "true" : "false");*/
 	priority = gtk_mate_scope_priority (scope);
 	tag = NULL;
-	/* stdout.printf("  priority: %d\n", priority);*/
+	/*stdout.printf("  priority: %d\n", priority);*/
 	gtk_mate_scope_set_is_coloured (scope, TRUE);
 	if (inner) {
-		start_iter = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, scope->inner_start_mark);
-		end_iter = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, scope->inner_end_mark);
+		start_iter = gtk_mate_scope_inner_start_iter (scope);
+		end_iter = gtk_mate_scope_inner_end_iter (scope);
 		if (scope->inner_tag != NULL) {
 			GtkTextTag* _tmp1;
 			GtkTextTag* _tmp0;
@@ -143,8 +143,8 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 			tag = (_tmp1 = (_tmp0 = scope->inner_tag, (_tmp0 == NULL ? NULL : g_object_ref (_tmp0))), (tag == NULL ? NULL : (tag = (g_object_unref (tag), NULL))), _tmp1);
 		}
 	} else {
-		start_iter = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, scope->start_mark);
-		end_iter = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, scope->end_mark);
+		start_iter = gtk_mate_scope_start_iter (scope);
+		end_iter = gtk_mate_scope_end_iter (scope);
 		if (scope->tag != NULL) {
 			GtkTextTag* _tmp3;
 			GtkTextTag* _tmp2;
@@ -187,7 +187,7 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 			tag = (_tmp11 = (_tmp10 = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (self->priv->_buffer), tag_name, NULL), (_tmp10 == NULL ? NULL : g_object_ref (_tmp10))), (tag == NULL ? NULL : (tag = (g_object_unref (tag), NULL))), _tmp11);
 		}
 	}
-	/* stdout.printf("      tag: '%s'\n", tag_name);*/
+	/*stdout.printf("      tag: '%s'\n", tag_name);*/
 	if (setting != NULL) {
 		gtk_mate_colourer_set_tag_properties (self, scope, tag, setting);
 	}
@@ -221,7 +221,6 @@ void gtk_mate_colourer_set_tag_properties (GtkMateColourer* self, GtkMateScope* 
 	g_return_if_fail (GTK_IS_TEXT_TAG (tag));
 	g_return_if_fail (GTK_MATE_IS_THEME_SETTING (setting));
 	font_style = ((char*) (gee_map_get (GEE_MAP (setting->settings), "fontStyle")));
-	/* stdout.printf("fontStyle: %s\n", font_style);*/
 	if (_vala_strcmp0 (font_style, "italic") == 0) {
 		PangoStyle _tmp1;
 		PangoStyle _tmp0;
@@ -363,7 +362,7 @@ void gtk_mate_colourer_uncolour_scopes (GtkMateColourer* self, GeeArrayList* sco
 void gtk_mate_colourer_uncolour_scope (GtkMateColourer* self, GtkMateScope* scope, gboolean recurse) {
 	g_return_if_fail (GTK_MATE_IS_COLOURER (self));
 	g_return_if_fail (GTK_MATE_IS_SCOPE (scope));
-	/* stdout.printf("uncolour scope: %s\n", scope.name);*/
+	/*stdout.printf("uncolour scope: %s\n", scope.name);*/
 	if (scope->inner_tag != NULL) {
 		GtkTextIter _tmp1 = {0};
 		GtkTextIter _tmp0 = {0};

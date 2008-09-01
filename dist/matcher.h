@@ -5,9 +5,9 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
+#include <gee/arraylist.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gee/arraylist.h>
 #include "onig_wrap.h"
 
 G_BEGIN_DECLS
@@ -27,6 +27,8 @@ typedef struct _GtkMateMatcherPrivate GtkMateMatcherPrivate;
 struct _GtkMateMatcher {
 	GtkObject parent_instance;
 	GtkMateMatcherPrivate * priv;
+	OnigurumaRegex* pos_rx;
+	GeeArrayList* neg_rxs;
 };
 
 struct _GtkMateMatcherClass {
@@ -38,6 +40,7 @@ gint gtk_mate_matcher_compare_match (const char* scope_string, OnigurumaMatch* m
 char* gtk_mate_matcher_test_rank (const char* selector_a, const char* selector_b, const char* scope_string);
 gboolean gtk_mate_matcher_test_match (const char* selector_string, const char* scope_string);
 gboolean gtk_mate_matcher_match (const char* selector_string, const char* scope_string, OnigurumaMatch** match);
+GeeArrayList* gtk_mate_matcher_compile (const char* selector_string);
 gboolean gtk_mate_matcher_test_match_re (OnigurumaRegex* positive_selector_regex, GeeArrayList* negative_selector_regex, const char* scope_string, OnigurumaMatch** match);
 GtkMateMatcher* gtk_mate_matcher_new (void);
 GType gtk_mate_matcher_get_type (void);

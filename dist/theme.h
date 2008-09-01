@@ -9,8 +9,8 @@
 #include <string.h>
 #include <gee/hashmap.h>
 #include <gee/arraylist.h>
-#include "onig_wrap.h"
 #include "plist.h"
+#include "onig_wrap.h"
 
 G_BEGIN_DECLS
 
@@ -59,16 +59,13 @@ struct _GtkMateThemeSetting {
 	char* name;
 	char* selector;
 	GeeHashMap* settings;
-	OnigurumaRegex* positive_rx;
-	OnigurumaRegex* negative_rx;
-	gint specificity;
+	GeeArrayList* matchers;
 };
 
 struct _GtkMateThemeSettingClass {
 	GtkObjectClass parent_class;
 };
 
-/* stdout.printf("compiling '%s'\n", selector);*/
 struct _GtkMateTheme {
 	GtkObject parent_instance;
 	GtkMateThemePrivate * priv;
@@ -86,6 +83,7 @@ struct _GtkMateThemeClass {
 
 GtkMateThemeSetting* gtk_mate_theme_setting_create_from_plist (PListDict* dict);
 void gtk_mate_theme_setting_compile_scope_matchers (GtkMateThemeSetting* self);
+gboolean gtk_mate_theme_setting_match (GtkMateThemeSetting* self, const char* scope, OnigurumaMatch** match);
 GtkMateThemeSetting* gtk_mate_theme_setting_new (void);
 GType gtk_mate_theme_setting_get_type (void);
 extern GeeArrayList* gtk_mate_theme_themes;

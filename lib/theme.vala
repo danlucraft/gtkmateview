@@ -7,9 +7,7 @@ namespace Gtk.Mate {
 		public string name;
 		public string selector;
 		public HashMap<string, string> settings;
-		public Oniguruma.Regex positive_rx;
-		public Oniguruma.Regex negative_rx;
-		public int specificity;
+		public ArrayList<Matcher> matchers;
 
 		public static ThemeSetting create_from_plist(PList.Dict dict) {
 			var tsetting = new ThemeSetting();
@@ -31,8 +29,18 @@ namespace Gtk.Mate {
 		}
 
 		public void compile_scope_matchers() {
-			// stdout.printf("compiling '%s'\n", selector);
-			
+			//stdout.printf("  compiling '%s'\n", selector);
+			this.matchers = Matcher.compile(selector);
+		}
+
+		public bool match(string scope, out Oniguruma.Match match) {
+			if (this.matchers == null)
+				compile_scope_matchers();
+			foreach(var matcher in this.matchers) {
+				if (Matcher.test_match_re(matcher.pos_rx, matcher.neg_rxs, scope, out match))
+					return true;
+			}
+			return false;
 		}
 	}
 	
@@ -50,8 +58,9 @@ namespace Gtk.Mate {
 			theme.is_initialized = false;
 
 			PList.Node? nm = dict.get("name");
-			if (nm != null)
+			if (nm != null) {
 				theme.name = ((PList.String) nm).str;
+			}
 			nm = dict.get("author");
 			if (nm != null)
 				theme.author = ((PList.String) nm).str;	
@@ -79,7 +88,7 @@ namespace Gtk.Mate {
 			if (is_initialized)
 				return;
 			is_initialized = true;
-			// stdout.printf("initializing theme for use: %s\n", name);
+			stdout.printf("initializing theme for use: %s\n", name);
 			foreach (var setting in settings) {
 				setting.compile_scope_matchers();
 			}
@@ -108,12 +117,12 @@ namespace Gtk.Mate {
 		// (see 13.5 of Textmate manual)
 		public ThemeSetting settings_for_scope(Scope scope, bool inner) {
 			string scope_name = scope.hierarchy_names(inner);
-			// stdout.printf("  finding settings for '%s'\n", scope_name);
+			//stdout.printf("  finding settings for '%s'\n", scope_name);
 			Oniguruma.Match current_m, m;
 			ThemeSetting current;
 			foreach (var setting in settings) {
-				if (Matcher.match(setting.selector, scope_name, out m)) {
-					// stdout.printf("    setting '%s' with selector '%s'\n", setting.name, setting.selector);
+				if (setting.match(scope_name, out m)) {
+					//stdout.printf("    setting '%s' with selector '%s'\n", setting.name, setting.selector);
 					if (current == null) {
 						current = setting;
 						current_m = m;
@@ -125,10 +134,10 @@ namespace Gtk.Mate {
 				}
 			}
 			if (current == null) {
-				// stdout.printf("none match\n");
+				//stdout.printf("none match\n");
 			}
 			else {
-				// stdout.printf("    best: '%s'\n", current.name);
+				//stdout.printf("    best: '%s'\n", current.name);
 			}
 			return current;
 		}
