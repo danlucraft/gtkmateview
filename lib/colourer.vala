@@ -8,10 +8,13 @@ namespace Gtk.Mate {
 		public Theme theme {get; set;}
 		
 		public void set_global_settings(Gtk.Mate.View view) {
+			stdout.printf("set_theme_settings()\n");
 			string bg_colour = theme.global_settings.get("background");
 			if (bg_colour != null && bg_colour != "") {
 				bg_colour = Colourer.merge_colour("#FFFFFF", bg_colour);
+				stdout.printf("bg_colour: %s\n", bg_colour);
 				((Gtk.Widget) view).modify_base(Gtk.StateType.NORMAL, parse_colour(bg_colour));
+				// ((Gtk.SourceView) view).background = bg_colour;
 			}
 
 			string fg_colour = theme.global_settings.get("foreground");

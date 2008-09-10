@@ -33,7 +33,7 @@ namespace Gtk.Mate {
 			this.matchers = Matcher.compile(selector);
 		}
 
-		public bool match(string scope, out Oniguruma.Match match) {
+		public bool match(string scope, out Onig.Match match) {
 			if (this.matchers == null)
 				compile_scope_matchers();
 			foreach(var matcher in this.matchers) {
@@ -125,7 +125,7 @@ namespace Gtk.Mate {
 				cached = this.cached_setting_for_scopes.get(scope_name);
 				return cached;
 			}
-			Oniguruma.Match current_m, m;
+			Onig.Match current_m, m;
 			ThemeSetting current;
 			foreach (var setting in settings) {
 				if (setting.match(scope_name, out m)) {

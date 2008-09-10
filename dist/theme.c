@@ -87,7 +87,7 @@ void gtk_mate_theme_setting_compile_scope_matchers (GtkMateThemeSetting* self) {
 }
 
 
-gboolean gtk_mate_theme_setting_match (GtkMateThemeSetting* self, const char* scope, OnigurumaMatch** match) {
+gboolean gtk_mate_theme_setting_match (GtkMateThemeSetting* self, const char* scope, OnigMatch** match) {
 	g_return_val_if_fail (GTK_MATE_IS_THEME_SETTING (self), FALSE);
 	g_return_val_if_fail (scope != NULL, FALSE);
 	(*match) = NULL;
@@ -102,9 +102,9 @@ gboolean gtk_mate_theme_setting_match (GtkMateThemeSetting* self, const char* sc
 			GtkMateMatcher* matcher;
 			matcher = ((GtkMateMatcher*) (gee_list_get (GEE_LIST (matcher_collection), matcher_it)));
 			{
-				OnigurumaMatch* _tmp2;
+				OnigMatch* _tmp2;
 				gboolean _tmp1;
-				OnigurumaMatch* _tmp0;
+				OnigMatch* _tmp0;
 				_tmp2 = NULL;
 				_tmp0 = NULL;
 				if ((_tmp1 = gtk_mate_matcher_test_match_re (matcher->pos_rx, matcher->neg_rxs, scope, &_tmp0), (*match) = (_tmp2 = _tmp0, ((*match) == NULL ? NULL : ((*match) = (g_object_unref ((*match)), NULL))), _tmp2), _tmp1)) {
@@ -342,8 +342,8 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
 GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkMateScope* scope, gboolean inner) {
 	char* scope_name;
 	GtkMateThemeSetting* cached;
-	OnigurumaMatch* current_m;
-	OnigurumaMatch* m;
+	OnigMatch* current_m;
+	OnigMatch* m;
 	GtkMateThemeSetting* current;
 	GtkMateThemeSetting* _tmp13;
 	g_return_val_if_fail (GTK_MATE_IS_THEME (self), NULL);
@@ -370,9 +370,9 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 			GtkMateThemeSetting* setting;
 			setting = ((GtkMateThemeSetting*) (gee_list_get (GEE_LIST (setting_collection), setting_it)));
 			{
-				OnigurumaMatch* _tmp4;
+				OnigMatch* _tmp4;
 				gboolean _tmp3;
-				OnigurumaMatch* _tmp2;
+				OnigMatch* _tmp2;
 				_tmp4 = NULL;
 				_tmp2 = NULL;
 				if ((_tmp3 = gtk_mate_theme_setting_match (setting, scope_name, &_tmp2), m = (_tmp4 = _tmp2, (m == NULL ? NULL : (m = (g_object_unref (m), NULL))), _tmp4), _tmp3)) {
@@ -380,8 +380,8 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 					if (current == NULL) {
 						GtkMateThemeSetting* _tmp6;
 						GtkMateThemeSetting* _tmp5;
-						OnigurumaMatch* _tmp8;
-						OnigurumaMatch* _tmp7;
+						OnigMatch* _tmp8;
+						OnigMatch* _tmp7;
 						_tmp6 = NULL;
 						_tmp5 = NULL;
 						current = (_tmp6 = (_tmp5 = setting, (_tmp5 == NULL ? NULL : g_object_ref (_tmp5))), (current == NULL ? NULL : (current = (g_object_unref (current), NULL))), _tmp6);
@@ -392,8 +392,8 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 						if (gtk_mate_matcher_compare_match (scope_name, current_m, m) < 0) {
 							GtkMateThemeSetting* _tmp10;
 							GtkMateThemeSetting* _tmp9;
-							OnigurumaMatch* _tmp12;
-							OnigurumaMatch* _tmp11;
+							OnigMatch* _tmp12;
+							OnigMatch* _tmp11;
 							_tmp10 = NULL;
 							_tmp9 = NULL;
 							current = (_tmp10 = (_tmp9 = setting, (_tmp9 == NULL ? NULL : g_object_ref (_tmp9))), (current == NULL ? NULL : (current = (g_object_unref (current), NULL))), _tmp10);

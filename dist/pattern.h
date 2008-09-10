@@ -75,7 +75,7 @@ struct _GtkMatePatternClass {
 struct _GtkMateSinglePattern {
 	GtkMatePattern parent_instance;
 	GtkMateSinglePatternPrivate * priv;
-	OnigurumaRegex* match;
+	OnigRx* match;
 	GeeHashMap* captures;
 };
 
@@ -87,8 +87,8 @@ struct _GtkMateDoublePattern {
 	GtkMatePattern parent_instance;
 	GtkMateDoublePatternPrivate * priv;
 	char* content_name;
-	OnigurumaRegex* begin;
-	OnigurumaRegex* end;
+	OnigRx* begin;
+	OnigRx* end;
 	char* end_string;
 	char* begin_string;
 	GeeHashMap* begin_captures;

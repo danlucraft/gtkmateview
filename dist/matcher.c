@@ -16,7 +16,7 @@ static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify 
 
 
 
-gint gtk_mate_matcher_compare_match (const char* scope_string, OnigurumaMatch* m1, OnigurumaMatch* m2) {
+gint gtk_mate_matcher_compare_match (const char* scope_string, OnigMatch* m1, OnigMatch* m2) {
 	GeeArrayList* space_ixs;
 	gint max_cap1;
 	gint max_cap2;
@@ -28,8 +28,8 @@ gint gtk_mate_matcher_compare_match (const char* scope_string, OnigurumaMatch* m
 	gint len2;
 	gint _tmp4;
 	g_return_val_if_fail (scope_string != NULL, 0);
-	g_return_val_if_fail (ONIGURUMA_IS_MATCH (m1), 0);
-	g_return_val_if_fail (ONIGURUMA_IS_MATCH (m2), 0);
+	g_return_val_if_fail (ONIG_IS_MATCH (m1), 0);
+	g_return_val_if_fail (ONIG_IS_MATCH (m2), 0);
 	space_ixs = string_helper_occurrences (scope_string, " ");
 	{
 		GeeArrayList* ix_collection;
@@ -43,8 +43,8 @@ gint gtk_mate_matcher_compare_match (const char* scope_string, OnigurumaMatch* m
 		}
 	}
 	/*stdout.printf("space at %d\n", ix);*/
-	max_cap1 = oniguruma_match_num_captures (m1);
-	max_cap2 = oniguruma_match_num_captures (m2);
+	max_cap1 = onig_match_num_captures (m1);
+	max_cap2 = onig_match_num_captures (m2);
 	/*stdout.printf("m1 has %d matches\n", m1.num_captures());
 	stdout.printf("m2 has %d matches\n", m2.num_captures());*/
 	cap1_ix = 0;
@@ -58,8 +58,8 @@ gint gtk_mate_matcher_compare_match (const char* scope_string, OnigurumaMatch* m
 		i = 0;
 		for (; i < MIN (max_cap1, max_cap2); i++) {
 			/* first try element depth:*/
-			cap1_ix = oniguruma_match_begin (m1, max_cap1 - 1 - i);
-			cap2_ix = oniguruma_match_begin (m2, max_cap2 - 1 - i);
+			cap1_ix = onig_match_begin (m1, max_cap1 - 1 - i);
+			cap2_ix = onig_match_begin (m2, max_cap2 - 1 - i);
 			/*stdout.printf("m1 capture %d at %d\n", max_cap1-1-i, cap1_ix);
 			stdout.printf("m2 capture %d at %d\n", max_cap2-1-i, cap2_ix);*/
 			cap1_el_ix = gtk_mate_matcher_sorted_ix (space_ixs, cap1_ix);
@@ -76,8 +76,8 @@ gint gtk_mate_matcher_compare_match (const char* scope_string, OnigurumaMatch* m
 				}
 			}
 			/* next try length of match*/
-			len1 = oniguruma_match_end (m1, max_cap1 - 1 - i) - cap1_ix;
-			len2 = oniguruma_match_end (m2, max_cap2 - 1 - i) - cap2_ix;
+			len1 = onig_match_end (m1, max_cap1 - 1 - i) - cap1_ix;
+			len2 = onig_match_end (m2, max_cap2 - 1 - i) - cap2_ix;
 			if (len1 > len2) {
 				gint _tmp2;
 				return (_tmp2 = 1, (space_ixs == NULL ? NULL : (space_ixs = (g_object_unref (space_ixs), NULL))), _tmp2);
@@ -124,14 +124,14 @@ static gint gtk_mate_matcher_sorted_ix (GeeArrayList* ixs, gint val) {
 
 /* this method is mainly for testing in the Ruby specs*/
 char* gtk_mate_matcher_test_rank (const char* selector_a, const char* selector_b, const char* scope_string) {
-	OnigurumaMatch* m1;
-	OnigurumaMatch* m2;
-	OnigurumaMatch* _tmp2;
+	OnigMatch* m1;
+	OnigMatch* m2;
+	OnigMatch* _tmp2;
 	gboolean _tmp1;
-	OnigurumaMatch* _tmp0;
-	OnigurumaMatch* _tmp5;
+	OnigMatch* _tmp0;
+	OnigMatch* _tmp5;
 	gboolean _tmp4;
-	OnigurumaMatch* _tmp3;
+	OnigMatch* _tmp3;
 	gint r;
 	g_return_val_if_fail (selector_a != NULL, NULL);
 	g_return_val_if_fail (selector_b != NULL, NULL);
@@ -179,10 +179,10 @@ char* gtk_mate_matcher_test_rank (const char* selector_a, const char* selector_b
 
 /* this method is mainly for testing in the Ruby specs*/
 gboolean gtk_mate_matcher_test_match (const char* selector_string, const char* scope_string) {
-	OnigurumaMatch* m;
-	OnigurumaMatch* _tmp2;
+	OnigMatch* m;
+	OnigMatch* _tmp2;
 	gboolean _tmp1;
-	OnigurumaMatch* _tmp0;
+	OnigMatch* _tmp0;
 	gboolean _tmp3;
 	g_return_val_if_fail (selector_string != NULL, FALSE);
 	g_return_val_if_fail (scope_string != NULL, FALSE);
@@ -193,7 +193,7 @@ gboolean gtk_mate_matcher_test_match (const char* selector_string, const char* s
 }
 
 
-gboolean gtk_mate_matcher_match (const char* selector_string, const char* scope_string, OnigurumaMatch** match) {
+gboolean gtk_mate_matcher_match (const char* selector_string, const char* scope_string, OnigMatch** match) {
 	GeeArrayList* matchers;
 	gboolean _tmp4;
 	g_return_val_if_fail (selector_string != NULL, FALSE);
@@ -208,9 +208,9 @@ gboolean gtk_mate_matcher_match (const char* selector_string, const char* scope_
 			GtkMateMatcher* matcher;
 			matcher = ((GtkMateMatcher*) (gee_list_get (GEE_LIST (matcher_collection), matcher_it)));
 			{
-				OnigurumaMatch* _tmp2;
+				OnigMatch* _tmp2;
 				gboolean _tmp1;
-				OnigurumaMatch* _tmp0;
+				OnigMatch* _tmp0;
 				_tmp2 = NULL;
 				_tmp0 = NULL;
 				if ((_tmp1 = gtk_mate_matcher_test_match_re (matcher->pos_rx, matcher->neg_rxs, scope_string, &_tmp0), (*match) = (_tmp2 = _tmp0, ((*match) == NULL ? NULL : ((*match) = (g_object_unref ((*match)), NULL))), _tmp2), _tmp1)) {
@@ -249,7 +249,7 @@ GeeArrayList* gtk_mate_matcher_compile (const char* selector_string) {
 			_tmp8 = NULL;
 			selector_string1 = (_tmp8 = selector_string1_collection[selector_string1_it], (_tmp8 == NULL ? NULL : g_strdup (_tmp8)));
 			{
-				OnigurumaRegex* pos_rx;
+				OnigRx* pos_rx;
 				GtkMateMatcher* m;
 				GeeArrayList* _tmp1;
 				char** _tmp2;
@@ -258,7 +258,7 @@ GeeArrayList* gtk_mate_matcher_compile (const char* selector_string) {
 				pos_rx = NULL;
 				m = g_object_ref_sink (gtk_mate_matcher_new ());
 				_tmp1 = NULL;
-				m->neg_rxs = (_tmp1 = gee_array_list_new (ONIGURUMA_TYPE_REGEX, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal), (m->neg_rxs == NULL ? NULL : (m->neg_rxs = (g_object_unref (m->neg_rxs), NULL))), _tmp1);
+				m->neg_rxs = (_tmp1 = gee_array_list_new (ONIG_TYPE_RX, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal), (m->neg_rxs == NULL ? NULL : (m->neg_rxs = (g_object_unref (m->neg_rxs), NULL))), _tmp1);
 				_tmp2 = NULL;
 				positives_and_negatives = (_tmp2 = g_strsplit (selector_string1, " -", 0), positives_and_negatives_length1 = -1, _tmp2);
 				{
@@ -276,7 +276,7 @@ GeeArrayList* gtk_mate_matcher_compile (const char* selector_string) {
 							if (m->pos_rx == NULL) {
 								char* s1;
 								char* s2;
-								OnigurumaRegex* _tmp5;
+								OnigRx* _tmp5;
 								char* _tmp4;
 								char* _tmp3;
 								s1 = string_helper_gsub (g_strstrip (sub_selector_string), ".", "\\.");
@@ -285,7 +285,7 @@ GeeArrayList* gtk_mate_matcher_compile (const char* selector_string) {
 								_tmp5 = NULL;
 								_tmp4 = NULL;
 								_tmp3 = NULL;
-								m->pos_rx = (_tmp5 = oniguruma_regex_make1 ((_tmp4 = g_strconcat ((_tmp3 = g_strconcat ("(", s2, NULL)), ")", NULL))), (m->pos_rx == NULL ? NULL : (m->pos_rx = (g_object_unref (m->pos_rx), NULL))), _tmp5);
+								m->pos_rx = (_tmp5 = onig_rx_make1 ((_tmp4 = g_strconcat ((_tmp3 = g_strconcat ("(", s2, NULL)), ")", NULL))), (m->pos_rx == NULL ? NULL : (m->pos_rx = (g_object_unref (m->pos_rx), NULL))), _tmp5);
 								_tmp4 = (g_free (_tmp4), NULL);
 								_tmp3 = (g_free (_tmp3), NULL);
 								s1 = (g_free (s1), NULL);
@@ -293,12 +293,12 @@ GeeArrayList* gtk_mate_matcher_compile (const char* selector_string) {
 							} else {
 								char* s1;
 								char* s2;
-								OnigurumaRegex* _tmp6;
+								OnigRx* _tmp6;
 								s1 = string_helper_gsub (g_strstrip (sub_selector_string), ".", "\\.");
 								s2 = string_helper_gsub (s1, " ", ".* .*");
 								/*stdout.printf("negative '%s' -> '%s'\n", selector_string, s2);*/
 								_tmp6 = NULL;
-								gee_collection_add (GEE_COLLECTION (m->neg_rxs), (_tmp6 = oniguruma_regex_make1 (s2)));
+								gee_collection_add (GEE_COLLECTION (m->neg_rxs), (_tmp6 = onig_rx_make1 (s2)));
 								(_tmp6 == NULL ? NULL : (_tmp6 = (g_object_unref (_tmp6), NULL)));
 								s1 = (g_free (s1), NULL);
 								s2 = (g_free (s2), NULL);
@@ -320,27 +320,27 @@ GeeArrayList* gtk_mate_matcher_compile (const char* selector_string) {
 }
 
 
-gboolean gtk_mate_matcher_test_match_re (OnigurumaRegex* positive_selector_regex, GeeArrayList* negative_selector_regex, const char* scope_string, OnigurumaMatch** match) {
-	OnigurumaMatch* m;
-	g_return_val_if_fail (ONIGURUMA_IS_REGEX (positive_selector_regex), FALSE);
+gboolean gtk_mate_matcher_test_match_re (OnigRx* positive_selector_regex, GeeArrayList* negative_selector_regex, const char* scope_string, OnigMatch** match) {
+	OnigMatch* m;
+	g_return_val_if_fail (ONIG_IS_RX (positive_selector_regex), FALSE);
 	g_return_val_if_fail (GEE_IS_ARRAY_LIST (negative_selector_regex), FALSE);
 	g_return_val_if_fail (scope_string != NULL, FALSE);
 	(*match) = NULL;
-	m = oniguruma_regex_search (positive_selector_regex, scope_string, 0, ((gint) (strlen (scope_string))));
+	m = onig_rx_search (positive_selector_regex, scope_string, 0, ((gint) (strlen (scope_string))));
 	if (m != NULL) {
-		OnigurumaMatch* _tmp2;
-		OnigurumaMatch* _tmp1;
+		OnigMatch* _tmp2;
+		OnigMatch* _tmp1;
 		gboolean _tmp3;
 		{
 			GeeArrayList* neg_rx_collection;
 			int neg_rx_it;
 			neg_rx_collection = negative_selector_regex;
 			for (neg_rx_it = 0; neg_rx_it < gee_collection_get_size (GEE_COLLECTION (neg_rx_collection)); neg_rx_it = neg_rx_it + 1) {
-				OnigurumaRegex* neg_rx;
-				neg_rx = ((OnigurumaRegex*) (gee_list_get (GEE_LIST (neg_rx_collection), neg_rx_it)));
+				OnigRx* neg_rx;
+				neg_rx = ((OnigRx*) (gee_list_get (GEE_LIST (neg_rx_collection), neg_rx_it)));
 				{
-					OnigurumaMatch* m1;
-					m1 = oniguruma_regex_search (neg_rx, scope_string, 0, ((gint) (strlen (scope_string))));
+					OnigMatch* m1;
+					m1 = onig_rx_search (neg_rx, scope_string, 0, ((gint) (strlen (scope_string))));
 					if (m1 != NULL) {
 						gboolean _tmp0;
 						return (_tmp0 = FALSE, (neg_rx == NULL ? NULL : (neg_rx = (g_object_unref (neg_rx), NULL))), (m1 == NULL ? NULL : (m1 = (g_object_unref (m1), NULL))), (m == NULL ? NULL : (m = (g_object_unref (m), NULL))), _tmp0);

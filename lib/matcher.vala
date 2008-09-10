@@ -4,10 +4,10 @@ using Gee;
 
 namespace Gtk.Mate {
 	public class Matcher : Object {
-		public Oniguruma.Regex pos_rx;
-		public ArrayList<Oniguruma.Regex> neg_rxs;
+		public Onig.Rx pos_rx;
+		public ArrayList<Onig.Rx> neg_rxs;
 
-		public static int compare_match(string scope_string, Oniguruma.Match m1, Oniguruma.Match m2) {
+		public static int compare_match(string scope_string, Onig.Match m1, Onig.Match m2) {
 			var space_ixs = StringHelper.occurrences(scope_string, " ");
 			foreach (var ix in space_ixs) {
 				//stdout.printf("space at %d\n", ix);
@@ -70,7 +70,7 @@ namespace Gtk.Mate {
 
 		// this method is mainly for testing in the Ruby specs
 		public static string test_rank(string selector_a, string selector_b, string scope_string) {
-			Oniguruma.Match m1, m2;
+			Onig.Match m1, m2;
 			match(selector_a, scope_string, out m1);
 			match(selector_b, scope_string, out m2);
 			int r = compare_match(scope_string, m1, m2);
@@ -87,11 +87,11 @@ namespace Gtk.Mate {
 		
 		// this method is mainly for testing in the Ruby specs
 		public static bool test_match(string selector_string, string scope_string) {
-			Oniguruma.Match m;
+			Onig.Match m;
 			return match(selector_string, scope_string, out m);
 		}
 
-		public static bool match(string selector_string, string scope_string, out Oniguruma.Match match) {
+		public static bool match(string selector_string, string scope_string, out Onig.Match match) {
 			var matchers = Matcher.compile(selector_string);
 			foreach(var matcher in matchers) {
 				if (test_match_re(matcher.pos_rx, matcher.neg_rxs, scope_string, out match))
@@ -106,22 +106,22 @@ namespace Gtk.Mate {
 			string[] scope_ors1 = selector_string.split(",");
 			//stdout.printf("match: selector: '%s', scope: '%s'\n", selector_string, scope_string);
 			foreach (var selector_string1 in scope_ors1) {
-				Oniguruma.Regex pos_rx;
+				Onig.Rx pos_rx;
 				var m = new Matcher();
-				m.neg_rxs = new ArrayList<Oniguruma.Regex>();
+				m.neg_rxs = new ArrayList<Onig.Rx>();
 				string[] positives_and_negatives = selector_string1.split(" -");
 				foreach (var sub_selector_string in positives_and_negatives) {
 					if (m.pos_rx == null) {
 						var s1 = StringHelper.gsub(sub_selector_string.strip(), ".", "\\.");
 						var s2 = StringHelper.gsub(s1, " ", ").* .*(");
 						//stdout.printf("positive '%s' -> '%s'\n", selector_string, "("+s2+")");
-						m.pos_rx = Oniguruma.Regex.make1("("+s2+")");
+						m.pos_rx = Onig.Rx.make1("("+s2+")");
 					}
 					else {
 						var s1 = StringHelper.gsub(sub_selector_string.strip(), ".", "\\.");
 						var s2 = StringHelper.gsub(s1, " ", ".* .*");
 						//stdout.printf("negative '%s' -> '%s'\n", selector_string, s2);
-						m.neg_rxs.add(Oniguruma.Regex.make1(s2));
+						m.neg_rxs.add(Onig.Rx.make1(s2));
 					}
 				}
 				ms.add(m);
@@ -129,10 +129,10 @@ namespace Gtk.Mate {
 			return ms;
 		}
 
-		public static bool test_match_re(Oniguruma.Regex positive_selector_regex, 
-										 ArrayList<Oniguruma.Regex> negative_selector_regex,
+		public static bool test_match_re(Onig.Rx positive_selector_regex, 
+										 ArrayList<Onig.Rx> negative_selector_regex,
 										 string scope_string,
-										 out Oniguruma.Match match) {
+										 out Onig.Match match) {
 			var m = positive_selector_regex.search(scope_string, 0, (int) scope_string.size());
 			if (m != null) {
 				foreach (var neg_rx in negative_selector_regex) {

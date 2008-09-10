@@ -9,7 +9,7 @@ namespace Gtk.Mate {
 		public int     hint;  // ??
 		public bool    is_close_scope; // whether this represents a closing of the current scope
 		public Pattern pattern;        // the pattern that was matched
-		public Oniguruma.Match match;  // the matchdata of the successful match
+		public Onig.Match match;  // the matchdata of the successful match
 	}
 
 	// Scans lines for patterns. Handles caching of what has already been seen etc.
@@ -82,8 +82,8 @@ namespace Gtk.Mate {
 			//stdout.printf("num cached after removals: %d\n", cached_markers.size);
 		}
 		
-		public Oniguruma.Match? scan_for_match(int from, Pattern p) {
-			Oniguruma.Match match;
+		public Onig.Match? scan_for_match(int from, Pattern p) {
+			Onig.Match match;
 			if (p is SinglePattern) {
 				var sp = (SinglePattern) p;
 				match = sp.match.search(line, from, line_length);
@@ -128,7 +128,7 @@ namespace Gtk.Mate {
 					continue;
 				int position_now = position;
 				int position_prev = position-1;
-				Oniguruma.Match match;
+				Onig.Match match;
 				while ((match = scan_for_match(position_now, p)) != null &&
 					   position_now != position_prev // some regex's have zero width (meta.selector.css)
 					) {

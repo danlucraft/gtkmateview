@@ -384,15 +384,15 @@ namespace Gtk.Mate {
 			collect_child_captures(line_ix, scope, m, all_scopes, closed_scopes);
 		}
 
-		public Oniguruma.Regex? make_closing_regex(string line, Scope scope, Marker m) {
+		public Onig.Rx? make_closing_regex(string line, Scope scope, Marker m) {
 			// new_end = pattern.end.gsub(/\\([0-9]+)/) do
 			// 	md.captures.send(:[], $1.to_i-1)
 			// end
 			if (m.pattern is DoublePattern && !m.is_close_scope) {
 				var dp = (DoublePattern) m.pattern;
 				//stdout.printf("making closing regex: %s (%d)\n", dp.end_string, (int) dp.end_string.length);
-				var rx = Oniguruma.Regex.make1("\\\\(\\d+)");
-				Oniguruma.Match match;
+				var rx = Onig.Rx.make1("\\\\(\\d+)");
+				Onig.Match match;
 				int pos = 0;
 				var src = new StringBuilder("");
 				bool found = false;
@@ -411,7 +411,7 @@ namespace Gtk.Mate {
 				else
 					src.append(dp.end_string);
 				//stdout.printf("src: '%s'\n", src.str);
-				scope.closing_regex = Oniguruma.Regex.make1(src.str);
+				scope.closing_regex = Onig.Rx.make1(src.str);
 			}
 			return null;
 		}
@@ -504,6 +504,7 @@ namespace Gtk.Mate {
 		public void connect_buffer_signals() {
 			buffer.insert_text += this.insert_text_handler;
 			buffer.delete_range += this.delete_range_handler;
+			buffer.get_tag_table().tag_added += this.tag_added_handler;
 			// remove when signal_connect_after works:
 			Signal.connect_after(buffer, "insert_text", (GLib.Callback) Parser.static_insert_text_after_handler, null);
 			Signal.connect_after(buffer, "delete_range", (GLib.Callback) Parser.static_delete_range_after_handler, null);
@@ -535,19 +536,31 @@ namespace Gtk.Mate {
 				process_changes();
 		}
 
+		public void tag_added_handler(TextTagTable tt, TextTag tag) {
+			this.tag_added = true;
+		}
+
 		// These static methods are hack to get around Vala not supporting signal_connect_after_yet
-		public static Parser current;
+		public static ArrayList<Parser> existing_parsers;
+		public bool tag_added;
 		public static void static_insert_text_after_handler(Buffer bf, TextIter pos, string text, int length) {
-			Parser.current.insert_text_after_handler(bf, pos, text, length);
+			foreach(var parser in existing_parsers) {
+				parser.insert_text_after_handler(bf, pos, text, length);
+			}
 		}
 		public static void static_delete_range_after_handler(Buffer bf, TextIter pos, TextIter pos2) {
-			Parser.current.delete_range_after_handler(bf, pos, pos2);
+			foreach(var parser in existing_parsers) {
+				parser.delete_range_after_handler(bf, pos, pos2);
+			}
 		}
 		public static void static_tag_added_after_handler(TextTagTable tt, TextTag tag) {
-			if (tag.name != null && tag.name.has_prefix("gmv(")) {
-				Parser.current.tags.insert_sorted(tag, (CompareDataFunc) Parser.tag_compare);
+			foreach(var parser in existing_parsers) {
+				if (parser.tag_added && tag.name != null && tag.name.has_prefix("gmv(")) {
+					parser.tags.insert_sorted(tag, (CompareDataFunc) Parser.tag_compare);
+				}
+				parser.reset_table_priorities();
+				parser.tag_added = false;
 			}
-			Parser.current.reset_table_priorities();
 		}
 
 		public static int tag_compare(TextTag tag1, TextTag tag2, void* data) {
@@ -562,11 +575,19 @@ namespace Gtk.Mate {
 			return 0;
 		}
 
+		public void close() {
+			Parser.existing_parsers.remove(this);
+		}
+		
 		public static Parser create(Grammar grammar, Mate.Buffer buffer) {
 			grammar.init_for_use();
 
 			var p = new Parser();
-			////stdout.printf("grammar: %s\n", grammar.name);
+			////stdout.printf("grammar: %s\n", grammar.name); 
+			// remove when signal_connect_after works:
+			if (Parser.existing_parsers == null) 
+				Parser.existing_parsers = new ArrayList<Parser>();
+			Parser.existing_parsers.add(p);
 			p.grammar = grammar;
 			p.buffer = buffer;
 			p.tags = new Sequence<TextTag>(null);
@@ -575,7 +596,6 @@ namespace Gtk.Mate {
 			p.deactivation_level = 0;
 			p.make_root();
 			p.connect_buffer_signals();
-			Parser.current = p; // remove when signal_connect_after works
 			return p;
 		}
 	}

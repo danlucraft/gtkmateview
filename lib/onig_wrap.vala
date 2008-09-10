@@ -5,7 +5,7 @@
 using GLib;
 using Oniguruma;
 
-namespace Oniguruma {
+namespace Onig {
 
 	public class OnigError : Object {
 		public int code;
@@ -33,7 +33,7 @@ namespace Oniguruma {
 		}
 	}
 
-	public class Regex : Object {
+	public class Rx : Object {
 		public RegexT rx {get; set;}
 		public bool matches_start_of_line;
 
@@ -53,8 +53,8 @@ namespace Oniguruma {
 			}
 		}
 
-		public static Regex? make(string pattern, OnigOptionType options, out OnigError error) {
-			var rx = new Regex();
+		public static Rx? make(string pattern, OnigOptionType options, out OnigError error) {
+			var rx = new Rx();
 			char* c_pattern = (char *) pattern;
 			RegexT rx1;
 			Oniguruma.OnigErrorInfo err_info;
@@ -83,7 +83,7 @@ namespace Oniguruma {
 			return rx;
 		}
 
-		public static Regex? make1(string pattern) {
+		public static Rx? make1(string pattern) {
 			OnigError e;
 			return make(pattern, Option.MULTILINE, out e);
 		}

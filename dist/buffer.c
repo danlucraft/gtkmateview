@@ -29,9 +29,9 @@ static glong string_get_length (const char* self) {
 
 
 /* Sets the grammar explicitly by name.*/
-gint gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* name) {
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), 0);
-	g_return_val_if_fail (name != NULL, 0);
+gboolean gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* name) {
+	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), FALSE);
+	g_return_val_if_fail (name != NULL, FALSE);
 	{
 		GeeArrayList* bundle_collection;
 		int bundle_it;
@@ -50,10 +50,10 @@ gint gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* name)
 						{
 							if (_vala_strcmp0 (gtk_mate_grammar_get_name (gr), name) == 0) {
 								GtkMateParser* _tmp0;
-								gint _tmp1;
+								gboolean _tmp1;
 								_tmp0 = NULL;
 								self->parser = (_tmp0 = gtk_mate_parser_create (gr, self), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp0);
-								return (_tmp1 = 1, (gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL))), (bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL))), _tmp1);
+								return (_tmp1 = TRUE, (gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL))), (bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL))), _tmp1);
 							}
 							(gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL)));
 						}
@@ -63,22 +63,14 @@ gint gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* name)
 			}
 		}
 	}
-	return 0;
+	return FALSE;
 }
 
 
-/* Sets the grammar by the file extension, then checks the
- first line for matches as a fallback. If unable to find
+/* Sets the grammar by the file extension. If unable to find
  a grammar, sets the grammar to null. Returns the grammar
  name or null.*/
 char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char* extension) {
-	OnigurumaRegex* re;
-	const char* _tmp6;
-	GtkTextIter _tmp5 = {0};
-	GtkTextIter _tmp4 = {0};
-	char* first_line;
-	GtkMateParser* _tmp14;
-	char* _tmp15;
 	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), NULL);
 	g_return_val_if_fail (extension != NULL, NULL);
 	{
@@ -131,9 +123,24 @@ char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char*
 			}
 		}
 	}
+	return NULL;
+}
+
+
+/* Sets the grammar by examining the first line. If unable to find
+ a grammar, sets the grammar to null. Returns the grammar
+ name or null.*/
+char* gtk_mate_buffer_set_grammar_by_first_line (GtkMateBuffer* self) {
+	OnigRx* re;
+	const char* _tmp2;
+	GtkTextIter _tmp1 = {0};
+	GtkTextIter _tmp0 = {0};
+	char* first_line;
+	char* _tmp10;
+	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), NULL);
 	re = NULL;
-	_tmp6 = NULL;
-	first_line = (_tmp6 = gtk_text_buffer_get_text (GTK_TEXT_BUFFER (self), (_tmp4 = gtk_mate_buffer_iter_ (self, 0), &_tmp4), (_tmp5 = gtk_mate_buffer_line_start_iter (self, 1), &_tmp5), FALSE), (_tmp6 == NULL ? NULL : g_strdup (_tmp6)));
+	_tmp2 = NULL;
+	first_line = (_tmp2 = gtk_text_buffer_get_text (GTK_TEXT_BUFFER (self), (_tmp0 = gtk_mate_buffer_iter_ (self, 0), &_tmp0), (_tmp1 = gtk_mate_buffer_line_start_iter (self, 1), &_tmp1), FALSE), (_tmp2 == NULL ? NULL : g_strdup (_tmp2)));
 	{
 		GeeArrayList* bundle_collection;
 		int bundle_it;
@@ -150,23 +157,23 @@ char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char*
 						GtkMateGrammar* gr;
 						gr = ((GtkMateGrammar*) (gee_list_get (GEE_LIST (gr_collection), gr_it)));
 						{
-							OnigurumaRegex* _tmp8;
-							OnigurumaRegex* _tmp7;
-							_tmp8 = NULL;
-							_tmp7 = NULL;
-							if ((re = (_tmp8 = (_tmp7 = gr->first_line_match, (_tmp7 == NULL ? NULL : g_object_ref (_tmp7))), (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), _tmp8)) != NULL) {
-								OnigurumaMatch* _tmp9;
-								gboolean _tmp10;
-								_tmp9 = NULL;
-								if ((_tmp10 = (_tmp9 = oniguruma_regex_search (re, first_line, 0, ((gint) (strlen (first_line))))) != NULL, (_tmp9 == NULL ? NULL : (_tmp9 = (g_object_unref (_tmp9), NULL))), _tmp10)) {
-									GtkMateParser* _tmp11;
-									const char* _tmp12;
-									char* _tmp13;
-									_tmp11 = NULL;
-									self->parser = (_tmp11 = gtk_mate_parser_create (gr, self), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp11);
-									_tmp12 = NULL;
-									_tmp13 = NULL;
-									return (_tmp13 = (_tmp12 = gtk_mate_grammar_get_name (gr), (_tmp12 == NULL ? NULL : g_strdup (_tmp12))), (gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL))), (bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL))), (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), (first_line = (g_free (first_line), NULL)), _tmp13);
+							OnigRx* _tmp4;
+							OnigRx* _tmp3;
+							_tmp4 = NULL;
+							_tmp3 = NULL;
+							if ((re = (_tmp4 = (_tmp3 = gr->first_line_match, (_tmp3 == NULL ? NULL : g_object_ref (_tmp3))), (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), _tmp4)) != NULL) {
+								OnigMatch* _tmp5;
+								gboolean _tmp6;
+								_tmp5 = NULL;
+								if ((_tmp6 = (_tmp5 = onig_rx_search (re, first_line, 0, ((gint) (strlen (first_line))))) != NULL, (_tmp5 == NULL ? NULL : (_tmp5 = (g_object_unref (_tmp5), NULL))), _tmp6)) {
+									GtkMateParser* _tmp7;
+									const char* _tmp8;
+									char* _tmp9;
+									_tmp7 = NULL;
+									self->parser = (_tmp7 = gtk_mate_parser_create (gr, self), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp7);
+									_tmp8 = NULL;
+									_tmp9 = NULL;
+									return (_tmp9 = (_tmp8 = gtk_mate_grammar_get_name (gr), (_tmp8 == NULL ? NULL : g_strdup (_tmp8))), (gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL))), (bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL))), (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), (first_line = (g_free (first_line), NULL)), _tmp9);
 								}
 							}
 							(gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL)));
@@ -177,10 +184,8 @@ char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char*
 			}
 		}
 	}
-	_tmp14 = NULL;
-	self->parser = (_tmp14 = NULL, (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp14);
-	_tmp15 = NULL;
-	return (_tmp15 = NULL, (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), (first_line = (g_free (first_line), NULL)), _tmp15);
+	_tmp10 = NULL;
+	return (_tmp10 = NULL, (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), (first_line = (g_free (first_line), NULL)), _tmp10);
 }
 
 

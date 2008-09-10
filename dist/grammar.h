@@ -31,13 +31,13 @@ struct _GtkMateGrammar {
 	GtkMateGrammarPrivate * priv;
 	char** file_types;
 	gint file_types_length1;
-	OnigurumaRegex* first_line_match;
+	OnigRx* first_line_match;
 	char* key_equivalent;
 	char* scope_name;
 	char* comment;
 	GeeArrayList* all_patterns;
-	OnigurumaRegex* folding_start_marker;
-	OnigurumaRegex* folding_stop_marker;
+	OnigRx* folding_start_marker;
+	OnigRx* folding_stop_marker;
 	GeeArrayList* patterns;
 	GeeHashMap* repository;
 	gboolean loaded;

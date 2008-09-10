@@ -11,88 +11,88 @@
 G_BEGIN_DECLS
 
 
-#define ONIGURUMA_TYPE_ONIG_ERROR (oniguruma_onig_error_get_type ())
-#define ONIGURUMA_ONIG_ERROR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), ONIGURUMA_TYPE_ONIG_ERROR, OnigurumaOnigError))
-#define ONIGURUMA_ONIG_ERROR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), ONIGURUMA_TYPE_ONIG_ERROR, OnigurumaOnigErrorClass))
-#define ONIGURUMA_IS_ONIG_ERROR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), ONIGURUMA_TYPE_ONIG_ERROR))
-#define ONIGURUMA_IS_ONIG_ERROR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), ONIGURUMA_TYPE_ONIG_ERROR))
-#define ONIGURUMA_ONIG_ERROR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), ONIGURUMA_TYPE_ONIG_ERROR, OnigurumaOnigErrorClass))
+#define ONIG_TYPE_ONIG_ERROR (onig_onig_error_get_type ())
+#define ONIG_ONIG_ERROR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), ONIG_TYPE_ONIG_ERROR, OnigOnigError))
+#define ONIG_ONIG_ERROR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), ONIG_TYPE_ONIG_ERROR, OnigOnigErrorClass))
+#define ONIG_IS_ONIG_ERROR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), ONIG_TYPE_ONIG_ERROR))
+#define ONIG_IS_ONIG_ERROR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), ONIG_TYPE_ONIG_ERROR))
+#define ONIG_ONIG_ERROR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), ONIG_TYPE_ONIG_ERROR, OnigOnigErrorClass))
 
-typedef struct _OnigurumaOnigError OnigurumaOnigError;
-typedef struct _OnigurumaOnigErrorClass OnigurumaOnigErrorClass;
-typedef struct _OnigurumaOnigErrorPrivate OnigurumaOnigErrorPrivate;
+typedef struct _OnigOnigError OnigOnigError;
+typedef struct _OnigOnigErrorClass OnigOnigErrorClass;
+typedef struct _OnigOnigErrorPrivate OnigOnigErrorPrivate;
 
-#define ONIGURUMA_TYPE_MATCH (oniguruma_match_get_type ())
-#define ONIGURUMA_MATCH(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), ONIGURUMA_TYPE_MATCH, OnigurumaMatch))
-#define ONIGURUMA_MATCH_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), ONIGURUMA_TYPE_MATCH, OnigurumaMatchClass))
-#define ONIGURUMA_IS_MATCH(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), ONIGURUMA_TYPE_MATCH))
-#define ONIGURUMA_IS_MATCH_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), ONIGURUMA_TYPE_MATCH))
-#define ONIGURUMA_MATCH_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), ONIGURUMA_TYPE_MATCH, OnigurumaMatchClass))
+#define ONIG_TYPE_MATCH (onig_match_get_type ())
+#define ONIG_MATCH(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), ONIG_TYPE_MATCH, OnigMatch))
+#define ONIG_MATCH_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), ONIG_TYPE_MATCH, OnigMatchClass))
+#define ONIG_IS_MATCH(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), ONIG_TYPE_MATCH))
+#define ONIG_IS_MATCH_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), ONIG_TYPE_MATCH))
+#define ONIG_MATCH_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), ONIG_TYPE_MATCH, OnigMatchClass))
 
-typedef struct _OnigurumaMatch OnigurumaMatch;
-typedef struct _OnigurumaMatchClass OnigurumaMatchClass;
-typedef struct _OnigurumaMatchPrivate OnigurumaMatchPrivate;
+typedef struct _OnigMatch OnigMatch;
+typedef struct _OnigMatchClass OnigMatchClass;
+typedef struct _OnigMatchPrivate OnigMatchPrivate;
 
-#define ONIGURUMA_TYPE_REGEX (oniguruma_regex_get_type ())
-#define ONIGURUMA_REGEX(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), ONIGURUMA_TYPE_REGEX, OnigurumaRegex))
-#define ONIGURUMA_REGEX_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), ONIGURUMA_TYPE_REGEX, OnigurumaRegexClass))
-#define ONIGURUMA_IS_REGEX(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), ONIGURUMA_TYPE_REGEX))
-#define ONIGURUMA_IS_REGEX_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), ONIGURUMA_TYPE_REGEX))
-#define ONIGURUMA_REGEX_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), ONIGURUMA_TYPE_REGEX, OnigurumaRegexClass))
+#define ONIG_TYPE_RX (onig_rx_get_type ())
+#define ONIG_RX(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), ONIG_TYPE_RX, OnigRx))
+#define ONIG_RX_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), ONIG_TYPE_RX, OnigRxClass))
+#define ONIG_IS_RX(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), ONIG_TYPE_RX))
+#define ONIG_IS_RX_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), ONIG_TYPE_RX))
+#define ONIG_RX_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), ONIG_TYPE_RX, OnigRxClass))
 
-typedef struct _OnigurumaRegex OnigurumaRegex;
-typedef struct _OnigurumaRegexClass OnigurumaRegexClass;
-typedef struct _OnigurumaRegexPrivate OnigurumaRegexPrivate;
+typedef struct _OnigRx OnigRx;
+typedef struct _OnigRxClass OnigRxClass;
+typedef struct _OnigRxPrivate OnigRxPrivate;
 
-struct _OnigurumaOnigError {
+struct _OnigOnigError {
 	GObject parent_instance;
-	OnigurumaOnigErrorPrivate * priv;
+	OnigOnigErrorPrivate * priv;
 	gint code;
 	OnigErrorInfo error_info;
 };
 
-struct _OnigurumaOnigErrorClass {
+struct _OnigOnigErrorClass {
 	GObjectClass parent_class;
 };
 
-struct _OnigurumaMatch {
+struct _OnigMatch {
 	GObject parent_instance;
-	OnigurumaMatchPrivate * priv;
+	OnigMatchPrivate * priv;
 };
 
-struct _OnigurumaMatchClass {
+struct _OnigMatchClass {
 	GObjectClass parent_class;
 };
 
-struct _OnigurumaRegex {
+struct _OnigRx {
 	GObject parent_instance;
-	OnigurumaRegexPrivate * priv;
+	OnigRxPrivate * priv;
 	gboolean matches_start_of_line;
 };
 
-struct _OnigurumaRegexClass {
+struct _OnigRxClass {
 	GObjectClass parent_class;
 };
 
 
-OnigurumaOnigError* oniguruma_onig_error_new (void);
-GType oniguruma_onig_error_get_type (void);
-gint oniguruma_match_num_captures (OnigurumaMatch* self);
-gint oniguruma_match_begin (OnigurumaMatch* self, gint capture);
-gint oniguruma_match_end (OnigurumaMatch* self, gint capture);
-OnigurumaMatch* oniguruma_match_new (void);
-regex_t* oniguruma_match_get_rx (OnigurumaMatch* self);
-void oniguruma_match_set_rx (OnigurumaMatch* self, regex_t* value);
-OnigRegion* oniguruma_match_get_rg (OnigurumaMatch* self);
-void oniguruma_match_set_rg (OnigurumaMatch* self, OnigRegion* value);
-GType oniguruma_match_get_type (void);
-OnigurumaMatch* oniguruma_regex_search (OnigurumaRegex* self, const char* target, gint start, gint end);
-OnigurumaRegex* oniguruma_regex_make (const char* pattern, OnigOptionType* options, OnigurumaOnigError** error);
-OnigurumaRegex* oniguruma_regex_make1 (const char* pattern);
-OnigurumaRegex* oniguruma_regex_new (void);
-regex_t* oniguruma_regex_get_rx (OnigurumaRegex* self);
-void oniguruma_regex_set_rx (OnigurumaRegex* self, regex_t* value);
-GType oniguruma_regex_get_type (void);
+OnigOnigError* onig_onig_error_new (void);
+GType onig_onig_error_get_type (void);
+gint onig_match_num_captures (OnigMatch* self);
+gint onig_match_begin (OnigMatch* self, gint capture);
+gint onig_match_end (OnigMatch* self, gint capture);
+OnigMatch* onig_match_new (void);
+regex_t* onig_match_get_rx (OnigMatch* self);
+void onig_match_set_rx (OnigMatch* self, regex_t* value);
+OnigRegion* onig_match_get_rg (OnigMatch* self);
+void onig_match_set_rg (OnigMatch* self, OnigRegion* value);
+GType onig_match_get_type (void);
+OnigMatch* onig_rx_search (OnigRx* self, const char* target, gint start, gint end);
+OnigRx* onig_rx_make (const char* pattern, OnigOptionType* options, OnigOnigError** error);
+OnigRx* onig_rx_make1 (const char* pattern);
+OnigRx* onig_rx_new (void);
+regex_t* onig_rx_get_rx (OnigRx* self);
+void onig_rx_set_rx (OnigRx* self, regex_t* value);
+GType onig_rx_get_type (void);
 
 
 G_END_DECLS

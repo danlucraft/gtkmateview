@@ -17,8 +17,9 @@ namespace Gtk.Mate {
 		}
 		
 		public void set_global_theme_settings() {
-			if (((Gtk.Mate.Buffer) buffer).parser != null && ((Gtk.Mate.Buffer) buffer).parser.colourer != null)
+			if (((Gtk.Mate.Buffer) buffer).parser != null && ((Gtk.Mate.Buffer) buffer).parser.colourer != null) {
 				((Gtk.Mate.Buffer) buffer).parser.colourer.set_global_settings(this);
+			}
 		}
 	}
 }

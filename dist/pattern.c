@@ -159,7 +159,7 @@ GtkMateSinglePattern* gtk_mate_single_pattern_create_from_plist (GeeArrayList* a
 	GtkMateSinglePattern* pattern;
 	PListString* _tmp0;
 	PListString* _tmp3;
-	OnigurumaRegex* _tmp4;
+	OnigRx* _tmp4;
 	PListNode* n;
 	PListDict* pcs;
 	PListDict* pcd;
@@ -185,7 +185,7 @@ GtkMateSinglePattern* gtk_mate_single_pattern_create_from_plist (GeeArrayList* a
 	_tmp3 = NULL;
 	ns = (_tmp3 = PLIST_STRING (plist_dict_get (pd, "match")), (ns == NULL ? NULL : (ns = (g_object_unref (ns), NULL))), _tmp3);
 	_tmp4 = NULL;
-	pattern->match = (_tmp4 = oniguruma_regex_make1 (ns->str), (pattern->match == NULL ? NULL : (pattern->match = (g_object_unref (pattern->match), NULL))), _tmp4);
+	pattern->match = (_tmp4 = onig_rx_make1 (ns->str), (pattern->match == NULL ? NULL : (pattern->match = (g_object_unref (pattern->match), NULL))), _tmp4);
 	n = plist_dict_get (pd, "captures");
 	pcs = NULL;
 	pcd = NULL;
@@ -247,7 +247,7 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 	PListString* _tmp3;
 	char* _tmp5;
 	const char* _tmp4;
-	OnigurumaRegex* _tmp6;
+	OnigRx* _tmp6;
 	PListString* _tmp7;
 	char* _tmp9;
 	const char* _tmp8;
@@ -280,7 +280,7 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 	_tmp4 = NULL;
 	pattern->begin_string = (_tmp5 = (_tmp4 = ns->str, (_tmp4 == NULL ? NULL : g_strdup (_tmp4))), (pattern->begin_string = (g_free (pattern->begin_string), NULL)), _tmp5);
 	_tmp6 = NULL;
-	pattern->begin = (_tmp6 = oniguruma_regex_make1 (ns->str), (pattern->begin == NULL ? NULL : (pattern->begin = (g_object_unref (pattern->begin), NULL))), _tmp6);
+	pattern->begin = (_tmp6 = onig_rx_make1 (ns->str), (pattern->begin == NULL ? NULL : (pattern->begin = (g_object_unref (pattern->begin), NULL))), _tmp6);
 	_tmp7 = NULL;
 	ns = (_tmp7 = PLIST_STRING (plist_dict_get (pd, "end")), (ns == NULL ? NULL : (ns = (g_object_unref (ns), NULL))), _tmp7);
 	_tmp9 = NULL;

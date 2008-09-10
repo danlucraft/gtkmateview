@@ -1,5 +1,6 @@
 
 #include "colourer.h"
+#include <stdio.h>
 #include <gee/map.h>
 #include <pango/pango.h>
 #include "buffer.h"
@@ -38,14 +39,17 @@ void gtk_mate_colourer_set_global_settings (GtkMateColourer* self, GtkMateView* 
 	char* fg_colour;
 	g_return_if_fail (GTK_MATE_IS_COLOURER (self));
 	g_return_if_fail (GTK_MATE_IS_VIEW (view));
+	fprintf (stdout, "set_theme_settings()\n");
 	bg_colour = ((char*) (gee_map_get (GEE_MAP (self->priv->_theme->global_settings), "background")));
 	if (bg_colour != NULL && _vala_strcmp0 (bg_colour, "") != 0) {
 		char* _tmp0;
 		GdkColor _tmp1 = {0};
 		_tmp0 = NULL;
 		bg_colour = (_tmp0 = gtk_mate_colourer_merge_colour ("#FFFFFF", bg_colour), (bg_colour = (g_free (bg_colour), NULL)), _tmp0);
+		fprintf (stdout, "bg_colour: %s\n", bg_colour);
 		gtk_widget_modify_base ((GTK_WIDGET (view)), GTK_STATE_NORMAL, (_tmp1 = gtk_mate_colourer_parse_colour (self, bg_colour), &_tmp1));
 	}
+	/* ((Gtk.SourceView) view).background = bg_colour;*/
 	fg_colour = ((char*) (gee_map_get (GEE_MAP (self->priv->_theme->global_settings), "foreground")));
 	if (fg_colour != NULL && _vala_strcmp0 (fg_colour, "") != 0) {
 		char* _tmp2;

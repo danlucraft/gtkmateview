@@ -28,9 +28,9 @@ struct _GtkMateScope {
 	GtkObject parent_instance;
 	GtkMateScopePrivate * priv;
 	GtkMatePattern* pattern;
-	OnigurumaMatch* open_match;
-	OnigurumaMatch* close_match;
-	OnigurumaRegex* closing_regex;
+	OnigMatch* open_match;
+	OnigMatch* close_match;
+	OnigRx* closing_regex;
 	GtkTextMark* start_mark;
 	GtkTextMark* inner_start_mark;
 	GtkTextMark* inner_end_mark;

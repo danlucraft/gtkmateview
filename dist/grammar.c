@@ -90,9 +90,9 @@ void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self) {
 	}
 	flm = plist_dict_get (self->priv->_plist, "firstLineMatch");
 	if (flm != NULL) {
-		OnigurumaRegex* _tmp0;
+		OnigRx* _tmp0;
 		_tmp0 = NULL;
-		self->first_line_match = (_tmp0 = oniguruma_regex_make1 ((PLIST_STRING (flm))->str), (self->first_line_match == NULL ? NULL : (self->first_line_match = (g_object_unref (self->first_line_match), NULL))), _tmp0);
+		self->first_line_match = (_tmp0 = onig_rx_make1 ((PLIST_STRING (flm))->str), (self->first_line_match == NULL ? NULL : (self->first_line_match = (g_object_unref (self->first_line_match), NULL))), _tmp0);
 	}
 	ke = plist_dict_get (self->priv->_plist, "keyEquivalent");
 	if (ke != NULL) {
@@ -183,15 +183,15 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 	fprintf (stdout, "initializing grammar for use: %s\n", self->priv->_name);
 	fsm = plist_dict_get (self->priv->_plist, "foldingStartMarker");
 	if (fsm != NULL) {
-		OnigurumaRegex* _tmp0;
+		OnigRx* _tmp0;
 		_tmp0 = NULL;
-		self->folding_start_marker = (_tmp0 = oniguruma_regex_make1 ((PLIST_STRING (fsm))->str), (self->folding_start_marker == NULL ? NULL : (self->folding_start_marker = (g_object_unref (self->folding_start_marker), NULL))), _tmp0);
+		self->folding_start_marker = (_tmp0 = onig_rx_make1 ((PLIST_STRING (fsm))->str), (self->folding_start_marker == NULL ? NULL : (self->folding_start_marker = (g_object_unref (self->folding_start_marker), NULL))), _tmp0);
 	}
 	ftm = plist_dict_get (self->priv->_plist, "foldingStopMarker");
 	if (ftm != NULL) {
-		OnigurumaRegex* _tmp1;
+		OnigRx* _tmp1;
 		_tmp1 = NULL;
-		self->folding_stop_marker = (_tmp1 = oniguruma_regex_make1 ((PLIST_STRING (ftm))->str), (self->folding_stop_marker == NULL ? NULL : (self->folding_stop_marker = (g_object_unref (self->folding_stop_marker), NULL))), _tmp1);
+		self->folding_stop_marker = (_tmp1 = onig_rx_make1 ((PLIST_STRING (ftm))->str), (self->folding_stop_marker == NULL ? NULL : (self->folding_stop_marker = (g_object_unref (self->folding_stop_marker), NULL))), _tmp1);
 	}
 	_tmp2 = NULL;
 	self->all_patterns = (_tmp2 = gee_array_list_new (GTK_MATE_TYPE_PATTERN, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal), (self->all_patterns == NULL ? NULL : (self->all_patterns = (g_object_unref (self->all_patterns), NULL))), _tmp2);

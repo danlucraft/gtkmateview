@@ -1,32 +1,32 @@
 
 require 'spec/spec_helper'
 
-describe Oniguruma::Regex do
+describe Onig::Rx do
   it "initializes all ok" do
-    Oniguruma::Regex.make1("dan").should be_an_instance_of(Oniguruma::Regex)
+    Onig::Rx.make1("dan").should be_an_instance_of(Onig::Rx)
   end
 
   it "returns nil for bad regular expressions" do
-    Oniguruma::Regex.make1("da(n").should be_nil
+    Onig::Rx.make1("da(n").should be_nil
   end
   
   it "returns nil if no match" do
-    re = Oniguruma::Regex.make1("ros")
+    re = Onig::Rx.make1("ros")
     str = "adama"
     re.search(str, 0, str.length).should be_nil
   end
   
   it "returns matchdata" do
-    re = Oniguruma::Regex.make1("ros")
+    re = Onig::Rx.make1("ros")
     str = "laura roslin"
-    re.search(str, 0, str.length).should be_an_instance_of(Oniguruma::Match)
+    re.search(str, 0, str.length).should be_an_instance_of(Onig::Match)
   end
 end
 
-describe Oniguruma::Match do
+describe Onig::Match do
   before(:each) do
     str = "laura roslin"
-    @md = Oniguruma::Regex.make1("lau(ra) ros(lin)").search(str, 0, str.length)
+    @md = Onig::Rx.make1("lau(ra) ros(lin)").search(str, 0, str.length)
   end
   
   it "returns the index of the match" do

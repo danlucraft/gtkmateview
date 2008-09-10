@@ -13,9 +13,9 @@ describe Gtk::Mate::Buffer do
 
   it "sets the grammar by first line" do
     @mb.text = "#!/usr/bin/ruby\nfoo"
-    @mb.set_grammar_by_extension("").should == "Ruby"
+    @mb.set_grammar_by_first_line.should == "Ruby"
     @mb.text = "#!/usr/bin/dmd\nfoo"
-    @mb.set_grammar_by_extension("").should == "D"
+    @mb.set_grammar_by_first_line.should == "D"
   end
   
   it "sets the grammar in the attached parser" do

@@ -15,20 +15,19 @@ namespace Gtk.Mate {
 		}
 
 		// Sets the grammar explicitly by name.
-		public int set_grammar_by_name(string name) {
+		public bool set_grammar_by_name(string name) {
 			foreach (var bundle in Buffer.bundles) {
 				foreach (var gr in bundle.grammars) {
 					if (gr.name == name) {
 						this.parser = Parser.create(gr, this);
-						return 1;
+						return true;
 					}
 				}
 			}
-			return 0;
+			return false;
 		}
 
-		// Sets the grammar by the file extension, then checks the
-		// first line for matches as a fallback. If unable to find
+		// Sets the grammar by the file extension. If unable to find
 		// a grammar, sets the grammar to null. Returns the grammar
 		// name or null.
 		public string? set_grammar_by_extension(string extension) {
@@ -39,7 +38,14 @@ namespace Gtk.Mate {
 							this.parser = Parser.create(gr, this);
 							return gr.name;
 						}
-			Oniguruma.Regex re;
+			return null;
+		}
+
+		// Sets the grammar by examining the first line. If unable to find
+		// a grammar, sets the grammar to null. Returns the grammar
+		// name or null.
+		public string? set_grammar_by_first_line() {
+			Onig.Rx re;
 			var first_line = get_text(iter_(0), line_start_iter(1), false);
 			foreach (var bundle in Buffer.bundles)
 				foreach (var gr in bundle.grammars)
@@ -48,7 +54,6 @@ namespace Gtk.Mate {
 							this.parser = Parser.create(gr, this);
 							return gr.name;
 						}
-			this.parser = null;
 			return null;
 		}
 

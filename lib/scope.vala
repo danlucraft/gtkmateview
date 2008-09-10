@@ -8,9 +8,9 @@ namespace Gtk.Mate {
 		public string? name {get; set;}
 		public Mate.Buffer buffer {get; set;}
 
-		public Oniguruma.Match open_match;
-		public Oniguruma.Match close_match;
-		public Oniguruma.Regex closing_regex;
+		public Onig.Match open_match;
+		public Onig.Match close_match;
+		public Onig.Rx closing_regex;
 
 		public TextMark start_mark;
 		public TextMark inner_start_mark;

@@ -9,14 +9,14 @@ namespace Gtk.Mate {
 		public string name {get; private set;}
 		public PList.Dict plist {get; private set;}
 		public string[] file_types;
-		public Oniguruma.Regex first_line_match;
+		public Onig.Rx first_line_match;
 		public string key_equivalent;
 		public string scope_name;
 		public string comment;
 		public ArrayList<Pattern> all_patterns;
 
-		public Oniguruma.Regex folding_start_marker;
-		public Oniguruma.Regex folding_stop_marker;
+		public Onig.Rx folding_start_marker;
+		public Onig.Rx folding_stop_marker;
 		public ArrayList<Pattern> patterns;
 		public HashMap<string, ArrayList<Pattern>> repository;
 
@@ -47,7 +47,7 @@ namespace Gtk.Mate {
 
 			PList.Node? flm = plist.get("firstLineMatch");
 			if (flm != null)
-				first_line_match = Oniguruma.Regex.make1(((PList.String) flm).str);
+				first_line_match = Onig.Rx.make1(((PList.String) flm).str);
 
 			PList.Node? ke = plist.get("keyEquivalent");
 			if (ke != null)
@@ -83,11 +83,11 @@ namespace Gtk.Mate {
 
 			PList.Node? fsm = plist.get("foldingStartMarker");
 			if (fsm != null)
-				folding_start_marker = Oniguruma.Regex.make1(((PList.String) fsm).str);
+				folding_start_marker = Onig.Rx.make1(((PList.String) fsm).str);
 
 			PList.Node? ftm = plist.get("foldingStopMarker");
 			if (ftm != null)
-				folding_stop_marker = Oniguruma.Regex.make1(((PList.String) ftm).str);
+				folding_stop_marker = Onig.Rx.make1(((PList.String) ftm).str);
 
 			this.all_patterns = new ArrayList<Pattern>();
 

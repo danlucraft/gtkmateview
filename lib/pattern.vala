@@ -42,7 +42,7 @@ namespace Gtk.Mate {
 	}
 	
 	public class SinglePattern : Pattern {
-		public Oniguruma.Regex match;
+		public Onig.Rx match;
 		public HashMap<int, string> captures;
 
 		public static SinglePattern? create_from_plist(ArrayList<Pattern> all_patterns, PList.Dict pd) {
@@ -56,7 +56,7 @@ namespace Gtk.Mate {
 //			else
 //				stdout.printf("sp: no name\n");
 			ns = (PList.String) pd.get("match");
-			pattern.match = Oniguruma.Regex.make1(ns.str);
+			pattern.match = Onig.Rx.make1(ns.str);
 
 			PList.Node? n = pd.get("captures");
 			PList.Dict? pcs, pcd;
@@ -75,8 +75,8 @@ namespace Gtk.Mate {
 	
 	public class DoublePattern : Pattern {
 		public string content_name;
-		public Oniguruma.Regex begin;
-		public Oniguruma.Regex end;
+		public Onig.Rx begin;
+		public Onig.Rx end;
 		public string end_string;
 		public string begin_string;
 		public HashMap<int, string> begin_captures;
@@ -94,7 +94,7 @@ namespace Gtk.Mate {
 			}
 			ns = (PList.String) pd.get("begin");
 			pattern.begin_string = ns.str;
-			pattern.begin = Oniguruma.Regex.make1(ns.str);
+			pattern.begin = Onig.Rx.make1(ns.str);
 			ns = (PList.String) pd.get("end");
 			pattern.end_string = ns.str;
 
