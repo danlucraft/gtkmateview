@@ -110,9 +110,9 @@ void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayL
 					(scope == NULL ? NULL : (scope = (g_object_unref (scope), NULL)));
 					continue;
 				}
-				gtk_mate_colourer_colour_scope (self, scope, FALSE);
+				gtk_mate_colourer_colour_scope (self, scope, FALSE, TRUE);
 				if (GTK_MATE_IS_DOUBLE_PATTERN (scope->pattern) && (GTK_MATE_DOUBLE_PATTERN (scope->pattern))->content_name != NULL) {
-					gtk_mate_colourer_colour_scope (self, scope, TRUE);
+					gtk_mate_colourer_colour_scope (self, scope, TRUE, TRUE);
 				}
 				(scope == NULL ? NULL : (scope = (g_object_unref (scope), NULL)));
 			}
@@ -121,7 +121,7 @@ void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayL
 }
 
 
-void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope, gboolean inner) {
+void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope, gboolean inner, gboolean force) {
 	gint priority;
 	GtkTextTag* tag;
 	GtkTextIter start_iter = {0};
@@ -163,7 +163,7 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 	 parts of the style.*/
 	setting = NULL;
 	tag_name = NULL;
-	if (tag == NULL) {
+	if (tag == NULL || force) {
 		GtkMateThemeSetting* _tmp4;
 		_tmp4 = NULL;
 		setting = (_tmp4 = gtk_mate_theme_settings_for_scope (self->priv->_theme, scope, inner), (setting == NULL ? NULL : (setting = (g_object_unref (setting), NULL))), _tmp4);
@@ -180,7 +180,7 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 	_tmp7 = NULL;
 	tag_table = (_tmp7 = gtk_text_buffer_get_tag_table (GTK_TEXT_BUFFER (self->priv->_buffer)), (_tmp7 == NULL ? NULL : g_object_ref (_tmp7)));
 	new_tag = FALSE;
-	if (tag == NULL) {
+	if (tag == NULL || force) {
 		GtkTextTag* _tmp9;
 		GtkTextTag* _tmp8;
 		_tmp9 = NULL;

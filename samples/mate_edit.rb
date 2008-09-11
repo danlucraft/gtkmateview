@@ -47,11 +47,31 @@ button_file.signal_connect("clicked") do
   end
 end
 
+button_twilight = Gtk::Button.new("Twilight")
+button_twilight.signal_connect("clicked") do
+  if @current_view
+    s = Time.now
+    @current_view.set_theme_by_name("Twilight")
+    puts "took #{Time.now - s} seconds"
+  end
+end
+
+button_mc = Gtk::Button.new("Mac Classic")
+button_mc.signal_connect("clicked") do
+  if @current_view
+    s = Time.now
+    @current_view.set_theme_by_name("Mac Classic")
+    puts "took #{Time.now - s} seconds"
+  end
+end
+
 toolbar = Gtk::HBox.new
 toolbar.pack_start(button_rb)
 toolbar.pack_start(button_gr)
 toolbar.pack_start(button_file)
 toolbar.pack_start(button_tree)
+toolbar.pack_start(button_twilight)
+toolbar.pack_start(button_mc)
 vb.pack_start(toolbar, false)
 
 gtk_notebook = Gtk::Notebook.new

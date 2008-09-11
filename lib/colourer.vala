@@ -56,7 +56,7 @@ namespace Gtk.Mate {
 			}
 		}
 
-		public void colour_scope(Scope scope, bool inner) {
+		public void colour_scope(Scope scope, bool inner, bool force=true) {
 			//stdout.printf("colour_scope: %s (%s)\n", scope.name, inner ? "true" : "false");
 			int priority = scope.priority();
 			TextTag tag;
@@ -83,7 +83,7 @@ namespace Gtk.Mate {
 			// parts of the style.
 			ThemeSetting setting;
 			string tag_name;
-			if (tag == null) {
+			if (tag == null || force) {
 				setting = theme.settings_for_scope(scope, inner);
 				if (setting == null) {
 					tag_name = "gmv(%d):default".printf(priority-1);
@@ -95,7 +95,7 @@ namespace Gtk.Mate {
 
 			var tag_table = buffer.get_tag_table();
 			bool new_tag = false;
-			if (tag == null) {
+			if (tag == null || force) {
 				tag = tag_table.lookup(tag_name);
 				if (tag == null) {
 					//stdout.printf("create_tag\n");

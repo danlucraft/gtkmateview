@@ -509,6 +509,35 @@ namespace Gtk.Mate {
 			}
 		}
 
+		public void remove_tags() {
+			GLib.SequenceIter iter = tags.get_begin_iter();
+			var table = buffer.get_tag_table();
+			while (!iter.is_end()) {
+				table.remove(tags.get(iter));
+				iter = iter.next();
+			}
+			tags.remove_range(tags.get_begin_iter(), tags.get_end_iter());
+		}
+
+		public void change_theme(Theme theme) {
+			colourer.uncolour_scope(root, true);
+			colourer.theme = theme;
+			remove_tags();
+			recolour_children(root);
+		}
+
+		public void recolour_children(Scope scope) {
+			GLib.SequenceIter iter = scope.children.get_begin_iter();
+			while (!iter.is_end()) {
+				var child = scope.children.get(iter);
+				colourer.colour_scope(child, false, true);
+				if (child.pattern is DoublePattern && ((DoublePattern) child.pattern).content_name != null)
+					colourer.colour_scope(child, true, true);
+				recolour_children(child);
+				iter = iter.next();
+			}
+		}
+
 		public void connect_buffer_signals() {
 			buffer.insert_text += this.insert_text_handler;
 			buffer.delete_range += this.delete_range_handler;

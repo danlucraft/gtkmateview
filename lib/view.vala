@@ -8,7 +8,7 @@ namespace Gtk.Mate {
 			foreach (var theme in Theme.themes) {
 				if (theme.name == name) {
 					theme.init_for_use();
-					((Gtk.Mate.Buffer) buffer).parser.colourer.theme = theme;
+					((Gtk.Mate.Buffer) buffer).parser.change_theme(theme);
 					set_global_theme_settings();
 					return true;
 				}

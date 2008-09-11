@@ -85,6 +85,9 @@ void gtk_mate_parser_handle_captures (GtkMateParser* self, gint line_ix, const c
 OnigRx* gtk_mate_parser_make_closing_regex (GtkMateParser* self, const char* line, GtkMateScope* scope, GtkMateMarker* m);
 void gtk_mate_parser_collect_child_captures (GtkMateParser* self, gint line_ix, GtkMateScope* scope, GtkMateMarker* m, GeeArrayList* all_scopes, GeeArrayList* closed_scopes);
 void gtk_mate_parser_reset_table_priorities (GtkMateParser* self);
+void gtk_mate_parser_remove_tags (GtkMateParser* self);
+void gtk_mate_parser_change_theme (GtkMateParser* self, GtkMateTheme* theme);
+void gtk_mate_parser_recolour_children (GtkMateParser* self, GtkMateScope* scope);
 void gtk_mate_parser_connect_buffer_signals (GtkMateParser* self);
 void gtk_mate_parser_insert_text_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, const char* text, gint length);
 void gtk_mate_parser_delete_range_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, GtkTextIter* pos2);

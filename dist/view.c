@@ -31,7 +31,7 @@ gboolean gtk_mate_view_set_theme_by_name (GtkMateView* self, const char* name) {
 				if (_vala_strcmp0 (theme->name, name) == 0) {
 					gboolean _tmp0;
 					gtk_mate_theme_init_for_use (theme);
-					gtk_mate_colourer_set_theme (gtk_mate_parser_get_colourer ((GTK_MATE_BUFFER (gtk_text_view_get_buffer (GTK_TEXT_VIEW (self))))->parser), theme);
+					gtk_mate_parser_change_theme ((GTK_MATE_BUFFER (gtk_text_view_get_buffer (GTK_TEXT_VIEW (self))))->parser, theme);
 					gtk_mate_view_set_global_theme_settings (self);
 					return (_tmp0 = TRUE, (theme == NULL ? NULL : (theme = (g_object_unref (theme), NULL))), _tmp0);
 				}

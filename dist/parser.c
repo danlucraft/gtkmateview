@@ -993,6 +993,68 @@ void gtk_mate_parser_reset_table_priorities (GtkMateParser* self) {
 }
 
 
+void gtk_mate_parser_remove_tags (GtkMateParser* self) {
+	GSequenceIter* _tmp0;
+	GSequenceIter* iter;
+	GtkTextTagTable* _tmp1;
+	GtkTextTagTable* table;
+	g_return_if_fail (GTK_MATE_IS_PARSER (self));
+	_tmp0 = NULL;
+	iter = (_tmp0 = g_sequence_get_begin_iter (self->tags), (_tmp0 == NULL ? NULL :  (_tmp0)));
+	_tmp1 = NULL;
+	table = (_tmp1 = gtk_text_buffer_get_tag_table (GTK_TEXT_BUFFER (self->priv->_buffer)), (_tmp1 == NULL ? NULL : g_object_ref (_tmp1)));
+	while (!g_sequence_iter_is_end (iter)) {
+		GSequenceIter* _tmp3;
+		GSequenceIter* _tmp2;
+		gtk_text_tag_table_remove (table, ((GtkTextTag*) (g_sequence_get (iter))));
+		_tmp3 = NULL;
+		_tmp2 = NULL;
+		iter = (_tmp3 = (_tmp2 = g_sequence_iter_next (iter), (_tmp2 == NULL ? NULL :  (_tmp2))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp3);
+	}
+	g_sequence_remove_range (g_sequence_get_begin_iter (self->tags), g_sequence_get_end_iter (self->tags));
+	(iter == NULL ? NULL : (iter = ( (iter), NULL)));
+	(table == NULL ? NULL : (table = (g_object_unref (table), NULL)));
+}
+
+
+void gtk_mate_parser_change_theme (GtkMateParser* self, GtkMateTheme* theme) {
+	g_return_if_fail (GTK_MATE_IS_PARSER (self));
+	g_return_if_fail (GTK_MATE_IS_THEME (theme));
+	gtk_mate_colourer_uncolour_scope (self->priv->_colourer, self->root, TRUE);
+	gtk_mate_colourer_set_theme (self->priv->_colourer, theme);
+	gtk_mate_parser_remove_tags (self);
+	gtk_mate_parser_recolour_children (self, self->root);
+}
+
+
+void gtk_mate_parser_recolour_children (GtkMateParser* self, GtkMateScope* scope) {
+	GSequenceIter* _tmp0;
+	GSequenceIter* iter;
+	g_return_if_fail (GTK_MATE_IS_PARSER (self));
+	g_return_if_fail (GTK_MATE_IS_SCOPE (scope));
+	_tmp0 = NULL;
+	iter = (_tmp0 = g_sequence_get_begin_iter (gtk_mate_scope_get_children (scope)), (_tmp0 == NULL ? NULL :  (_tmp0)));
+	while (!g_sequence_iter_is_end (iter)) {
+		GtkMateScope* _tmp1;
+		GtkMateScope* child;
+		GSequenceIter* _tmp3;
+		GSequenceIter* _tmp2;
+		_tmp1 = NULL;
+		child = (_tmp1 = ((GtkMateScope*) (g_sequence_get (iter))), (_tmp1 == NULL ? NULL : g_object_ref (_tmp1)));
+		gtk_mate_colourer_colour_scope (self->priv->_colourer, child, FALSE, TRUE);
+		if (GTK_MATE_IS_DOUBLE_PATTERN (child->pattern) && (GTK_MATE_DOUBLE_PATTERN (child->pattern))->content_name != NULL) {
+			gtk_mate_colourer_colour_scope (self->priv->_colourer, child, TRUE, TRUE);
+		}
+		gtk_mate_parser_recolour_children (self, child);
+		_tmp3 = NULL;
+		_tmp2 = NULL;
+		iter = (_tmp3 = (_tmp2 = g_sequence_iter_next (iter), (_tmp2 == NULL ? NULL :  (_tmp2))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp3);
+		(child == NULL ? NULL : (child = (g_object_unref (child), NULL)));
+	}
+	(iter == NULL ? NULL : (iter = ( (iter), NULL)));
+}
+
+
 static void _gtk_mate_parser_insert_text_handler_gtk_text_buffer_insert_text (GtkMateBuffer* _sender, GtkTextIter* pos, const char* text, gint length, gpointer self) {
 	gtk_mate_parser_insert_text_handler (self, _sender, pos, text, length);
 }
