@@ -39,6 +39,83 @@ namespace Gtk.Mate {
 			}
 			return captures;
 		}
+
+		public static void replace_include_patterns(ArrayList<Pattern> patlist, Grammar g) {
+			// first replace repository, as repository can include $self
+			replace_repository_includes(patlist, g);
+			replace_base_and_self_includes(patlist, g);
+		}
+
+		public static void replace_repository_includes(ArrayList<Pattern> patlist, Grammar g) {
+			var include_patterns = new ArrayList<Pattern>();
+			var patterns_to_include = new ArrayList<Pattern>();
+			bool any_included = true;
+			// stdout.printf("%s.replace_repository_includes (%d)\n", this.name, this.patterns.size);
+			while (any_included) {
+				// stdout.printf("repo replacement pass\n");
+				any_included = false;
+				foreach (Pattern p in patlist) {
+					if (p is IncludePattern && p.name.has_prefix("#")) {
+						include_patterns.add(p);
+						string reponame = p.name.substring(1, ((int) p.name.size())-1);
+						ArrayList<Pattern> ps = g.repository.get(reponame);
+						// stdout.printf("(%s) getting reponame: %s (%d)\n", this.name, reponame, ps.size);
+						foreach (var p1 in ps) {
+							any_included = true;
+							patterns_to_include.add(p1);
+						}
+					}
+				}
+				remove_patterns(patlist, include_patterns);
+				add_patterns(patlist, patterns_to_include);
+				include_patterns.clear();
+				patterns_to_include.clear();
+			}
+		}
+
+		public static void replace_base_and_self_includes(ArrayList<Pattern> patlist, Grammar g) {
+			var include_patterns = new ArrayList<Pattern>();
+			var patterns_to_include = new ArrayList<Pattern>();
+			bool already_self = false; // some patterns have $self twice
+			Grammar ng;
+			foreach (Pattern p in patlist) {
+				if (p is IncludePattern) {
+					if (p.name.has_prefix("$")) {
+						include_patterns.add(p);
+						if ((p.name == "$self" || p.name == "$base") && !already_self) {
+							already_self = true;
+							foreach (var p in g.patterns) {
+								patterns_to_include.add(p);
+							}
+						}
+					}
+					else if ((ng = Grammar.find_by_scope_name(p.name)) != null) {
+						ng.init_for_use();
+						include_patterns.add(p);
+						foreach (var p in ng.patterns) {
+							patterns_to_include.add(p);
+						}
+					}
+					else {
+						stdout.printf("unknown include pattern: %s\n", p.name);
+					}
+				}
+			}
+			remove_patterns(patlist, include_patterns);
+			add_patterns(patlist, patterns_to_include);
+		}
+
+		private static void remove_patterns(ArrayList<Pattern> patlist, ArrayList<Pattern> ps) {
+			foreach (var p in ps) {
+				patlist.remove(p);
+			}
+		}
+
+		private static void add_patterns(ArrayList<Pattern> patlist, ArrayList<Pattern> ps) {
+			foreach (var p in ps) {
+				patlist.add(p);
+			}
+		}
 	}
 	
 	public class SinglePattern : Pattern {
@@ -138,82 +215,6 @@ namespace Gtk.Mate {
 			return pattern;
 		}			
 
-		public void replace_include_patterns(Grammar g) {
-			// first replace repository, as repository can include $self
-			replace_repository_includes(g);
-			replace_base_and_self_includes(g);
-		}
-
-		public void replace_repository_includes(Grammar g) {
-			var include_patterns = new ArrayList<Pattern>();
-			var patterns_to_include = new ArrayList<Pattern>();
-			bool any_included = true;
-			// stdout.printf("%s.replace_repository_includes (%d)\n", this.name, this.patterns.size);
-			while (any_included) {
-				// stdout.printf("repo replacement pass\n");
-				any_included = false;
-				foreach (Pattern p in this.patterns) {
-					if (p is IncludePattern && p.name.has_prefix("#")) {
-						include_patterns.add(p);
-						string reponame = p.name.substring(1, ((int) p.name.size())-1);
-						ArrayList<Pattern> ps = g.repository.get(reponame);
-						// stdout.printf("(%s) getting reponame: %s (%d)\n", this.name, reponame, ps.size);
-						foreach (var p1 in ps) {
-							any_included = true;
-							patterns_to_include.add(p1);
-						}
-					}
-				}
-				remove_patterns(include_patterns);
-				add_patterns(patterns_to_include);
-				include_patterns.clear();
-				patterns_to_include.clear();
-			}
-		}
-
-		public void replace_base_and_self_includes(Grammar g) {
-			var include_patterns = new ArrayList<Pattern>();
-			var patterns_to_include = new ArrayList<Pattern>();
-			bool already_self = false; // some patterns have $self twice
-			Grammar ng;
-			foreach (Pattern p in this.patterns) {
-				if (p is IncludePattern) {
-					if (p.name.has_prefix("$")) {
-						include_patterns.add(p);
-						if ((p.name == "$self" || p.name == "$base") && !already_self) {
-							already_self = true;
-							foreach (var p in g.patterns) {
-								patterns_to_include.add(p);
-							}
-						}
-					}
-					else if ((ng = Grammar.find_by_scope_name(p.name)) != null) {
-						ng.init_for_use();
-						include_patterns.add(p);
-						foreach (var p in ng.patterns) {
-							patterns_to_include.add(p);
-						}
-					}
-					else {
-						stdout.printf("(%s) unknown include pattern: %s\n", this.name, p.name);
-					}
-				}
-			}
-			remove_patterns(include_patterns);
-			add_patterns(patterns_to_include);
-		}
-
-		private void remove_patterns(ArrayList<Pattern> ps) {
-			foreach (var p in ps) {
-				this.patterns.remove(p);
-			}
-		}
-
-		private void add_patterns(ArrayList<Pattern> ps) {
-			foreach (var p in ps) {
-				this.patterns.add(p);
-			}
-		}
 	}
 
 	public class IncludePattern : Pattern {

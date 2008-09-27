@@ -503,7 +503,7 @@ namespace Gtk.Mate {
 			while (!iter.is_end()) {
 				var t = tags.get(iter);
 				t.priority = i;
-				// stdout.printf("tag: '%s', pri: %d\n", t.name, i);
+				stdout.printf("tag: '%s', pri: %d\n", t.name, i);
 				i++;
 				iter = iter.next();
 			}
@@ -512,7 +512,7 @@ namespace Gtk.Mate {
 		public void connect_buffer_signals() {
 			buffer.insert_text += this.insert_text_handler;
 			buffer.delete_range += this.delete_range_handler;
-			buffer.get_tag_table().tag_added += this.tag_added_handler;
+			// buffer.get_tag_table().tag_added += this.tag_added_handler;
 			// remove when signal_connect_after works:
 			Signal.connect_after(buffer, "insert_text", (GLib.Callback) Parser.static_insert_text_after_handler, null);
 			Signal.connect_after(buffer, "delete_range", (GLib.Callback) Parser.static_delete_range_after_handler, null);
@@ -544,9 +544,9 @@ namespace Gtk.Mate {
 				process_changes();
 		}
 
-		public void tag_added_handler(TextTagTable tt, TextTag tag) {
-			this.tag_added = true;
-		}
+		// public void tag_added_handler(TextTagTable tt, TextTag tag) {
+		// 	this.tag_added = true;
+		// }
 
 		// These static methods are hack to get around Vala not supporting signal_connect_after_yet
 		public static ArrayList<Parser> existing_parsers;
@@ -570,15 +570,15 @@ namespace Gtk.Mate {
 			this.tag_added = false;
 		}
 
-		public static void static_tag_added_after_handler(TextTagTable tt, TextTag tag) {
-			foreach(var parser in existing_parsers) {
-				if (parser.tag_added && tag.name != null && tag.name.has_prefix("gmv(")) {
-					parser.tags.insert_sorted(tag, (CompareDataFunc) Parser.tag_compare);
-				}
-				parser.reset_table_priorities();
-				parser.tag_added = false;
-			}
-		}
+		// public static void static_tag_added_after_handler(TextTagTable tt, TextTag tag) {
+		// 	foreach(var parser in existing_parsers) {
+		// 		if (parser.tag_added && tag.name != null && tag.name.has_prefix("gmv(")) {
+		// 			parser.tags.insert_sorted(tag, (CompareDataFunc) Parser.tag_compare);
+		// 		}
+		// 		parser.reset_table_priorities();
+		// 		parser.tag_added = false;
+		// 	}
+		// }
 
 		public static int tag_compare(TextTag tag1, TextTag tag2, void* data) {
 			int pri1 = tag1.name[4].digit_value();

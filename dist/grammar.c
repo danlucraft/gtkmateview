@@ -299,12 +299,13 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 			p = ((GtkMatePattern*) (gee_list_get (GEE_LIST (p_collection), p_it)));
 			{
 				if (GTK_MATE_IS_DOUBLE_PATTERN (p)) {
-					gtk_mate_double_pattern_replace_include_patterns ((GTK_MATE_DOUBLE_PATTERN (p)), self);
+					gtk_mate_pattern_replace_include_patterns ((GTK_MATE_DOUBLE_PATTERN (p))->patterns, self);
 				}
 				(p == NULL ? NULL : (p = (g_object_unref (p), NULL)));
 			}
 		}
 	}
+	gtk_mate_pattern_replace_include_patterns (self->patterns, self);
 	(fsm == NULL ? NULL : (fsm = (g_object_unref (fsm), NULL)));
 	(ftm == NULL ? NULL : (ftm = (g_object_unref (ftm), NULL)));
 	(ps == NULL ? NULL : (ps = (g_object_unref (ps), NULL)));

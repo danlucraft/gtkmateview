@@ -133,16 +133,15 @@ namespace Gtk.Mate {
 					repository.set(key, repo_array);
 				}
 			}
+
 			// stdout.printf("all_patterns: %d\n", all_patterns.size);
-			foreach (var p in all_patterns)
-				if (p is DoublePattern)
-					((DoublePattern) p).replace_include_patterns(this);
-			// stdout.printf("grammar: %s\n", this.name);
-			// foreach (var p in all_patterns) {
-			// 	stdout.printf("  %s\n", p.name);
-			// }
+			foreach (var p in this.all_patterns) {
+				if (p is DoublePattern) {
+					Pattern.replace_include_patterns(((DoublePattern) p).patterns, this);
+				}
+			}
+
+			Pattern.replace_include_patterns(this.patterns, this);
 		}
-
 	}
-
 }

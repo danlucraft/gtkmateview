@@ -38,6 +38,9 @@ namespace Gtk {
 			public bool disabled;
 			public static Gtk.Mate.Pattern? create_from_plist (Gee.ArrayList<Gtk.Mate.Pattern> all_patterns, PList.Dict pd);
 			public static Gee.HashMap<int,string> make_captures_from_plist (PList.Dict? pd);
+			public static void replace_include_patterns (Gee.ArrayList<Gtk.Mate.Pattern> patlist, Gtk.Mate.Grammar g);
+			public static void replace_repository_includes (Gee.ArrayList<Gtk.Mate.Pattern> patlist, Gtk.Mate.Grammar g);
+			public static void replace_base_and_self_includes (Gee.ArrayList<Gtk.Mate.Pattern> patlist, Gtk.Mate.Grammar g);
 			public Pattern ();
 		}
 		[CCode (cheader_filename = "pattern.h")]
@@ -59,9 +62,6 @@ namespace Gtk {
 			public Gee.HashMap<int,string> both_captures;
 			public Gee.ArrayList<Gtk.Mate.Pattern> patterns;
 			public static Gtk.Mate.DoublePattern? create_from_plist (Gee.ArrayList<Gtk.Mate.Pattern> all_patterns, PList.Dict pd);
-			public void replace_include_patterns (Gtk.Mate.Grammar g);
-			public void replace_repository_includes (Gtk.Mate.Grammar g);
-			public void replace_base_and_self_includes (Gtk.Mate.Grammar g);
 			public DoublePattern ();
 		}
 		[CCode (cheader_filename = "pattern.h")]
@@ -183,7 +183,7 @@ namespace Gtk {
 			public static Gee.ArrayList<Gtk.Mate.Theme> themes;
 			public Gtk.Mate.Parser parser;
 			public bool set_grammar_by_name (string name);
-			public string? set_grammar_by_extension (string extension);
+			public string? set_grammar_by_filename (string filename);
 			public string? set_grammar_by_first_line ();
 			public Gtk.TextIter iter_ (int offset);
 			public Gtk.TextIter start_iter ();
@@ -247,11 +247,9 @@ namespace Gtk {
 			public void delete_range_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);
 			public void insert_text_after_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, string text, int length);
 			public void delete_range_after_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);
-			public void tag_added_handler (Gtk.TextTagTable tt, Gtk.TextTag tag);
 			public static void static_insert_text_after_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, string text, int length);
 			public static void static_delete_range_after_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);
 			public void added_tag (Gtk.TextTag tag);
-			public static void static_tag_added_after_handler (Gtk.TextTagTable tt, Gtk.TextTag tag);
 			public static int tag_compare (Gtk.TextTag tag1, Gtk.TextTag tag2, void* data);
 			public void close ();
 			public static Gtk.Mate.Parser create (Gtk.Mate.Grammar grammar, Gtk.Mate.Buffer buffer);

@@ -30,14 +30,23 @@ namespace Gtk.Mate {
 		// Sets the grammar by the file extension. If unable to find
 		// a grammar, sets the grammar to null. Returns the grammar
 		// name or null.
-		public string? set_grammar_by_extension(string extension) {
-			foreach (var bundle in Buffer.bundles)
-				foreach (var gr in bundle.grammars)
-					foreach (var ext in gr.file_types)
-						if (ext == extension) {
-							this.parser = Parser.create(gr, this);
-							return gr.name;
+		public string? set_grammar_by_filename(string filename) {
+			Grammar best;
+			long best_length;
+			foreach (var bundle in Buffer.bundles) {
+				foreach (var gr in bundle.grammars) {
+					foreach (var ext in gr.file_types) {
+						if (filename.has_suffix(ext) && (best == null || ext.length > best_length)) {
+							best = gr;
+							best_length = ext.length;
 						}
+					}
+				}
+			}
+			if (best != null) {
+				this.parser = Parser.create(best, this);
+				return best.name;
+			}
 			return null;
 		}
 

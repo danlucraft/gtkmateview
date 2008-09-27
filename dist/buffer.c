@@ -70,9 +70,14 @@ gboolean gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* n
 /* Sets the grammar by the file extension. If unable to find
  a grammar, sets the grammar to null. Returns the grammar
  name or null.*/
-char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char* extension) {
+char* gtk_mate_buffer_set_grammar_by_filename (GtkMateBuffer* self, const char* filename) {
+	GtkMateGrammar* best;
+	glong best_length;
+	char* _tmp6;
 	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), NULL);
-	g_return_val_if_fail (extension != NULL, NULL);
+	g_return_val_if_fail (filename != NULL, NULL);
+	best = NULL;
+	best_length = 0L;
 	{
 		GeeArrayList* bundle_collection;
 		int bundle_it;
@@ -96,20 +101,18 @@ char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char*
 								ext_collection = gr->file_types;
 								ext_collection_length1 = gr->file_types_length1;
 								for (ext_it = 0; (gr->file_types_length1 != -1 && ext_it < gr->file_types_length1) || (gr->file_types_length1 == -1 && ext_collection[ext_it] != NULL); ext_it = ext_it + 1) {
-									const char* _tmp3;
+									const char* _tmp2;
 									char* ext;
-									_tmp3 = NULL;
-									ext = (_tmp3 = ext_collection[ext_it], (_tmp3 == NULL ? NULL : g_strdup (_tmp3)));
+									_tmp2 = NULL;
+									ext = (_tmp2 = ext_collection[ext_it], (_tmp2 == NULL ? NULL : g_strdup (_tmp2)));
 									{
-										if (_vala_strcmp0 (ext, extension) == 0) {
-											GtkMateParser* _tmp0;
-											const char* _tmp1;
-											char* _tmp2;
-											_tmp0 = NULL;
-											self->parser = (_tmp0 = gtk_mate_parser_create (gr, self), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp0);
+										if (g_str_has_suffix (filename, ext) && (best == NULL || string_get_length (ext) > best_length)) {
+											GtkMateGrammar* _tmp1;
+											GtkMateGrammar* _tmp0;
 											_tmp1 = NULL;
-											_tmp2 = NULL;
-											return (_tmp2 = (_tmp1 = gtk_mate_grammar_get_name (gr), (_tmp1 == NULL ? NULL : g_strdup (_tmp1))), (ext = (g_free (ext), NULL)), (gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL))), (bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL))), _tmp2);
+											_tmp0 = NULL;
+											best = (_tmp1 = (_tmp0 = gr, (_tmp0 == NULL ? NULL : g_object_ref (_tmp0))), (best == NULL ? NULL : (best = (g_object_unref (best), NULL))), _tmp1);
+											best_length = string_get_length (ext);
 										}
 										ext = (g_free (ext), NULL);
 									}
@@ -123,7 +126,18 @@ char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char*
 			}
 		}
 	}
-	return NULL;
+	if (best != NULL) {
+		GtkMateParser* _tmp3;
+		const char* _tmp4;
+		char* _tmp5;
+		_tmp3 = NULL;
+		self->parser = (_tmp3 = gtk_mate_parser_create (best, self), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp3);
+		_tmp4 = NULL;
+		_tmp5 = NULL;
+		return (_tmp5 = (_tmp4 = gtk_mate_grammar_get_name (best), (_tmp4 == NULL ? NULL : g_strdup (_tmp4))), (best == NULL ? NULL : (best = (g_object_unref (best), NULL))), _tmp5);
+	}
+	_tmp6 = NULL;
+	return (_tmp6 = NULL, (best == NULL ? NULL : (best = (g_object_unref (best), NULL))), _tmp6);
 }
 
 

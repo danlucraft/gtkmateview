@@ -3,6 +3,7 @@
 #include <gee/collection.h>
 #include <gee/hashmap.h>
 #include <gee/map.h>
+#include <stdio.h>
 #include "colourer.h"
 #include "buffer.h"
 #include "scope.h"
@@ -37,7 +38,6 @@ static gint gtk_mate_parser_parse_range (GtkMateParser* self, gint from_line, gi
 static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix);
 static void _gtk_mate_parser_insert_text_handler_gtk_text_buffer_insert_text (GtkMateBuffer* _sender, GtkTextIter* pos, const char* text, gint length, gpointer self);
 static void _gtk_mate_parser_delete_range_handler_gtk_text_buffer_delete_range (GtkMateBuffer* _sender, GtkTextIter* start, GtkTextIter* end, gpointer self);
-static void _gtk_mate_parser_tag_added_handler_gtk_text_tag_table_tag_added (GtkTextTagTable* _sender, GtkTextTag* tag, gpointer self);
 static gpointer gtk_mate_parser_parent_class = NULL;
 static void gtk_mate_parser_finalize (GObject * obj);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
@@ -975,16 +975,18 @@ void gtk_mate_parser_reset_table_priorities (GtkMateParser* self) {
 	while (!g_sequence_iter_is_end (iter)) {
 		GtkTextTag* _tmp1;
 		GtkTextTag* t;
+		char* _tmp2;
+		GSequenceIter* _tmp4;
 		GSequenceIter* _tmp3;
-		GSequenceIter* _tmp2;
 		_tmp1 = NULL;
 		t = (_tmp1 = ((GtkTextTag*) (g_sequence_get (iter))), (_tmp1 == NULL ? NULL : g_object_ref (_tmp1)));
 		t->priority = i;
-		/* stdout.printf("tag: '%s', pri: %d\n", t.name, i);*/
-		i++;
-		_tmp3 = NULL;
 		_tmp2 = NULL;
-		iter = (_tmp3 = (_tmp2 = g_sequence_iter_next (iter), (_tmp2 == NULL ? NULL :  (_tmp2))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp3);
+		fprintf (stdout, "tag: '%s', pri: %d\n", (g_object_get (G_OBJECT (t), "name", &_tmp2, NULL), _tmp2), i);
+		i++;
+		_tmp4 = NULL;
+		_tmp3 = NULL;
+		iter = (_tmp4 = (_tmp3 = g_sequence_iter_next (iter), (_tmp3 == NULL ? NULL :  (_tmp3))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp4);
 		(t == NULL ? NULL : (t = (g_object_unref (t), NULL)));
 	}
 	(iter == NULL ? NULL : (iter = ( (iter), NULL)));
@@ -1001,17 +1003,12 @@ static void _gtk_mate_parser_delete_range_handler_gtk_text_buffer_delete_range (
 }
 
 
-static void _gtk_mate_parser_tag_added_handler_gtk_text_tag_table_tag_added (GtkTextTagTable* _sender, GtkTextTag* tag, gpointer self) {
-	gtk_mate_parser_tag_added_handler (self, _sender, tag);
-}
-
-
 void gtk_mate_parser_connect_buffer_signals (GtkMateParser* self) {
 	g_return_if_fail (GTK_MATE_IS_PARSER (self));
 	g_signal_connect_object (GTK_TEXT_BUFFER (self->priv->_buffer), "insert-text", ((GCallback) (_gtk_mate_parser_insert_text_handler_gtk_text_buffer_insert_text)), self, 0);
 	g_signal_connect_object (GTK_TEXT_BUFFER (self->priv->_buffer), "delete-range", ((GCallback) (_gtk_mate_parser_delete_range_handler_gtk_text_buffer_delete_range)), self, 0);
-	g_signal_connect_object (gtk_text_buffer_get_tag_table (GTK_TEXT_BUFFER (self->priv->_buffer)), "tag-added", ((GCallback) (_gtk_mate_parser_tag_added_handler_gtk_text_tag_table_tag_added)), self, 0);
-	/* remove when signal_connect_after works:*/
+	/* buffer.get_tag_table().tag_added += this.tag_added_handler;
+	 remove when signal_connect_after works:*/
 	g_signal_connect_after (self->priv->_buffer, "insert_text", ((GCallback) (gtk_mate_parser_static_insert_text_after_handler)), NULL);
 	g_signal_connect_after (self->priv->_buffer, "delete_range", ((GCallback) (gtk_mate_parser_static_delete_range_after_handler)), NULL);
 }
@@ -1081,14 +1078,6 @@ void gtk_mate_parser_delete_range_after_handler (GtkMateParser* self, GtkMateBuf
 }
 
 
-void gtk_mate_parser_tag_added_handler (GtkMateParser* self, GtkTextTagTable* tt, GtkTextTag* tag) {
-	g_return_if_fail (GTK_MATE_IS_PARSER (self));
-	g_return_if_fail (GTK_IS_TEXT_TAG_TABLE (tt));
-	g_return_if_fail (GTK_IS_TEXT_TAG (tag));
-	self->tag_added = TRUE;
-}
-
-
 void gtk_mate_parser_static_insert_text_after_handler (GtkMateBuffer* bf, GtkTextIter* pos, const char* text, gint length) {
 	g_return_if_fail (GTK_MATE_IS_BUFFER (bf));
 	g_return_if_fail (text != NULL);
@@ -1143,35 +1132,15 @@ void gtk_mate_parser_added_tag (GtkMateParser* self, GtkTextTag* tag) {
 }
 
 
-void gtk_mate_parser_static_tag_added_after_handler (GtkTextTagTable* tt, GtkTextTag* tag) {
-	g_return_if_fail (GTK_IS_TEXT_TAG_TABLE (tt));
-	g_return_if_fail (GTK_IS_TEXT_TAG (tag));
-	{
-		GeeArrayList* parser_collection;
-		int parser_it;
-		parser_collection = gtk_mate_parser_existing_parsers;
-		for (parser_it = 0; parser_it < gee_collection_get_size (GEE_COLLECTION (parser_collection)); parser_it = parser_it + 1) {
-			GtkMateParser* parser;
-			parser = ((GtkMateParser*) (gee_list_get (GEE_LIST (parser_collection), parser_it)));
-			{
-				char* _tmp1;
-				char* _tmp0;
-				_tmp1 = NULL;
-				_tmp0 = NULL;
-				if (parser->tag_added && (g_object_get (G_OBJECT (tag), "name", &_tmp0, NULL), _tmp0) != NULL && g_str_has_prefix ((g_object_get (G_OBJECT (tag), "name", &_tmp1, NULL), _tmp1), "gmv(")) {
-					GtkTextTag* _tmp2;
-					_tmp2 = NULL;
-					g_sequence_insert_sorted (parser->tags, (_tmp2 = tag, (_tmp2 == NULL ? NULL : g_object_ref (_tmp2))), ((GCompareDataFunc) (gtk_mate_parser_tag_compare)), NULL);
-				}
-				gtk_mate_parser_reset_table_priorities (parser);
-				parser->tag_added = FALSE;
-				(parser == NULL ? NULL : (parser = (g_object_unref (parser), NULL)));
-			}
-		}
-	}
-}
-
-
+/* public static void static_tag_added_after_handler(TextTagTable tt, TextTag tag) {
+ foreach(var parser in existing_parsers) {
+ if (parser.tag_added && tag.name != null && tag.name.has_prefix("gmv(")) {
+ parser.tags.insert_sorted(tag, (CompareDataFunc) Parser.tag_compare);
+ }
+ parser.reset_table_priorities();
+ parser.tag_added = false;
+ }
+ }*/
 gint gtk_mate_parser_tag_compare (GtkTextTag* tag1, GtkTextTag* tag2, void* data) {
 	char* _tmp0;
 	gint pri1;

@@ -37,7 +37,7 @@ struct _GtkMateBufferClass {
 extern GeeArrayList* gtk_mate_buffer_bundles;
 extern GeeArrayList* gtk_mate_buffer_themes;
 gboolean gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* name);
-char* gtk_mate_buffer_set_grammar_by_extension (GtkMateBuffer* self, const char* extension);
+char* gtk_mate_buffer_set_grammar_by_filename (GtkMateBuffer* self, const char* filename);
 char* gtk_mate_buffer_set_grammar_by_first_line (GtkMateBuffer* self);
 GtkTextIter gtk_mate_buffer_iter_ (GtkMateBuffer* self, gint offset);
 GtkTextIter gtk_mate_buffer_start_iter (GtkMateBuffer* self);
