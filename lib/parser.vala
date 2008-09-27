@@ -46,6 +46,8 @@ namespace Gtk.Mate {
 		public Mate.Scope root;
 		public RangeSet changes;
 		public int deactivation_level;
+		public TextTag dummy_tag;
+		public TextTag dummy_tag2;
 		public Sequence<TextTag> tags;
 		
 		public void make_root() {
@@ -81,7 +83,7 @@ namespace Gtk.Mate {
 				if (range.b > parsed_upto)
 					parsed_upto = parse_range(range.a, range.b);
 			}
-//			stdout.printf("%s\n", root.pretty(0));
+//			//stdout.printf("%s\n", root.pretty(0));
 			changes.ranges.clear();
 		}
 
@@ -107,6 +109,7 @@ namespace Gtk.Mate {
 				//stdout.printf("parse_line returned: %s\n", scope_changed ? "true" : "false");
 				//stdout.printf("pretty:\n%s\n", root.pretty(2));
 			}
+			//stdout.printf("parse_from:out\n");
 			return to_line;
 		}
 
@@ -154,8 +157,11 @@ namespace Gtk.Mate {
 			var end_scope2 = this.root.scope_at(line_ix, int.MAX);
 			//stdout.printf("end_scope2: %s\n", end_scope2.name);
 			if (colourer != null) {
+				//stdout.printf("before_uncolour_scopes\n");
 				colourer.uncolour_scopes(removed_scopes);
+				//stdout.printf("before_colour_line_with_scopes\n");
 				colourer.colour_line_with_scopes(all_scopes);
+				//stdout.printf("after_colour_line_with_scopes\n");
 			}
 			// stdout.printf("%s\n", this.root.pretty(0));
 			return (end_scope1 != end_scope2);
@@ -493,9 +499,11 @@ namespace Gtk.Mate {
 
 		public void reset_table_priorities() {
 			GLib.SequenceIter iter = tags.get_begin_iter();
-			int i = 0;
+			int i = 1;
 			while (!iter.is_end()) {
-				tags.get(iter).priority = i;
+				var t = tags.get(iter);
+				t.priority = i;
+				// stdout.printf("tag: '%s', pri: %d\n", t.name, i);
 				i++;
 				iter = iter.next();
 			}
@@ -508,8 +516,8 @@ namespace Gtk.Mate {
 			// remove when signal_connect_after works:
 			Signal.connect_after(buffer, "insert_text", (GLib.Callback) Parser.static_insert_text_after_handler, null);
 			Signal.connect_after(buffer, "delete_range", (GLib.Callback) Parser.static_delete_range_after_handler, null);
-			Signal.connect_after(buffer.get_tag_table(), "tag_added", 
-								 (GLib.Callback) Parser.static_tag_added_after_handler, null);
+			// Signal.connect_after(buffer.get_tag_table(), "tag_added", 
+			// 					 (GLib.Callback) Parser.static_tag_added_after_handler, null);
 		}
 
 		public void insert_text_handler(Buffer bf, TextIter pos, string text, int length) {
@@ -553,6 +561,15 @@ namespace Gtk.Mate {
 				parser.delete_range_after_handler(bf, pos, pos2);
 			}
 		}
+
+		public void added_tag(TextTag tag) {
+			if (this.tag_added && tag.name != null && tag.name.has_prefix("gmv(")) {
+				this.tags.insert_sorted(tag, (CompareDataFunc) Parser.tag_compare);
+			}
+			this.reset_table_priorities();
+			this.tag_added = false;
+		}
+
 		public static void static_tag_added_after_handler(TextTagTable tt, TextTag tag) {
 			foreach(var parser in existing_parsers) {
 				if (parser.tag_added && tag.name != null && tag.name.has_prefix("gmv(")) {
@@ -596,6 +613,10 @@ namespace Gtk.Mate {
 			p.deactivation_level = 0;
 			p.make_root();
 			p.connect_buffer_signals();
+
+			// // required to stop GTK crashing on reset_table_priorities
+			// p.dummy_tag = buffer.create_tag("dummy tag");
+			// p.dummy_tag2 = buffer.create_tag("dummy tag2");
 			return p;
 		}
 	}

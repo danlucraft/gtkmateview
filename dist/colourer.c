@@ -6,6 +6,7 @@
 #include "buffer.h"
 #include "scope.h"
 #include "pattern.h"
+#include "parser.h"
 
 
 
@@ -129,6 +130,7 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 	char* tag_name;
 	GtkTextTagTable* _tmp7;
 	GtkTextTagTable* tag_table;
+	gboolean new_tag;
 	g_return_if_fail (GTK_MATE_IS_COLOURER (self));
 	g_return_if_fail (GTK_MATE_IS_SCOPE (scope));
 	/*stdout.printf("colour_scope: %s (%s)\n", scope.name, inner ? "true" : "false");*/
@@ -177,6 +179,7 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 	}
 	_tmp7 = NULL;
 	tag_table = (_tmp7 = gtk_text_buffer_get_tag_table (GTK_TEXT_BUFFER (self->priv->_buffer)), (_tmp7 == NULL ? NULL : g_object_ref (_tmp7)));
+	new_tag = FALSE;
 	if (tag == NULL) {
 		GtkTextTag* _tmp9;
 		GtkTextTag* _tmp8;
@@ -186,9 +189,11 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 		if (tag == NULL) {
 			GtkTextTag* _tmp11;
 			GtkTextTag* _tmp10;
+			/*stdout.printf("create_tag\n");*/
 			_tmp11 = NULL;
 			_tmp10 = NULL;
 			tag = (_tmp11 = (_tmp10 = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (self->priv->_buffer), tag_name, NULL), (_tmp10 == NULL ? NULL : g_object_ref (_tmp10))), (tag == NULL ? NULL : (tag = (g_object_unref (tag), NULL))), _tmp11);
+			new_tag = TRUE;
 		}
 	}
 	/*stdout.printf("      tag: '%s'\n", tag_name);*/
@@ -209,6 +214,9 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 		scope->tag = (_tmp15 = (_tmp14 = tag, (_tmp14 == NULL ? NULL : g_object_ref (_tmp14))), (scope->tag == NULL ? NULL : (scope->tag = (g_object_unref (scope->tag), NULL))), _tmp15);
 	}
 	gtk_text_buffer_apply_tag (GTK_TEXT_BUFFER (self->priv->_buffer), tag, &start_iter, &end_iter);
+	if (new_tag) {
+		gtk_mate_parser_added_tag (self->priv->_buffer->parser, tag);
+	}
 	(tag == NULL ? NULL : (tag = (g_object_unref (tag), NULL)));
 	(setting == NULL ? NULL : (setting = (g_object_unref (setting), NULL)));
 	tag_name = (g_free (tag_name), NULL);

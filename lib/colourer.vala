@@ -94,10 +94,13 @@ namespace Gtk.Mate {
 			}
 
 			var tag_table = buffer.get_tag_table();
+			bool new_tag = false;
 			if (tag == null) {
 				tag = tag_table.lookup(tag_name);
 				if (tag == null) {
+					//stdout.printf("create_tag\n");
 					tag = buffer.create_tag(tag_name);
+					new_tag = true;
 				}
 			}
 			//stdout.printf("      tag: '%s'\n", tag_name);
@@ -110,6 +113,9 @@ namespace Gtk.Mate {
 				scope.tag = tag;
 			
 			buffer.apply_tag(tag, start_iter, end_iter);
+			if (new_tag) {
+				buffer.parser.added_tag(tag);
+			}
 		}
 
 		public void set_tag_properties(Scope scope, TextTag tag, ThemeSetting setting) {
