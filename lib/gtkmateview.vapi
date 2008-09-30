@@ -184,7 +184,7 @@ namespace Gtk {
 			public Gtk.Mate.Parser parser;
 			public bool set_grammar_by_name (string name);
 			public string? set_grammar_by_filename (string filename);
-			public string? set_grammar_by_first_line ();
+			public string? set_grammar_by_first_line (string first_line);
 			public Gtk.TextIter iter_ (int offset);
 			public Gtk.TextIter start_iter ();
 			public Gtk.TextIter end_iter ();

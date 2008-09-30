@@ -225,7 +225,7 @@ Gtk.Mate.Buffer
   * Gtk.TextMark                                         selection_mark                      ()
   * void                                                 set_bundles                         (Gee.ArrayList<Gtk.Mate.Bundle> bundles)
   * string                                               set_grammar_by_filename             (string filename)
-  * string                                               set_grammar_by_first_line           ()
+  * string                                               set_grammar_by_first_line           (string first_line)
   * bool                                                 set_grammar_by_name                 (string name)
   * void                                                 set_parser                          (Gtk.Mate.Parser parser)
   * void                                                 set_themes                          (Gee.ArrayList<Gtk.Mate.Theme> themes)

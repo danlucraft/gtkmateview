@@ -53,9 +53,8 @@ namespace Gtk.Mate {
 		// Sets the grammar by examining the first line. If unable to find
 		// a grammar, sets the grammar to null. Returns the grammar
 		// name or null.
-		public string? set_grammar_by_first_line() {
+		public string? set_grammar_by_first_line(string first_line) {
 			Onig.Rx re;
-			var first_line = get_text(iter_(0), line_start_iter(1), false);
 			foreach (var bundle in Buffer.bundles)
 				foreach (var gr in bundle.grammars)
 					if ((re = gr.first_line_match) != null)

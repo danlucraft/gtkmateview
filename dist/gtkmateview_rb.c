@@ -4217,14 +4217,20 @@ static VALUE rb_gtk_mate_buffer_set_grammar_by_filename(VALUE self, VALUE filena
     return _rb_return;
 }
 
-static VALUE rb_gtk_mate_buffer_set_grammar_by_first_line(VALUE self) {
+static VALUE rb_gtk_mate_buffer_set_grammar_by_first_line(VALUE self, VALUE first_line) {
     GtkMateBuffer* gtk_mate_buffer = RVAL2GOBJ(self);
     // Method#type_checks
+    if (TYPE(first_line) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
     // Method#argument_type_conversions
+    char * _c_first_line;
+    _c_first_line = g_strdup(STR2CSTR(first_line));
     // Method#body
     
     char * _c_return;
-    _c_return = gtk_mate_buffer_set_grammar_by_first_line(gtk_mate_buffer);
+    _c_return = gtk_mate_buffer_set_grammar_by_first_line(gtk_mate_buffer, _c_first_line);
     // Method#return_type_conversion
     VALUE _rb_return;
     if (_c_return == NULL)
@@ -7229,7 +7235,7 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_buffer, "parser=", rb_gtk_mate_buffer_set_parser, 1);
     rb_define_method(rbc_gtk_mate_buffer, "set_grammar_by_name", rb_gtk_mate_buffer_set_grammar_by_name, 1);
     rb_define_method(rbc_gtk_mate_buffer, "set_grammar_by_filename", rb_gtk_mate_buffer_set_grammar_by_filename, 1);
-    rb_define_method(rbc_gtk_mate_buffer, "set_grammar_by_first_line", rb_gtk_mate_buffer_set_grammar_by_first_line, 0);
+    rb_define_method(rbc_gtk_mate_buffer, "set_grammar_by_first_line", rb_gtk_mate_buffer_set_grammar_by_first_line, 1);
     rb_define_method(rbc_gtk_mate_buffer, "start_mark", rb_gtk_mate_buffer_start_mark, 0);
     rb_define_method(rbc_gtk_mate_buffer, "end_mark", rb_gtk_mate_buffer_end_mark, 0);
     rb_define_method(rbc_gtk_mate_buffer, "cursor_mark", rb_gtk_mate_buffer_cursor_mark, 0);
