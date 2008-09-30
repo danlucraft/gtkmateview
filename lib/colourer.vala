@@ -194,7 +194,7 @@ namespace Gtk.Mate {
 		}
 		
 		public void uncolour_scope(Scope scope, bool recurse) {
-			//stdout.printf("uncolour scope: %s\n", scope.name);
+			// stdout.printf("uncolour scope: %s\n", scope.name);
 			if (scope.inner_tag != null) {
 				buffer.remove_tag(scope.inner_tag, scope.inner_start_iter(), scope.inner_end_iter());
 			}

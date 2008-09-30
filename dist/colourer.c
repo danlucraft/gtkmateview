@@ -374,7 +374,7 @@ void gtk_mate_colourer_uncolour_scopes (GtkMateColourer* self, GeeArrayList* sco
 void gtk_mate_colourer_uncolour_scope (GtkMateColourer* self, GtkMateScope* scope, gboolean recurse) {
 	g_return_if_fail (GTK_MATE_IS_COLOURER (self));
 	g_return_if_fail (GTK_MATE_IS_SCOPE (scope));
-	/*stdout.printf("uncolour scope: %s\n", scope.name);*/
+	/* stdout.printf("uncolour scope: %s\n", scope.name);*/
 	if (scope->inner_tag != NULL) {
 		GtkTextIter _tmp1 = {0};
 		GtkTextIter _tmp0 = {0};

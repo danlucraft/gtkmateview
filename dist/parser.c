@@ -1020,6 +1020,7 @@ void gtk_mate_parser_remove_tags (GtkMateParser* self) {
 void gtk_mate_parser_change_theme (GtkMateParser* self, GtkMateTheme* theme) {
 	g_return_if_fail (GTK_MATE_IS_PARSER (self));
 	g_return_if_fail (GTK_MATE_IS_THEME (theme));
+	/* stdout.printf("parser.change_theme(%s)\n", theme.name);*/
 	gtk_mate_colourer_uncolour_scope (self->priv->_colourer, self->root, TRUE);
 	gtk_mate_colourer_set_theme (self->priv->_colourer, theme);
 	gtk_mate_parser_remove_tags (self);
@@ -1027,6 +1028,7 @@ void gtk_mate_parser_change_theme (GtkMateParser* self, GtkMateTheme* theme) {
 }
 
 
+/* stdout.printf("parser.change_theme(%s):out\n", theme.name);*/
 void gtk_mate_parser_recolour_children (GtkMateParser* self, GtkMateScope* scope) {
 	GSequenceIter* _tmp0;
 	GSequenceIter* iter;

@@ -1,8 +1,8 @@
 
 #include "buffer.h"
-#include "bundle.h"
-#include "grammar.h"
 #include "parser.h"
+#include "grammar.h"
+#include "bundle.h"
 #include "onig_wrap.h"
 #include "gtkmateview.h"
 
@@ -32,6 +32,9 @@ static glong string_get_length (const char* self) {
 gboolean gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* name) {
 	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
+	if (self->parser != NULL && _vala_strcmp0 (gtk_mate_grammar_get_name (gtk_mate_parser_get_grammar (self->parser)), name) == 0) {
+		return TRUE;
+	}
 	{
 		GeeArrayList* bundle_collection;
 		int bundle_it;
@@ -49,11 +52,11 @@ gboolean gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* n
 						gr = ((GtkMateGrammar*) (gee_list_get (GEE_LIST (gr_collection), gr_it)));
 						{
 							if (_vala_strcmp0 (gtk_mate_grammar_get_name (gr), name) == 0) {
-								GtkMateParser* _tmp0;
-								gboolean _tmp1;
-								_tmp0 = NULL;
-								self->parser = (_tmp0 = gtk_mate_parser_create (gr, self), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp0);
-								return (_tmp1 = TRUE, (gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL))), (bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL))), _tmp1);
+								GtkMateParser* _tmp1;
+								gboolean _tmp2;
+								_tmp1 = NULL;
+								self->parser = (_tmp1 = gtk_mate_parser_create (gr, self), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp1);
+								return (_tmp2 = TRUE, (gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL))), (bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL))), _tmp2);
 							}
 							(gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL)));
 						}
@@ -127,11 +130,13 @@ char* gtk_mate_buffer_set_grammar_by_filename (GtkMateBuffer* self, const char* 
 		}
 	}
 	if (best != NULL) {
-		GtkMateParser* _tmp3;
 		const char* _tmp4;
 		char* _tmp5;
-		_tmp3 = NULL;
-		self->parser = (_tmp3 = gtk_mate_parser_create (best, self), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp3);
+		if (self->parser == NULL || _vala_strcmp0 (gtk_mate_grammar_get_name (gtk_mate_parser_get_grammar (self->parser)), gtk_mate_grammar_get_name (best)) != 0) {
+			GtkMateParser* _tmp3;
+			_tmp3 = NULL;
+			self->parser = (_tmp3 = gtk_mate_parser_create (best, self), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp3);
+		}
 		_tmp4 = NULL;
 		_tmp5 = NULL;
 		return (_tmp5 = (_tmp4 = gtk_mate_grammar_get_name (best), (_tmp4 == NULL ? NULL : g_strdup (_tmp4))), (best == NULL ? NULL : (best = (g_object_unref (best), NULL))), _tmp5);

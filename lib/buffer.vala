@@ -16,6 +16,8 @@ namespace Gtk.Mate {
 
 		// Sets the grammar explicitly by name.
 		public bool set_grammar_by_name(string name) {
+			if (this.parser != null && this.parser.grammar.name == name)
+				return true;
 			foreach (var bundle in Buffer.bundles) {
 				foreach (var gr in bundle.grammars) {
 					if (gr.name == name) {
@@ -44,7 +46,8 @@ namespace Gtk.Mate {
 				}
 			}
 			if (best != null) {
-				this.parser = Parser.create(best, this);
+				if (this.parser == null || this.parser.grammar.name != best.name)
+					this.parser = Parser.create(best, this);
 				return best.name;
 			}
 			return null;

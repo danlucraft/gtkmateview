@@ -520,10 +520,12 @@ namespace Gtk.Mate {
 		}
 
 		public void change_theme(Theme theme) {
+			// stdout.printf("parser.change_theme(%s)\n", theme.name);
 			colourer.uncolour_scope(root, true);
 			colourer.theme = theme;
 			remove_tags();
 			recolour_children(root);
+			// stdout.printf("parser.change_theme(%s):out\n", theme.name);
 		}
 
 		public void recolour_children(Scope scope) {
