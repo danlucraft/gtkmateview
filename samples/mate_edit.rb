@@ -34,7 +34,7 @@ button_rb = Gtk::Button.new("Ruby")
 button_rb.signal_connect("clicked") do 
   if @current_view
     @current_view.buffer.set_grammar_by_name("Ruby")
-    @current_view.set_theme_by_name("Twilight")
+    @current_view.set_theme_by_name("Brilliance Dull")
   end
 end
 
@@ -47,11 +47,11 @@ button_file.signal_connect("clicked") do
   end
 end
 
-button_twilight = Gtk::Button.new("Twilight")
+button_twilight = Gtk::Button.new("Brilliance Dull")
 button_twilight.signal_connect("clicked") do
   if @current_view
     s = Time.now
-    @current_view.set_theme_by_name("Twilight")
+    @current_view.set_theme_by_name("Brilliance Dull")
     puts "took #{Time.now - s} seconds"
   end
 end

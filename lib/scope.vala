@@ -488,16 +488,10 @@ namespace Gtk.Mate {
 		// }
 
 		public string? nearest_background_colour() {
-			if (bg_colour == null) {
-				if (parent != null) {
-					return parent.nearest_background_colour();
-				}
-				return null;
+			if (parent != null) {
+				return parent.nearest_background_colour();
 			}
-			else {
-				return bg_colour;
-			}
-			
+			return null;
 		}
 	}
 }

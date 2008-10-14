@@ -837,16 +837,10 @@ char* gtk_mate_scope_hierarchy_names (GtkMateScope* self, gboolean inner) {
  }*/
 char* gtk_mate_scope_nearest_background_colour (GtkMateScope* self) {
 	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
-	if (self->bg_colour == NULL) {
-		if (self->parent != NULL) {
-			return gtk_mate_scope_nearest_background_colour (self->parent);
-		}
-		return NULL;
-	} else {
-		const char* _tmp2;
-		_tmp2 = NULL;
-		return (_tmp2 = self->bg_colour, (_tmp2 == NULL ? NULL : g_strdup (_tmp2)));
+	if (self->parent != NULL) {
+		return gtk_mate_scope_nearest_background_colour (self->parent);
 	}
+	return NULL;
 }
 
 

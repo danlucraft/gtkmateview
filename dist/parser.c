@@ -969,9 +969,10 @@ void gtk_mate_parser_reset_table_priorities (GtkMateParser* self) {
 	GSequenceIter* iter;
 	gint i;
 	g_return_if_fail (GTK_MATE_IS_PARSER (self));
+	fprintf (stdout, "reset_table_priorities()\n");
 	_tmp0 = NULL;
 	iter = (_tmp0 = g_sequence_get_begin_iter (self->tags), (_tmp0 == NULL ? NULL :  (_tmp0)));
-	i = 1;
+	i = 0;
 	while (!g_sequence_iter_is_end (iter)) {
 		GtkTextTag* _tmp1;
 		GtkTextTag* t;
@@ -1180,19 +1181,22 @@ void gtk_mate_parser_static_delete_range_after_handler (GtkMateBuffer* bf, GtkTe
 
 
 void gtk_mate_parser_added_tag (GtkMateParser* self, GtkTextTag* tag) {
-	char* _tmp1;
 	char* _tmp0;
+	char* _tmp2;
+	char* _tmp1;
 	g_return_if_fail (GTK_MATE_IS_PARSER (self));
 	g_return_if_fail (GTK_IS_TEXT_TAG (tag));
-	_tmp1 = NULL;
 	_tmp0 = NULL;
-	if (self->tag_added && (g_object_get (G_OBJECT (tag), "name", &_tmp0, NULL), _tmp0) != NULL && g_str_has_prefix ((g_object_get (G_OBJECT (tag), "name", &_tmp1, NULL), _tmp1), "gmv(")) {
-		GtkTextTag* _tmp2;
-		_tmp2 = NULL;
-		g_sequence_insert_sorted (self->tags, (_tmp2 = tag, (_tmp2 == NULL ? NULL : g_object_ref (_tmp2))), ((GCompareDataFunc) (gtk_mate_parser_tag_compare)), NULL);
+	fprintf (stdout, "added_tag(%s)\n", (g_object_get (G_OBJECT (tag), "name", &_tmp0, NULL), _tmp0));
+	_tmp2 = NULL;
+	_tmp1 = NULL;
+	if ((g_object_get (G_OBJECT (tag), "name", &_tmp1, NULL), _tmp1) != NULL && g_str_has_prefix ((g_object_get (G_OBJECT (tag), "name", &_tmp2, NULL), _tmp2), "gmv(")) {
+		GtkTextTag* _tmp3;
+		fprintf (stdout, "adding tag to tags\n");
+		_tmp3 = NULL;
+		g_sequence_insert_sorted (self->tags, (_tmp3 = tag, (_tmp3 == NULL ? NULL : g_object_ref (_tmp3))), ((GCompareDataFunc) (gtk_mate_parser_tag_compare)), NULL);
 	}
 	gtk_mate_parser_reset_table_priorities (self);
-	self->tag_added = FALSE;
 }
 
 

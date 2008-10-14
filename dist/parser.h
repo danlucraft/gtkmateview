@@ -54,7 +54,6 @@ struct _GtkMateParser {
 	GtkTextTag* dummy_tag;
 	GtkTextTag* dummy_tag2;
 	GSequence* tags;
-	gboolean tag_added;
 };
 
 struct _GtkMateParserClass {

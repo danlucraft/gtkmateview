@@ -498,8 +498,9 @@ namespace Gtk.Mate {
 		}
 
 		public void reset_table_priorities() {
+			stdout.printf("reset_table_priorities()\n");
 			GLib.SequenceIter iter = tags.get_begin_iter();
-			int i = 1;
+			int i = 0;
 			while (!iter.is_end()) {
 				var t = tags.get(iter);
 				t.priority = i;
@@ -581,7 +582,6 @@ namespace Gtk.Mate {
 
 		// These static methods are hack to get around Vala not supporting signal_connect_after_yet
 		public static ArrayList<Parser> existing_parsers;
-		public bool tag_added;
 		public static void static_insert_text_after_handler(Buffer bf, TextIter pos, string text, int length) {
 			foreach(var parser in existing_parsers) {
 				parser.insert_text_after_handler(bf, pos, text, length);
@@ -594,11 +594,12 @@ namespace Gtk.Mate {
 		}
 
 		public void added_tag(TextTag tag) {
-			if (this.tag_added && tag.name != null && tag.name.has_prefix("gmv(")) {
+			stdout.printf("added_tag(%s)\n", tag.name);
+			if (tag.name != null && tag.name.has_prefix("gmv(")) {
+				stdout.printf("adding tag to tags\n");
 				this.tags.insert_sorted(tag, (CompareDataFunc) Parser.tag_compare);
 			}
 			this.reset_table_priorities();
-			this.tag_added = false;
 		}
 
 		// public static void static_tag_added_after_handler(TextTagTable tt, TextTag tag) {
