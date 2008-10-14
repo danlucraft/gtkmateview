@@ -1,0 +1,22 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Get theme names without calling load_bundles first
+desc: ""
+type: :bugfix
+component: gtkmateview
+release: "0.1"
+reporter: Daniel Lucraft <dan@fluentradical.com>
+status: :unstarted
+disposition: 
+creation_time: 2008-10-14 20:40:46.775912 Z
+references: []
+
+id: c3c628d4a043ac921f4398b11d1fb6e88a1fcc38
+log_events: 
+- - 2008-10-14 20:40:48.590990 Z
+  - Daniel Lucraft <dan@fluentradical.com>
+  - created
+  - ""
+- - 2008-10-14 20:43:02.185662 Z
+  - Daniel Lucraft <dan@fluentradical.com>
+  - assigned to release 0.1 from unassigned
+  - ""
