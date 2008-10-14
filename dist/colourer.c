@@ -133,10 +133,11 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 	gboolean new_tag;
 	g_return_if_fail (GTK_MATE_IS_COLOURER (self));
 	g_return_if_fail (GTK_MATE_IS_SCOPE (scope));
-	fprintf (stdout, "colour_scope: %s (%s) [%d - %d]\n", gtk_mate_scope_get_name (scope), (inner ? "true" : "false"), gtk_mate_scope_start_offset (scope), gtk_mate_scope_end_offset (scope));
+	/* stdout.printf("colour_scope: %s (%s) [%d - %d]\n", scope.name, inner ? "true" : "false",
+	   scope.start_offset(), scope.end_offset());*/
 	priority = gtk_mate_scope_priority (scope);
 	tag = NULL;
-	fprintf (stdout, "  priority: %d\n", priority);
+	/* stdout.printf("  priority: %d\n", priority);*/
 	gtk_mate_scope_set_is_coloured (scope, TRUE);
 	if (inner) {
 		start_iter = gtk_mate_scope_inner_start_iter (scope);
@@ -189,14 +190,14 @@ void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope,
 		if (tag == NULL) {
 			GtkTextTag* _tmp11;
 			GtkTextTag* _tmp10;
-			fprintf (stdout, "create_tag\n");
+			/* stdout.printf("create_tag\n");*/
 			_tmp11 = NULL;
 			_tmp10 = NULL;
 			tag = (_tmp11 = (_tmp10 = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (self->priv->_buffer), tag_name, NULL), (_tmp10 == NULL ? NULL : g_object_ref (_tmp10))), (tag == NULL ? NULL : (tag = (g_object_unref (tag), NULL))), _tmp11);
 			new_tag = TRUE;
 		}
 	}
-	fprintf (stdout, "      tag: '%s'\n", tag_name);
+	/* stdout.printf("      tag: '%s'\n", tag_name);*/
 	if (setting != NULL) {
 		gtk_mate_colourer_set_tag_properties (self, scope, tag, setting);
 	}
@@ -254,14 +255,14 @@ void gtk_mate_colourer_set_tag_properties (GtkMateColourer* self, GtkMateScope* 
 	foreground = ((char*) (gee_map_get (GEE_MAP (setting->settings), "foreground")));
 	if (foreground != NULL && _vala_strcmp0 (foreground, "") != 0) {
 		g_object_set (tag, "foreground", foreground, NULL);
-		fprintf (stdout, "       tag.foreground = %s\n", foreground);
 	}
+	/* stdout.printf("       tag.foreground = %s\n", foreground);*/
 	background = ((char*) (gee_map_get (GEE_MAP (setting->settings), "background")));
 	if (background != NULL && _vala_strcmp0 (background, "") != 0) {
 		char* parent_bg;
 		char* merged_colour;
 		parent_bg = gtk_mate_scope_nearest_background_colour (scope);
-		fprintf (stdout, "       (nearest_bg_colour: %s)\n", parent_bg);
+		/* stdout.printf("       (nearest_bg_colour: %s)\n", parent_bg);*/
 		if (parent_bg == NULL) {
 			char* _tmp8;
 			_tmp8 = NULL;
@@ -275,7 +276,6 @@ void gtk_mate_colourer_set_tag_properties (GtkMateColourer* self, GtkMateScope* 
 			_tmp9 = NULL;
 			scope->bg_colour = (_tmp10 = (_tmp9 = merged_colour, (_tmp9 == NULL ? NULL : g_strdup (_tmp9))), (scope->bg_colour = (g_free (scope->bg_colour), NULL)), _tmp10);
 			g_object_set (tag, "background", merged_colour, NULL);
-			fprintf (stdout, "       tag.background = %s\n", merged_colour);
 		}
 		parent_bg = (g_free (parent_bg), NULL);
 		merged_colour = (g_free (merged_colour), NULL);
@@ -286,6 +286,7 @@ void gtk_mate_colourer_set_tag_properties (GtkMateColourer* self, GtkMateScope* 
 }
 
 
+/* stdout.printf("       tag.background = %s\n", merged_colour);*/
 gint gtk_mate_colourer_char_to_hex (gunichar ch) {
 	if (g_unichar_isxdigit (ch)) {
 		return g_unichar_xdigit_value (ch);

@@ -57,13 +57,13 @@ namespace Gtk.Mate {
 		}
 
 		public void colour_scope(Scope scope, bool inner, bool force=true) {
-			stdout.printf("colour_scope: %s (%s) [%d - %d]\n", scope.name, inner ? "true" : "false",
-						  scope.start_offset(), scope.end_offset());
+			// stdout.printf("colour_scope: %s (%s) [%d - %d]\n", scope.name, inner ? "true" : "false",
+			// 			  scope.start_offset(), scope.end_offset());
 			int priority = scope.priority();
 			TextTag tag;
 			TextIter start_iter, end_iter;
 
-			stdout.printf("  priority: %d\n", priority);
+			// stdout.printf("  priority: %d\n", priority);
 			scope.is_coloured = true;
 
 			if (inner) {
@@ -99,12 +99,12 @@ namespace Gtk.Mate {
 			if (tag == null || force) {
 				tag = tag_table.lookup(tag_name);
 				if (tag == null) {
-					stdout.printf("create_tag\n");
+					// stdout.printf("create_tag\n");
 					tag = buffer.create_tag(tag_name);
 					new_tag = true;
 				}
 			}
-			stdout.printf("      tag: '%s'\n", tag_name);
+			// stdout.printf("      tag: '%s'\n", tag_name);
 			if (setting != null)
 				set_tag_properties(scope, tag, setting);
 			
@@ -114,6 +114,7 @@ namespace Gtk.Mate {
 				scope.tag = tag;
 			
 			buffer.apply_tag(tag, start_iter, end_iter);
+
 			if (new_tag) {
 				buffer.parser.added_tag(tag);
 			}
@@ -135,12 +136,12 @@ namespace Gtk.Mate {
 			string foreground = setting.settings.get("foreground");
 			if (foreground != null && foreground != "") {
 				tag.foreground = foreground;
-				stdout.printf("       tag.foreground = %s\n", foreground);
+				// stdout.printf("       tag.foreground = %s\n", foreground);
 			}
 			string background = setting.settings.get("background");
 			if (background != null && background != "") {
 				var parent_bg = scope.nearest_background_colour();
-				stdout.printf("       (nearest_bg_colour: %s)\n", parent_bg);
+				// stdout.printf("       (nearest_bg_colour: %s)\n", parent_bg);
 				if (parent_bg == null) {
 					parent_bg = theme.global_settings.get("background");
 				}
@@ -148,7 +149,7 @@ namespace Gtk.Mate {
 				if (merged_colour != null) {
 					scope.bg_colour = merged_colour;
 					tag.background = merged_colour;
-					stdout.printf("       tag.background = %s\n", merged_colour);
+					// stdout.printf("       tag.background = %s\n", merged_colour);
 				}
 			}
 		}

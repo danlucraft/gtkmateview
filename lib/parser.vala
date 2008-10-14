@@ -498,13 +498,13 @@ namespace Gtk.Mate {
 		}
 
 		public void reset_table_priorities() {
-			stdout.printf("reset_table_priorities()\n");
+			// stdout.printf("\nreset_table_priorities() for %d tags\n", buffer.get_tag_table().get_size());
 			GLib.SequenceIter iter = tags.get_begin_iter();
 			int i = 0;
-			while (!iter.is_end()) {
+			while (!iter.next().is_end()) {
 				var t = tags.get(iter);
-				t.priority = i;
-				stdout.printf("tag: '%s', pri: %d\n", t.name, i);
+				t.set_priority(i);
+				// stdout.printf("tag: '%s', pri: %d\n", t.name, i);
 				i++;
 				iter = iter.next();
 			}
@@ -594,9 +594,7 @@ namespace Gtk.Mate {
 		}
 
 		public void added_tag(TextTag tag) {
-			stdout.printf("added_tag(%s)\n", tag.name);
 			if (tag.name != null && tag.name.has_prefix("gmv(")) {
-				stdout.printf("adding tag to tags\n");
 				this.tags.insert_sorted(tag, (CompareDataFunc) Parser.tag_compare);
 			}
 			this.reset_table_priorities();
