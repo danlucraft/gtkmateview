@@ -44,6 +44,8 @@ button_file.signal_connect("clicked") do
     s = Time.now
     @current_view.buffer.text = File.read("samples/rak")
     puts "took #{Time.now - s} seconds"
+    puts "created #{Gtk::Mate::Scope.scope_count} scopes"
+    puts "created #{Onig::Match.count} regex matches"
   end
 end
 

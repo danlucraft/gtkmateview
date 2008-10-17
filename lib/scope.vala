@@ -21,6 +21,7 @@ namespace Gtk.Mate {
 		public bool is_open;
 
 		public string bg_colour;
+		public string fg_colour;
 		public bool is_capture;
 		
 		// these are for when we want to compare scopes without
@@ -49,10 +50,16 @@ namespace Gtk.Mate {
 		// public static int id_count = 0;
 		// public int id;
 
+		public static int scope_count = 0;
+
 		public Scope(Mate.Buffer buf, string? name) {
 			this.name = name;
 			this.buffer = buf;
 			this.is_coloured = false;
+		}
+
+		construct {
+			Scope.scope_count++;
 		}
 
 		public bool is_root() {
@@ -448,11 +455,19 @@ namespace Gtk.Mate {
 				return parent.root();
 		}
 		
-		public int priority() {
-			if (parent == null)
-				return 1;
-			else
-				return parent.priority() + 1;
+		public int priority(bool inner) {
+			if (parent == null) {
+				if (inner)
+					return 2;
+				else
+					return 1;
+			}	
+			else {
+				if (inner)
+					return parent.priority(true) + 2;
+				else
+					return parent.priority(true) + 1;
+			}
 		}
 
 		public string hierarchy_names(bool inner) {
@@ -489,7 +504,32 @@ namespace Gtk.Mate {
 
 		public string? nearest_background_colour() {
 			if (parent != null) {
-				return parent.nearest_background_colour();
+				return parent.nearest_background_colour1();
+			}
+			return null;
+		}
+
+		public string? nearest_background_colour1() {
+			if (bg_colour != null)
+				return bg_colour;
+			if (parent != null) {
+				return parent.nearest_background_colour1();
+			}
+			return null;
+		}
+
+		public string? nearest_foreground_colour() {
+			if (parent != null) {
+				return parent.nearest_foreground_colour1();
+			}
+			return null;
+		}
+
+		public string? nearest_foreground_colour1() {
+			if (fg_colour != null)
+				return fg_colour;
+			if (parent != null) {
+				return parent.nearest_foreground_colour1();
 			}
 			return null;
 		}

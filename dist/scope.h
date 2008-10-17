@@ -39,6 +39,7 @@ struct _GtkMateScope {
 	GtkTextTag* inner_tag;
 	gboolean is_open;
 	char* bg_colour;
+	char* fg_colour;
 	gboolean is_capture;
 	GtkMateTextLoc* dummy_start_loc;
 	GtkMateTextLoc* dummy_end_loc;
@@ -54,6 +55,7 @@ struct _GtkMateScopeClass {
 };
 
 
+extern gint gtk_mate_scope_scope_count;
 GtkMateScope* gtk_mate_scope_new (GtkMateBuffer* buf, const char* name);
 gboolean gtk_mate_scope_is_root (GtkMateScope* self);
 gint gtk_mate_scope_compare (GtkMateScope* a, GtkMateScope* b, void* data);
@@ -94,9 +96,12 @@ GtkMateTextLoc* gtk_mate_scope_inner_start_loc (GtkMateScope* self);
 GtkMateTextLoc* gtk_mate_scope_inner_end_loc (GtkMateScope* self);
 GtkMateTextLoc* gtk_mate_scope_end_loc (GtkMateScope* self);
 GtkMateScope* gtk_mate_scope_root (GtkMateScope* self);
-gint gtk_mate_scope_priority (GtkMateScope* self);
+gint gtk_mate_scope_priority (GtkMateScope* self, gboolean inner);
 char* gtk_mate_scope_hierarchy_names (GtkMateScope* self, gboolean inner);
 char* gtk_mate_scope_nearest_background_colour (GtkMateScope* self);
+char* gtk_mate_scope_nearest_background_colour1 (GtkMateScope* self);
+char* gtk_mate_scope_nearest_foreground_colour (GtkMateScope* self);
+char* gtk_mate_scope_nearest_foreground_colour1 (GtkMateScope* self);
 const char* gtk_mate_scope_get_name (GtkMateScope* self);
 void gtk_mate_scope_set_name (GtkMateScope* self, const char* value);
 GtkMateBuffer* gtk_mate_scope_get_buffer (GtkMateScope* self);

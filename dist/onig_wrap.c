@@ -20,6 +20,8 @@ enum  {
 	ONIG_MATCH_RX,
 	ONIG_MATCH_RG
 };
+gint onig_match_count = 0;
+static GObject * onig_match_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 static gpointer onig_match_parent_class = NULL;
 static void onig_match_finalize (GObject * obj);
 struct _OnigRxPrivate {
@@ -135,6 +137,22 @@ void onig_match_set_rg (OnigMatch* self, OnigRegion* value) {
 }
 
 
+static GObject * onig_match_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties) {
+	GObject * obj;
+	OnigMatchClass * klass;
+	GObjectClass * parent_class;
+	OnigMatch * self;
+	klass = ONIG_MATCH_CLASS (g_type_class_peek (ONIG_TYPE_MATCH));
+	parent_class = G_OBJECT_CLASS (g_type_class_peek_parent (klass));
+	obj = parent_class->constructor (type, n_construct_properties, construct_properties);
+	self = ONIG_MATCH (obj);
+	{
+		onig_match_count++;
+	}
+	return obj;
+}
+
+
 static void onig_match_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	OnigMatch * self;
 	self = ONIG_MATCH (object);
@@ -174,6 +192,7 @@ static void onig_match_class_init (OnigMatchClass * klass) {
 	g_type_class_add_private (klass, sizeof (OnigMatchPrivate));
 	G_OBJECT_CLASS (klass)->get_property = onig_match_get_property;
 	G_OBJECT_CLASS (klass)->set_property = onig_match_set_property;
+	G_OBJECT_CLASS (klass)->constructor = onig_match_constructor;
 	G_OBJECT_CLASS (klass)->finalize = onig_match_finalize;
 	g_object_class_install_property (G_OBJECT_CLASS (klass), ONIG_MATCH_RX, g_param_spec_pointer ("rx", "rx", "rx", G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (klass), ONIG_MATCH_RG, g_param_spec_pointer ("rg", "rg", "rg", G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));

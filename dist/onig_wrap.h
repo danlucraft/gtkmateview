@@ -77,6 +77,7 @@ struct _OnigRxClass {
 
 OnigOnigError* onig_onig_error_new (void);
 GType onig_onig_error_get_type (void);
+extern gint onig_match_count;
 gint onig_match_num_captures (OnigMatch* self);
 gint onig_match_begin (OnigMatch* self, gint capture);
 gint onig_match_end (OnigMatch* self, gint capture);

@@ -22,14 +22,14 @@ enum  {
 	GTK_MATE_SCOPE_CHILDREN,
 	GTK_MATE_SCOPE_IS_COLOURED
 };
+gint gtk_mate_scope_scope_count = 0;
+static GObject * gtk_mate_scope_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 static gpointer gtk_mate_scope_parent_class = NULL;
 static void gtk_mate_scope_finalize (GObject * obj);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
-/* public static int id_count = 0;
- public int id;*/
 GtkMateScope* gtk_mate_scope_new (GtkMateBuffer* buf, const char* name) {
 	GtkMateScope * self;
 	g_return_val_if_fail (GTK_MATE_IS_BUFFER (buf), NULL);
@@ -775,12 +775,20 @@ GtkMateScope* gtk_mate_scope_root (GtkMateScope* self) {
 }
 
 
-gint gtk_mate_scope_priority (GtkMateScope* self) {
+gint gtk_mate_scope_priority (GtkMateScope* self, gboolean inner) {
 	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), 0);
 	if (self->parent == NULL) {
-		return 1;
+		if (inner) {
+			return 2;
+		} else {
+			return 1;
+		}
 	} else {
-		return gtk_mate_scope_priority (self->parent) + 1;
+		if (inner) {
+			return gtk_mate_scope_priority (self->parent, TRUE) + 2;
+		} else {
+			return gtk_mate_scope_priority (self->parent, TRUE) + 1;
+		}
 	}
 }
 
@@ -838,7 +846,44 @@ char* gtk_mate_scope_hierarchy_names (GtkMateScope* self, gboolean inner) {
 char* gtk_mate_scope_nearest_background_colour (GtkMateScope* self) {
 	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
 	if (self->parent != NULL) {
-		return gtk_mate_scope_nearest_background_colour (self->parent);
+		return gtk_mate_scope_nearest_background_colour1 (self->parent);
+	}
+	return NULL;
+}
+
+
+char* gtk_mate_scope_nearest_background_colour1 (GtkMateScope* self) {
+	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	if (self->bg_colour != NULL) {
+		const char* _tmp0;
+		_tmp0 = NULL;
+		return (_tmp0 = self->bg_colour, (_tmp0 == NULL ? NULL : g_strdup (_tmp0)));
+	}
+	if (self->parent != NULL) {
+		return gtk_mate_scope_nearest_background_colour1 (self->parent);
+	}
+	return NULL;
+}
+
+
+char* gtk_mate_scope_nearest_foreground_colour (GtkMateScope* self) {
+	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	if (self->parent != NULL) {
+		return gtk_mate_scope_nearest_foreground_colour1 (self->parent);
+	}
+	return NULL;
+}
+
+
+char* gtk_mate_scope_nearest_foreground_colour1 (GtkMateScope* self) {
+	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	if (self->fg_colour != NULL) {
+		const char* _tmp0;
+		_tmp0 = NULL;
+		return (_tmp0 = self->fg_colour, (_tmp0 == NULL ? NULL : g_strdup (_tmp0)));
+	}
+	if (self->parent != NULL) {
+		return gtk_mate_scope_nearest_foreground_colour1 (self->parent);
 	}
 	return NULL;
 }
@@ -902,6 +947,22 @@ void gtk_mate_scope_set_is_coloured (GtkMateScope* self, gboolean value) {
 }
 
 
+static GObject * gtk_mate_scope_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties) {
+	GObject * obj;
+	GtkMateScopeClass * klass;
+	GObjectClass * parent_class;
+	GtkMateScope * self;
+	klass = GTK_MATE_SCOPE_CLASS (g_type_class_peek (GTK_MATE_TYPE_SCOPE));
+	parent_class = G_OBJECT_CLASS (g_type_class_peek_parent (klass));
+	obj = parent_class->constructor (type, n_construct_properties, construct_properties);
+	self = GTK_MATE_SCOPE (obj);
+	{
+		gtk_mate_scope_scope_count++;
+	}
+	return obj;
+}
+
+
 static void gtk_mate_scope_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	GtkMateScope * self;
 	self = GTK_MATE_SCOPE (object);
@@ -950,6 +1011,7 @@ static void gtk_mate_scope_class_init (GtkMateScopeClass * klass) {
 	g_type_class_add_private (klass, sizeof (GtkMateScopePrivate));
 	G_OBJECT_CLASS (klass)->get_property = gtk_mate_scope_get_property;
 	G_OBJECT_CLASS (klass)->set_property = gtk_mate_scope_set_property;
+	G_OBJECT_CLASS (klass)->constructor = gtk_mate_scope_constructor;
 	G_OBJECT_CLASS (klass)->finalize = gtk_mate_scope_finalize;
 	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_SCOPE_NAME, g_param_spec_string ("name", "name", "name", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_SCOPE_BUFFER, g_param_spec_object ("buffer", "buffer", "buffer", GTK_MATE_TYPE_BUFFER, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
@@ -979,6 +1041,7 @@ static void gtk_mate_scope_finalize (GObject * obj) {
 	(self->tag == NULL ? NULL : (self->tag = (g_object_unref (self->tag), NULL)));
 	(self->inner_tag == NULL ? NULL : (self->inner_tag = (g_object_unref (self->inner_tag), NULL)));
 	self->bg_colour = (g_free (self->bg_colour), NULL);
+	self->fg_colour = (g_free (self->fg_colour), NULL);
 	(self->dummy_start_loc == NULL ? NULL : (self->dummy_start_loc = (g_object_unref (self->dummy_start_loc), NULL)));
 	(self->dummy_end_loc == NULL ? NULL : (self->dummy_end_loc = (g_object_unref (self->dummy_end_loc), NULL)));
 	self->begin_match_string = (g_free (self->begin_match_string), NULL);

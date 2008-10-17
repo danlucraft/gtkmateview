@@ -16,8 +16,14 @@ namespace Onig {
 		public RegexT rx {get; set;}
 		public Region rg {get; set;}
 
+		public static int count = 0;
+
 		public int num_captures() {
 			return this.rg.num_regs;
+		}
+
+		construct {
+			Match.count++;
 		}
 
 		public int begin(int capture) {
