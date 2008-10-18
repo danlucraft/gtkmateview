@@ -163,6 +163,9 @@ namespace Gtk.Mate {
 				colourer.colour_line_with_scopes(all_scopes);
 				//stdout.printf("after_colour_line_with_scopes\n");
 			}
+			else {
+				// stdout.printf("no colourer");
+			}
 			// stdout.printf("%s\n", this.root.pretty(0));
 			return (end_scope1 != end_scope2);
 		}

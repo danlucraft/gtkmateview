@@ -57,13 +57,13 @@ namespace Gtk.Mate {
 		}
 
 		public void colour_scope(Scope scope, bool inner, bool force=true) {
-			stdout.printf("colour_scope: %s (%s) [%d - %d]\n", scope.name, inner ? "true" : "false",
-						  scope.start_offset(), scope.end_offset());
+			// stdout.printf("colour_scope: %s (%s) [%d - %d]\n", scope.name, inner ? "true" : "false",
+			// 			  scope.start_offset(), scope.end_offset());
 			int priority = scope.priority(inner);
 			TextTag tag;
 			TextIter start_iter, end_iter;
 
-			stdout.printf("  priority: %d\n", priority);
+			// stdout.printf("  priority: %d\n", priority);
 			scope.is_coloured = true;
 
 			if (inner) {
@@ -134,44 +134,44 @@ namespace Gtk.Mate {
 				tag.style = Pango.Underline.NONE | tag.style;
 			
 			string background = setting.settings.get("background");
-			stdout.printf("        background:        %s\n", background);
+			// stdout.printf("        background:        %s\n", background);
 			string merged_bg_colour;
 			var parent_bg = scope.nearest_background_colour();
 			if (parent_bg == null) {
 				parent_bg = theme.global_settings.get("background");
 			}
-			stdout.printf("        parent_background: %s\n", parent_bg);
+			// stdout.printf("        parent_background: %s\n", parent_bg);
 			if (background != null && background != "") {
 				merged_bg_colour = Colourer.merge_colour(parent_bg, background);
 				if (merged_bg_colour != null) {
 					scope.bg_colour = merged_bg_colour;
 					tag.background = merged_bg_colour;
-					stdout.printf("       tag.background = %s\n", merged_bg_colour);
+					// stdout.printf("       tag.background = %s\n", merged_bg_colour);
 				}
 			}
 			else {
 				merged_bg_colour = parent_bg;
 			}
-			stdout.printf("        merged_bg_colour:  %s\n", merged_bg_colour);
-			// string foreground = setting.settings.get("foreground");
-			// var parent_fg = scope.nearest_foreground_colour();
-			// if (parent_fg == null) {
-			// 	parent_fg = theme.global_settings.get("foreground");
-			// }
+			// stdout.printf("        merged_bg_colour:  %s\n", merged_bg_colour);
+			string foreground = setting.settings.get("foreground");
+			var parent_fg = scope.nearest_foreground_colour();
+			if (parent_fg == null) {
+				parent_fg = theme.global_settings.get("foreground");
+			}
 			// stdout.printf("        foreground:        %s\n", foreground);
-			// if (foreground != null && foreground != "") {
-			// 	string merged_fg_colour;
-			// 	if (parent_fg != null)
-			// 		merged_fg_colour = Colourer.merge_colour(parent_fg, foreground);
-			// 	else
-			// 		merged_fg_colour = foreground;
-			// 	if (merged_fg_colour != null) {
-			// 		scope.fg_colour = merged_fg_colour;
-			// 		tag.foreground = merged_fg_colour;
-			// 	}
-			// 	stdout.printf("       merged_fg_colour: %s\n", merged_fg_colour);
-			// }
-			stdout.printf("\n");
+			if (foreground != null && foreground != "") {
+				string merged_fg_colour;
+				if (parent_fg != null)
+					merged_fg_colour = Colourer.merge_colour(parent_fg, foreground);
+				else
+					merged_fg_colour = foreground;
+				if (merged_fg_colour != null) {
+					scope.fg_colour = merged_fg_colour;
+					tag.foreground = merged_fg_colour;
+				}
+				// stdout.printf("       merged_fg_colour: %s\n", merged_fg_colour);
+			}
+			// stdout.printf("\n");
 		}
 
 		public static int char_to_hex(unichar ch) {

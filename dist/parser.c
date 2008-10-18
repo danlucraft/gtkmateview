@@ -319,8 +319,10 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 		gtk_mate_colourer_uncolour_scopes (self->priv->_colourer, removed_scopes);
 		/*stdout.printf("before_colour_line_with_scopes\n");*/
 		gtk_mate_colourer_colour_line_with_scopes (self->priv->_colourer, all_scopes);
+	} else {
 	}
 	/*stdout.printf("after_colour_line_with_scopes\n");
+	 stdout.printf("no colourer");
 	 stdout.printf("%s\n", this.root.pretty(0));*/
 	return (_tmp0 = (end_scope1 != end_scope2), (line = (g_free (line), NULL)), (start_scope == NULL ? NULL : (start_scope = (g_object_unref (start_scope), NULL))), (end_scope1 == NULL ? NULL : (end_scope1 = (g_object_unref (end_scope1), NULL))), (scanner == NULL ? NULL : (scanner = (g_object_unref (scanner), NULL))), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), (all_scopes == NULL ? NULL : (all_scopes = (g_object_unref (all_scopes), NULL))), (closed_scopes == NULL ? NULL : (closed_scopes = (g_object_unref (closed_scopes), NULL))), (removed_scopes == NULL ? NULL : (removed_scopes = (g_object_unref (removed_scopes), NULL))), (end_scope2 == NULL ? NULL : (end_scope2 = (g_object_unref (end_scope2), NULL))), _tmp0);
 }
