@@ -265,7 +265,8 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	line = gtk_mate_buffer_get_line1 (self->priv->_buffer, line_ix);
 	length = ((gint) (string_get_length (line)));
 	/*buffer.get_line_length(line_ix);
-	 stdout.printf("\nparse line: %d (%d): '%s'\n", line_ix, length, line);*/
+	 stdout.printf("%d, ", line_ix);
+	 stdout.flush();*/
 	start_scope = gtk_mate_scope_scope_at (self->root, line_ix, -1);
 	end_scope1 = gtk_mate_scope_scope_at (self->root, line_ix, G_MAXINT);
 	/*stdout.printf("scope_at returns: %s\n", start_scope.name);
@@ -1195,15 +1196,6 @@ void gtk_mate_parser_added_tag (GtkMateParser* self, GtkTextTag* tag) {
 }
 
 
-/* public static void static_tag_added_after_handler(TextTagTable tt, TextTag tag) {
- foreach(var parser in existing_parsers) {
- if (parser.tag_added && tag.name != null && tag.name.has_prefix("gmv(")) {
- parser.tags.insert_sorted(tag, (CompareDataFunc) Parser.tag_compare);
- }
- parser.reset_table_priorities();
- parser.tag_added = false;
- }
- }*/
 gint gtk_mate_parser_tag_compare (GtkTextTag* tag1, GtkTextTag* tag2, void* data) {
 	char* _tmp0;
 	gint pri1;
@@ -1241,8 +1233,7 @@ GtkMateParser* gtk_mate_parser_create (GtkMateGrammar* grammar, GtkMateBuffer* b
 	g_return_val_if_fail (GTK_MATE_IS_BUFFER (buffer), NULL);
 	gtk_mate_grammar_init_for_use (grammar);
 	p = g_object_ref_sink (gtk_mate_parser_new ());
-	/*//stdout.printf("grammar: %s\n", grammar.name); 
-	 remove when signal_connect_after works:*/
+	/* remove when signal_connect_after works:*/
 	if (gtk_mate_parser_existing_parsers == NULL) {
 		GeeArrayList* _tmp0;
 		_tmp0 = NULL;
@@ -1261,9 +1252,6 @@ GtkMateParser* gtk_mate_parser_create (GtkMateGrammar* grammar, GtkMateBuffer* b
 	p->deactivation_level = 0;
 	gtk_mate_parser_make_root (p);
 	gtk_mate_parser_connect_buffer_signals (p);
-	/* // required to stop GTK crashing on reset_table_priorities
-	 p.dummy_tag = buffer.create_tag("dummy tag");
-	 p.dummy_tag2 = buffer.create_tag("dummy tag2");*/
 	return p;
 }
 

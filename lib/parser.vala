@@ -118,7 +118,8 @@ namespace Gtk.Mate {
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line1(line_ix);
 			int length = (int) line.length;//buffer.get_line_length(line_ix);
-			// stdout.printf("\nparse line: %d (%d): '%s'\n", line_ix, length, line);
+			// stdout.printf("%d, ", line_ix);
+			// stdout.flush();
 			var start_scope = this.root.scope_at(line_ix, -1);
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
 			//stdout.printf("scope_at returns: %s\n", start_scope.name);
@@ -579,12 +580,9 @@ namespace Gtk.Mate {
 				process_changes();
 		}
 
-		// public void tag_added_handler(TextTagTable tt, TextTag tag) {
-		// 	this.tag_added = true;
-		// }
-
 		// These static methods are hack to get around Vala not supporting signal_connect_after_yet
 		public static ArrayList<Parser> existing_parsers;
+
 		public static void static_insert_text_after_handler(Buffer bf, TextIter pos, string text, int length) {
 			foreach(var parser in existing_parsers) {
 				parser.insert_text_after_handler(bf, pos, text, length);
@@ -602,16 +600,6 @@ namespace Gtk.Mate {
 			}
 			this.reset_table_priorities();
 		}
-
-		// public static void static_tag_added_after_handler(TextTagTable tt, TextTag tag) {
-		// 	foreach(var parser in existing_parsers) {
-		// 		if (parser.tag_added && tag.name != null && tag.name.has_prefix("gmv(")) {
-		// 			parser.tags.insert_sorted(tag, (CompareDataFunc) Parser.tag_compare);
-		// 		}
-		// 		parser.reset_table_priorities();
-		// 		parser.tag_added = false;
-		// 	}
-		// }
 
 		public static int tag_compare(TextTag tag1, TextTag tag2, void* data) {
 			int pri1 = tag1.name[4].digit_value();
@@ -633,7 +621,6 @@ namespace Gtk.Mate {
 			grammar.init_for_use();
 
 			var p = new Parser();
-			////stdout.printf("grammar: %s\n", grammar.name); 
 			// remove when signal_connect_after works:
 			if (Parser.existing_parsers == null) 
 				Parser.existing_parsers = new ArrayList<Parser>();
@@ -647,9 +634,6 @@ namespace Gtk.Mate {
 			p.make_root();
 			p.connect_buffer_signals();
 
-			// // required to stop GTK crashing on reset_table_priorities
-			// p.dummy_tag = buffer.create_tag("dummy tag");
-			// p.dummy_tag2 = buffer.create_tag("dummy tag2");
 			return p;
 		}
 	}
