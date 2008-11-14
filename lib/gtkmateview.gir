@@ -1,0 +1,469 @@
+<?xml version="1.0"?>
+<repository version="1.0">
+<namespace name="Gtk" version="1.0">
+</namespace>
+<namespace name="Onig" version="1.0">
+	<class name="OnigError" parent="GLib.Object" glib:type-name="OnigOnigError" glib:get-type="onig_onig_error_get_type">
+		<field name="code">
+			<type name="int"/>
+		</field>
+		<field name="error_info">
+			<type name="Oniguruma.OnigErrorInfo"/>
+		</field>
+		<constructor name="new" c:identifier="onig_onig_error_new">
+			<parameters>
+			</parameters>
+			<return-value>
+				<type name="Onig.OnigError"/>
+			</return-value>
+		</constructor>
+	</class>
+	<class name="Match" parent="GLib.Object" glib:type-name="OnigMatch" glib:get-type="onig_match_get_type">
+		<field name="onig_match_count">
+			<type name="int"/>
+		</field>
+		<method name="num_captures" c:identifier="onig_match_num_captures">
+			<parameters>
+				<parameter name="self">
+					<type name="Onig.Match"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="int"/>
+			</return-value>
+		</method>
+		<method name="begin" c:identifier="onig_match_begin">
+			<parameters>
+				<parameter name="self">
+					<type name="Onig.Match"/>
+				</parameter>
+				<parameter name="capture">
+					<type name="int"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="int"/>
+			</return-value>
+		</method>
+		<method name="end" c:identifier="onig_match_end">
+			<parameters>
+				<parameter name="self">
+					<type name="Onig.Match"/>
+				</parameter>
+				<parameter name="capture">
+					<type name="int"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="int"/>
+			</return-value>
+		</method>
+		<constructor name="new" c:identifier="onig_match_new">
+			<parameters>
+			</parameters>
+			<return-value>
+				<type name="Onig.Match"/>
+			</return-value>
+		</constructor>
+		<property name="rx" readable="1" writable="1">
+			<type name="Oniguruma.RegexT"/>
+		</property>
+		<property name="rg" readable="1" writable="1">
+			<type name="Oniguruma.Region"/>
+		</property>
+	</class>
+	<class name="Rx" parent="GLib.Object" glib:type-name="OnigRx" glib:get-type="onig_rx_get_type">
+		<field name="matches_start_of_line">
+			<type name="bool"/>
+		</field>
+		<method name="search" c:identifier="onig_rx_search">
+			<parameters>
+				<parameter name="self">
+					<type name="Onig.Rx"/>
+				</parameter>
+				<parameter name="target">
+					<type name="string"/>
+				</parameter>
+				<parameter name="start">
+					<type name="int"/>
+				</parameter>
+				<parameter name="end">
+					<type name="int"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="Onig.Match?"/>
+			</return-value>
+		</method>
+		<method name="make" c:identifier="onig_rx_make">
+			<parameters>
+				<parameter name="pattern">
+					<type name="string"/>
+				</parameter>
+				<parameter name="options">
+					<type name="Oniguruma.OnigOptionType"/>
+				</parameter>
+				<parameter name="error" direction="out" transfer-ownership="full">
+					<type name="Onig.OnigError"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="Onig.Rx?"/>
+			</return-value>
+		</method>
+		<method name="make1" c:identifier="onig_rx_make1">
+			<parameters>
+				<parameter name="pattern">
+					<type name="string"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="Onig.Rx?"/>
+			</return-value>
+		</method>
+		<constructor name="new" c:identifier="onig_rx_new">
+			<parameters>
+			</parameters>
+			<return-value>
+				<type name="Onig.Rx"/>
+			</return-value>
+		</constructor>
+		<property name="rx" readable="1" writable="1">
+			<type name="Oniguruma.RegexT"/>
+		</property>
+	</class>
+</namespace>
+<namespace name="PList" version="1.0">
+	<class name="Node" parent="GLib.Object" glib:type-name="PListNode" glib:get-type="plist_node_get_type">
+		<method name="parse_xml_node" c:identifier="plist_node_parse_xml_node">
+			<parameters>
+				<parameter name="node">
+					<type name="Xml.Node*"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="PList.Node?"/>
+			</return-value>
+		</method>
+		<constructor name="new" c:identifier="plist_node_new">
+			<parameters>
+			</parameters>
+			<return-value>
+				<type name="PList.Node"/>
+			</return-value>
+		</constructor>
+	</class>
+	<class name="String" parent="PList.Node" glib:type-name="PListString" glib:get-type="plist_string_get_type">
+		<field name="str">
+			<type name="string"/>
+		</field>
+		<constructor name="new" c:identifier="plist_string_new">
+			<parameters>
+			</parameters>
+			<return-value>
+				<type name="PList.String"/>
+			</return-value>
+		</constructor>
+	</class>
+	<class name="Integer" parent="PList.Node" glib:type-name="PListInteger" glib:get-type="plist_integer_get_type">
+		<field name="value">
+			<type name="int"/>
+		</field>
+		<constructor name="new" c:identifier="plist_integer_new">
+			<parameters>
+			</parameters>
+			<return-value>
+				<type name="PList.Integer"/>
+			</return-value>
+		</constructor>
+	</class>
+	<class name="Array" parent="PList.Node" glib:type-name="PListArray" glib:get-type="plist_array_get_type">
+		<field name="array">
+			<type name="Gee.ArrayList<PList.Node>"/>
+		</field>
+		<method name="get" c:identifier="plist_array_get">
+			<parameters>
+				<parameter name="self">
+					<type name="PList.Array"/>
+				</parameter>
+				<parameter name="ix">
+					<type name="int"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="PList.Node"/>
+			</return-value>
+		</method>
+		<method name="parse_array" c:identifier="plist_array_parse_array">
+			<parameters>
+				<parameter name="node">
+					<type name="Xml.Node*"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="PList.Array"/>
+			</return-value>
+		</method>
+		<constructor name="new" c:identifier="plist_array_new">
+			<parameters>
+			</parameters>
+			<return-value>
+				<type name="PList.Array"/>
+			</return-value>
+		</constructor>
+	</class>
+	<class name="Dict" parent="PList.Node" glib:type-name="PListDict" glib:get-type="plist_dict_get_type">
+		<field name="map">
+			<type name="Gee.HashMap<string,PList.Node>"/>
+		</field>
+		<method name="get" c:identifier="plist_dict_get">
+			<parameters>
+				<parameter name="self">
+					<type name="PList.Dict"/>
+				</parameter>
+				<parameter name="key">
+					<type name="string"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="PList.Node"/>
+			</return-value>
+		</method>
+		<method name="keys" c:identifier="plist_dict_keys">
+			<parameters>
+				<parameter name="self">
+					<type name="PList.Dict"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<array>
+					<type name="string"/>
+				</array>
+			</return-value>
+		</method>
+		<method name="print_keys" c:identifier="plist_dict_print_keys">
+			<parameters>
+				<parameter name="self">
+					<type name="PList.Dict"/>
+				</parameter>
+			</parameters>
+			<return-value>
+				<type name="none"/>
+			</return-value>
+		</method>
+		<method name="parse_dict" c:identifier="plist_dict_parse_dict">
+			<parameters>
+				<parameter name="node">
+					<type name="Xml.Node*"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="PList.Dict"/>
+			</return-value>
+		</method>
+		<constructor name="new" c:identifier="plist_dict_new">
+			<parameters>
+			</parameters>
+			<return-value>
+				<type name="PList.Dict"/>
+			</return-value>
+		</constructor>
+	</class>
+	<method name="parse" c:identifier="plist_parse">
+		<parameters>
+			<parameter name="filename">
+				<type name="string"/>
+			</parameter>
+		</parameters>
+		<return-value transfer-ownership="full">
+			<type name="PList.Dict"/>
+		</return-value>
+	</method>
+	<method name="print_plist" c:identifier="plist_print_plist">
+		<parameters>
+			<parameter name="indent">
+				<type name="int"/>
+			</parameter>
+			<parameter name="node">
+				<type name="PList.Node"/>
+			</parameter>
+		</parameters>
+		<return-value>
+			<type name="none"/>
+		</return-value>
+	</method>
+</namespace>
+<errordomain name="XmlError">
+	<member name="XML_ERROR_FILE_NOT_FOUND"/>
+	<member name="XML_ERROR_XML_DOCUMENT_EMPTY"/>
+</errordomain>
+<class name="RangeSet" parent="GLib.Object" glib:type-name="RangeSet" glib:get-type="range_set_get_type">
+	<implements>
+		<interface name="Gee.Iterable"/>
+	</implements>
+	<field name="ranges">
+		<type name="Gee.ArrayList<RangeSet.Range>"/>
+	</field>
+	<method name="length" c:identifier="range_set_length">
+		<parameters>
+			<parameter name="self">
+				<type name="RangeSet"/>
+			</parameter>
+		</parameters>
+		<return-value transfer-ownership="full">
+			<type name="int"/>
+		</return-value>
+	</method>
+	<method name="size" c:identifier="range_set_size">
+		<parameters>
+			<parameter name="self">
+				<type name="RangeSet"/>
+			</parameter>
+		</parameters>
+		<return-value transfer-ownership="full">
+			<type name="int"/>
+		</return-value>
+	</method>
+	<method name="is_empty" c:identifier="range_set_is_empty">
+		<parameters>
+			<parameter name="self">
+				<type name="RangeSet"/>
+			</parameter>
+		</parameters>
+		<return-value transfer-ownership="full">
+			<type name="bool"/>
+		</return-value>
+	</method>
+	<method name="add" c:identifier="range_set_add">
+		<parameters>
+			<parameter name="self">
+				<type name="RangeSet"/>
+			</parameter>
+			<parameter name="a">
+				<type name="int"/>
+			</parameter>
+			<parameter name="b">
+				<type name="int"/>
+			</parameter>
+		</parameters>
+		<return-value>
+			<type name="none"/>
+		</return-value>
+	</method>
+	<method name="merge" c:identifier="range_set_merge">
+		<parameters>
+			<parameter name="self">
+				<type name="RangeSet"/>
+			</parameter>
+			<parameter name="ix">
+				<type name="int"/>
+			</parameter>
+		</parameters>
+		<return-value>
+			<type name="none"/>
+		</return-value>
+	</method>
+	<method name="present" c:identifier="range_set_present">
+		<parameters>
+			<parameter name="self">
+				<type name="RangeSet"/>
+			</parameter>
+		</parameters>
+		<return-value transfer-ownership="full">
+			<type name="string"/>
+		</return-value>
+	</method>
+	<method name="max" c:identifier="range_set_max">
+		<parameters>
+			<parameter name="self">
+				<type name="RangeSet"/>
+			</parameter>
+			<parameter name="a">
+				<type name="int"/>
+			</parameter>
+			<parameter name="b">
+				<type name="int"/>
+			</parameter>
+		</parameters>
+		<return-value transfer-ownership="full">
+			<type name="int"/>
+		</return-value>
+	</method>
+	<method name="min" c:identifier="range_set_min">
+		<parameters>
+			<parameter name="self">
+				<type name="RangeSet"/>
+			</parameter>
+			<parameter name="a">
+				<type name="int"/>
+			</parameter>
+			<parameter name="b">
+				<type name="int"/>
+			</parameter>
+		</parameters>
+		<return-value transfer-ownership="full">
+			<type name="int"/>
+		</return-value>
+	</method>
+	<constructor name="new" c:identifier="range_set_new">
+		<parameters>
+		</parameters>
+		<return-value>
+			<type name="RangeSet"/>
+		</return-value>
+	</constructor>
+	<class name="Range" parent="GLib.Object" glib:type-name="RangeSetRange" glib:get-type="range_set_range_get_type">
+		<field name="a">
+			<type name="int"/>
+		</field>
+		<field name="b">
+			<type name="int"/>
+		</field>
+		<constructor name="new" c:identifier="range_set_range_new">
+			<parameters>
+			</parameters>
+			<return-value>
+				<type name="RangeSet.Range"/>
+			</return-value>
+		</constructor>
+	</class>
+</class>
+<class name="StringHelper" parent="GLib.Object" glib:type-name="StringHelper" glib:get-type="string_helper_get_type">
+	<method name="gsub" c:identifier="string_helper_gsub">
+		<parameters>
+			<parameter name="start_string">
+				<type name="string"/>
+			</parameter>
+			<parameter name="match_string">
+				<type name="string"/>
+			</parameter>
+			<parameter name="replacement_string">
+				<type name="string"/>
+			</parameter>
+		</parameters>
+		<return-value transfer-ownership="full">
+			<type name="string"/>
+		</return-value>
+	</method>
+	<method name="occurrences" c:identifier="string_helper_occurrences">
+		<parameters>
+			<parameter name="s">
+				<type name="string"/>
+			</parameter>
+			<parameter name="t">
+				<type name="string"/>
+			</parameter>
+		</parameters>
+		<return-value transfer-ownership="full">
+			<type name="Gee.ArrayList<int>"/>
+		</return-value>
+	</method>
+	<constructor name="new" c:identifier="string_helper_new">
+		<parameters>
+		</parameters>
+		<return-value>
+			<type name="StringHelper"/>
+		</return-value>
+	</constructor>
+</class>
+</repository>

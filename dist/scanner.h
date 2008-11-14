@@ -10,7 +10,7 @@
 #include <gee/iterable.h>
 #include <gee/arraylist.h>
 #include <gee/iterator.h>
-#include "scope.h"
+#include "theme.h"
 #include "pattern.h"
 #include "onig_wrap.h"
 
@@ -24,8 +24,6 @@ G_BEGIN_DECLS
 #define GTK_MATE_IS_MARKER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_MATE_TYPE_MARKER))
 #define GTK_MATE_MARKER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_MATE_TYPE_MARKER, GtkMateMarkerClass))
 
-typedef struct _GtkMateMarker GtkMateMarker;
-typedef struct _GtkMateMarkerClass GtkMateMarkerClass;
 typedef struct _GtkMateMarkerPrivate GtkMateMarkerPrivate;
 
 #define GTK_MATE_TYPE_SCANNER (gtk_mate_scanner_get_type ())
@@ -35,8 +33,6 @@ typedef struct _GtkMateMarkerPrivate GtkMateMarkerPrivate;
 #define GTK_MATE_IS_SCANNER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_MATE_TYPE_SCANNER))
 #define GTK_MATE_SCANNER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_MATE_TYPE_SCANNER, GtkMateScannerClass))
 
-typedef struct _GtkMateScanner GtkMateScanner;
-typedef struct _GtkMateScannerClass GtkMateScannerClass;
 typedef struct _GtkMateScannerPrivate GtkMateScannerPrivate;
 
 #define GTK_MATE_SCANNER_TYPE_ITERATOR (gtk_mate_scanner_iterator_get_type ())
@@ -46,8 +42,6 @@ typedef struct _GtkMateScannerPrivate GtkMateScannerPrivate;
 #define GTK_MATE_SCANNER_IS_ITERATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_MATE_SCANNER_TYPE_ITERATOR))
 #define GTK_MATE_SCANNER_ITERATOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_MATE_SCANNER_TYPE_ITERATOR, GtkMateScannerIteratorClass))
 
-typedef struct _GtkMateScannerIterator GtkMateScannerIterator;
-typedef struct _GtkMateScannerIteratorClass GtkMateScannerIteratorClass;
 typedef struct _GtkMateScannerIteratorPrivate GtkMateScannerIteratorPrivate;
 
 /* The Scanner returns these to indicate successful pattern matches in a line.*/

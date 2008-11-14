@@ -8,10 +8,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gee/arraylist.h>
-#include "view.h"
-#include "range_set.h"
+#include "theme.h"
 #include "grammar.h"
-#include "scanner.h"
+#include "range_set.h"
 #include "onig_wrap.h"
 
 G_BEGIN_DECLS
@@ -56,6 +55,7 @@ struct _GtkMateParser {
 	GSequence* tags;
 	RangeSet* changes;
 	gint parsed_upto;
+	gint last_visible_line;
 	gboolean always_parse_all;
 };
 
@@ -91,7 +91,8 @@ void gtk_mate_parser_reset_table_priorities (GtkMateParser* self);
 void gtk_mate_parser_remove_tags (GtkMateParser* self);
 void gtk_mate_parser_change_theme (GtkMateParser* self, GtkMateTheme* theme);
 void gtk_mate_parser_recolour_children (GtkMateParser* self, GtkMateScope* scope);
-void gtk_mate_parser_last_visible_line_changed (GtkMateParser* self, gint last_visible_line);
+void gtk_mate_parser_last_visible_line_changed (GtkMateParser* self, gint new_last_visible_line);
+gint gtk_mate_parser_last_line_parsed (GtkMateParser* self);
 void gtk_mate_parser_connect_buffer_signals (GtkMateParser* self);
 void gtk_mate_parser_insert_text_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, const char* text, gint length);
 void gtk_mate_parser_delete_range_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, GtkTextIter* pos2);
@@ -111,6 +112,8 @@ GtkMateColourer* gtk_mate_parser_get_colourer (GtkMateParser* self);
 void gtk_mate_parser_set_colourer (GtkMateParser* self, GtkMateColourer* value);
 GtkMateBuffer* gtk_mate_parser_get_buffer (GtkMateParser* self);
 void gtk_mate_parser_set_buffer (GtkMateParser* self, GtkMateBuffer* value);
+gint gtk_mate_parser_get_look_ahead (GtkMateParser* self);
+void gtk_mate_parser_set_look_ahead (GtkMateParser* self, gint value);
 GType gtk_mate_parser_get_type (void);
 
 

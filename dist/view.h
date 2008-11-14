@@ -7,25 +7,10 @@
 #include <gtksourceview/gtksourceview.h>
 #include <stdlib.h>
 #include <string.h>
+#include "theme.h"
 
 G_BEGIN_DECLS
 
-typedef struct _GtkMateView GtkMateView;
-typedef struct _GtkMateViewClass GtkMateViewClass;
-typedef struct _GtkMateTextLoc GtkMateTextLoc;
-typedef struct _GtkMateTextLocClass GtkMateTextLocClass;
-typedef struct _GtkMateParser GtkMateParser;
-typedef struct _GtkMateParserClass GtkMateParserClass;
-typedef struct _GtkMateThemeSetting GtkMateThemeSetting;
-typedef struct _GtkMateThemeSettingClass GtkMateThemeSettingClass;
-typedef struct _GtkMateTheme GtkMateTheme;
-typedef struct _GtkMateThemeClass GtkMateThemeClass;
-typedef struct _GtkMateScope GtkMateScope;
-typedef struct _GtkMateScopeClass GtkMateScopeClass;
-typedef struct _GtkMateBuffer GtkMateBuffer;
-typedef struct _GtkMateBufferClass GtkMateBufferClass;
-typedef struct _GtkMateColourer GtkMateColourer;
-typedef struct _GtkMateColourerClass GtkMateColourerClass;
 
 #define GTK_MATE_TYPE_VIEW (gtk_mate_view_get_type ())
 #define GTK_MATE_VIEW(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_MATE_TYPE_VIEW, GtkMateView))

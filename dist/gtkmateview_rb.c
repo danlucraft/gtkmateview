@@ -12,8 +12,8 @@
 #include "theme.h"
 #include "view.h"
 #include "gtkmateview.h"
-#include "plist.h"
 #include "onig_wrap.h"
+#include "plist.h"
 #include "range_set.h"
 #include "string_helper.h"
 static VALUE rb_vala_error, rbc_gtk;
@@ -119,6 +119,27 @@ static VALUE rbc_gtk_mate_theme_setting;
 #define _GTK_MATE_VIEW_SELF(s) GTK_MATE_VIEW(RVAL2GOBJ(s))
 static VALUE rbc_gtk_mate_view;
 
+/****  Onig wrapper *****/
+
+#define _ONIG_SELF(s) ONIG(RVAL2GOBJ(s))
+static VALUE rbc_onig;
+
+/****  Onig.Match wrapper *****/
+
+#define _ONIG_MATCH_SELF(s) ONIG_MATCH(RVAL2GOBJ(s))
+static VALUE rbc_onig_match;
+int onig_match_count;
+
+/****  Onig.OnigError wrapper *****/
+
+#define _ONIG_ONIG_ERROR_SELF(s) ONIG_ONIG_ERROR(RVAL2GOBJ(s))
+static VALUE rbc_onig_onig_error;
+
+/****  Onig.Rx wrapper *****/
+
+#define _ONIG_RX_SELF(s) ONIG_RX(RVAL2GOBJ(s))
+static VALUE rbc_onig_rx;
+
 /****  PList wrapper *****/
 
 #define _PLIST_SELF(s) PLIST(RVAL2GOBJ(s))
@@ -148,27 +169,6 @@ static VALUE rbc_plist_node;
 
 #define _PLIST_STRING_SELF(s) PLIST_STRING(RVAL2GOBJ(s))
 static VALUE rbc_plist_string;
-
-/****  Onig wrapper *****/
-
-#define _ONIG_SELF(s) ONIG(RVAL2GOBJ(s))
-static VALUE rbc_onig;
-
-/****  Onig.Match wrapper *****/
-
-#define _ONIG_MATCH_SELF(s) ONIG_MATCH(RVAL2GOBJ(s))
-static VALUE rbc_onig_match;
-int onig_match_count;
-
-/****  Onig.OnigError wrapper *****/
-
-#define _ONIG_ONIG_ERROR_SELF(s) ONIG_ONIG_ERROR(RVAL2GOBJ(s))
-static VALUE rbc_onig_onig_error;
-
-/****  Onig.Rx wrapper *****/
-
-#define _ONIG_RX_SELF(s) ONIG_RX(RVAL2GOBJ(s))
-static VALUE rbc_onig_rx;
 
 /****  RangeSet wrapper *****/
 
@@ -2558,6 +2558,34 @@ static VALUE rb_gtk_mate_parser_set_existing_parsers(VALUE self, VALUE existing_
     return Qnil;
 }
 
+static VALUE rb_gtk_mate_parser_get_last_visible_line(VALUE self) {
+    GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // ValaMemberGet#body
+    int _c_return = gtk_mate_parser->last_visible_line; 
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+    _rb_return = INT2FIX(_c_return);
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_parser_set_last_visible_line(VALUE self, VALUE last_visible_line) {
+    GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(last_visible_line) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    // Method#argument_type_conversions
+    int _c_last_visible_line;
+    _c_last_visible_line = FIX2INT(last_visible_line);
+    // ValaMemberSet#body
+    gtk_mate_parser->last_visible_line = _c_last_visible_line;
+    // Method#return_type_conversion
+    return Qnil;
+}
+
 static VALUE rb_gtk_mate_parser_get_parsed_upto(VALUE self) {
     GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
     // Method#type_checks
@@ -3005,19 +3033,33 @@ static VALUE rb_gtk_mate_parser_is_parsing(VALUE self) {
     return _rb_return;
 }
 
-static VALUE rb_gtk_mate_parser_last_visible_line_changed(VALUE self, VALUE last_visible_line) {
+static VALUE rb_gtk_mate_parser_last_line_parsed(VALUE self) {
     GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
     // Method#type_checks
-    if (TYPE(last_visible_line) != T_FIXNUM) {
+    // Method#argument_type_conversions
+    // Method#body
+    
+    int _c_return;
+    _c_return = gtk_mate_parser_last_line_parsed(gtk_mate_parser);
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+    _rb_return = INT2FIX(_c_return);
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_parser_last_visible_line_changed(VALUE self, VALUE new_last_visible_line) {
+    GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(new_last_visible_line) != T_FIXNUM) {
         VALUE rb_arg_error = rb_eval_string("ArgumentError");
         rb_raise(rb_arg_error, "expected a small integer");
     }
     // Method#argument_type_conversions
-    int _c_last_visible_line;
-    _c_last_visible_line = FIX2INT(last_visible_line);
+    int _c_new_last_visible_line;
+    _c_new_last_visible_line = FIX2INT(new_last_visible_line);
     // Method#body
     
-    gtk_mate_parser_last_visible_line_changed(gtk_mate_parser, _c_last_visible_line);
+    gtk_mate_parser_last_visible_line_changed(gtk_mate_parser, _c_new_last_visible_line);
     // Method#return_type_conversion
     return Qnil;
 }
@@ -6379,6 +6421,242 @@ static VALUE rb_gtk_mate_view_value_changed_handler(VALUE self) {
 }
 
 
+/****  Onig methods *****/
+
+
+/****  Onig.Match methods *****/
+
+
+static VALUE onig_match_initialize(VALUE self) {
+
+    G_INITIALIZE(self, onig_match_new ());
+    return Qnil;
+}
+
+static VALUE rb_onig_match_get_count(VALUE self) {
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // StaticMemberGet#body
+    int _c_return = onig_match_count;
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+    _rb_return = INT2FIX(_c_return);
+    return _rb_return;
+}
+
+static VALUE rb_onig_match_set_count(VALUE self, VALUE count) {
+    // Method#type_checks
+    if (TYPE(count) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    // Method#argument_type_conversions
+    int _c_count;
+    _c_count = FIX2INT(count);
+    // StaticMemberSet#body
+    onig_match_count = _c_count; 
+    // Method#return_type_conversion
+    return Qnil;
+}
+
+static VALUE rb_onig_match_begin(VALUE self, VALUE capture) {
+    OnigMatch* onig_match = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(capture) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    // Method#argument_type_conversions
+    int _c_capture;
+    _c_capture = FIX2INT(capture);
+    // Method#body
+    
+    int _c_return;
+    _c_return = onig_match_begin(onig_match, _c_capture);
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+    _rb_return = INT2FIX(_c_return);
+    return _rb_return;
+}
+
+static VALUE rb_onig_match_end(VALUE self, VALUE capture) {
+    OnigMatch* onig_match = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(capture) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    // Method#argument_type_conversions
+    int _c_capture;
+    _c_capture = FIX2INT(capture);
+    // Method#body
+    
+    int _c_return;
+    _c_return = onig_match_end(onig_match, _c_capture);
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+    _rb_return = INT2FIX(_c_return);
+    return _rb_return;
+}
+
+static VALUE rb_onig_match_num_captures(VALUE self) {
+    OnigMatch* onig_match = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // Method#body
+    
+    int _c_return;
+    _c_return = onig_match_num_captures(onig_match);
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+    _rb_return = INT2FIX(_c_return);
+    return _rb_return;
+}
+
+
+/****  Onig.OnigError methods *****/
+
+
+static VALUE onig_onig_error_initialize(VALUE self) {
+
+    G_INITIALIZE(self, onig_onig_error_new ());
+    return Qnil;
+}
+
+static VALUE rb_onig_onig_error_get_code(VALUE self) {
+    OnigOnigError* onig_onig_error = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // ValaMemberGet#body
+    int _c_return = onig_onig_error->code; 
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+    _rb_return = INT2FIX(_c_return);
+    return _rb_return;
+}
+
+static VALUE rb_onig_onig_error_set_code(VALUE self, VALUE code) {
+    OnigOnigError* onig_onig_error = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(code) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    // Method#argument_type_conversions
+    int _c_code;
+    _c_code = FIX2INT(code);
+    // ValaMemberSet#body
+    onig_onig_error->code = _c_code;
+    // Method#return_type_conversion
+    return Qnil;
+}
+
+
+/****  Onig.Rx methods *****/
+
+
+static VALUE onig_rx_initialize(VALUE self) {
+
+    G_INITIALIZE(self, onig_rx_new ());
+    return Qnil;
+}
+
+static VALUE rb_onig_rx_get_matches_start_of_line(VALUE self) {
+    OnigRx* onig_rx = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // ValaMemberGet#body
+    gboolean _c_return = onig_rx->matches_start_of_line; 
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+          if (_c_return == TRUE)
+          _rb_return = Qtrue;
+      else
+          _rb_return = Qfalse;
+
+    return _rb_return;
+}
+
+static VALUE rb_onig_rx_set_matches_start_of_line(VALUE self, VALUE matches_start_of_line) {
+    OnigRx* onig_rx = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(matches_start_of_line) != T_TRUE && TYPE(matches_start_of_line) != T_FALSE) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected true or false");
+    }
+    // Method#argument_type_conversions
+    gboolean _c_matches_start_of_line;
+          if (matches_start_of_line == Qtrue)
+          _c_matches_start_of_line = TRUE;
+      else
+          _c_matches_start_of_line = FALSE;
+
+    // ValaMemberSet#body
+    onig_rx->matches_start_of_line = _c_matches_start_of_line;
+    // Method#return_type_conversion
+    return Qnil;
+}
+
+static VALUE rb_onig_rx_make1(VALUE self, VALUE pattern) {
+    // Method#type_checks
+    if (TYPE(pattern) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    // Method#argument_type_conversions
+    char * _c_pattern;
+    _c_pattern = g_strdup(STR2CSTR(pattern));
+    // Method#body
+    
+    OnigRx* _c_return;
+    _c_return = onig_rx_make1(_c_pattern);
+    // Method#return_type_conversion
+    VALUE _rb_return;
+    if (_c_return == NULL)
+        _rb_return = Qnil;
+    else {
+        _rb_return = GOBJ2RVAL(_c_return);
+    }
+    return _rb_return;
+}
+
+static VALUE rb_onig_rx_search(VALUE self, VALUE target, VALUE start, VALUE end) {
+    OnigRx* onig_rx = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(target) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    if (TYPE(start) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    if (TYPE(end) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    // Method#argument_type_conversions
+    char * _c_target;
+    _c_target = g_strdup(STR2CSTR(target));
+    int _c_start;
+    _c_start = FIX2INT(start);
+    int _c_end;
+    _c_end = FIX2INT(end);
+    // Method#body
+    
+    OnigMatch* _c_return;
+    _c_return = onig_rx_search(onig_rx, _c_target, _c_start, _c_end);
+    // Method#return_type_conversion
+    VALUE _rb_return;
+    if (_c_return == NULL)
+        _rb_return = Qnil;
+    else {
+        _rb_return = GOBJ2RVAL(_c_return);
+    }
+    return _rb_return;
+}
+
+
 /****  PList methods *****/
 
 static VALUE rb_plist_parse(VALUE self, VALUE filename) {
@@ -6745,242 +7023,6 @@ static VALUE rb_plist_string_set_str(VALUE self, VALUE str) {
     plist_string->str = _c_str;
     // Method#return_type_conversion
     return Qnil;
-}
-
-
-/****  Onig methods *****/
-
-
-/****  Onig.Match methods *****/
-
-
-static VALUE onig_match_initialize(VALUE self) {
-
-    G_INITIALIZE(self, onig_match_new ());
-    return Qnil;
-}
-
-static VALUE rb_onig_match_get_count(VALUE self) {
-    // Method#type_checks
-    // Method#argument_type_conversions
-    // StaticMemberGet#body
-    int _c_return = onig_match_count;
-    // Method#return_type_conversion
-    VALUE _rb_return; 
-    _rb_return = INT2FIX(_c_return);
-    return _rb_return;
-}
-
-static VALUE rb_onig_match_set_count(VALUE self, VALUE count) {
-    // Method#type_checks
-    if (TYPE(count) != T_FIXNUM) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected a small integer");
-    }
-    // Method#argument_type_conversions
-    int _c_count;
-    _c_count = FIX2INT(count);
-    // StaticMemberSet#body
-    onig_match_count = _c_count; 
-    // Method#return_type_conversion
-    return Qnil;
-}
-
-static VALUE rb_onig_match_begin(VALUE self, VALUE capture) {
-    OnigMatch* onig_match = RVAL2GOBJ(self);
-    // Method#type_checks
-    if (TYPE(capture) != T_FIXNUM) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected a small integer");
-    }
-    // Method#argument_type_conversions
-    int _c_capture;
-    _c_capture = FIX2INT(capture);
-    // Method#body
-    
-    int _c_return;
-    _c_return = onig_match_begin(onig_match, _c_capture);
-    // Method#return_type_conversion
-    VALUE _rb_return; 
-    _rb_return = INT2FIX(_c_return);
-    return _rb_return;
-}
-
-static VALUE rb_onig_match_end(VALUE self, VALUE capture) {
-    OnigMatch* onig_match = RVAL2GOBJ(self);
-    // Method#type_checks
-    if (TYPE(capture) != T_FIXNUM) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected a small integer");
-    }
-    // Method#argument_type_conversions
-    int _c_capture;
-    _c_capture = FIX2INT(capture);
-    // Method#body
-    
-    int _c_return;
-    _c_return = onig_match_end(onig_match, _c_capture);
-    // Method#return_type_conversion
-    VALUE _rb_return; 
-    _rb_return = INT2FIX(_c_return);
-    return _rb_return;
-}
-
-static VALUE rb_onig_match_num_captures(VALUE self) {
-    OnigMatch* onig_match = RVAL2GOBJ(self);
-    // Method#type_checks
-    // Method#argument_type_conversions
-    // Method#body
-    
-    int _c_return;
-    _c_return = onig_match_num_captures(onig_match);
-    // Method#return_type_conversion
-    VALUE _rb_return; 
-    _rb_return = INT2FIX(_c_return);
-    return _rb_return;
-}
-
-
-/****  Onig.OnigError methods *****/
-
-
-static VALUE onig_onig_error_initialize(VALUE self) {
-
-    G_INITIALIZE(self, onig_onig_error_new ());
-    return Qnil;
-}
-
-static VALUE rb_onig_onig_error_get_code(VALUE self) {
-    OnigOnigError* onig_onig_error = RVAL2GOBJ(self);
-    // Method#type_checks
-    // Method#argument_type_conversions
-    // ValaMemberGet#body
-    int _c_return = onig_onig_error->code; 
-    // Method#return_type_conversion
-    VALUE _rb_return; 
-    _rb_return = INT2FIX(_c_return);
-    return _rb_return;
-}
-
-static VALUE rb_onig_onig_error_set_code(VALUE self, VALUE code) {
-    OnigOnigError* onig_onig_error = RVAL2GOBJ(self);
-    // Method#type_checks
-    if (TYPE(code) != T_FIXNUM) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected a small integer");
-    }
-    // Method#argument_type_conversions
-    int _c_code;
-    _c_code = FIX2INT(code);
-    // ValaMemberSet#body
-    onig_onig_error->code = _c_code;
-    // Method#return_type_conversion
-    return Qnil;
-}
-
-
-/****  Onig.Rx methods *****/
-
-
-static VALUE onig_rx_initialize(VALUE self) {
-
-    G_INITIALIZE(self, onig_rx_new ());
-    return Qnil;
-}
-
-static VALUE rb_onig_rx_get_matches_start_of_line(VALUE self) {
-    OnigRx* onig_rx = RVAL2GOBJ(self);
-    // Method#type_checks
-    // Method#argument_type_conversions
-    // ValaMemberGet#body
-    gboolean _c_return = onig_rx->matches_start_of_line; 
-    // Method#return_type_conversion
-    VALUE _rb_return; 
-          if (_c_return == TRUE)
-          _rb_return = Qtrue;
-      else
-          _rb_return = Qfalse;
-
-    return _rb_return;
-}
-
-static VALUE rb_onig_rx_set_matches_start_of_line(VALUE self, VALUE matches_start_of_line) {
-    OnigRx* onig_rx = RVAL2GOBJ(self);
-    // Method#type_checks
-    if (TYPE(matches_start_of_line) != T_TRUE && TYPE(matches_start_of_line) != T_FALSE) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected true or false");
-    }
-    // Method#argument_type_conversions
-    gboolean _c_matches_start_of_line;
-          if (matches_start_of_line == Qtrue)
-          _c_matches_start_of_line = TRUE;
-      else
-          _c_matches_start_of_line = FALSE;
-
-    // ValaMemberSet#body
-    onig_rx->matches_start_of_line = _c_matches_start_of_line;
-    // Method#return_type_conversion
-    return Qnil;
-}
-
-static VALUE rb_onig_rx_make1(VALUE self, VALUE pattern) {
-    // Method#type_checks
-    if (TYPE(pattern) != T_STRING) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected a string");
-    }
-    // Method#argument_type_conversions
-    char * _c_pattern;
-    _c_pattern = g_strdup(STR2CSTR(pattern));
-    // Method#body
-    
-    OnigRx* _c_return;
-    _c_return = onig_rx_make1(_c_pattern);
-    // Method#return_type_conversion
-    VALUE _rb_return;
-    if (_c_return == NULL)
-        _rb_return = Qnil;
-    else {
-        _rb_return = GOBJ2RVAL(_c_return);
-    }
-    return _rb_return;
-}
-
-static VALUE rb_onig_rx_search(VALUE self, VALUE target, VALUE start, VALUE end) {
-    OnigRx* onig_rx = RVAL2GOBJ(self);
-    // Method#type_checks
-    if (TYPE(target) != T_STRING) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected a string");
-    }
-    if (TYPE(start) != T_FIXNUM) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected a small integer");
-    }
-    if (TYPE(end) != T_FIXNUM) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected a small integer");
-    }
-    // Method#argument_type_conversions
-    char * _c_target;
-    _c_target = g_strdup(STR2CSTR(target));
-    int _c_start;
-    _c_start = FIX2INT(start);
-    int _c_end;
-    _c_end = FIX2INT(end);
-    // Method#body
-    
-    OnigMatch* _c_return;
-    _c_return = onig_rx_search(onig_rx, _c_target, _c_start, _c_end);
-    // Method#return_type_conversion
-    VALUE _rb_return;
-    if (_c_return == NULL)
-        _rb_return = Qnil;
-    else {
-        _rb_return = GOBJ2RVAL(_c_return);
-    }
-    return _rb_return;
 }
 
 
@@ -7429,6 +7471,12 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_view, "set_global_theme_settings", rb_gtk_mate_view_set_global_theme_settings, 0);
     rb_define_method(rbc_gtk_mate_view, "set_theme_by_name", rb_gtk_mate_view_set_theme_by_name, 1);
     rb_define_method(rbc_gtk_mate_view, "value_changed_handler", rb_gtk_mate_view_value_changed_handler, 0);
+    rbc_range_set_range = G_DEF_CLASS(range_set_range_get_type(), "Range", rbc_range_set);
+    rb_define_method(rbc_range_set_range, "initialize", range_set_range_initialize, 0);
+    rb_define_method(rbc_range_set_range, "a", rb_range_set_range_get_a, 0);
+    rb_define_method(rbc_range_set_range, "a=", rb_range_set_range_set_a, 1);
+    rb_define_method(rbc_range_set_range, "b", rb_range_set_range_get_b, 0);
+    rb_define_method(rbc_range_set_range, "b=", rb_range_set_range_set_b, 1);
     rbc_gtk_mate_scope = G_DEF_CLASS(gtk_mate_scope_get_type(), "Scope", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_scope, "initialize", gtk_mate_scope_initialize, 2);
     rb_define_method(rbc_gtk_mate_scope, "begin_match_string", rb_gtk_mate_scope_get_begin_match_string, 0);
@@ -7512,16 +7560,6 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_scope, "start_offset", rb_gtk_mate_scope_start_offset, 0);
     rb_define_method(rbc_gtk_mate_scope, "surface_identical_to", rb_gtk_mate_scope_surface_identical_to, 1);
     rb_define_method(rbc_gtk_mate_scope, "surface_identical_to_modulo_ending", rb_gtk_mate_scope_surface_identical_to_modulo_ending, 1);
-    rbc_onig_onig_error = G_DEF_CLASS(onig_onig_error_get_type(), "OnigError", rbc_onig);
-    rb_define_method(rbc_onig_onig_error, "initialize", onig_onig_error_initialize, 0);
-    rb_define_method(rbc_onig_onig_error, "code", rb_onig_onig_error_get_code, 0);
-    rb_define_method(rbc_onig_onig_error, "code=", rb_onig_onig_error_set_code, 1);
-    rbc_range_set_range = G_DEF_CLASS(range_set_range_get_type(), "Range", rbc_range_set);
-    rb_define_method(rbc_range_set_range, "initialize", range_set_range_initialize, 0);
-    rb_define_method(rbc_range_set_range, "a", rb_range_set_range_get_a, 0);
-    rb_define_method(rbc_range_set_range, "a=", rb_range_set_range_set_a, 1);
-    rb_define_method(rbc_range_set_range, "b", rb_range_set_range_get_b, 0);
-    rb_define_method(rbc_range_set_range, "b=", rb_range_set_range_set_b, 1);
     rbc_gtk_mate_theme = G_DEF_CLASS(gtk_mate_theme_get_type(), "Theme", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_theme, "initialize", gtk_mate_theme_initialize, 0);
     rb_define_method(rbc_gtk_mate_theme, "author", rb_gtk_mate_theme_get_author, 0);
@@ -7542,6 +7580,10 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_theme, "init_for_use", rb_gtk_mate_theme_init_for_use, 0);
     rb_define_method(rbc_gtk_mate_theme, "settings_for_scope", rb_gtk_mate_theme_settings_for_scope, 2);
     rb_define_singleton_method(rbc_gtk_mate_theme, "theme_filenames", rb_gtk_mate_theme_theme_filenames, 0);
+    rbc_onig_onig_error = G_DEF_CLASS(onig_onig_error_get_type(), "OnigError", rbc_onig);
+    rb_define_method(rbc_onig_onig_error, "initialize", onig_onig_error_initialize, 0);
+    rb_define_method(rbc_onig_onig_error, "code", rb_onig_onig_error_get_code, 0);
+    rb_define_method(rbc_onig_onig_error, "code=", rb_onig_onig_error_set_code, 1);
     rbc_gtk_mate_buffer = G_DEF_CLASS(gtk_mate_buffer_get_type(), "Buffer", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_buffer, "initialize", gtk_mate_buffer_initialize, 0);
     rb_define_singleton_method(rbc_gtk_mate_buffer, "bundles", rb_gtk_mate_buffer_get_bundles, 0);
@@ -7577,6 +7619,8 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_parser, "dummy_tag2=", rb_gtk_mate_parser_set_dummy_tag2, 1);
     rb_define_singleton_method(rbc_gtk_mate_parser, "existing_parsers", rb_gtk_mate_parser_get_existing_parsers, 0);
     rb_define_singleton_method(rbc_gtk_mate_parser, "existing_parsers=", rb_gtk_mate_parser_set_existing_parsers, 1);
+    rb_define_method(rbc_gtk_mate_parser, "last_visible_line", rb_gtk_mate_parser_get_last_visible_line, 0);
+    rb_define_method(rbc_gtk_mate_parser, "last_visible_line=", rb_gtk_mate_parser_set_last_visible_line, 1);
     rb_define_method(rbc_gtk_mate_parser, "parsed_upto", rb_gtk_mate_parser_get_parsed_upto, 0);
     rb_define_method(rbc_gtk_mate_parser, "parsed_upto=", rb_gtk_mate_parser_set_parsed_upto, 1);
     rb_define_method(rbc_gtk_mate_parser, "root", rb_gtk_mate_parser_get_root, 0);
@@ -7592,6 +7636,7 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_parser, "get_expected_scope", rb_gtk_mate_parser_get_expected_scope, 3);
     rb_define_method(rbc_gtk_mate_parser, "handle_captures", rb_gtk_mate_parser_handle_captures, 6);
     rb_define_method(rbc_gtk_mate_parser, "is_parsing", rb_gtk_mate_parser_is_parsing, 0);
+    rb_define_method(rbc_gtk_mate_parser, "last_line_parsed", rb_gtk_mate_parser_last_line_parsed, 0);
     rb_define_method(rbc_gtk_mate_parser, "last_visible_line_changed", rb_gtk_mate_parser_last_visible_line_changed, 1);
     rb_define_method(rbc_gtk_mate_parser, "make_closing_regex", rb_gtk_mate_parser_make_closing_regex, 3);
     rb_define_method(rbc_gtk_mate_parser, "make_root", rb_gtk_mate_parser_make_root, 0);
@@ -7618,31 +7663,29 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_marker, "match=", rb_gtk_mate_marker_set_match, 1);
     rb_define_method(rbc_gtk_mate_marker, "pattern", rb_gtk_mate_marker_get_pattern, 0);
     rb_define_method(rbc_gtk_mate_marker, "pattern=", rb_gtk_mate_marker_set_pattern, 1);
-    rbc_gtk_mate_scanner = G_DEF_CLASS(gtk_mate_scanner_get_type(), "Scanner", rbc_gtk_mate);
-    rb_define_method(rbc_gtk_mate_scanner, "initialize", gtk_mate_scanner_initialize, 3);
-    rb_define_method(rbc_gtk_mate_scanner, "cached_markers", rb_gtk_mate_scanner_get_cached_markers, 0);
-    rb_define_method(rbc_gtk_mate_scanner, "cached_markers=", rb_gtk_mate_scanner_set_cached_markers, 1);
-    rb_define_method(rbc_gtk_mate_scanner, "position", rb_gtk_mate_scanner_get_position, 0);
-    rb_define_method(rbc_gtk_mate_scanner, "position=", rb_gtk_mate_scanner_set_position, 1);
-    rb_define_method(rbc_gtk_mate_scanner, "find_next_marker", rb_gtk_mate_scanner_find_next_marker, 0);
-    rb_define_method(rbc_gtk_mate_scanner, "get_cached_marker", rb_gtk_mate_scanner_get_cached_marker, 0);
-    rb_define_method(rbc_gtk_mate_scanner, "remove_preceding_cached_markers", rb_gtk_mate_scanner_remove_preceding_cached_markers, 1);
-    rb_define_method(rbc_gtk_mate_scanner, "scan_for_match", rb_gtk_mate_scanner_scan_for_match, 2);
-    rbc_gtk_mate_pattern = G_DEF_CLASS(gtk_mate_pattern_get_type(), "Pattern", rbc_gtk_mate);
-    rb_define_method(rbc_gtk_mate_pattern, "initialize", gtk_mate_pattern_initialize, 0);
-    rb_define_singleton_method(rbc_gtk_mate_pattern, "all_patterns", rb_gtk_mate_pattern_get_all_patterns, 0);
-    rb_define_singleton_method(rbc_gtk_mate_pattern, "all_patterns=", rb_gtk_mate_pattern_set_all_patterns, 1);
-    rb_define_method(rbc_gtk_mate_pattern, "comment", rb_gtk_mate_pattern_get_comment, 0);
-    rb_define_method(rbc_gtk_mate_pattern, "comment=", rb_gtk_mate_pattern_set_comment, 1);
-    rb_define_method(rbc_gtk_mate_pattern, "disabled", rb_gtk_mate_pattern_get_disabled, 0);
-    rb_define_method(rbc_gtk_mate_pattern, "disabled=", rb_gtk_mate_pattern_set_disabled, 1);
-    rb_define_method(rbc_gtk_mate_pattern, "name", rb_gtk_mate_pattern_get_name, 0);
-    rb_define_method(rbc_gtk_mate_pattern, "name=", rb_gtk_mate_pattern_set_name, 1);
-    rb_define_singleton_method(rbc_gtk_mate_pattern, "create_from_plist", rb_gtk_mate_pattern_create_from_plist, 2);
-    rb_define_singleton_method(rbc_gtk_mate_pattern, "make_captures_from_plist", rb_gtk_mate_pattern_make_captures_from_plist, 1);
-    rb_define_singleton_method(rbc_gtk_mate_pattern, "replace_base_and_self_includes", rb_gtk_mate_pattern_replace_base_and_self_includes, 2);
-    rb_define_singleton_method(rbc_gtk_mate_pattern, "replace_include_patterns", rb_gtk_mate_pattern_replace_include_patterns, 2);
-    rb_define_singleton_method(rbc_gtk_mate_pattern, "replace_repository_includes", rb_gtk_mate_pattern_replace_repository_includes, 2);
+    rbc_gtk_mate_matcher = G_DEF_CLASS(gtk_mate_matcher_get_type(), "Matcher", rbc_gtk_mate);
+    rb_define_method(rbc_gtk_mate_matcher, "initialize", gtk_mate_matcher_initialize, 0);
+    rb_define_method(rbc_gtk_mate_matcher, "neg_rxs", rb_gtk_mate_matcher_get_neg_rxs, 0);
+    rb_define_method(rbc_gtk_mate_matcher, "neg_rxs=", rb_gtk_mate_matcher_set_neg_rxs, 1);
+    rb_define_method(rbc_gtk_mate_matcher, "pos_rx", rb_gtk_mate_matcher_get_pos_rx, 0);
+    rb_define_method(rbc_gtk_mate_matcher, "pos_rx=", rb_gtk_mate_matcher_set_pos_rx, 1);
+    rb_define_singleton_method(rbc_gtk_mate_matcher, "compare_match", rb_gtk_mate_matcher_compare_match, 3);
+    rb_define_singleton_method(rbc_gtk_mate_matcher, "compile", rb_gtk_mate_matcher_compile, 1);
+    rb_define_singleton_method(rbc_gtk_mate_matcher, "test_match", rb_gtk_mate_matcher_test_match, 2);
+    rb_define_singleton_method(rbc_gtk_mate_matcher, "test_rank", rb_gtk_mate_matcher_test_rank, 3);
+    rbc_gtk_mate_text_loc = G_DEF_CLASS(gtk_mate_text_loc_get_type(), "TextLoc", rbc_gtk_mate);
+    rb_define_method(rbc_gtk_mate_text_loc, "initialize", gtk_mate_text_loc_initialize, 0);
+    rb_define_method(rbc_gtk_mate_text_loc, "line", rb_gtk_mate_text_loc_get_line, 0);
+    rb_define_method(rbc_gtk_mate_text_loc, "line=", rb_gtk_mate_text_loc_set_line, 1);
+    rb_define_method(rbc_gtk_mate_text_loc, "line_offset", rb_gtk_mate_text_loc_get_line_offset, 0);
+    rb_define_method(rbc_gtk_mate_text_loc, "line_offset=", rb_gtk_mate_text_loc_set_line_offset, 1);
+    rb_define_singleton_method(rbc_gtk_mate_text_loc, "equal", rb_gtk_mate_text_loc_equal, 2);
+    rb_define_singleton_method(rbc_gtk_mate_text_loc, "gt", rb_gtk_mate_text_loc_gt, 2);
+    rb_define_singleton_method(rbc_gtk_mate_text_loc, "gte", rb_gtk_mate_text_loc_gte, 2);
+    rb_define_singleton_method(rbc_gtk_mate_text_loc, "lt", rb_gtk_mate_text_loc_lt, 2);
+    rb_define_singleton_method(rbc_gtk_mate_text_loc, "lte", rb_gtk_mate_text_loc_lte, 2);
+    rb_define_singleton_method(rbc_gtk_mate_text_loc, "make", rb_gtk_mate_text_loc_make, 2);
+    rb_define_method(rbc_gtk_mate_text_loc, "to_s", rb_gtk_mate_text_loc_to_s, 0);
     rbc_gtk_mate_grammar = G_DEF_CLASS(gtk_mate_grammar_get_type(), "Grammar", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_grammar, "initialize", gtk_mate_grammar_initialize, 1);
     rb_define_method(rbc_gtk_mate_grammar, "all_patterns", rb_gtk_mate_grammar_get_all_patterns, 0);
@@ -7670,29 +7713,31 @@ void Init_gtkmateview_rb() {
     rb_define_singleton_method(rbc_gtk_mate_grammar, "find_by_scope_name", rb_gtk_mate_grammar_find_by_scope_name, 1);
     rb_define_method(rbc_gtk_mate_grammar, "init_for_reference", rb_gtk_mate_grammar_init_for_reference, 0);
     rb_define_method(rbc_gtk_mate_grammar, "init_for_use", rb_gtk_mate_grammar_init_for_use, 0);
-    rbc_gtk_mate_text_loc = G_DEF_CLASS(gtk_mate_text_loc_get_type(), "TextLoc", rbc_gtk_mate);
-    rb_define_method(rbc_gtk_mate_text_loc, "initialize", gtk_mate_text_loc_initialize, 0);
-    rb_define_method(rbc_gtk_mate_text_loc, "line", rb_gtk_mate_text_loc_get_line, 0);
-    rb_define_method(rbc_gtk_mate_text_loc, "line=", rb_gtk_mate_text_loc_set_line, 1);
-    rb_define_method(rbc_gtk_mate_text_loc, "line_offset", rb_gtk_mate_text_loc_get_line_offset, 0);
-    rb_define_method(rbc_gtk_mate_text_loc, "line_offset=", rb_gtk_mate_text_loc_set_line_offset, 1);
-    rb_define_singleton_method(rbc_gtk_mate_text_loc, "equal", rb_gtk_mate_text_loc_equal, 2);
-    rb_define_singleton_method(rbc_gtk_mate_text_loc, "gt", rb_gtk_mate_text_loc_gt, 2);
-    rb_define_singleton_method(rbc_gtk_mate_text_loc, "gte", rb_gtk_mate_text_loc_gte, 2);
-    rb_define_singleton_method(rbc_gtk_mate_text_loc, "lt", rb_gtk_mate_text_loc_lt, 2);
-    rb_define_singleton_method(rbc_gtk_mate_text_loc, "lte", rb_gtk_mate_text_loc_lte, 2);
-    rb_define_singleton_method(rbc_gtk_mate_text_loc, "make", rb_gtk_mate_text_loc_make, 2);
-    rb_define_method(rbc_gtk_mate_text_loc, "to_s", rb_gtk_mate_text_loc_to_s, 0);
-    rbc_gtk_mate_matcher = G_DEF_CLASS(gtk_mate_matcher_get_type(), "Matcher", rbc_gtk_mate);
-    rb_define_method(rbc_gtk_mate_matcher, "initialize", gtk_mate_matcher_initialize, 0);
-    rb_define_method(rbc_gtk_mate_matcher, "neg_rxs", rb_gtk_mate_matcher_get_neg_rxs, 0);
-    rb_define_method(rbc_gtk_mate_matcher, "neg_rxs=", rb_gtk_mate_matcher_set_neg_rxs, 1);
-    rb_define_method(rbc_gtk_mate_matcher, "pos_rx", rb_gtk_mate_matcher_get_pos_rx, 0);
-    rb_define_method(rbc_gtk_mate_matcher, "pos_rx=", rb_gtk_mate_matcher_set_pos_rx, 1);
-    rb_define_singleton_method(rbc_gtk_mate_matcher, "compare_match", rb_gtk_mate_matcher_compare_match, 3);
-    rb_define_singleton_method(rbc_gtk_mate_matcher, "compile", rb_gtk_mate_matcher_compile, 1);
-    rb_define_singleton_method(rbc_gtk_mate_matcher, "test_match", rb_gtk_mate_matcher_test_match, 2);
-    rb_define_singleton_method(rbc_gtk_mate_matcher, "test_rank", rb_gtk_mate_matcher_test_rank, 3);
+    rbc_gtk_mate_pattern = G_DEF_CLASS(gtk_mate_pattern_get_type(), "Pattern", rbc_gtk_mate);
+    rb_define_method(rbc_gtk_mate_pattern, "initialize", gtk_mate_pattern_initialize, 0);
+    rb_define_singleton_method(rbc_gtk_mate_pattern, "all_patterns", rb_gtk_mate_pattern_get_all_patterns, 0);
+    rb_define_singleton_method(rbc_gtk_mate_pattern, "all_patterns=", rb_gtk_mate_pattern_set_all_patterns, 1);
+    rb_define_method(rbc_gtk_mate_pattern, "comment", rb_gtk_mate_pattern_get_comment, 0);
+    rb_define_method(rbc_gtk_mate_pattern, "comment=", rb_gtk_mate_pattern_set_comment, 1);
+    rb_define_method(rbc_gtk_mate_pattern, "disabled", rb_gtk_mate_pattern_get_disabled, 0);
+    rb_define_method(rbc_gtk_mate_pattern, "disabled=", rb_gtk_mate_pattern_set_disabled, 1);
+    rb_define_method(rbc_gtk_mate_pattern, "name", rb_gtk_mate_pattern_get_name, 0);
+    rb_define_method(rbc_gtk_mate_pattern, "name=", rb_gtk_mate_pattern_set_name, 1);
+    rb_define_singleton_method(rbc_gtk_mate_pattern, "create_from_plist", rb_gtk_mate_pattern_create_from_plist, 2);
+    rb_define_singleton_method(rbc_gtk_mate_pattern, "make_captures_from_plist", rb_gtk_mate_pattern_make_captures_from_plist, 1);
+    rb_define_singleton_method(rbc_gtk_mate_pattern, "replace_base_and_self_includes", rb_gtk_mate_pattern_replace_base_and_self_includes, 2);
+    rb_define_singleton_method(rbc_gtk_mate_pattern, "replace_include_patterns", rb_gtk_mate_pattern_replace_include_patterns, 2);
+    rb_define_singleton_method(rbc_gtk_mate_pattern, "replace_repository_includes", rb_gtk_mate_pattern_replace_repository_includes, 2);
+    rbc_gtk_mate_scanner = G_DEF_CLASS(gtk_mate_scanner_get_type(), "Scanner", rbc_gtk_mate);
+    rb_define_method(rbc_gtk_mate_scanner, "initialize", gtk_mate_scanner_initialize, 3);
+    rb_define_method(rbc_gtk_mate_scanner, "cached_markers", rb_gtk_mate_scanner_get_cached_markers, 0);
+    rb_define_method(rbc_gtk_mate_scanner, "cached_markers=", rb_gtk_mate_scanner_set_cached_markers, 1);
+    rb_define_method(rbc_gtk_mate_scanner, "position", rb_gtk_mate_scanner_get_position, 0);
+    rb_define_method(rbc_gtk_mate_scanner, "position=", rb_gtk_mate_scanner_set_position, 1);
+    rb_define_method(rbc_gtk_mate_scanner, "find_next_marker", rb_gtk_mate_scanner_find_next_marker, 0);
+    rb_define_method(rbc_gtk_mate_scanner, "get_cached_marker", rb_gtk_mate_scanner_get_cached_marker, 0);
+    rb_define_method(rbc_gtk_mate_scanner, "remove_preceding_cached_markers", rb_gtk_mate_scanner_remove_preceding_cached_markers, 1);
+    rb_define_method(rbc_gtk_mate_scanner, "scan_for_match", rb_gtk_mate_scanner_scan_for_match, 2);
     rbc_gtk_mate_colourer = G_DEF_CLASS(gtk_mate_colourer_get_type(), "Colourer", rbc_gtk_mate);
     rb_define_method(rbc_gtk_mate_colourer, "initialize", gtk_mate_colourer_initialize, 1);
     rb_define_singleton_method(rbc_gtk_mate_colourer, "char_to_hex", rb_gtk_mate_colourer_char_to_hex, 1);

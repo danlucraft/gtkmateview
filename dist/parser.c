@@ -1,14 +1,13 @@
 
 #include "parser.h"
 #include <gee/collection.h>
-#include <stdio.h>
 #include <gee/hashmap.h>
 #include <gee/map.h>
-#include "theme.h"
 #include "colourer.h"
 #include "buffer.h"
 #include "scope.h"
 #include "pattern.h"
+#include "scanner.h"
 
 
 
@@ -23,6 +22,7 @@ struct _GtkMateParserPrivate {
 	GtkMateGrammar* _grammar;
 	GtkMateColourer* _colourer;
 	GtkMateBuffer* _buffer;
+	gint _look_ahead;
 };
 
 #define GTK_MATE_PARSER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GTK_MATE_TYPE_PARSER, GtkMateParserPrivate))
@@ -30,7 +30,8 @@ enum  {
 	GTK_MATE_PARSER_DUMMY_PROPERTY,
 	GTK_MATE_PARSER_GRAMMAR,
 	GTK_MATE_PARSER_COLOURER,
-	GTK_MATE_PARSER_BUFFER
+	GTK_MATE_PARSER_BUFFER,
+	GTK_MATE_PARSER_LOOK_AHEAD
 };
 GeeArrayList* gtk_mate_parser_existing_parsers = NULL;
 static void gtk_mate_parser_process_changes (GtkMateParser* self);
@@ -208,8 +209,10 @@ static void gtk_mate_parser_process_changes (GtkMateParser* self) {
 			RangeSetRange* range;
 			range = ((RangeSetRange*) (gee_iterator_get (range_it)));
 			{
-				if (range->b > parsed_upto) {
-					parsed_upto = gtk_mate_parser_parse_range (self, range->a, range->b);
+				if (range->b > parsed_upto && range->a <= self->last_visible_line + self->priv->_look_ahead) {
+					gint range_end;
+					range_end = MIN (self->last_visible_line + self->priv->_look_ahead, range->b);
+					parsed_upto = gtk_mate_parser_parse_range (self, range->a, range_end);
 				}
 				(range == NULL ? NULL : (range = (g_object_unref (range), NULL)));
 			}
@@ -270,9 +273,9 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	g_return_val_if_fail (self != NULL, FALSE);
 	line = gtk_mate_buffer_get_line1 (self->priv->_buffer, line_ix);
 	length = ((gint) (string_get_length (line)));
-	/*buffer.get_line_length(line_ix);*/
-	fprintf (stdout, "%d, ", line_ix);
-	fflush (stdout);
+	/*buffer.get_line_length(line_ix);
+	 stdout.printf("%d, ", line_ix);
+	 stdout.flush();*/
 	start_scope = gtk_mate_scope_scope_at (self->root, line_ix, -1);
 	end_scope1 = gtk_mate_scope_scope_at (self->root, line_ix, G_MAXINT);
 	/*stdout.printf("scope_at returns: %s\n", start_scope.name);
@@ -1019,9 +1022,35 @@ void gtk_mate_parser_recolour_children (GtkMateParser* self, GtkMateScope* scope
 }
 
 
-void gtk_mate_parser_last_visible_line_changed (GtkMateParser* self, gint last_visible_line) {
+void gtk_mate_parser_last_visible_line_changed (GtkMateParser* self, gint new_last_visible_line) {
 	g_return_if_fail (self != NULL);
-	fprintf (stdout, "last_visible_line: %d\n", last_visible_line);
+	self->last_visible_line = new_last_visible_line;
+	/* stdout.printf("last_visible_line: %d\n", last_visible_line);
+	 stdout.printf("already_parsed_upto: %d\n", last_line_parsed());*/
+	if (self->last_visible_line + self->priv->_look_ahead >= gtk_mate_parser_last_line_parsed (self)) {
+		gint end_range;
+		end_range = MIN (gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self->priv->_buffer))) - 1, self->last_visible_line + self->priv->_look_ahead);
+		/* stdout.printf("parse_range(%d, %d)\n", last_line_parsed(), end_range);*/
+		gtk_mate_parser_parse_range (self, gtk_mate_parser_last_line_parsed (self), end_range);
+	}
+}
+
+
+gint gtk_mate_parser_last_line_parsed (GtkMateParser* self) {
+	GSequenceIter* iter;
+	g_return_val_if_fail (self != NULL, 0);
+	iter = g_sequence_get_end_iter (gtk_mate_scope_get_children (self->root));
+	if (!g_sequence_iter_is_begin (iter)) {
+		GtkMateScope* _tmp0;
+		GtkMateScope* child;
+		gint _tmp1;
+		iter = g_sequence_iter_prev (iter);
+		_tmp0 = NULL;
+		child = (_tmp0 = ((GtkMateScope*) (g_sequence_get (iter))), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
+		return (_tmp1 = gtk_mate_scope_end_line (child), (child == NULL ? NULL : (child = (g_object_unref (child), NULL))), _tmp1);
+	} else {
+		return 0;
+	}
 }
 
 
@@ -1210,6 +1239,8 @@ GtkMateParser* gtk_mate_parser_create (GtkMateGrammar* grammar, GtkMateBuffer* b
 		gtk_mate_parser_existing_parsers = (_tmp0 = gee_array_list_new (GTK_MATE_TYPE_PARSER, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal), (gtk_mate_parser_existing_parsers == NULL ? NULL : (gtk_mate_parser_existing_parsers = (g_object_unref (gtk_mate_parser_existing_parsers), NULL))), _tmp0);
 	}
 	gee_collection_add (((GeeCollection*) (gtk_mate_parser_existing_parsers)), p);
+	gtk_mate_parser_set_look_ahead (p, 100);
+	p->last_visible_line = 0;
 	gtk_mate_parser_set_grammar (p, grammar);
 	gtk_mate_parser_set_buffer (p, buffer);
 	_tmp1 = NULL;
@@ -1291,6 +1322,19 @@ void gtk_mate_parser_set_buffer (GtkMateParser* self, GtkMateBuffer* value) {
 }
 
 
+gint gtk_mate_parser_get_look_ahead (GtkMateParser* self) {
+	g_return_val_if_fail (self != NULL, 0);
+	return self->priv->_look_ahead;
+}
+
+
+void gtk_mate_parser_set_look_ahead (GtkMateParser* self, gint value) {
+	g_return_if_fail (self != NULL);
+	self->priv->_look_ahead = value;
+	g_object_notify (((GObject *) (self)), "look-ahead");
+}
+
+
 static void gtk_mate_parser_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	GtkMateParser * self;
 	self = GTK_MATE_PARSER (object);
@@ -1303,6 +1347,9 @@ static void gtk_mate_parser_get_property (GObject * object, guint property_id, G
 		break;
 		case GTK_MATE_PARSER_BUFFER:
 		g_value_set_object (value, gtk_mate_parser_get_buffer (self));
+		break;
+		case GTK_MATE_PARSER_LOOK_AHEAD:
+		g_value_set_int (value, gtk_mate_parser_get_look_ahead (self));
 		break;
 		default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -1324,6 +1371,9 @@ static void gtk_mate_parser_set_property (GObject * object, guint property_id, c
 		case GTK_MATE_PARSER_BUFFER:
 		gtk_mate_parser_set_buffer (self, g_value_get_object (value));
 		break;
+		case GTK_MATE_PARSER_LOOK_AHEAD:
+		gtk_mate_parser_set_look_ahead (self, g_value_get_int (value));
+		break;
 		default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 		break;
@@ -1340,6 +1390,7 @@ static void gtk_mate_parser_class_init (GtkMateParserClass * klass) {
 	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_PARSER_GRAMMAR, g_param_spec_object ("grammar", "grammar", "grammar", GTK_MATE_TYPE_GRAMMAR, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_PARSER_COLOURER, g_param_spec_object ("colourer", "colourer", "colourer", GTK_MATE_TYPE_COLOURER, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_PARSER_BUFFER, g_param_spec_object ("buffer", "buffer", "buffer", GTK_MATE_TYPE_BUFFER, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_PARSER_LOOK_AHEAD, g_param_spec_int ("look-ahead", "look-ahead", "look-ahead", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 }
 
 

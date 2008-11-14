@@ -9,7 +9,7 @@
 #include <gee/arraylist.h>
 #include <stdlib.h>
 #include <string.h>
-#include "view.h"
+#include "theme.h"
 
 G_BEGIN_DECLS
 

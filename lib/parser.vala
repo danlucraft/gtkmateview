@@ -50,7 +50,10 @@ namespace Gtk.Mate {
 		public Sequence<TextTag> tags;
 		public RangeSet changes;
 		public int parsed_upto;
+		public int last_visible_line;
 		public bool always_parse_all;
+		
+		public int look_ahead {get; set;}
 		
 		public void make_root() {
 			this.root = new Scope(this.buffer, this.grammar.scope_name);
@@ -82,8 +85,10 @@ namespace Gtk.Mate {
 		private void process_changes() {
 			int parsed_upto = -1;
 			foreach (RangeSet.Range range in changes) {
-				if (range.b > parsed_upto)
-					parsed_upto = parse_range(range.a, range.b);
+				if (range.b > parsed_upto && range.a <= last_visible_line + look_ahead) {
+					int range_end = int.min(last_visible_line + look_ahead, range.b);
+					parsed_upto = parse_range(range.a, range_end);
+				}
 			}
 //			//stdout.printf("%s\n", root.pretty(0));
 			changes.ranges.clear();
@@ -120,8 +125,8 @@ namespace Gtk.Mate {
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line1(line_ix);
 			int length = (int) line.length;//buffer.get_line_length(line_ix);
-			stdout.printf("%d, ", line_ix);
-			stdout.flush();
+			// stdout.printf("%d, ", line_ix);
+			// stdout.flush();
 			var start_scope = this.root.scope_at(line_ix, -1);
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
 			//stdout.printf("scope_at returns: %s\n", start_scope.name);
@@ -547,8 +552,27 @@ namespace Gtk.Mate {
 			}
 		}
 
-		public void last_visible_line_changed(int last_visible_line) {
-			stdout.printf("last_visible_line: %d\n", last_visible_line);			
+		public void last_visible_line_changed(int new_last_visible_line) {
+			this.last_visible_line = new_last_visible_line;
+			// stdout.printf("last_visible_line: %d\n", last_visible_line);
+			// stdout.printf("already_parsed_upto: %d\n", last_line_parsed());
+			if (last_visible_line + look_ahead >= last_line_parsed()) {
+				int end_range = int.min(buffer.get_line_count() - 1, last_visible_line + look_ahead);
+				// stdout.printf("parse_range(%d, %d)\n", last_line_parsed(), end_range);
+				parse_range(last_line_parsed(), end_range);
+			}
+		}
+
+		public int last_line_parsed() {
+			GLib.SequenceIter iter = root.children.get_end_iter();
+			if (!iter.is_begin()) {
+				iter = iter.prev();
+				var child = root.children.get(iter);
+				return child.end_line();
+			}
+			else {
+				return 0;
+			}
 		}
 
 		public void connect_buffer_signals() {
@@ -631,6 +655,8 @@ namespace Gtk.Mate {
 			if (Parser.existing_parsers == null) 
 				Parser.existing_parsers = new ArrayList<Parser>();
 			Parser.existing_parsers.add(p);
+			p.look_ahead = 100;
+			p.last_visible_line = 0;
 			p.grammar = grammar;
 			p.buffer = buffer;
 			p.tags = new Sequence<TextTag>(null);
@@ -641,7 +667,6 @@ namespace Gtk.Mate {
 			p.connect_buffer_signals();
 			p.parsed_upto = 0;
 			p.always_parse_all = false;
-
 			return p;
 		}
 	}
