@@ -61,7 +61,7 @@ gint gtk_mate_load_bundles (void) {
 				_tmp3 = NULL;
 				bundle = (_tmp4 = g_object_ref_sink (gtk_mate_bundle_new (((_tmp3 = g_strsplit (bundle_dir, ".", 0)), _tmp3_length1 = -1, _tmp3)[0])), (bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL))), _tmp4);
 				_tmp3 = (_vala_array_free (_tmp3, _tmp3_length1, ((GDestroyNotify) (g_free))), NULL);
-				gee_collection_add (GEE_COLLECTION (gtk_mate_buffer_bundles), bundle);
+				gee_collection_add (((GeeCollection*) (gtk_mate_buffer_bundles)), bundle);
 				_tmp8 = NULL;
 				_tmp7 = NULL;
 				_tmp6 = NULL;
@@ -128,7 +128,7 @@ gint gtk_mate_load_bundles (void) {
 									GtkMateGrammar* _tmp16;
 									_tmp16 = NULL;
 									grammar = (_tmp16 = g_object_ref_sink (gtk_mate_grammar_new (plist)), (grammar == NULL ? NULL : (grammar = (g_object_unref (grammar), NULL))), _tmp16);
-									gee_collection_add (GEE_COLLECTION (bundle->grammars), grammar);
+									gee_collection_add (((GeeCollection*) (bundle->grammars)), grammar);
 								}
 							}
 						}
@@ -213,7 +213,7 @@ void gtk_mate_load_themes (void) {
 					}
 					theme = gtk_mate_theme_create_from_plist (PLIST_DICT (plist));
 					if (theme != NULL) {
-						gee_collection_add (GEE_COLLECTION (gtk_mate_theme_themes), theme);
+						gee_collection_add (((GeeCollection*) (gtk_mate_theme_themes)), theme);
 					}
 					(plist == NULL ? NULL : (plist = (g_object_unref (plist), NULL)));
 					(theme == NULL ? NULL : (theme = (g_object_unref (theme), NULL)));
@@ -271,7 +271,7 @@ GeeArrayList* gtk_mate_bundle_dirs (void) {
 		_tmp2 = NULL;
 		while ((name = (_tmp3 = (_tmp2 = g_dir_read_name (d), (_tmp2 == NULL ? NULL : g_strdup (_tmp2))), (name = (g_free (name), NULL)), _tmp3)) != NULL) {
 			if (g_str_has_suffix (name, ".tmbundle")) {
-				gee_collection_add (GEE_COLLECTION (names), name);
+				gee_collection_add (((GeeCollection*) (names)), name);
 			}
 		}
 		_tmp4 = NULL;

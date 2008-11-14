@@ -44,11 +44,13 @@ namespace Gtk.Mate {
 		public Colourer colourer {get; set;}
 		public Mate.Buffer buffer {get; set;}
 		public Mate.Scope root;
-		public RangeSet changes;
 		public int deactivation_level;
 		public TextTag dummy_tag;
 		public TextTag dummy_tag2;
 		public Sequence<TextTag> tags;
+		public RangeSet changes;
+		public int parsed_upto;
+		public bool always_parse_all;
 		
 		public void make_root() {
 			this.root = new Scope(this.buffer, this.grammar.scope_name);
@@ -118,8 +120,8 @@ namespace Gtk.Mate {
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line1(line_ix);
 			int length = (int) line.length;//buffer.get_line_length(line_ix);
-			// stdout.printf("%d, ", line_ix);
-			// stdout.flush();
+			stdout.printf("%d, ", line_ix);
+			stdout.flush();
 			var start_scope = this.root.scope_at(line_ix, -1);
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
 			//stdout.printf("scope_at returns: %s\n", start_scope.name);
@@ -545,6 +547,10 @@ namespace Gtk.Mate {
 			}
 		}
 
+		public void last_visible_line_changed(int last_visible_line) {
+			stdout.printf("last_visible_line: %d\n", last_visible_line);			
+		}
+
 		public void connect_buffer_signals() {
 			buffer.insert_text += this.insert_text_handler;
 			buffer.delete_range += this.delete_range_handler;
@@ -633,6 +639,8 @@ namespace Gtk.Mate {
 			p.deactivation_level = 0;
 			p.make_root();
 			p.connect_buffer_signals();
+			p.parsed_upto = 0;
+			p.always_parse_all = false;
 
 			return p;
 		}

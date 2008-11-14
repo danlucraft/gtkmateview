@@ -127,20 +127,25 @@ struct _PListDictClass {
 
 GQuark xml_error_quark (void);
 PListNode* plist_node_parse_xml_node (xmlNode* node);
+PListNode* plist_node_construct (GType object_type);
 PListNode* plist_node_new (void);
 GType plist_node_get_type (void);
+PListString* plist_string_construct (GType object_type);
 PListString* plist_string_new (void);
 GType plist_string_get_type (void);
+PListInteger* plist_integer_construct (GType object_type);
 PListInteger* plist_integer_new (void);
 GType plist_integer_get_type (void);
 PListNode* plist_array_get (PListArray* self, gint ix);
 PListArray* plist_array_parse_array (xmlNode* node);
+PListArray* plist_array_construct (GType object_type);
 PListArray* plist_array_new (void);
 GType plist_array_get_type (void);
 PListNode* plist_dict_get (PListDict* self, const char* key);
 char** plist_dict_keys (PListDict* self, int* result_length1);
 void plist_dict_print_keys (PListDict* self);
 PListDict* plist_dict_parse_dict (xmlNode* node);
+PListDict* plist_dict_construct (GType object_type);
 PListDict* plist_dict_new (void);
 GType plist_dict_get_type (void);
 PListDict* plist_parse (const char* filename, GError** error);

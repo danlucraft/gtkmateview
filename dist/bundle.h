@@ -4,10 +4,10 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gtk/gtk.h>
-#include <gee/arraylist.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gtk/gtk.h>
+#include <gee/arraylist.h>
 
 G_BEGIN_DECLS
 
@@ -34,6 +34,7 @@ struct _GtkMateBundleClass {
 };
 
 
+GtkMateBundle* gtk_mate_bundle_construct (GType object_type, const char* name);
 GtkMateBundle* gtk_mate_bundle_new (const char* name);
 const char* gtk_mate_bundle_get_name (GtkMateBundle* self);
 GType gtk_mate_bundle_get_type (void);

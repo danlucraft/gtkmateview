@@ -24,18 +24,23 @@ enum  {
 static void gtk_mate_grammar_set_name (GtkMateGrammar* self, const char* value);
 static void gtk_mate_grammar_set_plist (GtkMateGrammar* self, PListDict* value);
 static gpointer gtk_mate_grammar_parent_class = NULL;
-static void gtk_mate_grammar_finalize (GObject * obj);
+static void gtk_mate_grammar_finalize (GObject* obj);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
-GtkMateGrammar* gtk_mate_grammar_new (PListDict* plist) {
+GtkMateGrammar* gtk_mate_grammar_construct (GType object_type, PListDict* plist) {
 	GtkMateGrammar * self;
-	g_return_val_if_fail (PLIST_IS_DICT (plist), NULL);
-	self = g_object_newv (GTK_MATE_TYPE_GRAMMAR, 0, NULL);
+	g_return_val_if_fail (plist != NULL, NULL);
+	self = g_object_newv (object_type, 0, NULL);
 	gtk_mate_grammar_set_plist (self, plist);
 	return self;
+}
+
+
+GtkMateGrammar* gtk_mate_grammar_new (PListDict* plist) {
+	return gtk_mate_grammar_construct (GTK_MATE_TYPE_GRAMMAR, plist);
 }
 
 
@@ -83,7 +88,7 @@ void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self) {
 	PListNode* sn;
 	PListNode* cm;
 	PListNode* filetypes;
-	g_return_if_fail (GTK_MATE_IS_GRAMMAR (self));
+	g_return_if_fail (self != NULL);
 	nm = plist_dict_get (self->priv->_plist, "name");
 	if (nm != NULL) {
 		gtk_mate_grammar_set_name (self, (PLIST_STRING (nm))->str);
@@ -128,7 +133,7 @@ void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self) {
 		_tmp7 = NULL;
 		fts = (_tmp7 = PLIST_ARRAY (filetypes), (_tmp7 == NULL ? NULL : g_object_ref (_tmp7)));
 		_tmp9 = NULL;
-		self->file_types = (_tmp9 = g_new0 (char*, (_tmp8 = gee_collection_get_size (GEE_COLLECTION (fts->array))) + 1), (self->file_types = (_vala_array_free (self->file_types, self->file_types_length1, ((GDestroyNotify) (g_free))), NULL)), self->file_types_length1 = _tmp8, _tmp9);
+		self->file_types = (_tmp9 = g_new0 (char*, (_tmp8 = gee_collection_get_size (((GeeCollection*) (fts->array)))) + 1), (self->file_types = (_vala_array_free (self->file_types, self->file_types_length1, ((GDestroyNotify) (g_free))), NULL)), self->file_types_length1 = _tmp8, _tmp9);
 		i = 0;
 		{
 			GeeArrayList* n_collection;
@@ -175,7 +180,7 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 	PListDict* pd1;
 	PListNode* pa1;
 	GeeArrayList* repo_array;
-	g_return_if_fail (GTK_MATE_IS_GRAMMAR (self));
+	g_return_if_fail (self != NULL);
 	if (self->loaded) {
 		return;
 	}
@@ -213,7 +218,7 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 					_tmp4 = NULL;
 					pattern = (_tmp4 = gtk_mate_pattern_create_from_plist (self->all_patterns, PLIST_DICT (p)), (pattern == NULL ? NULL : (pattern = (g_object_unref (pattern), NULL))), _tmp4);
 					if (pattern != NULL) {
-						gee_collection_add (GEE_COLLECTION (self->patterns), pattern);
+						gee_collection_add (((GeeCollection*) (self->patterns)), pattern);
 					}
 					(p == NULL ? NULL : (p = (g_object_unref (p), NULL)));
 				}
@@ -231,7 +236,7 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 		{
 			GeeSet* key_collection;
 			GeeIterator* key_it;
-			key_collection = gee_map_get_keys (GEE_MAP (pd->map));
+			key_collection = gee_map_get_keys (((GeeMap*) (pd->map)));
 			key_it = gee_iterable_iterator (GEE_ITERABLE (key_collection));
 			while (gee_iterator_next (key_it)) {
 				char* key;
@@ -254,7 +259,7 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 						_tmp10 = NULL;
 						pattern = (_tmp10 = gtk_mate_pattern_create_from_plist (self->all_patterns, PLIST_DICT (pd1)), (pattern == NULL ? NULL : (pattern = (g_object_unref (pattern), NULL))), _tmp10);
 						if (pattern != NULL) {
-							gee_collection_add (GEE_COLLECTION (repo_array), pattern);
+							gee_collection_add (((GeeCollection*) (repo_array)), pattern);
 						}
 					} else {
 						PListNode* _tmp11;
@@ -273,14 +278,14 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 									_tmp12 = NULL;
 									pattern = (_tmp12 = gtk_mate_pattern_create_from_plist (self->all_patterns, PLIST_DICT (ps1)), (pattern == NULL ? NULL : (pattern = (g_object_unref (pattern), NULL))), _tmp12);
 									if (pattern != NULL) {
-										gee_collection_add (GEE_COLLECTION (repo_array), pattern);
+										gee_collection_add (((GeeCollection*) (repo_array)), pattern);
 									}
 									(ps1 == NULL ? NULL : (ps1 = (g_object_unref (ps1), NULL)));
 								}
 							}
 						}
 					}
-					gee_map_set (GEE_MAP (self->repository), key, repo_array);
+					gee_map_set (((GeeMap*) (self->repository)), key, repo_array);
 					key = (g_free (key), NULL);
 					(repo_array == NULL ? NULL : (repo_array = (g_object_unref (repo_array), NULL)));
 				}
@@ -318,7 +323,7 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 
 
 const char* gtk_mate_grammar_get_name (GtkMateGrammar* self) {
-	g_return_val_if_fail (GTK_MATE_IS_GRAMMAR (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	return self->priv->_name;
 }
 
@@ -326,7 +331,7 @@ const char* gtk_mate_grammar_get_name (GtkMateGrammar* self) {
 static void gtk_mate_grammar_set_name (GtkMateGrammar* self, const char* value) {
 	char* _tmp2;
 	const char* _tmp1;
-	g_return_if_fail (GTK_MATE_IS_GRAMMAR (self));
+	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
 	self->priv->_name = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL ? NULL : g_strdup (_tmp1))), (self->priv->_name = (g_free (self->priv->_name), NULL)), _tmp2);
@@ -335,7 +340,7 @@ static void gtk_mate_grammar_set_name (GtkMateGrammar* self, const char* value) 
 
 
 PListDict* gtk_mate_grammar_get_plist (GtkMateGrammar* self) {
-	g_return_val_if_fail (GTK_MATE_IS_GRAMMAR (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	return self->priv->_plist;
 }
 
@@ -343,7 +348,7 @@ PListDict* gtk_mate_grammar_get_plist (GtkMateGrammar* self) {
 static void gtk_mate_grammar_set_plist (GtkMateGrammar* self, PListDict* value) {
 	PListDict* _tmp2;
 	PListDict* _tmp1;
-	g_return_if_fail (GTK_MATE_IS_GRAMMAR (self));
+	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
 	self->priv->_plist = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL ? NULL : g_object_ref (_tmp1))), (self->priv->_plist == NULL ? NULL : (self->priv->_plist = (g_object_unref (self->priv->_plist), NULL))), _tmp2);
@@ -401,7 +406,7 @@ static void gtk_mate_grammar_instance_init (GtkMateGrammar * self) {
 }
 
 
-static void gtk_mate_grammar_finalize (GObject * obj) {
+static void gtk_mate_grammar_finalize (GObject* obj) {
 	GtkMateGrammar * self;
 	self = GTK_MATE_GRAMMAR (obj);
 	self->priv->_name = (g_free (self->priv->_name), NULL);
@@ -423,7 +428,7 @@ static void gtk_mate_grammar_finalize (GObject * obj) {
 GType gtk_mate_grammar_get_type (void) {
 	static GType gtk_mate_grammar_type_id = 0;
 	if (gtk_mate_grammar_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (GtkMateGrammarClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_grammar_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateGrammar), 0, (GInstanceInitFunc) gtk_mate_grammar_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (GtkMateGrammarClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_grammar_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateGrammar), 0, (GInstanceInitFunc) gtk_mate_grammar_instance_init, NULL };
 		gtk_mate_grammar_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateGrammar", &g_define_type_info, 0);
 	}
 	return gtk_mate_grammar_type_id;

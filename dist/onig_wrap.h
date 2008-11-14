@@ -4,9 +4,9 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <oniguruma.h>
 #include <stdlib.h>
 #include <string.h>
+#include <oniguruma.h>
 
 G_BEGIN_DECLS
 
@@ -75,12 +75,14 @@ struct _OnigRxClass {
 };
 
 
+OnigOnigError* onig_onig_error_construct (GType object_type);
 OnigOnigError* onig_onig_error_new (void);
 GType onig_onig_error_get_type (void);
 extern gint onig_match_count;
 gint onig_match_num_captures (OnigMatch* self);
 gint onig_match_begin (OnigMatch* self, gint capture);
 gint onig_match_end (OnigMatch* self, gint capture);
+OnigMatch* onig_match_construct (GType object_type);
 OnigMatch* onig_match_new (void);
 regex_t* onig_match_get_rx (OnigMatch* self);
 void onig_match_set_rx (OnigMatch* self, regex_t* value);
@@ -90,6 +92,7 @@ GType onig_match_get_type (void);
 OnigMatch* onig_rx_search (OnigRx* self, const char* target, gint start, gint end);
 OnigRx* onig_rx_make (const char* pattern, OnigOptionType* options, OnigOnigError** error);
 OnigRx* onig_rx_make1 (const char* pattern);
+OnigRx* onig_rx_construct (GType object_type);
 OnigRx* onig_rx_new (void);
 regex_t* onig_rx_get_rx (OnigRx* self);
 void onig_rx_set_rx (OnigRx* self, regex_t* value);

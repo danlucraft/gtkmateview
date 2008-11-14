@@ -4,9 +4,9 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gtk/gtk.h>
 #include <gee/arraylist.h>
 #include <gee/hashmap.h>
 #include "onig_wrap.h"
@@ -48,6 +48,7 @@ struct _GtkMateGrammarClass {
 };
 
 
+GtkMateGrammar* gtk_mate_grammar_construct (GType object_type, PListDict* plist);
 GtkMateGrammar* gtk_mate_grammar_new (PListDict* plist);
 GtkMateGrammar* gtk_mate_grammar_find_by_scope_name (const char* scope);
 void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self);

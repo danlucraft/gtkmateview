@@ -17,24 +17,24 @@ enum  {
 	PLIST_STRING_DUMMY_PROPERTY
 };
 static gpointer plist_string_parent_class = NULL;
-static void plist_string_finalize (GObject * obj);
+static void plist_string_finalize (GObject* obj);
 enum  {
 	PLIST_INTEGER_DUMMY_PROPERTY
 };
 static gpointer plist_integer_parent_class = NULL;
-static void plist_integer_finalize (GObject * obj);
+static void plist_integer_finalize (GObject* obj);
 enum  {
 	PLIST_ARRAY_DUMMY_PROPERTY
 };
 static GObject * plist_array_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 static gpointer plist_array_parent_class = NULL;
-static void plist_array_finalize (GObject * obj);
+static void plist_array_finalize (GObject* obj);
 enum  {
 	PLIST_DICT_DUMMY_PROPERTY
 };
 static GObject * plist_dict_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 static gpointer plist_dict_parent_class = NULL;
-static void plist_dict_finalize (GObject * obj);
+static void plist_dict_finalize (GObject* obj);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
@@ -52,7 +52,7 @@ PListNode* plist_node_parse_xml_node (xmlNode* node) {
 		string_node = plist_string_new ();
 		_tmp0 = NULL;
 		string_node->str = (_tmp0 = xmlNodeGetContent (node), (string_node->str = (g_free (string_node->str), NULL)), _tmp0);
-		return PLIST_NODE (string_node);
+		return ((PListNode*) (string_node));
 	}
 	if (_vala_strcmp0 (node->name, "integer") == 0) {
 		PListInteger* int_node;
@@ -61,22 +61,27 @@ PListNode* plist_node_parse_xml_node (xmlNode* node) {
 		_tmp2 = NULL;
 		int_node->value = atoi ((_tmp2 = (xmlNodeGetContent (node))));
 		_tmp2 = (g_free (_tmp2), NULL);
-		return PLIST_NODE (int_node);
+		return ((PListNode*) (int_node));
 	}
 	if (_vala_strcmp0 (node->name, "dict") == 0) {
-		return PLIST_NODE (plist_dict_parse_dict (node));
+		return ((PListNode*) (plist_dict_parse_dict (node)));
 	}
 	if (_vala_strcmp0 (node->name, "array") == 0) {
-		return PLIST_NODE (plist_array_parse_array (node));
+		return ((PListNode*) (plist_array_parse_array (node)));
 	}
 	return NULL;
 }
 
 
-PListNode* plist_node_new (void) {
+PListNode* plist_node_construct (GType object_type) {
 	PListNode * self;
-	self = g_object_newv (PLIST_TYPE_NODE, 0, NULL);
+	self = g_object_newv (object_type, 0, NULL);
 	return self;
+}
+
+
+PListNode* plist_node_new (void) {
+	return plist_node_construct (PLIST_TYPE_NODE);
 }
 
 
@@ -92,17 +97,22 @@ static void plist_node_instance_init (PListNode * self) {
 GType plist_node_get_type (void) {
 	static GType plist_node_type_id = 0;
 	if (plist_node_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (PListNodeClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) plist_node_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (PListNode), 0, (GInstanceInitFunc) plist_node_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (PListNodeClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) plist_node_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (PListNode), 0, (GInstanceInitFunc) plist_node_instance_init, NULL };
 		plist_node_type_id = g_type_register_static (G_TYPE_OBJECT, "PListNode", &g_define_type_info, 0);
 	}
 	return plist_node_type_id;
 }
 
 
-PListString* plist_string_new (void) {
+PListString* plist_string_construct (GType object_type) {
 	PListString * self;
-	self = g_object_newv (PLIST_TYPE_STRING, 0, NULL);
+	self = ((PListString*) (plist_node_construct (object_type)));
 	return self;
+}
+
+
+PListString* plist_string_new (void) {
+	return plist_string_construct (PLIST_TYPE_STRING);
 }
 
 
@@ -116,7 +126,7 @@ static void plist_string_instance_init (PListString * self) {
 }
 
 
-static void plist_string_finalize (GObject * obj) {
+static void plist_string_finalize (GObject* obj) {
 	PListString * self;
 	self = PLIST_STRING (obj);
 	self->str = (g_free (self->str), NULL);
@@ -127,17 +137,22 @@ static void plist_string_finalize (GObject * obj) {
 GType plist_string_get_type (void) {
 	static GType plist_string_type_id = 0;
 	if (plist_string_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (PListStringClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) plist_string_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (PListString), 0, (GInstanceInitFunc) plist_string_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (PListStringClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) plist_string_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (PListString), 0, (GInstanceInitFunc) plist_string_instance_init, NULL };
 		plist_string_type_id = g_type_register_static (PLIST_TYPE_NODE, "PListString", &g_define_type_info, 0);
 	}
 	return plist_string_type_id;
 }
 
 
-PListInteger* plist_integer_new (void) {
+PListInteger* plist_integer_construct (GType object_type) {
 	PListInteger * self;
-	self = g_object_newv (PLIST_TYPE_INTEGER, 0, NULL);
+	self = ((PListInteger*) (plist_node_construct (object_type)));
 	return self;
+}
+
+
+PListInteger* plist_integer_new (void) {
+	return plist_integer_construct (PLIST_TYPE_INTEGER);
 }
 
 
@@ -151,7 +166,7 @@ static void plist_integer_instance_init (PListInteger * self) {
 }
 
 
-static void plist_integer_finalize (GObject * obj) {
+static void plist_integer_finalize (GObject* obj) {
 	PListInteger * self;
 	self = PLIST_INTEGER (obj);
 	G_OBJECT_CLASS (plist_integer_parent_class)->finalize (obj);
@@ -161,7 +176,7 @@ static void plist_integer_finalize (GObject * obj) {
 GType plist_integer_get_type (void) {
 	static GType plist_integer_type_id = 0;
 	if (plist_integer_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (PListIntegerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) plist_integer_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (PListInteger), 0, (GInstanceInitFunc) plist_integer_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (PListIntegerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) plist_integer_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (PListInteger), 0, (GInstanceInitFunc) plist_integer_instance_init, NULL };
 		plist_integer_type_id = g_type_register_static (PLIST_TYPE_NODE, "PListInteger", &g_define_type_info, 0);
 	}
 	return plist_integer_type_id;
@@ -169,8 +184,8 @@ GType plist_integer_get_type (void) {
 
 
 PListNode* plist_array_get (PListArray* self, gint ix) {
-	g_return_val_if_fail (PLIST_IS_ARRAY (self), NULL);
-	return ((PListNode*) (gee_list_get (GEE_LIST (self->array), ix)));
+	g_return_val_if_fail (self != NULL, NULL);
+	return ((PListNode*) (gee_list_get (((GeeList*) (self->array)), ix)));
 }
 
 
@@ -189,7 +204,7 @@ PListArray* plist_array_parse_array (xmlNode* node) {
 				continue;
 			}
 			_tmp0 = NULL;
-			gee_collection_add (GEE_COLLECTION (array->array), (_tmp0 = plist_node_parse_xml_node (iter)));
+			gee_collection_add (((GeeCollection*) (array->array)), (_tmp0 = plist_node_parse_xml_node (iter)));
 			(_tmp0 == NULL ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL)));
 		}
 	}
@@ -198,10 +213,15 @@ PListArray* plist_array_parse_array (xmlNode* node) {
 }
 
 
-PListArray* plist_array_new (void) {
+PListArray* plist_array_construct (GType object_type) {
 	PListArray * self;
-	self = g_object_newv (PLIST_TYPE_ARRAY, 0, NULL);
+	self = ((PListArray*) (plist_node_construct (object_type)));
 	return self;
+}
+
+
+PListArray* plist_array_new (void) {
+	return plist_array_construct (PLIST_TYPE_ARRAY);
 }
 
 
@@ -234,7 +254,7 @@ static void plist_array_instance_init (PListArray * self) {
 }
 
 
-static void plist_array_finalize (GObject * obj) {
+static void plist_array_finalize (GObject* obj) {
 	PListArray * self;
 	self = PLIST_ARRAY (obj);
 	(self->array == NULL ? NULL : (self->array = (g_object_unref (self->array), NULL)));
@@ -245,7 +265,7 @@ static void plist_array_finalize (GObject * obj) {
 GType plist_array_get_type (void) {
 	static GType plist_array_type_id = 0;
 	if (plist_array_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (PListArrayClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) plist_array_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (PListArray), 0, (GInstanceInitFunc) plist_array_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (PListArrayClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) plist_array_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (PListArray), 0, (GInstanceInitFunc) plist_array_instance_init, NULL };
 		plist_array_type_id = g_type_register_static (PLIST_TYPE_NODE, "PListArray", &g_define_type_info, 0);
 	}
 	return plist_array_type_id;
@@ -253,9 +273,9 @@ GType plist_array_get_type (void) {
 
 
 PListNode* plist_dict_get (PListDict* self, const char* key) {
-	g_return_val_if_fail (PLIST_IS_DICT (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
-	return ((PListNode*) (gee_map_get (GEE_MAP (self->map), key)));
+	return ((PListNode*) (gee_map_get (((GeeMap*) (self->map)), key)));
 }
 
 
@@ -268,16 +288,16 @@ char** plist_dict_keys (PListDict* self, int* result_length1) {
 	char** ks;
 	gint i;
 	char** _tmp6;
-	g_return_val_if_fail (PLIST_IS_DICT (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	_tmp3 = NULL;
 	_tmp0 = NULL;
 	_tmp2 = NULL;
-	ks = (_tmp3 = (_tmp2 = g_new0 (char*, (_tmp1 = gee_collection_get_size (GEE_COLLECTION ((_tmp0 = gee_map_get_keys (GEE_MAP (self->map)))))) + 1), (_tmp0 == NULL ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL))), _tmp2), ks_length1 = _tmp1, _tmp3);
+	ks = (_tmp3 = (_tmp2 = g_new0 (char*, (_tmp1 = gee_collection_get_size (((GeeCollection*) ((_tmp0 = gee_map_get_keys (((GeeMap*) (self->map)))))))) + 1), (_tmp0 == NULL ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL))), _tmp2), ks_length1 = _tmp1, _tmp3);
 	i = 0;
 	{
 		GeeSet* s_collection;
 		GeeIterator* s_it;
-		s_collection = gee_map_get_keys (GEE_MAP (self->map));
+		s_collection = gee_map_get_keys (((GeeMap*) (self->map)));
 		s_it = gee_iterable_iterator (GEE_ITERABLE (s_collection));
 		while (gee_iterator_next (s_it)) {
 			char* s;
@@ -301,7 +321,7 @@ char** plist_dict_keys (PListDict* self, int* result_length1) {
 
 
 void plist_dict_print_keys (PListDict* self) {
-	g_return_if_fail (PLIST_IS_DICT (self));
+	g_return_if_fail (self != NULL);
 	{
 		gint _tmp0;
 		char** s_collection;
@@ -347,7 +367,7 @@ PListDict* plist_dict_parse_dict (xmlNode* node) {
 				PListNode* _tmp1;
 				char* _tmp2;
 				_tmp1 = NULL;
-				gee_map_set (GEE_MAP (dict->map), key, (_tmp1 = plist_node_parse_xml_node (iter)));
+				gee_map_set (((GeeMap*) (dict->map)), key, (_tmp1 = plist_node_parse_xml_node (iter)));
 				(_tmp1 == NULL ? NULL : (_tmp1 = (g_object_unref (_tmp1), NULL)));
 				_tmp2 = NULL;
 				key = (_tmp2 = NULL, (key = (g_free (key), NULL)), _tmp2);
@@ -359,10 +379,15 @@ PListDict* plist_dict_parse_dict (xmlNode* node) {
 }
 
 
-PListDict* plist_dict_new (void) {
+PListDict* plist_dict_construct (GType object_type) {
 	PListDict * self;
-	self = g_object_newv (PLIST_TYPE_DICT, 0, NULL);
+	self = ((PListDict*) (plist_node_construct (object_type)));
 	return self;
+}
+
+
+PListDict* plist_dict_new (void) {
+	return plist_dict_construct (PLIST_TYPE_DICT);
 }
 
 
@@ -395,7 +420,7 @@ static void plist_dict_instance_init (PListDict * self) {
 }
 
 
-static void plist_dict_finalize (GObject * obj) {
+static void plist_dict_finalize (GObject* obj) {
 	PListDict * self;
 	self = PLIST_DICT (obj);
 	(self->map == NULL ? NULL : (self->map = (g_object_unref (self->map), NULL)));
@@ -406,7 +431,7 @@ static void plist_dict_finalize (GObject * obj) {
 GType plist_dict_get_type (void) {
 	static GType plist_dict_type_id = 0;
 	if (plist_dict_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (PListDictClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) plist_dict_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (PListDict), 0, (GInstanceInitFunc) plist_dict_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (PListDictClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) plist_dict_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (PListDict), 0, (GInstanceInitFunc) plist_dict_instance_init, NULL };
 		plist_dict_type_id = g_type_register_static (PLIST_TYPE_NODE, "PListDict", &g_define_type_info, 0);
 	}
 	return plist_dict_type_id;
@@ -474,7 +499,7 @@ PListDict* plist_parse (const char* filename, GError** error) {
 
 void plist_print_plist (gint indent, PListNode* node) {
 	char* str_indent;
-	g_return_if_fail (PLIST_IS_NODE (node));
+	g_return_if_fail (node != NULL);
 	str_indent = g_strnfill (((gulong) (indent * 2)), ' ');
 	if (PLIST_IS_STRING (node)) {
 		fprintf (stdout, "%s%s,\n", str_indent, (PLIST_STRING (node))->str);
@@ -488,7 +513,7 @@ void plist_print_plist (gint indent, PListNode* node) {
 		{
 			GeeSet* key_collection;
 			GeeIterator* key_it;
-			key_collection = gee_map_get_keys (GEE_MAP ((PLIST_DICT (node))->map));
+			key_collection = gee_map_get_keys (((GeeMap*) ((PLIST_DICT (node))->map)));
 			key_it = gee_iterable_iterator (GEE_ITERABLE (key_collection));
 			while (gee_iterator_next (key_it)) {
 				char* key;
@@ -496,7 +521,7 @@ void plist_print_plist (gint indent, PListNode* node) {
 				{
 					PListNode* value;
 					fprintf (stdout, "%s%s => ", str_indent, key);
-					value = ((PListNode*) (gee_map_get (GEE_MAP ((PLIST_DICT (node))->map), key)));
+					value = ((PListNode*) (gee_map_get (((GeeMap*) ((PLIST_DICT (node))->map)), key)));
 					if (PLIST_IS_STRING (value)) {
 						fprintf (stdout, "\"%s\",\n", (PLIST_STRING (value))->str);
 					} else {

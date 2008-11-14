@@ -4,12 +4,12 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <gtk/gtk.h>
 #include <gtksourceview/gtksourceview.h>
 #include <gee/arraylist.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gtk/gtk.h>
-#include "theme.h"
+#include "view.h"
 
 G_BEGIN_DECLS
 
@@ -58,6 +58,7 @@ gint gtk_mate_buffer_get_line_length (GtkMateBuffer* self, gint line);
 gint gtk_mate_buffer_cursor_line (GtkMateBuffer* self);
 gint gtk_mate_buffer_cursor_line_offset (GtkMateBuffer* self);
 gint gtk_mate_buffer_cursor_offset (GtkMateBuffer* self);
+GtkMateBuffer* gtk_mate_buffer_construct (GType object_type);
 GtkMateBuffer* gtk_mate_buffer_new (void);
 GType gtk_mate_buffer_get_type (void);
 

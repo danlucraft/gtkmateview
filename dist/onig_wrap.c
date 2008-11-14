@@ -8,7 +8,7 @@ enum  {
 	ONIG_ONIG_ERROR_DUMMY_PROPERTY
 };
 static gpointer onig_onig_error_parent_class = NULL;
-static void onig_onig_error_finalize (GObject * obj);
+static void onig_onig_error_finalize (GObject* obj);
 struct _OnigMatchPrivate {
 	regex_t* _rx;
 	OnigRegion* _rg;
@@ -23,7 +23,7 @@ enum  {
 gint onig_match_count = 0;
 static GObject * onig_match_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 static gpointer onig_match_parent_class = NULL;
-static void onig_match_finalize (GObject * obj);
+static void onig_match_finalize (GObject* obj);
 struct _OnigRxPrivate {
 	regex_t* _rx;
 };
@@ -34,14 +34,19 @@ enum  {
 	ONIG_RX_RX
 };
 static gpointer onig_rx_parent_class = NULL;
-static void onig_rx_finalize (GObject * obj);
+static void onig_rx_finalize (GObject* obj);
 
+
+
+OnigOnigError* onig_onig_error_construct (GType object_type) {
+	OnigOnigError * self;
+	self = g_object_newv (object_type, 0, NULL);
+	return self;
+}
 
 
 OnigOnigError* onig_onig_error_new (void) {
-	OnigOnigError * self;
-	self = g_object_newv (ONIG_TYPE_ONIG_ERROR, 0, NULL);
-	return self;
+	return onig_onig_error_construct (ONIG_TYPE_ONIG_ERROR);
 }
 
 
@@ -55,7 +60,7 @@ static void onig_onig_error_instance_init (OnigOnigError * self) {
 }
 
 
-static void onig_onig_error_finalize (GObject * obj) {
+static void onig_onig_error_finalize (GObject* obj) {
 	OnigOnigError * self;
 	self = ONIG_ONIG_ERROR (obj);
 	G_OBJECT_CLASS (onig_onig_error_parent_class)->finalize (obj);
@@ -65,7 +70,7 @@ static void onig_onig_error_finalize (GObject * obj) {
 GType onig_onig_error_get_type (void) {
 	static GType onig_onig_error_type_id = 0;
 	if (onig_onig_error_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (OnigOnigErrorClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) onig_onig_error_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (OnigOnigError), 0, (GInstanceInitFunc) onig_onig_error_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (OnigOnigErrorClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) onig_onig_error_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (OnigOnigError), 0, (GInstanceInitFunc) onig_onig_error_instance_init, NULL };
 		onig_onig_error_type_id = g_type_register_static (G_TYPE_OBJECT, "OnigOnigError", &g_define_type_info, 0);
 	}
 	return onig_onig_error_type_id;
@@ -73,13 +78,13 @@ GType onig_onig_error_get_type (void) {
 
 
 gint onig_match_num_captures (OnigMatch* self) {
-	g_return_val_if_fail (ONIG_IS_MATCH (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	return self->priv->_rg->num_regs;
 }
 
 
 gint onig_match_begin (OnigMatch* self, gint capture) {
-	g_return_val_if_fail (ONIG_IS_MATCH (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	if (capture >= self->priv->_rg->num_regs || capture < 0) {
 		return -1;
 	}
@@ -88,7 +93,7 @@ gint onig_match_begin (OnigMatch* self, gint capture) {
 
 
 gint onig_match_end (OnigMatch* self, gint capture) {
-	g_return_val_if_fail (ONIG_IS_MATCH (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	if (capture >= self->priv->_rg->num_regs || capture < 0) {
 		return -1;
 	}
@@ -96,15 +101,20 @@ gint onig_match_end (OnigMatch* self, gint capture) {
 }
 
 
-OnigMatch* onig_match_new (void) {
+OnigMatch* onig_match_construct (GType object_type) {
 	OnigMatch * self;
-	self = g_object_newv (ONIG_TYPE_MATCH, 0, NULL);
+	self = g_object_newv (object_type, 0, NULL);
 	return self;
 }
 
 
+OnigMatch* onig_match_new (void) {
+	return onig_match_construct (ONIG_TYPE_MATCH);
+}
+
+
 regex_t* onig_match_get_rx (OnigMatch* self) {
-	g_return_val_if_fail (ONIG_IS_MATCH (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	return self->priv->_rx;
 }
 
@@ -112,7 +122,7 @@ regex_t* onig_match_get_rx (OnigMatch* self) {
 void onig_match_set_rx (OnigMatch* self, regex_t* value) {
 	regex_t* _tmp2;
 	regex_t* _tmp1;
-	g_return_if_fail (ONIG_IS_MATCH (self));
+	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
 	self->priv->_rx = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL ? NULL :  (_tmp1))), (self->priv->_rx == NULL ? NULL : (self->priv->_rx = ( (self->priv->_rx), NULL))), _tmp2);
@@ -121,7 +131,7 @@ void onig_match_set_rx (OnigMatch* self, regex_t* value) {
 
 
 OnigRegion* onig_match_get_rg (OnigMatch* self) {
-	g_return_val_if_fail (ONIG_IS_MATCH (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	return self->priv->_rg;
 }
 
@@ -129,7 +139,7 @@ OnigRegion* onig_match_get_rg (OnigMatch* self) {
 void onig_match_set_rg (OnigMatch* self, OnigRegion* value) {
 	OnigRegion* _tmp2;
 	OnigRegion* _tmp1;
-	g_return_if_fail (ONIG_IS_MATCH (self));
+	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
 	self->priv->_rg = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL ? NULL :  (_tmp1))), (self->priv->_rg == NULL ? NULL : (self->priv->_rg = ( (self->priv->_rg), NULL))), _tmp2);
@@ -158,10 +168,10 @@ static void onig_match_get_property (GObject * object, guint property_id, GValue
 	self = ONIG_MATCH (object);
 	switch (property_id) {
 		case ONIG_MATCH_RX:
-		g_value_set_pointer (value, onig_match_get_rx (self));
+		oniguruma_value_set_regex_t (value, onig_match_get_rx (self));
 		break;
 		case ONIG_MATCH_RG:
-		g_value_set_pointer (value, onig_match_get_rg (self));
+		oniguruma_value_set_region (value, onig_match_get_rg (self));
 		break;
 		default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -175,10 +185,10 @@ static void onig_match_set_property (GObject * object, guint property_id, const 
 	self = ONIG_MATCH (object);
 	switch (property_id) {
 		case ONIG_MATCH_RX:
-		onig_match_set_rx (self, g_value_get_pointer (value));
+		onig_match_set_rx (self, oniguruma_value_get_regex_t (value));
 		break;
 		case ONIG_MATCH_RG:
-		onig_match_set_rg (self, g_value_get_pointer (value));
+		onig_match_set_rg (self, oniguruma_value_get_region (value));
 		break;
 		default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -204,7 +214,7 @@ static void onig_match_instance_init (OnigMatch * self) {
 }
 
 
-static void onig_match_finalize (GObject * obj) {
+static void onig_match_finalize (GObject* obj) {
 	OnigMatch * self;
 	self = ONIG_MATCH (obj);
 	(self->priv->_rx == NULL ? NULL : (self->priv->_rx = ( (self->priv->_rx), NULL)));
@@ -216,7 +226,7 @@ static void onig_match_finalize (GObject * obj) {
 GType onig_match_get_type (void) {
 	static GType onig_match_type_id = 0;
 	if (onig_match_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (OnigMatchClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) onig_match_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (OnigMatch), 0, (GInstanceInitFunc) onig_match_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (OnigMatchClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) onig_match_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (OnigMatch), 0, (GInstanceInitFunc) onig_match_instance_init, NULL };
 		onig_match_type_id = g_type_register_static (G_TYPE_OBJECT, "OnigMatch", &g_define_type_info, 0);
 	}
 	return onig_match_type_id;
@@ -227,7 +237,7 @@ OnigMatch* onig_rx_search (OnigRx* self, const char* target, gint start, gint en
 	OnigRegion* rg;
 	gchar* ctarget;
 	gint r;
-	g_return_val_if_fail (ONIG_IS_RX (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (target != NULL, NULL);
 	rg = onig_region_new ();
 	ctarget = ((gchar*) (target));
@@ -309,15 +319,20 @@ OnigRx* onig_rx_make1 (const char* pattern) {
 }
 
 
-OnigRx* onig_rx_new (void) {
+OnigRx* onig_rx_construct (GType object_type) {
 	OnigRx * self;
-	self = g_object_newv (ONIG_TYPE_RX, 0, NULL);
+	self = g_object_newv (object_type, 0, NULL);
 	return self;
 }
 
 
+OnigRx* onig_rx_new (void) {
+	return onig_rx_construct (ONIG_TYPE_RX);
+}
+
+
 regex_t* onig_rx_get_rx (OnigRx* self) {
-	g_return_val_if_fail (ONIG_IS_RX (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	return self->priv->_rx;
 }
 
@@ -325,7 +340,7 @@ regex_t* onig_rx_get_rx (OnigRx* self) {
 void onig_rx_set_rx (OnigRx* self, regex_t* value) {
 	regex_t* _tmp2;
 	regex_t* _tmp1;
-	g_return_if_fail (ONIG_IS_RX (self));
+	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
 	self->priv->_rx = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL ? NULL :  (_tmp1))), (self->priv->_rx == NULL ? NULL : (self->priv->_rx = ( (self->priv->_rx), NULL))), _tmp2);
@@ -338,7 +353,7 @@ static void onig_rx_get_property (GObject * object, guint property_id, GValue * 
 	self = ONIG_RX (object);
 	switch (property_id) {
 		case ONIG_RX_RX:
-		g_value_set_pointer (value, onig_rx_get_rx (self));
+		oniguruma_value_set_regex_t (value, onig_rx_get_rx (self));
 		break;
 		default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -352,7 +367,7 @@ static void onig_rx_set_property (GObject * object, guint property_id, const GVa
 	self = ONIG_RX (object);
 	switch (property_id) {
 		case ONIG_RX_RX:
-		onig_rx_set_rx (self, g_value_get_pointer (value));
+		onig_rx_set_rx (self, oniguruma_value_get_regex_t (value));
 		break;
 		default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -376,7 +391,7 @@ static void onig_rx_instance_init (OnigRx * self) {
 }
 
 
-static void onig_rx_finalize (GObject * obj) {
+static void onig_rx_finalize (GObject* obj) {
 	OnigRx * self;
 	self = ONIG_RX (obj);
 	(self->priv->_rx == NULL ? NULL : (self->priv->_rx = ( (self->priv->_rx), NULL)));
@@ -387,7 +402,7 @@ static void onig_rx_finalize (GObject * obj) {
 GType onig_rx_get_type (void) {
 	static GType onig_rx_type_id = 0;
 	if (onig_rx_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (OnigRxClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) onig_rx_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (OnigRx), 0, (GInstanceInitFunc) onig_rx_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (OnigRxClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) onig_rx_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (OnigRx), 0, (GInstanceInitFunc) onig_rx_instance_init, NULL };
 		onig_rx_type_id = g_type_register_static (G_TYPE_OBJECT, "OnigRx", &g_define_type_info, 0);
 	}
 	return onig_rx_type_id;

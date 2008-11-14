@@ -17,7 +17,7 @@ GeeArrayList* gtk_mate_buffer_bundles = NULL;
 GeeArrayList* gtk_mate_buffer_themes = NULL;
 static GObject * gtk_mate_buffer_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 static gpointer gtk_mate_buffer_parent_class = NULL;
-static void gtk_mate_buffer_finalize (GObject * obj);
+static void gtk_mate_buffer_finalize (GObject* obj);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
@@ -30,7 +30,7 @@ static glong string_get_length (const char* self) {
 
 /* Sets the grammar explicitly by name.*/
 gboolean gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* name) {
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), FALSE);
+	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
 	if (self->parser != NULL && _vala_strcmp0 (gtk_mate_grammar_get_name (gtk_mate_parser_get_grammar (self->parser)), name) == 0) {
 		return TRUE;
@@ -77,7 +77,7 @@ char* gtk_mate_buffer_set_grammar_by_filename (GtkMateBuffer* self, const char* 
 	GtkMateGrammar* best;
 	glong best_length;
 	char* _tmp6;
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (filename != NULL, NULL);
 	best = NULL;
 	best_length = 0L;
@@ -152,7 +152,7 @@ char* gtk_mate_buffer_set_grammar_by_filename (GtkMateBuffer* self, const char* 
 char* gtk_mate_buffer_set_grammar_by_first_line (GtkMateBuffer* self, const char* first_line) {
 	OnigRx* re;
 	char* _tmp7;
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (first_line != NULL, NULL);
 	re = NULL;
 	{
@@ -208,7 +208,7 @@ char* gtk_mate_buffer_set_grammar_by_first_line (GtkMateBuffer* self, const char
 GtkTextIter gtk_mate_buffer_iter_ (GtkMateBuffer* self, gint offset) {
 	GtkTextIter i = {0};
 	0;
-	gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (self), &i, offset);
+	gtk_text_buffer_get_iter_at_offset (((GtkTextBuffer*) (self)), &i, offset);
 	return i;
 }
 
@@ -216,7 +216,7 @@ GtkTextIter gtk_mate_buffer_iter_ (GtkMateBuffer* self, gint offset) {
 GtkTextIter gtk_mate_buffer_start_iter (GtkMateBuffer* self) {
 	GtkTextIter i = {0};
 	0;
-	gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (self), &i, 0);
+	gtk_text_buffer_get_iter_at_offset (((GtkTextBuffer*) (self)), &i, 0);
 	return i;
 }
 
@@ -224,7 +224,7 @@ GtkTextIter gtk_mate_buffer_start_iter (GtkMateBuffer* self) {
 GtkTextIter gtk_mate_buffer_end_iter (GtkMateBuffer* self) {
 	GtkTextIter i = {0};
 	0;
-	gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (self), &i, gtk_text_buffer_get_char_count (GTK_TEXT_BUFFER (self)));
+	gtk_text_buffer_get_iter_at_offset (((GtkTextBuffer*) (self)), &i, gtk_text_buffer_get_char_count (((GtkTextBuffer*) (self))));
 	return i;
 }
 
@@ -234,7 +234,7 @@ GtkTextIter gtk_mate_buffer_cursor_iter (GtkMateBuffer* self) {
 	GtkTextMark* _tmp0;
 	0;
 	_tmp0 = NULL;
-	gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (self), &i, (_tmp0 = gtk_mate_buffer_cursor_mark (self)));
+	gtk_text_buffer_get_iter_at_mark (((GtkTextBuffer*) (self)), &i, (_tmp0 = gtk_mate_buffer_cursor_mark (self)));
 	(_tmp0 == NULL ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL)));
 	return i;
 }
@@ -244,7 +244,7 @@ GtkTextIter gtk_mate_buffer_iter_from_mark (GtkMateBuffer* self, GtkTextMark* ma
 	GtkTextIter i = {0};
 	0;
 	0;
-	gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (self), &i, mark);
+	gtk_text_buffer_get_iter_at_mark (((GtkTextBuffer*) (self)), &i, mark);
 	return i;
 }
 
@@ -252,7 +252,7 @@ GtkTextIter gtk_mate_buffer_iter_from_mark (GtkMateBuffer* self, GtkTextMark* ma
 GtkTextIter gtk_mate_buffer_iter_at_line_offset (GtkMateBuffer* self, gint line, gint line_offset) {
 	GtkTextIter i = {0};
 	0;
-	gtk_text_buffer_get_iter_at_line_offset (GTK_TEXT_BUFFER (self), &i, line, line_offset);
+	gtk_text_buffer_get_iter_at_line_offset (((GtkTextBuffer*) (self)), &i, line, line_offset);
 	return i;
 }
 
@@ -260,7 +260,7 @@ GtkTextIter gtk_mate_buffer_iter_at_line_offset (GtkMateBuffer* self, gint line,
 GtkTextIter gtk_mate_buffer_line_start_iter (GtkMateBuffer* self, gint line) {
 	GtkTextIter i = {0};
 	0;
-	gtk_text_buffer_get_iter_at_line (GTK_TEXT_BUFFER (self), &i, line);
+	gtk_text_buffer_get_iter_at_line (((GtkTextBuffer*) (self)), &i, line);
 	return i;
 }
 
@@ -268,7 +268,7 @@ GtkTextIter gtk_mate_buffer_line_start_iter (GtkMateBuffer* self, gint line) {
 /* Iter at end of line, after the "\n" (if present).*/
 GtkTextIter gtk_mate_buffer_line_end_iter (GtkMateBuffer* self, gint line) {
 	0;
-	if (line >= gtk_text_buffer_get_line_count (GTK_TEXT_BUFFER (self)) - 1) {
+	if (line >= gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self))) - 1) {
 		return gtk_mate_buffer_end_iter (self);
 	} else {
 		return gtk_mate_buffer_line_start_iter (self, line + 1);
@@ -279,7 +279,7 @@ GtkTextIter gtk_mate_buffer_line_end_iter (GtkMateBuffer* self, gint line) {
 /* Iter at end of line, before the "\n" (if present).*/
 GtkTextIter gtk_mate_buffer_line_end_iter1 (GtkMateBuffer* self, gint line) {
 	0;
-	if (line >= gtk_text_buffer_get_line_count (GTK_TEXT_BUFFER (self)) - 1) {
+	if (line >= gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self))) - 1) {
 		return gtk_mate_buffer_end_iter (self);
 	} else {
 		GtkTextIter i;
@@ -292,33 +292,33 @@ GtkTextIter gtk_mate_buffer_line_end_iter1 (GtkMateBuffer* self, gint line) {
 
 GtkTextMark* gtk_mate_buffer_start_mark (GtkMateBuffer* self) {
 	GtkTextMark* _tmp0;
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0 = NULL;
-	return (_tmp0 = gtk_text_buffer_get_mark (GTK_TEXT_BUFFER (self), "start_mark"), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
+	return (_tmp0 = gtk_text_buffer_get_mark (((GtkTextBuffer*) (self)), "start_mark"), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
 }
 
 
 GtkTextMark* gtk_mate_buffer_end_mark (GtkMateBuffer* self) {
 	GtkTextMark* _tmp0;
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0 = NULL;
-	return (_tmp0 = gtk_text_buffer_get_mark (GTK_TEXT_BUFFER (self), "end_mark"), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
+	return (_tmp0 = gtk_text_buffer_get_mark (((GtkTextBuffer*) (self)), "end_mark"), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
 }
 
 
 GtkTextMark* gtk_mate_buffer_cursor_mark (GtkMateBuffer* self) {
 	GtkTextMark* _tmp0;
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0 = NULL;
-	return (_tmp0 = gtk_text_buffer_get_mark (GTK_TEXT_BUFFER (self), "insert"), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
+	return (_tmp0 = gtk_text_buffer_get_mark (((GtkTextBuffer*) (self)), "insert"), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
 }
 
 
 GtkTextMark* gtk_mate_buffer_selection_mark (GtkMateBuffer* self) {
 	GtkTextMark* _tmp0;
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0 = NULL;
-	return (_tmp0 = gtk_text_buffer_get_mark (GTK_TEXT_BUFFER (self), "selection"), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
+	return (_tmp0 = gtk_text_buffer_get_mark (((GtkTextBuffer*) (self)), "selection"), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
 }
 
 
@@ -328,18 +328,18 @@ char* gtk_mate_buffer_get_line (GtkMateBuffer* self, gint line) {
 	GtkTextIter ei = {0};
 	const char* _tmp2;
 	GtkTextIter _tmp1 = {0};
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), NULL);
-	if (line == gtk_text_buffer_get_line_count (GTK_TEXT_BUFFER (self)) - 1) {
+	g_return_val_if_fail (self != NULL, NULL);
+	if (line == gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self))) - 1) {
 		ei = gtk_mate_buffer_end_iter (self);
 	} else {
-		if (line > gtk_text_buffer_get_line_count (GTK_TEXT_BUFFER (self)) - 1 || line < 0) {
+		if (line > gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self))) - 1 || line < 0) {
 			return NULL;
 		} else {
 			ei = gtk_mate_buffer_line_start_iter (self, line + 1);
 		}
 	}
 	_tmp2 = NULL;
-	return (_tmp2 = gtk_text_buffer_get_slice (GTK_TEXT_BUFFER (self), (_tmp1 = gtk_mate_buffer_line_start_iter (self, line), &_tmp1), &ei, TRUE), (_tmp2 == NULL ? NULL : g_strdup (_tmp2)));
+	return (_tmp2 = gtk_text_buffer_get_slice (((GtkTextBuffer*) (self)), (_tmp1 = gtk_mate_buffer_line_start_iter (self, line), &_tmp1), &ei, TRUE), (_tmp2 == NULL ? NULL : g_strdup (_tmp2)));
 }
 
 
@@ -349,11 +349,11 @@ char* gtk_mate_buffer_get_line1 (GtkMateBuffer* self, gint line_ix) {
 	char* line;
 	char* _tmp0;
 	char* _tmp4;
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	line = NULL;
 	_tmp0 = NULL;
 	if ((line = (_tmp0 = gtk_mate_buffer_get_line (self, line_ix), (line = (g_free (line), NULL)), _tmp0)) != NULL) {
-		if (line_ix == gtk_text_buffer_get_line_count (GTK_TEXT_BUFFER (self)) - 1) {
+		if (line_ix == gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self))) - 1) {
 			return line;
 		} else {
 			char* _tmp2;
@@ -369,11 +369,11 @@ char* gtk_mate_buffer_get_line1 (GtkMateBuffer* self, gint line_ix) {
 
 
 gint gtk_mate_buffer_get_line_length (GtkMateBuffer* self, gint line) {
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), 0);
-	if (line >= gtk_text_buffer_get_line_count (GTK_TEXT_BUFFER (self)) || line < 0) {
+	g_return_val_if_fail (self != NULL, 0);
+	if (line >= gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self))) || line < 0) {
 		return -1;
 	}
-	if (line == gtk_text_buffer_get_line_count (GTK_TEXT_BUFFER (self)) - 1) {
+	if (line == gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self))) - 1) {
 		GtkTextIter _tmp2 = {0};
 		GtkTextIter _tmp1 = {0};
 		return gtk_text_iter_get_offset ((_tmp1 = gtk_mate_buffer_end_iter (self), &_tmp1)) - gtk_text_iter_get_offset ((_tmp2 = gtk_mate_buffer_line_start_iter (self, line), &_tmp2));
@@ -387,29 +387,34 @@ gint gtk_mate_buffer_get_line_length (GtkMateBuffer* self, gint line) {
 
 gint gtk_mate_buffer_cursor_line (GtkMateBuffer* self) {
 	GtkTextIter _tmp0 = {0};
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	return gtk_text_iter_get_line ((_tmp0 = gtk_mate_buffer_cursor_iter (self), &_tmp0));
 }
 
 
 gint gtk_mate_buffer_cursor_line_offset (GtkMateBuffer* self) {
 	GtkTextIter _tmp0 = {0};
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	return gtk_text_iter_get_line_offset ((_tmp0 = gtk_mate_buffer_cursor_iter (self), &_tmp0));
 }
 
 
 gint gtk_mate_buffer_cursor_offset (GtkMateBuffer* self) {
 	GtkTextIter _tmp0 = {0};
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	return gtk_text_iter_get_offset ((_tmp0 = gtk_mate_buffer_cursor_iter (self), &_tmp0));
 }
 
 
-GtkMateBuffer* gtk_mate_buffer_new (void) {
+GtkMateBuffer* gtk_mate_buffer_construct (GType object_type) {
 	GtkMateBuffer * self;
-	self = g_object_newv (GTK_MATE_TYPE_BUFFER, 0, NULL);
+	self = g_object_newv (object_type, 0, NULL);
 	return self;
+}
+
+
+GtkMateBuffer* gtk_mate_buffer_new (void) {
+	return gtk_mate_buffer_construct (GTK_MATE_TYPE_BUFFER);
 }
 
 
@@ -441,7 +446,7 @@ static void gtk_mate_buffer_instance_init (GtkMateBuffer * self) {
 }
 
 
-static void gtk_mate_buffer_finalize (GObject * obj) {
+static void gtk_mate_buffer_finalize (GObject* obj) {
 	GtkMateBuffer * self;
 	self = GTK_MATE_BUFFER (obj);
 	(self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL)));
@@ -452,7 +457,7 @@ static void gtk_mate_buffer_finalize (GObject * obj) {
 GType gtk_mate_buffer_get_type (void) {
 	static GType gtk_mate_buffer_type_id = 0;
 	if (gtk_mate_buffer_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (GtkMateBufferClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_buffer_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateBuffer), 0, (GInstanceInitFunc) gtk_mate_buffer_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (GtkMateBufferClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_buffer_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateBuffer), 0, (GInstanceInitFunc) gtk_mate_buffer_instance_init, NULL };
 		gtk_mate_buffer_type_id = g_type_register_static (GTK_TYPE_SOURCE_BUFFER, "GtkMateBuffer", &g_define_type_info, 0);
 	}
 	return gtk_mate_buffer_type_id;

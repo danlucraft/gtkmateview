@@ -17,21 +17,26 @@ enum  {
 static void gtk_mate_bundle_set_name (GtkMateBundle* self, const char* value);
 static GObject * gtk_mate_bundle_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 static gpointer gtk_mate_bundle_parent_class = NULL;
-static void gtk_mate_bundle_finalize (GObject * obj);
+static void gtk_mate_bundle_finalize (GObject* obj);
 
 
 
-GtkMateBundle* gtk_mate_bundle_new (const char* name) {
+GtkMateBundle* gtk_mate_bundle_construct (GType object_type, const char* name) {
 	GtkMateBundle * self;
 	g_return_val_if_fail (name != NULL, NULL);
-	self = g_object_newv (GTK_MATE_TYPE_BUNDLE, 0, NULL);
+	self = g_object_newv (object_type, 0, NULL);
 	gtk_mate_bundle_set_name (self, name);
 	return self;
 }
 
 
+GtkMateBundle* gtk_mate_bundle_new (const char* name) {
+	return gtk_mate_bundle_construct (GTK_MATE_TYPE_BUNDLE, name);
+}
+
+
 const char* gtk_mate_bundle_get_name (GtkMateBundle* self) {
-	g_return_val_if_fail (GTK_MATE_IS_BUNDLE (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	return self->priv->_name;
 }
 
@@ -39,7 +44,7 @@ const char* gtk_mate_bundle_get_name (GtkMateBundle* self) {
 static void gtk_mate_bundle_set_name (GtkMateBundle* self, const char* value) {
 	char* _tmp2;
 	const char* _tmp1;
-	g_return_if_fail (GTK_MATE_IS_BUNDLE (self));
+	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
 	self->priv->_name = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL ? NULL : g_strdup (_tmp1))), (self->priv->_name = (g_free (self->priv->_name), NULL)), _tmp2);
@@ -109,7 +114,7 @@ static void gtk_mate_bundle_instance_init (GtkMateBundle * self) {
 }
 
 
-static void gtk_mate_bundle_finalize (GObject * obj) {
+static void gtk_mate_bundle_finalize (GObject* obj) {
 	GtkMateBundle * self;
 	self = GTK_MATE_BUNDLE (obj);
 	self->priv->_name = (g_free (self->priv->_name), NULL);
@@ -121,7 +126,7 @@ static void gtk_mate_bundle_finalize (GObject * obj) {
 GType gtk_mate_bundle_get_type (void) {
 	static GType gtk_mate_bundle_type_id = 0;
 	if (gtk_mate_bundle_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (GtkMateBundleClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_bundle_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateBundle), 0, (GInstanceInitFunc) gtk_mate_bundle_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (GtkMateBundleClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_bundle_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateBundle), 0, (GInstanceInitFunc) gtk_mate_bundle_instance_init, NULL };
 		gtk_mate_bundle_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateBundle", &g_define_type_info, 0);
 	}
 	return gtk_mate_bundle_type_id;

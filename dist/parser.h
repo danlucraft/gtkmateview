@@ -8,10 +8,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gee/arraylist.h>
-#include "theme.h"
+#include "view.h"
 #include "range_set.h"
-#include "onig_wrap.h"
 #include "grammar.h"
+#include "scanner.h"
+#include "onig_wrap.h"
 
 G_BEGIN_DECLS
 
@@ -49,11 +50,13 @@ struct _GtkMateParser {
 	GtkObject parent_instance;
 	GtkMateParserPrivate * priv;
 	GtkMateScope* root;
-	RangeSet* changes;
 	gint deactivation_level;
 	GtkTextTag* dummy_tag;
 	GtkTextTag* dummy_tag2;
 	GSequence* tags;
+	RangeSet* changes;
+	gint parsed_upto;
+	gboolean always_parse_all;
 };
 
 struct _GtkMateParserClass {
@@ -68,6 +71,7 @@ gboolean gtk_mate_text_loc_lt (GtkMateTextLoc* t1, GtkMateTextLoc* t2);
 gboolean gtk_mate_text_loc_gte (GtkMateTextLoc* t1, GtkMateTextLoc* t2);
 gboolean gtk_mate_text_loc_lte (GtkMateTextLoc* t1, GtkMateTextLoc* t2);
 char* gtk_mate_text_loc_to_s (GtkMateTextLoc* self);
+GtkMateTextLoc* gtk_mate_text_loc_construct (GType object_type);
 GtkMateTextLoc* gtk_mate_text_loc_new (void);
 GType gtk_mate_text_loc_get_type (void);
 extern GeeArrayList* gtk_mate_parser_existing_parsers;
@@ -87,6 +91,7 @@ void gtk_mate_parser_reset_table_priorities (GtkMateParser* self);
 void gtk_mate_parser_remove_tags (GtkMateParser* self);
 void gtk_mate_parser_change_theme (GtkMateParser* self, GtkMateTheme* theme);
 void gtk_mate_parser_recolour_children (GtkMateParser* self, GtkMateScope* scope);
+void gtk_mate_parser_last_visible_line_changed (GtkMateParser* self, gint last_visible_line);
 void gtk_mate_parser_connect_buffer_signals (GtkMateParser* self);
 void gtk_mate_parser_insert_text_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, const char* text, gint length);
 void gtk_mate_parser_delete_range_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, GtkTextIter* pos2);
@@ -98,6 +103,7 @@ void gtk_mate_parser_added_tag (GtkMateParser* self, GtkTextTag* tag);
 gint gtk_mate_parser_tag_compare (GtkTextTag* tag1, GtkTextTag* tag2, void* data);
 void gtk_mate_parser_close (GtkMateParser* self);
 GtkMateParser* gtk_mate_parser_create (GtkMateGrammar* grammar, GtkMateBuffer* buffer);
+GtkMateParser* gtk_mate_parser_construct (GType object_type);
 GtkMateParser* gtk_mate_parser_new (void);
 GtkMateGrammar* gtk_mate_parser_get_grammar (GtkMateParser* self);
 void gtk_mate_parser_set_grammar (GtkMateParser* self, GtkMateGrammar* value);

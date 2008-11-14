@@ -14,13 +14,13 @@ enum  {
 	GTK_MATE_THEME_SETTING_DUMMY_PROPERTY
 };
 static gpointer gtk_mate_theme_setting_parent_class = NULL;
-static void gtk_mate_theme_setting_finalize (GObject * obj);
+static void gtk_mate_theme_setting_finalize (GObject* obj);
 enum  {
 	GTK_MATE_THEME_DUMMY_PROPERTY
 };
 GeeArrayList* gtk_mate_theme_themes = NULL;
 static gpointer gtk_mate_theme_parent_class = NULL;
-static void gtk_mate_theme_finalize (GObject * obj);
+static void gtk_mate_theme_finalize (GObject* obj);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 
 
@@ -32,7 +32,7 @@ GtkMateThemeSetting* gtk_mate_theme_setting_create_from_plist (PListDict* dict) 
 	GeeHashMap* _tmp5;
 	PListDict* pd;
 	GtkMateThemeSetting* _tmp7;
-	g_return_val_if_fail (PLIST_IS_DICT (dict), NULL);
+	g_return_val_if_fail (dict != NULL, NULL);
 	tsetting = g_object_ref_sink (gtk_mate_theme_setting_new ());
 	nm = plist_dict_get (dict, "name");
 	if (nm != NULL) {
@@ -57,7 +57,7 @@ GtkMateThemeSetting* gtk_mate_theme_setting_create_from_plist (PListDict* dict) 
 	{
 		GeeSet* key_collection;
 		GeeIterator* key_it;
-		key_collection = gee_map_get_keys (GEE_MAP (pd->map));
+		key_collection = gee_map_get_keys (((GeeMap*) (pd->map)));
 		key_it = gee_iterable_iterator (GEE_ITERABLE (key_collection));
 		while (gee_iterator_next (key_it)) {
 			char* key;
@@ -65,7 +65,7 @@ GtkMateThemeSetting* gtk_mate_theme_setting_create_from_plist (PListDict* dict) 
 			{
 				PListString* _tmp6;
 				_tmp6 = NULL;
-				gee_map_set (GEE_MAP (tsetting->settings), key, (_tmp6 = (PLIST_STRING (((PListNode*) (gee_map_get (GEE_MAP (pd->map), key))))))->str);
+				gee_map_set (((GeeMap*) (tsetting->settings)), key, (_tmp6 = (PLIST_STRING (((PListNode*) (gee_map_get (((GeeMap*) (pd->map)), key))))))->str);
 				(_tmp6 == NULL ? NULL : (_tmp6 = (g_object_unref (_tmp6), NULL)));
 				key = (g_free (key), NULL);
 			}
@@ -80,7 +80,7 @@ GtkMateThemeSetting* gtk_mate_theme_setting_create_from_plist (PListDict* dict) 
 
 void gtk_mate_theme_setting_compile_scope_matchers (GtkMateThemeSetting* self) {
 	GeeArrayList* _tmp0;
-	g_return_if_fail (GTK_MATE_IS_THEME_SETTING (self));
+	g_return_if_fail (self != NULL);
 	/*stdout.printf("  compiling '%s'\n", selector);*/
 	_tmp0 = NULL;
 	self->matchers = (_tmp0 = gtk_mate_matcher_compile (self->selector), (self->matchers == NULL ? NULL : (self->matchers = (g_object_unref (self->matchers), NULL))), _tmp0);
@@ -88,7 +88,7 @@ void gtk_mate_theme_setting_compile_scope_matchers (GtkMateThemeSetting* self) {
 
 
 gboolean gtk_mate_theme_setting_match (GtkMateThemeSetting* self, const char* scope, OnigMatch** match) {
-	g_return_val_if_fail (GTK_MATE_IS_THEME_SETTING (self), FALSE);
+	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (scope != NULL, FALSE);
 	(*match) = NULL;
 	if (self->matchers == NULL) {
@@ -119,10 +119,15 @@ gboolean gtk_mate_theme_setting_match (GtkMateThemeSetting* self, const char* sc
 }
 
 
-GtkMateThemeSetting* gtk_mate_theme_setting_new (void) {
+GtkMateThemeSetting* gtk_mate_theme_setting_construct (GType object_type) {
 	GtkMateThemeSetting * self;
-	self = g_object_newv (GTK_MATE_TYPE_THEME_SETTING, 0, NULL);
+	self = g_object_newv (object_type, 0, NULL);
 	return self;
+}
+
+
+GtkMateThemeSetting* gtk_mate_theme_setting_new (void) {
+	return gtk_mate_theme_setting_construct (GTK_MATE_TYPE_THEME_SETTING);
 }
 
 
@@ -136,7 +141,7 @@ static void gtk_mate_theme_setting_instance_init (GtkMateThemeSetting * self) {
 }
 
 
-static void gtk_mate_theme_setting_finalize (GObject * obj) {
+static void gtk_mate_theme_setting_finalize (GObject* obj) {
 	GtkMateThemeSetting * self;
 	self = GTK_MATE_THEME_SETTING (obj);
 	self->name = (g_free (self->name), NULL);
@@ -150,7 +155,7 @@ static void gtk_mate_theme_setting_finalize (GObject * obj) {
 GType gtk_mate_theme_setting_get_type (void) {
 	static GType gtk_mate_theme_setting_type_id = 0;
 	if (gtk_mate_theme_setting_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (GtkMateThemeSettingClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_theme_setting_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateThemeSetting), 0, (GInstanceInitFunc) gtk_mate_theme_setting_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (GtkMateThemeSettingClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_theme_setting_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateThemeSetting), 0, (GInstanceInitFunc) gtk_mate_theme_setting_instance_init, NULL };
 		gtk_mate_theme_setting_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateThemeSetting", &g_define_type_info, 0);
 	}
 	return gtk_mate_theme_setting_type_id;
@@ -165,7 +170,7 @@ GtkMateTheme* gtk_mate_theme_create_from_plist (PListDict* dict) {
 	GeeArrayList* _tmp6;
 	PListArray* na;
 	GtkMateTheme* _tmp14;
-	g_return_val_if_fail (PLIST_IS_DICT (dict), NULL);
+	g_return_val_if_fail (dict != NULL, NULL);
 	theme = g_object_ref_sink (gtk_mate_theme_new ());
 	theme->is_initialized = FALSE;
 	nm = plist_dict_get (dict, "name");
@@ -223,7 +228,7 @@ GtkMateTheme* gtk_mate_theme_create_from_plist (PListDict* dict) {
 							{
 								PListString* _tmp11;
 								_tmp11 = NULL;
-								gee_map_set (GEE_MAP (theme->global_settings), key, (_tmp11 = (PLIST_STRING (plist_dict_get (gsd, key))))->str);
+								gee_map_set (((GeeMap*) (theme->global_settings)), key, (_tmp11 = (PLIST_STRING (plist_dict_get (gsd, key))))->str);
 								(_tmp11 == NULL ? NULL : (_tmp11 = (g_object_unref (_tmp11), NULL)));
 								key = (g_free (key), NULL);
 							}
@@ -234,7 +239,7 @@ GtkMateTheme* gtk_mate_theme_create_from_plist (PListDict* dict) {
 				} else {
 					GtkMateThemeSetting* _tmp13;
 					_tmp13 = NULL;
-					gee_collection_add (GEE_COLLECTION (theme->settings), (_tmp13 = gtk_mate_theme_setting_create_from_plist (nd)));
+					gee_collection_add (((GeeCollection*) (theme->settings)), (_tmp13 = gtk_mate_theme_setting_create_from_plist (nd)));
 					(_tmp13 == NULL ? NULL : (_tmp13 = (g_object_unref (_tmp13), NULL)));
 				}
 				(nn == NULL ? NULL : (nn = (g_object_unref (nn), NULL)));
@@ -249,7 +254,7 @@ GtkMateTheme* gtk_mate_theme_create_from_plist (PListDict* dict) {
 
 void gtk_mate_theme_init_for_use (GtkMateTheme* self) {
 	GeeHashMap* _tmp0;
-	g_return_if_fail (GTK_MATE_IS_THEME (self));
+	g_return_if_fail (self != NULL);
 	if (self->is_initialized) {
 		return;
 	}
@@ -308,7 +313,7 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
 				char* _tmp4;
 				_tmp5 = NULL;
 				_tmp4 = NULL;
-				gee_collection_add (GEE_COLLECTION (names), (_tmp5 = g_strconcat ((_tmp4 = g_strconcat (share_dir, "/Themes/", NULL)), name, NULL)));
+				gee_collection_add (((GeeCollection*) (names)), (_tmp5 = g_strconcat ((_tmp4 = g_strconcat (share_dir, "/Themes/", NULL)), name, NULL)));
 				_tmp5 = (g_free (_tmp5), NULL);
 				_tmp4 = (g_free (_tmp4), NULL);
 			}
@@ -346,16 +351,16 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 	OnigMatch* m;
 	GtkMateThemeSetting* current;
 	GtkMateThemeSetting* _tmp13;
-	g_return_val_if_fail (GTK_MATE_IS_THEME (self), NULL);
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (scope), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
+	g_return_val_if_fail (scope != NULL, NULL);
 	scope_name = gtk_mate_scope_hierarchy_names (scope, inner);
 	/*stdout.printf("  finding settings for '%s'\n", scope_name);*/
 	cached = NULL;
-	if (gee_map_contains (GEE_MAP (self->cached_setting_for_scopes), scope_name)) {
+	if (gee_map_contains (((GeeMap*) (self->cached_setting_for_scopes)), scope_name)) {
 		GtkMateThemeSetting* _tmp0;
 		GtkMateThemeSetting* _tmp1;
 		_tmp0 = NULL;
-		cached = (_tmp0 = ((GtkMateThemeSetting*) (gee_map_get (GEE_MAP (self->cached_setting_for_scopes), scope_name))), (cached == NULL ? NULL : (cached = (g_object_unref (cached), NULL))), _tmp0);
+		cached = (_tmp0 = ((GtkMateThemeSetting*) (gee_map_get (((GeeMap*) (self->cached_setting_for_scopes)), scope_name))), (cached == NULL ? NULL : (cached = (g_object_unref (cached), NULL))), _tmp0);
 		_tmp1 = NULL;
 		return (_tmp1 = cached, (scope_name = (g_free (scope_name), NULL)), _tmp1);
 	}
@@ -412,16 +417,21 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 	}
 	/*stdout.printf("none match\n");
 	stdout.printf("    best: '%s'\n", current.name);*/
-	gee_map_set (GEE_MAP (self->cached_setting_for_scopes), scope_name, current);
+	gee_map_set (((GeeMap*) (self->cached_setting_for_scopes)), scope_name, current);
 	_tmp13 = NULL;
 	return (_tmp13 = current, (scope_name = (g_free (scope_name), NULL)), (cached == NULL ? NULL : (cached = (g_object_unref (cached), NULL))), (current_m == NULL ? NULL : (current_m = (g_object_unref (current_m), NULL))), (m == NULL ? NULL : (m = (g_object_unref (m), NULL))), _tmp13);
 }
 
 
-GtkMateTheme* gtk_mate_theme_new (void) {
+GtkMateTheme* gtk_mate_theme_construct (GType object_type) {
 	GtkMateTheme * self;
-	self = g_object_newv (GTK_MATE_TYPE_THEME, 0, NULL);
+	self = g_object_newv (object_type, 0, NULL);
 	return self;
+}
+
+
+GtkMateTheme* gtk_mate_theme_new (void) {
+	return gtk_mate_theme_construct (GTK_MATE_TYPE_THEME);
 }
 
 
@@ -435,7 +445,7 @@ static void gtk_mate_theme_instance_init (GtkMateTheme * self) {
 }
 
 
-static void gtk_mate_theme_finalize (GObject * obj) {
+static void gtk_mate_theme_finalize (GObject* obj) {
 	GtkMateTheme * self;
 	self = GTK_MATE_THEME (obj);
 	self->author = (g_free (self->author), NULL);
@@ -450,7 +460,7 @@ static void gtk_mate_theme_finalize (GObject * obj) {
 GType gtk_mate_theme_get_type (void) {
 	static GType gtk_mate_theme_type_id = 0;
 	if (gtk_mate_theme_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (GtkMateThemeClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_theme_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateTheme), 0, (GInstanceInitFunc) gtk_mate_theme_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (GtkMateThemeClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_theme_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateTheme), 0, (GInstanceInitFunc) gtk_mate_theme_instance_init, NULL };
 		gtk_mate_theme_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateTheme", &g_define_type_info, 0);
 	}
 	return gtk_mate_theme_type_id;

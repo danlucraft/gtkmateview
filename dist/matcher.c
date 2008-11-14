@@ -11,7 +11,7 @@ enum  {
 };
 static gint gtk_mate_matcher_sorted_ix (GeeArrayList* ixs, gint val);
 static gpointer gtk_mate_matcher_parent_class = NULL;
-static void gtk_mate_matcher_finalize (GObject * obj);
+static void gtk_mate_matcher_finalize (GObject* obj);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 
 
@@ -28,8 +28,8 @@ gint gtk_mate_matcher_compare_match (const char* scope_string, OnigMatch* m1, On
 	gint len2;
 	gint _tmp4;
 	g_return_val_if_fail (scope_string != NULL, 0);
-	g_return_val_if_fail (ONIG_IS_MATCH (m1), 0);
-	g_return_val_if_fail (ONIG_IS_MATCH (m2), 0);
+	g_return_val_if_fail (m1 != NULL, 0);
+	g_return_val_if_fail (m2 != NULL, 0);
 	space_ixs = string_helper_occurrences (scope_string, " ");
 	{
 		GeeArrayList* ix_collection;
@@ -94,14 +94,14 @@ gint gtk_mate_matcher_compare_match (const char* scope_string, OnigMatch* m1, On
 
 
 static gint gtk_mate_matcher_sorted_ix (GeeArrayList* ixs, gint val) {
-	g_return_val_if_fail (GEE_IS_ARRAY_LIST (ixs), 0);
-	if (gee_collection_get_size (GEE_COLLECTION (ixs)) == 0) {
+	g_return_val_if_fail (ixs != NULL, 0);
+	if (gee_collection_get_size (((GeeCollection*) (ixs))) == 0) {
 		return 0;
 	}
 	if (val < GPOINTER_TO_INT (gee_list_get (((GeeList*) (ixs)), 0))) {
 		return 0;
 	}
-	if (gee_collection_get_size (GEE_COLLECTION (ixs)) == 1) {
+	if (gee_collection_get_size (((GeeCollection*) (ixs))) == 1) {
 		if (val > GPOINTER_TO_INT (gee_list_get (((GeeList*) (ixs)), 0))) {
 			return 1;
 		} else {
@@ -111,13 +111,13 @@ static gint gtk_mate_matcher_sorted_ix (GeeArrayList* ixs, gint val) {
 		{
 			gint i;
 			i = 0;
-			for (; i < gee_collection_get_size (GEE_COLLECTION (ixs)) - 1; i++) {
+			for (; i < gee_collection_get_size (((GeeCollection*) (ixs))) - 1; i++) {
 				if (val > GPOINTER_TO_INT (gee_list_get (((GeeList*) (ixs)), i)) && val < GPOINTER_TO_INT (gee_list_get (((GeeList*) (ixs)), i + 1))) {
 					return i + 1;
 				}
 			}
 		}
-		return gee_collection_get_size (GEE_COLLECTION (ixs));
+		return gee_collection_get_size (((GeeCollection*) (ixs)));
 	}
 }
 
@@ -298,7 +298,7 @@ GeeArrayList* gtk_mate_matcher_compile (const char* selector_string) {
 								s2 = string_helper_gsub (s1, " ", ".* .*");
 								/*stdout.printf("negative '%s' -> '%s'\n", selector_string, s2);*/
 								_tmp6 = NULL;
-								gee_collection_add (GEE_COLLECTION (m->neg_rxs), (_tmp6 = onig_rx_make1 (s2)));
+								gee_collection_add (((GeeCollection*) (m->neg_rxs)), (_tmp6 = onig_rx_make1 (s2)));
 								(_tmp6 == NULL ? NULL : (_tmp6 = (g_object_unref (_tmp6), NULL)));
 								s1 = (g_free (s1), NULL);
 								s2 = (g_free (s2), NULL);
@@ -307,7 +307,7 @@ GeeArrayList* gtk_mate_matcher_compile (const char* selector_string) {
 						}
 					}
 				}
-				gee_collection_add (GEE_COLLECTION (ms), m);
+				gee_collection_add (((GeeCollection*) (ms)), m);
 				selector_string1 = (g_free (selector_string1), NULL);
 				(pos_rx == NULL ? NULL : (pos_rx = (g_object_unref (pos_rx), NULL)));
 				(m == NULL ? NULL : (m = (g_object_unref (m), NULL)));
@@ -322,8 +322,8 @@ GeeArrayList* gtk_mate_matcher_compile (const char* selector_string) {
 
 gboolean gtk_mate_matcher_test_match_re (OnigRx* positive_selector_regex, GeeArrayList* negative_selector_regex, const char* scope_string, OnigMatch** match) {
 	OnigMatch* m;
-	g_return_val_if_fail (ONIG_IS_RX (positive_selector_regex), FALSE);
-	g_return_val_if_fail (GEE_IS_ARRAY_LIST (negative_selector_regex), FALSE);
+	g_return_val_if_fail (positive_selector_regex != NULL, FALSE);
+	g_return_val_if_fail (negative_selector_regex != NULL, FALSE);
 	g_return_val_if_fail (scope_string != NULL, FALSE);
 	(*match) = NULL;
 	m = onig_rx_search (positive_selector_regex, scope_string, 0, ((gint) (strlen (scope_string))));
@@ -362,10 +362,15 @@ gboolean gtk_mate_matcher_test_match_re (OnigRx* positive_selector_regex, GeeArr
 }
 
 
-GtkMateMatcher* gtk_mate_matcher_new (void) {
+GtkMateMatcher* gtk_mate_matcher_construct (GType object_type) {
 	GtkMateMatcher * self;
-	self = g_object_newv (GTK_MATE_TYPE_MATCHER, 0, NULL);
+	self = g_object_newv (object_type, 0, NULL);
 	return self;
+}
+
+
+GtkMateMatcher* gtk_mate_matcher_new (void) {
+	return gtk_mate_matcher_construct (GTK_MATE_TYPE_MATCHER);
 }
 
 
@@ -379,7 +384,7 @@ static void gtk_mate_matcher_instance_init (GtkMateMatcher * self) {
 }
 
 
-static void gtk_mate_matcher_finalize (GObject * obj) {
+static void gtk_mate_matcher_finalize (GObject* obj) {
 	GtkMateMatcher * self;
 	self = GTK_MATE_MATCHER (obj);
 	(self->pos_rx == NULL ? NULL : (self->pos_rx = (g_object_unref (self->pos_rx), NULL)));
@@ -391,7 +396,7 @@ static void gtk_mate_matcher_finalize (GObject * obj) {
 GType gtk_mate_matcher_get_type (void) {
 	static GType gtk_mate_matcher_type_id = 0;
 	if (gtk_mate_matcher_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (GtkMateMatcherClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_matcher_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateMatcher), 0, (GInstanceInitFunc) gtk_mate_matcher_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (GtkMateMatcherClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_matcher_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateMatcher), 0, (GInstanceInitFunc) gtk_mate_matcher_instance_init, NULL };
 		gtk_mate_matcher_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateMatcher", &g_define_type_info, 0);
 	}
 	return gtk_mate_matcher_type_id;

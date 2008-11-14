@@ -4,15 +4,15 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <stdlib.h>
+#include <string.h>
 #include <gtk/gtk.h>
 #include <gee/iterable.h>
 #include <gee/arraylist.h>
-#include <stdlib.h>
-#include <string.h>
 #include <gee/iterator.h>
+#include "scope.h"
 #include "pattern.h"
 #include "onig_wrap.h"
-#include "theme.h"
 
 G_BEGIN_DECLS
 
@@ -24,6 +24,8 @@ G_BEGIN_DECLS
 #define GTK_MATE_IS_MARKER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_MATE_TYPE_MARKER))
 #define GTK_MATE_MARKER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_MATE_TYPE_MARKER, GtkMateMarkerClass))
 
+typedef struct _GtkMateMarker GtkMateMarker;
+typedef struct _GtkMateMarkerClass GtkMateMarkerClass;
 typedef struct _GtkMateMarkerPrivate GtkMateMarkerPrivate;
 
 #define GTK_MATE_TYPE_SCANNER (gtk_mate_scanner_get_type ())
@@ -33,6 +35,8 @@ typedef struct _GtkMateMarkerPrivate GtkMateMarkerPrivate;
 #define GTK_MATE_IS_SCANNER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_MATE_TYPE_SCANNER))
 #define GTK_MATE_SCANNER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_MATE_TYPE_SCANNER, GtkMateScannerClass))
 
+typedef struct _GtkMateScanner GtkMateScanner;
+typedef struct _GtkMateScannerClass GtkMateScannerClass;
 typedef struct _GtkMateScannerPrivate GtkMateScannerPrivate;
 
 #define GTK_MATE_SCANNER_TYPE_ITERATOR (gtk_mate_scanner_iterator_get_type ())
@@ -42,6 +46,8 @@ typedef struct _GtkMateScannerPrivate GtkMateScannerPrivate;
 #define GTK_MATE_SCANNER_IS_ITERATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_MATE_SCANNER_TYPE_ITERATOR))
 #define GTK_MATE_SCANNER_ITERATOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_MATE_SCANNER_TYPE_ITERATOR, GtkMateScannerIteratorClass))
 
+typedef struct _GtkMateScannerIterator GtkMateScannerIterator;
+typedef struct _GtkMateScannerIteratorClass GtkMateScannerIteratorClass;
 typedef struct _GtkMateScannerIteratorPrivate GtkMateScannerIteratorPrivate;
 
 /* The Scanner returns these to indicate successful pattern matches in a line.*/
@@ -83,8 +89,10 @@ struct _GtkMateScannerIteratorClass {
 };
 
 
+GtkMateMarker* gtk_mate_marker_construct (GType object_type);
 GtkMateMarker* gtk_mate_marker_new (void);
 GType gtk_mate_marker_get_type (void);
+GtkMateScanner* gtk_mate_scanner_construct (GType object_type, GtkMateScope* s, const char* line, gint line_length);
 GtkMateScanner* gtk_mate_scanner_new (GtkMateScope* s, const char* line, gint line_length);
 GtkMateMarker* gtk_mate_scanner_get_cached_marker (GtkMateScanner* self);
 void gtk_mate_scanner_remove_preceding_cached_markers (GtkMateScanner* self, GtkMateMarker* m);
@@ -96,6 +104,7 @@ const char* gtk_mate_scanner_get_line (GtkMateScanner* self);
 void gtk_mate_scanner_set_line (GtkMateScanner* self, const char* value);
 gint gtk_mate_scanner_get_line_length (GtkMateScanner* self);
 void gtk_mate_scanner_set_line_length (GtkMateScanner* self, gint value);
+GtkMateScannerIterator* gtk_mate_scanner_iterator_construct (GType object_type, GType marker_type, GBoxedCopyFunc marker_dup_func, GDestroyNotify marker_destroy_func, GtkMateScanner* s);
 GtkMateScannerIterator* gtk_mate_scanner_iterator_new (GType marker_type, GBoxedCopyFunc marker_dup_func, GDestroyNotify marker_destroy_func, GtkMateScanner* s);
 GtkMateScanner* gtk_mate_scanner_iterator_get_scanner (GtkMateScannerIterator* self);
 void gtk_mate_scanner_iterator_set_scanner (GtkMateScannerIterator* self, GtkMateScanner* value);

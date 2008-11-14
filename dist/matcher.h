@@ -4,10 +4,10 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gtk/gtk.h>
-#include <gee/arraylist.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gee/arraylist.h>
+#include <gtk/gtk.h>
 #include "onig_wrap.h"
 
 G_BEGIN_DECLS
@@ -42,6 +42,7 @@ gboolean gtk_mate_matcher_test_match (const char* selector_string, const char* s
 gboolean gtk_mate_matcher_match (const char* selector_string, const char* scope_string, OnigMatch** match);
 GeeArrayList* gtk_mate_matcher_compile (const char* selector_string);
 gboolean gtk_mate_matcher_test_match_re (OnigRx* positive_selector_regex, GeeArrayList* negative_selector_regex, const char* scope_string, OnigMatch** match);
+GtkMateMatcher* gtk_mate_matcher_construct (GType object_type);
 GtkMateMatcher* gtk_mate_matcher_new (void);
 GType gtk_mate_matcher_get_type (void);
 

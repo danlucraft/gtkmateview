@@ -36,6 +36,7 @@ struct _StringHelperClass {
 
 char* string_helper_gsub (const char* start_string, const char* match_string, const char* replacement_string);
 GeeArrayList* string_helper_occurrences (const char* s, const char* t);
+StringHelper* string_helper_construct (GType object_type);
 StringHelper* string_helper_new (void);
 GType string_helper_get_type (void);
 

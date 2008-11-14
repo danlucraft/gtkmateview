@@ -25,15 +25,15 @@ enum  {
 gint gtk_mate_scope_scope_count = 0;
 static GObject * gtk_mate_scope_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 static gpointer gtk_mate_scope_parent_class = NULL;
-static void gtk_mate_scope_finalize (GObject * obj);
+static void gtk_mate_scope_finalize (GObject* obj);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
-GtkMateScope* gtk_mate_scope_new (GtkMateBuffer* buf, const char* name) {
+GtkMateScope* gtk_mate_scope_construct (GType object_type, GtkMateBuffer* buf, const char* name) {
 	GtkMateScope * self;
-	g_return_val_if_fail (GTK_MATE_IS_BUFFER (buf), NULL);
-	self = g_object_newv (GTK_MATE_TYPE_SCOPE, 0, NULL);
+	g_return_val_if_fail (buf != NULL, NULL);
+	self = g_object_newv (object_type, 0, NULL);
 	gtk_mate_scope_set_name (self, name);
 	gtk_mate_scope_set_buffer (self, buf);
 	gtk_mate_scope_set_is_coloured (self, FALSE);
@@ -41,8 +41,13 @@ GtkMateScope* gtk_mate_scope_new (GtkMateBuffer* buf, const char* name) {
 }
 
 
+GtkMateScope* gtk_mate_scope_new (GtkMateBuffer* buf, const char* name) {
+	return gtk_mate_scope_construct (GTK_MATE_TYPE_SCOPE, buf, name);
+}
+
+
 gboolean gtk_mate_scope_is_root (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), FALSE);
+	g_return_val_if_fail (self != NULL, FALSE);
 	if (self->parent == NULL) {
 		return TRUE;
 	}
@@ -55,8 +60,8 @@ gboolean gtk_mate_scope_is_root (GtkMateScope* self) {
 gint gtk_mate_scope_compare (GtkMateScope* a, GtkMateScope* b, void* data) {
 	GtkTextIter _tmp1 = {0};
 	GtkTextIter _tmp0 = {0};
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (a), 0);
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (b), 0);
+	g_return_val_if_fail (a != NULL, 0);
+	g_return_val_if_fail (b != NULL, 0);
 	return gtk_text_iter_compare ((_tmp0 = gtk_mate_scope_start_iter (a), &_tmp0), (_tmp1 = gtk_mate_scope_start_iter (b), &_tmp1));
 }
 
@@ -64,8 +69,8 @@ gint gtk_mate_scope_compare (GtkMateScope* a, GtkMateScope* b, void* data) {
 gint gtk_mate_scope_compare_by_loc (GtkMateScope* a, GtkMateScope* b, void* data) {
 	GtkMateTextLoc* a_start;
 	GtkMateTextLoc* b_start;
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (a), 0);
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (b), 0);
+	g_return_val_if_fail (a != NULL, 0);
+	g_return_val_if_fail (b != NULL, 0);
 	a_start = gtk_mate_scope_start_loc (a);
 	b_start = gtk_mate_scope_start_loc (b);
 	if (gtk_mate_text_loc_lt (a_start, b_start)) {
@@ -91,8 +96,8 @@ gboolean gtk_mate_scope_surface_identical_to_modulo_ending (GtkMateScope* self, 
 	GtkMateTextLoc* _tmp1;
 	GtkMateTextLoc* _tmp0;
 	gboolean _tmp4;
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), FALSE);
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (other), FALSE);
+	g_return_val_if_fail (self != NULL, FALSE);
+	g_return_val_if_fail (other != NULL, FALSE);
 	/* stdout.printf("%s == %s and %s == %s and %s == %s and %s == %s and %s == %s",
 	   name, other.name, pattern.name, other.pattern.name, start_loc().to_s(),
 	   other.start_loc().to_s(), inner_start_loc().to_s(), other.inner_start_loc().to_s(),
@@ -114,8 +119,8 @@ gboolean gtk_mate_scope_surface_identical_to (GtkMateScope* self, GtkMateScope* 
 	GtkMateTextLoc* _tmp1;
 	GtkMateTextLoc* _tmp0;
 	gboolean _tmp4;
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), FALSE);
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (other), FALSE);
+	g_return_val_if_fail (self != NULL, FALSE);
+	g_return_val_if_fail (other != NULL, FALSE);
 	_tmp3 = NULL;
 	_tmp2 = NULL;
 	_tmp1 = NULL;
@@ -130,7 +135,7 @@ gboolean gtk_mate_scope_surface_identical_to (GtkMateScope* self, GtkMateScope* 
 GtkMateScope* gtk_mate_scope_scope_at (GtkMateScope* self, gint line, gint line_offset) {
 	GtkMateTextLoc* loc;
 	GtkMateTextLoc* start;
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	loc = gtk_mate_text_loc_make (line, line_offset);
 	start = gtk_mate_scope_start_loc (self);
 	if (gtk_mate_text_loc_lte (start, loc) || self->parent == NULL) {
@@ -143,10 +148,9 @@ GtkMateScope* gtk_mate_scope_scope_at (GtkMateScope* self, gint line, gint line_
 			GtkMateTextLoc* _tmp4;
 			GtkMateTextLoc* _tmp7;
 			GtkMateTextLoc* _tmp6;
-			GSequenceIter* _tmp8;
 			GSequenceIter* iter;
+			GtkMateScope* _tmp12;
 			GtkMateScope* _tmp13;
-			GtkMateScope* _tmp14;
 			if (g_sequence_get_length (gtk_mate_scope_get_children (self)) == 0) {
 				GtkMateScope* _tmp2;
 				GtkMateScope* _tmp3;
@@ -161,45 +165,44 @@ GtkMateScope* gtk_mate_scope_scope_at (GtkMateScope* self, gint line, gint line_
 			_tmp7 = NULL;
 			_tmp6 = NULL;
 			s->dummy_end_loc = (_tmp7 = (_tmp6 = loc, (_tmp6 == NULL ? NULL : g_object_ref (_tmp6))), (s->dummy_end_loc == NULL ? NULL : (s->dummy_end_loc = (g_object_unref (s->dummy_end_loc), NULL))), _tmp7);
-			_tmp8 = NULL;
-			iter = (_tmp8 = g_sequence_search (gtk_mate_scope_get_children (self), s, ((GCompareDataFunc) (gtk_mate_scope_compare_by_loc)), NULL), (_tmp8 == NULL ? NULL :  (_tmp8)));
+			iter = g_sequence_search (gtk_mate_scope_get_children (self), s, ((GCompareDataFunc) (gtk_mate_scope_compare_by_loc)), NULL);
 			if (!g_sequence_iter_is_begin (iter)) {
-				GtkMateScope* _tmp9;
+				GtkMateScope* _tmp8;
 				GtkMateScope* prev_scope;
-				_tmp9 = NULL;
-				prev_scope = (_tmp9 = ((GtkMateScope*) (g_sequence_get (g_sequence_iter_prev (iter)))), (_tmp9 == NULL ? NULL : g_object_ref (_tmp9)));
+				_tmp8 = NULL;
+				prev_scope = (_tmp8 = ((GtkMateScope*) (g_sequence_get (g_sequence_iter_prev (iter)))), (_tmp8 == NULL ? NULL : g_object_ref (_tmp8)));
 				if (gtk_mate_scope_contains_loc (prev_scope, loc)) {
-					GtkMateScope* _tmp10;
-					_tmp10 = NULL;
-					return (_tmp10 = gtk_mate_scope_scope_at (prev_scope, line, line_offset), (prev_scope == NULL ? NULL : (prev_scope = (g_object_unref (prev_scope), NULL))), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), (loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL))), (start == NULL ? NULL : (start = (g_object_unref (start), NULL))), _tmp10);
+					GtkMateScope* _tmp9;
+					_tmp9 = NULL;
+					return (_tmp9 = gtk_mate_scope_scope_at (prev_scope, line, line_offset), (prev_scope == NULL ? NULL : (prev_scope = (g_object_unref (prev_scope), NULL))), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), (loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL))), (start == NULL ? NULL : (start = (g_object_unref (start), NULL))), _tmp9);
 				}
 				(prev_scope == NULL ? NULL : (prev_scope = (g_object_unref (prev_scope), NULL)));
 			}
 			if (!g_sequence_iter_is_end (iter)) {
-				GtkMateScope* _tmp11;
+				GtkMateScope* _tmp10;
 				GtkMateScope* next_scope;
-				_tmp11 = NULL;
-				next_scope = (_tmp11 = ((GtkMateScope*) (g_sequence_get (iter))), (_tmp11 == NULL ? NULL : g_object_ref (_tmp11)));
+				_tmp10 = NULL;
+				next_scope = (_tmp10 = ((GtkMateScope*) (g_sequence_get (iter))), (_tmp10 == NULL ? NULL : g_object_ref (_tmp10)));
 				/* .next());*/
 				if (gtk_mate_scope_contains_loc (next_scope, loc)) {
-					GtkMateScope* _tmp12;
-					_tmp12 = NULL;
-					return (_tmp12 = gtk_mate_scope_scope_at (next_scope, line, line_offset), (next_scope == NULL ? NULL : (next_scope = (g_object_unref (next_scope), NULL))), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), (loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL))), (start == NULL ? NULL : (start = (g_object_unref (start), NULL))), _tmp12);
+					GtkMateScope* _tmp11;
+					_tmp11 = NULL;
+					return (_tmp11 = gtk_mate_scope_scope_at (next_scope, line, line_offset), (next_scope == NULL ? NULL : (next_scope = (g_object_unref (next_scope), NULL))), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), (loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL))), (start == NULL ? NULL : (start = (g_object_unref (start), NULL))), _tmp11);
 				}
 				(next_scope == NULL ? NULL : (next_scope = (g_object_unref (next_scope), NULL)));
 			}
+			_tmp12 = NULL;
 			_tmp13 = NULL;
-			_tmp14 = NULL;
-			return (_tmp14 = (_tmp13 = self, (_tmp13 == NULL ? NULL : g_object_ref (_tmp13))), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), (loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL))), (start == NULL ? NULL : (start = (g_object_unref (start), NULL))), _tmp14);
+			return (_tmp13 = (_tmp12 = self, (_tmp12 == NULL ? NULL : g_object_ref (_tmp12))), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), (loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL))), (start == NULL ? NULL : (start = (g_object_unref (start), NULL))), _tmp13);
 		} else {
-			GtkMateScope* _tmp15;
-			_tmp15 = NULL;
-			return (_tmp15 = NULL, (loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL))), (start == NULL ? NULL : (start = (g_object_unref (start), NULL))), _tmp15);
+			GtkMateScope* _tmp14;
+			_tmp14 = NULL;
+			return (_tmp14 = NULL, (loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL))), (start == NULL ? NULL : (start = (g_object_unref (start), NULL))), _tmp14);
 		}
 	} else {
-		GtkMateScope* _tmp16;
-		_tmp16 = NULL;
-		return (_tmp16 = NULL, (loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL))), (start == NULL ? NULL : (start = (g_object_unref (start), NULL))), _tmp16);
+		GtkMateScope* _tmp15;
+		_tmp15 = NULL;
+		return (_tmp15 = NULL, (loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL))), (start == NULL ? NULL : (start = (g_object_unref (start), NULL))), _tmp15);
 	}
 	(loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL)));
 	(start == NULL ? NULL : (start = (g_object_unref (start), NULL)));
@@ -212,11 +215,10 @@ GtkMateScope* gtk_mate_scope_first_child_after (GtkMateScope* self, GtkMateTextL
 	GtkMateTextLoc* _tmp1;
 	GtkMateTextLoc* _tmp4;
 	GtkMateTextLoc* _tmp3;
-	GSequenceIter* _tmp5;
 	GSequenceIter* iter;
-	GtkMateScope* _tmp8;
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
-	g_return_val_if_fail (GTK_MATE_IS_TEXT_LOC (loc), NULL);
+	GtkMateScope* _tmp7;
+	g_return_val_if_fail (self != NULL, NULL);
+	g_return_val_if_fail (loc != NULL, NULL);
 	/* stdout.printf("\"%s\".first_child_after(%d, %d)\n", name, loc.line, loc.line_offset);*/
 	if (g_sequence_get_length (gtk_mate_scope_get_children (self)) == 0) {
 		return NULL;
@@ -228,17 +230,16 @@ GtkMateScope* gtk_mate_scope_first_child_after (GtkMateScope* self, GtkMateTextL
 	_tmp4 = NULL;
 	_tmp3 = NULL;
 	s->dummy_end_loc = (_tmp4 = (_tmp3 = loc, (_tmp3 == NULL ? NULL : g_object_ref (_tmp3))), (s->dummy_end_loc == NULL ? NULL : (s->dummy_end_loc = (g_object_unref (s->dummy_end_loc), NULL))), _tmp4);
-	_tmp5 = NULL;
-	iter = (_tmp5 = g_sequence_search (gtk_mate_scope_get_children (self), s, ((GCompareDataFunc) (gtk_mate_scope_compare_by_loc)), NULL), (_tmp5 == NULL ? NULL :  (_tmp5)));
+	iter = g_sequence_search (gtk_mate_scope_get_children (self), s, ((GCompareDataFunc) (gtk_mate_scope_compare_by_loc)), NULL);
 	if (!g_sequence_iter_is_end (iter)) {
+		GtkMateScope* _tmp5;
 		GtkMateScope* _tmp6;
-		GtkMateScope* _tmp7;
+		_tmp5 = NULL;
 		_tmp6 = NULL;
-		_tmp7 = NULL;
-		return (_tmp7 = (_tmp6 = ((GtkMateScope*) (g_sequence_get (iter))), (_tmp6 == NULL ? NULL : g_object_ref (_tmp6))), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp7);
+		return (_tmp6 = (_tmp5 = ((GtkMateScope*) (g_sequence_get (iter))), (_tmp5 == NULL ? NULL : g_object_ref (_tmp5))), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), _tmp6);
 	}
-	_tmp8 = NULL;
-	return (_tmp8 = NULL, (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp8);
+	_tmp7 = NULL;
+	return (_tmp7 = NULL, (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), _tmp7);
 }
 
 
@@ -246,8 +247,8 @@ gboolean gtk_mate_scope_contains_loc (GtkMateScope* self, GtkMateTextLoc* loc) {
 	GtkMateTextLoc* _tmp1;
 	GtkMateTextLoc* _tmp0;
 	gboolean _tmp2;
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), FALSE);
-	g_return_val_if_fail (GTK_MATE_IS_TEXT_LOC (loc), FALSE);
+	g_return_val_if_fail (self != NULL, FALSE);
+	g_return_val_if_fail (loc != NULL, FALSE);
 	_tmp1 = NULL;
 	_tmp0 = NULL;
 	if ((_tmp2 = gtk_mate_text_loc_lte ((_tmp0 = gtk_mate_scope_start_loc (self)), loc) && gtk_mate_text_loc_gt ((_tmp1 = gtk_mate_scope_end_loc (self)), loc), (_tmp1 == NULL ? NULL : (_tmp1 = (g_object_unref (_tmp1), NULL))), (_tmp0 == NULL ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL))), _tmp2)) {
@@ -263,8 +264,8 @@ gboolean gtk_mate_scope_overlaps_with (GtkMateScope* self, GtkMateScope* other) 
 	GtkTextIter _tmp0 = {0};
 	GtkTextIter _tmp7 = {0};
 	GtkTextIter _tmp6 = {0};
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), FALSE);
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (other), FALSE);
+	g_return_val_if_fail (self != NULL, FALSE);
+	g_return_val_if_fail (other != NULL, FALSE);
 	/* sd1    +---
 	 sd2  +---*/
 	if (gtk_text_iter_compare ((_tmp0 = gtk_mate_scope_start_iter (self), &_tmp0), (_tmp1 = gtk_mate_scope_start_iter (other), &_tmp1)) >= 0) {
@@ -286,51 +287,46 @@ gboolean gtk_mate_scope_overlaps_with (GtkMateScope* self, GtkMateScope* other) 
 
 void gtk_mate_scope_add_child (GtkMateScope* self, GtkMateScope* s) {
 	GtkMateScope* _tmp0;
-	g_return_if_fail (GTK_MATE_IS_SCOPE (self));
-	g_return_if_fail (GTK_MATE_IS_SCOPE (s));
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (s != NULL);
 	_tmp0 = NULL;
 	g_sequence_insert_sorted (gtk_mate_scope_get_children (self), (_tmp0 = s, (_tmp0 == NULL ? NULL : g_object_ref (_tmp0))), ((GCompareDataFunc) (gtk_mate_scope_compare)), NULL);
 }
 
 
 void gtk_mate_scope_delete_child (GtkMateScope* self, GtkMateScope* s) {
-	GSequenceIter* _tmp0;
 	GSequenceIter* iter;
-	g_return_if_fail (GTK_MATE_IS_SCOPE (self));
-	g_return_if_fail (GTK_MATE_IS_SCOPE (s));
-	_tmp0 = NULL;
-	iter = (_tmp0 = g_sequence_search (gtk_mate_scope_get_children (self), s, ((GCompareDataFunc) (gtk_mate_scope_compare)), NULL), (_tmp0 == NULL ? NULL :  (_tmp0)));
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (s != NULL);
+	iter = g_sequence_search (gtk_mate_scope_get_children (self), s, ((GCompareDataFunc) (gtk_mate_scope_compare)), NULL);
 	/* The gsequence docs don't say whether iter will now be pointing to
 	 the equal element, so we have to look on the left and on the right.*/
 	if (!g_sequence_iter_is_begin (iter)) {
-		GtkMateScope* _tmp1;
+		GtkMateScope* _tmp0;
 		GtkMateScope* prev_scope;
-		_tmp1 = NULL;
-		prev_scope = (_tmp1 = ((GtkMateScope*) (g_sequence_get (g_sequence_iter_prev (iter)))), (_tmp1 == NULL ? NULL : g_object_ref (_tmp1)));
+		_tmp0 = NULL;
+		prev_scope = (_tmp0 = ((GtkMateScope*) (g_sequence_get (g_sequence_iter_prev (iter)))), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
 		if (prev_scope == s) {
 			/* stdout.printf("leftremove\n");*/
 			g_sequence_remove (g_sequence_iter_prev (iter));
 			(prev_scope == NULL ? NULL : (prev_scope = (g_object_unref (prev_scope), NULL)));
-			(iter == NULL ? NULL : (iter = ( (iter), NULL)));
 			return;
 		}
 		(prev_scope == NULL ? NULL : (prev_scope = (g_object_unref (prev_scope), NULL)));
 	}
 	if (!g_sequence_iter_is_end (iter)) {
-		GtkMateScope* _tmp2;
+		GtkMateScope* _tmp1;
 		GtkMateScope* next_scope;
-		_tmp2 = NULL;
-		next_scope = (_tmp2 = ((GtkMateScope*) (g_sequence_get (iter))), (_tmp2 == NULL ? NULL : g_object_ref (_tmp2)));
+		_tmp1 = NULL;
+		next_scope = (_tmp1 = ((GtkMateScope*) (g_sequence_get (iter))), (_tmp1 == NULL ? NULL : g_object_ref (_tmp1)));
 		if (next_scope == s) {
 			/* stdout.printf("rightremove\n");*/
 			g_sequence_remove (iter);
 			(next_scope == NULL ? NULL : (next_scope = (g_object_unref (next_scope), NULL)));
-			(iter == NULL ? NULL : (iter = ( (iter), NULL)));
 			return;
 		}
 		(next_scope == NULL ? NULL : (next_scope = (g_object_unref (next_scope), NULL)));
 	}
-	(iter == NULL ? NULL : (iter = ( (iter), NULL)));
 }
 
 
@@ -343,11 +339,10 @@ GeeArrayList* gtk_mate_scope_delete_any_on_line_not_in (GtkMateScope* self, gint
 	GtkMateTextLoc* _tmp0;
 	GtkMateTextLoc* _tmp3;
 	GtkMateTextLoc* _tmp2;
-	GSequenceIter* _tmp4;
 	GSequenceIter* iter;
-	GeeArrayList* _tmp11;
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
-	g_return_val_if_fail (GEE_IS_ARRAY_LIST (scopes), NULL);
+	GeeArrayList* _tmp6;
+	g_return_val_if_fail (self != NULL, NULL);
+	g_return_val_if_fail (scopes != NULL, NULL);
 	/*var start_scope = scope_at(line_ix, -1);*/
 	removed_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
 	/*var iter = children.get_begin_iter();*/
@@ -360,42 +355,33 @@ GeeArrayList* gtk_mate_scope_delete_any_on_line_not_in (GtkMateScope* self, gint
 	_tmp3 = NULL;
 	_tmp2 = NULL;
 	s->dummy_end_loc = (_tmp3 = (_tmp2 = loc, (_tmp2 == NULL ? NULL : g_object_ref (_tmp2))), (s->dummy_end_loc == NULL ? NULL : (s->dummy_end_loc = (g_object_unref (s->dummy_end_loc), NULL))), _tmp3);
-	_tmp4 = NULL;
-	iter = (_tmp4 = g_sequence_search (gtk_mate_scope_get_children (self), s, ((GCompareDataFunc) (gtk_mate_scope_compare_by_loc)), NULL), (_tmp4 == NULL ? NULL :  (_tmp4)));
+	iter = g_sequence_search (gtk_mate_scope_get_children (self), s, ((GCompareDataFunc) (gtk_mate_scope_compare_by_loc)), NULL);
 	while (!g_sequence_iter_is_end (iter)) {
-		GtkMateScope* _tmp5;
+		GtkMateScope* _tmp4;
 		GtkMateScope* child;
 		removed = FALSE;
-		_tmp5 = NULL;
-		child = (_tmp5 = ((GtkMateScope*) (g_sequence_get (iter))), (_tmp5 == NULL ? NULL : g_object_ref (_tmp5)));
+		_tmp4 = NULL;
+		child = (_tmp4 = ((GtkMateScope*) (g_sequence_get (iter))), (_tmp4 == NULL ? NULL : g_object_ref (_tmp4)));
 		if (gtk_mate_scope_start_line (child) > line_ix) {
-			GeeArrayList* _tmp6;
-			_tmp6 = NULL;
-			return (_tmp6 = removed_scopes, (child == NULL ? NULL : (child = (g_object_unref (child), NULL))), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), (loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp6);
+			GeeArrayList* _tmp5;
+			_tmp5 = NULL;
+			return (_tmp5 = removed_scopes, (child == NULL ? NULL : (child = (g_object_unref (child), NULL))), (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), (loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL))), _tmp5);
 		}
 		if (gtk_mate_scope_start_line (child) == line_ix) {
-			if (!gee_collection_contains (GEE_COLLECTION (scopes), child)) {
-				GSequenceIter* _tmp8;
-				GSequenceIter* _tmp7;
-				gee_collection_add (GEE_COLLECTION (removed_scopes), child);
-				_tmp8 = NULL;
-				_tmp7 = NULL;
-				iter = (_tmp8 = (_tmp7 = g_sequence_iter_next (iter), (_tmp7 == NULL ? NULL :  (_tmp7))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp8);
+			if (!gee_collection_contains (((GeeCollection*) (scopes)), child)) {
+				gee_collection_add (((GeeCollection*) (removed_scopes)), child);
+				iter = g_sequence_iter_next (iter);
 				g_sequence_remove (g_sequence_iter_prev (iter));
 				removed = TRUE;
 			}
 		}
 		if (!removed) {
-			GSequenceIter* _tmp10;
-			GSequenceIter* _tmp9;
-			_tmp10 = NULL;
-			_tmp9 = NULL;
-			iter = (_tmp10 = (_tmp9 = g_sequence_iter_next (iter), (_tmp9 == NULL ? NULL :  (_tmp9))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp10);
+			iter = g_sequence_iter_next (iter);
 		}
 		(child == NULL ? NULL : (child = (g_object_unref (child), NULL)));
 	}
-	_tmp11 = NULL;
-	return (_tmp11 = removed_scopes, (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), (loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp11);
+	_tmp6 = NULL;
+	return (_tmp6 = removed_scopes, (s == NULL ? NULL : (s = (g_object_unref (s), NULL))), (loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL))), _tmp6);
 }
 
 
@@ -406,13 +392,10 @@ void gtk_mate_scope_clear_after (GtkMateScope* self, gint line_ix, gint line_off
 	GtkMateTextLoc* _tmp0;
 	GtkMateTextLoc* _tmp3;
 	GtkMateTextLoc* _tmp2;
-	GSequenceIter* _tmp4;
 	GSequenceIter* iter;
-	GSequenceIter* _tmp5;
 	GSequenceIter* prev_iter;
-	GSequenceIter* _tmp9;
 	GSequenceIter* end_iter;
-	g_return_if_fail (GTK_MATE_IS_SCOPE (self));
+	g_return_if_fail (self != NULL);
 	loc = gtk_mate_text_loc_make (line_ix, line_offset);
 	s = g_object_ref_sink (gtk_mate_scope_new (self->priv->_buffer, ""));
 	_tmp1 = NULL;
@@ -421,42 +404,34 @@ void gtk_mate_scope_clear_after (GtkMateScope* self, gint line_ix, gint line_off
 	_tmp3 = NULL;
 	_tmp2 = NULL;
 	s->dummy_end_loc = (_tmp3 = (_tmp2 = loc, (_tmp2 == NULL ? NULL : g_object_ref (_tmp2))), (s->dummy_end_loc == NULL ? NULL : (s->dummy_end_loc = (g_object_unref (s->dummy_end_loc), NULL))), _tmp3);
-	_tmp4 = NULL;
-	iter = (_tmp4 = g_sequence_search (gtk_mate_scope_get_children (self), s, ((GCompareDataFunc) (gtk_mate_scope_compare_by_loc)), NULL), (_tmp4 == NULL ? NULL :  (_tmp4)));
-	_tmp5 = NULL;
-	prev_iter = (_tmp5 = g_sequence_iter_prev (iter), (_tmp5 == NULL ? NULL :  (_tmp5)));
+	iter = g_sequence_search (gtk_mate_scope_get_children (self), s, ((GCompareDataFunc) (gtk_mate_scope_compare_by_loc)), NULL);
+	prev_iter = g_sequence_iter_prev (iter);
 	if (!g_sequence_iter_is_end (prev_iter)) {
-		GtkMateScope* _tmp6;
+		GtkMateScope* _tmp4;
 		GtkMateScope* prev_child;
-		GtkMateTextLoc* _tmp7;
-		gboolean _tmp8;
-		_tmp6 = NULL;
-		prev_child = (_tmp6 = ((GtkMateScope*) (g_sequence_get (g_sequence_iter_prev (iter)))), (_tmp6 == NULL ? NULL : g_object_ref (_tmp6)));
-		_tmp7 = NULL;
-		if ((_tmp8 = gtk_mate_text_loc_gt ((_tmp7 = gtk_mate_scope_end_loc (prev_child)), loc), (_tmp7 == NULL ? NULL : (_tmp7 = (g_object_unref (_tmp7), NULL))), _tmp8)) {
+		GtkMateTextLoc* _tmp5;
+		gboolean _tmp6;
+		_tmp4 = NULL;
+		prev_child = (_tmp4 = ((GtkMateScope*) (g_sequence_get (g_sequence_iter_prev (iter)))), (_tmp4 == NULL ? NULL : g_object_ref (_tmp4)));
+		_tmp5 = NULL;
+		if ((_tmp6 = gtk_mate_text_loc_gt ((_tmp5 = gtk_mate_scope_end_loc (prev_child)), loc), (_tmp5 == NULL ? NULL : (_tmp5 = (g_object_unref (_tmp5), NULL))), _tmp6)) {
 			gtk_mate_scope_clear_after (prev_child, line_ix, line_offset);
 		}
 		(prev_child == NULL ? NULL : (prev_child = (g_object_unref (prev_child), NULL)));
 	}
-	_tmp9 = NULL;
-	end_iter = (_tmp9 = g_sequence_get_end_iter (gtk_mate_scope_get_children (self)), (_tmp9 == NULL ? NULL :  (_tmp9)));
+	end_iter = g_sequence_get_end_iter (gtk_mate_scope_get_children (self));
 	g_sequence_remove_range (iter, end_iter);
 	(loc == NULL ? NULL : (loc = (g_object_unref (loc), NULL)));
 	(s == NULL ? NULL : (s = (g_object_unref (s), NULL)));
-	(iter == NULL ? NULL : (iter = ( (iter), NULL)));
-	(prev_iter == NULL ? NULL : (prev_iter = ( (prev_iter), NULL)));
-	(end_iter == NULL ? NULL : (end_iter = ( (end_iter), NULL)));
 }
 
 
 char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent) {
 	GString* _tmp0;
 	char* _tmp1;
-	GSequenceIter* _tmp9;
 	GSequenceIter* iter;
-	const char* _tmp13;
-	char* _tmp14;
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	const char* _tmp10;
+	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0 = NULL;
 	self->pretty_string = (_tmp0 = g_string_new (""), (self->pretty_string == NULL ? NULL : (self->pretty_string = (g_string_free (self->pretty_string, TRUE), NULL))), _tmp0);
 	self->indent = indent;
@@ -507,23 +482,17 @@ char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent) {
 	g_string_append (self->pretty_string, ((self->is_open ? " open" : " closed")));
 	g_string_append (self->pretty_string, "\n");
 	self->indent = self->indent + (1);
-	_tmp9 = NULL;
-	iter = (_tmp9 = g_sequence_get_begin_iter (gtk_mate_scope_get_children (self)), (_tmp9 == NULL ? NULL :  (_tmp9)));
+	iter = g_sequence_get_begin_iter (gtk_mate_scope_get_children (self));
 	while (!g_sequence_iter_is_end (iter)) {
-		char* _tmp10;
-		GSequenceIter* _tmp12;
-		GSequenceIter* _tmp11;
-		_tmp10 = NULL;
-		g_string_append (self->pretty_string, (_tmp10 = gtk_mate_scope_pretty (((GtkMateScope*) (g_sequence_get (iter))), self->indent)));
-		_tmp10 = (g_free (_tmp10), NULL);
-		_tmp12 = NULL;
-		_tmp11 = NULL;
-		iter = (_tmp12 = (_tmp11 = g_sequence_iter_next (iter), (_tmp11 == NULL ? NULL :  (_tmp11))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp12);
+		char* _tmp9;
+		_tmp9 = NULL;
+		g_string_append (self->pretty_string, (_tmp9 = gtk_mate_scope_pretty (((GtkMateScope*) (g_sequence_get (iter))), self->indent)));
+		_tmp9 = (g_free (_tmp9), NULL);
+		iter = g_sequence_iter_next (iter);
 	}
 	self->indent = self->indent - (1);
-	_tmp13 = NULL;
-	_tmp14 = NULL;
-	return (_tmp14 = (_tmp13 = self->pretty_string->str, (_tmp13 == NULL ? NULL : g_strdup (_tmp13))), (iter == NULL ? NULL : (iter = ( (iter), NULL))), _tmp14);
+	_tmp10 = NULL;
+	return (_tmp10 = self->pretty_string->str, (_tmp10 == NULL ? NULL : g_strdup (_tmp10)));
 }
 
 
@@ -531,10 +500,10 @@ void gtk_mate_scope_start_mark_set (GtkMateScope* self, gint line, gint line_off
 	GtkTextMark* _tmp2;
 	GtkTextMark* _tmp1;
 	GtkTextIter _tmp0 = {0};
-	g_return_if_fail (GTK_MATE_IS_SCOPE (self));
+	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
-	self->start_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (self->priv->_buffer), NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_offset (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL ? NULL : g_object_ref (_tmp1))), (self->start_mark == NULL ? NULL : (self->start_mark = (g_object_unref (self->start_mark), NULL))), _tmp2);
+	self->start_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark (((GtkTextBuffer*) (self->priv->_buffer)), NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_offset (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL ? NULL : g_object_ref (_tmp1))), (self->start_mark == NULL ? NULL : (self->start_mark = (g_object_unref (self->start_mark), NULL))), _tmp2);
 }
 
 
@@ -542,10 +511,10 @@ void gtk_mate_scope_inner_start_mark_set (GtkMateScope* self, gint line, gint li
 	GtkTextMark* _tmp2;
 	GtkTextMark* _tmp1;
 	GtkTextIter _tmp0 = {0};
-	g_return_if_fail (GTK_MATE_IS_SCOPE (self));
+	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
-	self->inner_start_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (self->priv->_buffer), NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_offset (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL ? NULL : g_object_ref (_tmp1))), (self->inner_start_mark == NULL ? NULL : (self->inner_start_mark = (g_object_unref (self->inner_start_mark), NULL))), _tmp2);
+	self->inner_start_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark (((GtkTextBuffer*) (self->priv->_buffer)), NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_offset (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL ? NULL : g_object_ref (_tmp1))), (self->inner_start_mark == NULL ? NULL : (self->inner_start_mark = (g_object_unref (self->inner_start_mark), NULL))), _tmp2);
 }
 
 
@@ -553,10 +522,10 @@ void gtk_mate_scope_inner_end_mark_set (GtkMateScope* self, gint line, gint line
 	GtkTextMark* _tmp2;
 	GtkTextMark* _tmp1;
 	GtkTextIter _tmp0 = {0};
-	g_return_if_fail (GTK_MATE_IS_SCOPE (self));
+	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
-	self->inner_end_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (self->priv->_buffer), NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_offset (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL ? NULL : g_object_ref (_tmp1))), (self->inner_end_mark == NULL ? NULL : (self->inner_end_mark = (g_object_unref (self->inner_end_mark), NULL))), _tmp2);
+	self->inner_end_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark (((GtkTextBuffer*) (self->priv->_buffer)), NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_offset (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL ? NULL : g_object_ref (_tmp1))), (self->inner_end_mark == NULL ? NULL : (self->inner_end_mark = (g_object_unref (self->inner_end_mark), NULL))), _tmp2);
 }
 
 
@@ -564,10 +533,10 @@ void gtk_mate_scope_end_mark_set (GtkMateScope* self, gint line, gint line_offse
 	GtkTextMark* _tmp2;
 	GtkTextMark* _tmp1;
 	GtkTextIter _tmp0 = {0};
-	g_return_if_fail (GTK_MATE_IS_SCOPE (self));
+	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
-	self->end_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (self->priv->_buffer), NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_offset (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL ? NULL : g_object_ref (_tmp1))), (self->end_mark == NULL ? NULL : (self->end_mark = (g_object_unref (self->end_mark), NULL))), _tmp2);
+	self->end_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark (((GtkTextBuffer*) (self->priv->_buffer)), NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_offset (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL ? NULL : g_object_ref (_tmp1))), (self->end_mark == NULL ? NULL : (self->end_mark = (g_object_unref (self->end_mark), NULL))), _tmp2);
 }
 
 
@@ -598,27 +567,27 @@ GtkTextIter gtk_mate_scope_end_iter (GtkMateScope* self) {
 	if (self->end_mark != NULL) {
 		return gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->end_mark);
 	} else {
-		return gtk_mate_buffer_iter_ (self->priv->_buffer, gtk_text_buffer_get_char_count (GTK_TEXT_BUFFER (self->priv->_buffer)));
+		return gtk_mate_buffer_iter_ (self->priv->_buffer, gtk_text_buffer_get_char_count (((GtkTextBuffer*) (self->priv->_buffer))));
 	}
 }
 
 
 gint gtk_mate_scope_start_offset (GtkMateScope* self) {
 	GtkTextIter _tmp0 = {0};
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	return gtk_text_iter_get_offset ((_tmp0 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->start_mark), &_tmp0));
 }
 
 
 gint gtk_mate_scope_inner_start_offset (GtkMateScope* self) {
 	GtkTextIter _tmp0 = {0};
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	return gtk_text_iter_get_offset ((_tmp0 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->inner_start_mark), &_tmp0));
 }
 
 
 gint gtk_mate_scope_inner_end_offset (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	if (self->inner_end_mark != NULL) {
 		GtkTextIter _tmp0 = {0};
 		return gtk_text_iter_get_offset ((_tmp0 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->inner_end_mark), &_tmp0));
@@ -629,7 +598,7 @@ gint gtk_mate_scope_inner_end_offset (GtkMateScope* self) {
 
 
 gint gtk_mate_scope_end_offset (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	if (self->end_mark != NULL) {
 		GtkTextIter _tmp0 = {0};
 		return gtk_text_iter_get_offset ((_tmp0 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->end_mark), &_tmp0));
@@ -641,20 +610,20 @@ gint gtk_mate_scope_end_offset (GtkMateScope* self) {
 
 gint gtk_mate_scope_start_line (GtkMateScope* self) {
 	GtkTextIter _tmp0 = {0};
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	return gtk_text_iter_get_line ((_tmp0 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->start_mark), &_tmp0));
 }
 
 
 gint gtk_mate_scope_inner_start_line (GtkMateScope* self) {
 	GtkTextIter _tmp0 = {0};
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	return gtk_text_iter_get_line ((_tmp0 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->inner_start_mark), &_tmp0));
 }
 
 
 gint gtk_mate_scope_inner_end_line (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	if (self->inner_end_mark != NULL) {
 		GtkTextIter _tmp0 = {0};
 		return gtk_text_iter_get_line ((_tmp0 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->inner_end_mark), &_tmp0));
@@ -665,7 +634,7 @@ gint gtk_mate_scope_inner_end_line (GtkMateScope* self) {
 
 
 gint gtk_mate_scope_end_line (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	if (self->end_mark != NULL) {
 		GtkTextIter _tmp0 = {0};
 		return gtk_text_iter_get_line ((_tmp0 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->end_mark), &_tmp0));
@@ -677,20 +646,20 @@ gint gtk_mate_scope_end_line (GtkMateScope* self) {
 
 gint gtk_mate_scope_start_line_offset (GtkMateScope* self) {
 	GtkTextIter _tmp0 = {0};
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	return gtk_text_iter_get_line_offset ((_tmp0 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->start_mark), &_tmp0));
 }
 
 
 gint gtk_mate_scope_inner_start_line_offset (GtkMateScope* self) {
 	GtkTextIter _tmp0 = {0};
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	return gtk_text_iter_get_line_offset ((_tmp0 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->inner_start_mark), &_tmp0));
 }
 
 
 gint gtk_mate_scope_inner_end_line_offset (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	if (self->inner_end_mark != NULL) {
 		GtkTextIter _tmp0 = {0};
 		return gtk_text_iter_get_line_offset ((_tmp0 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->inner_end_mark), &_tmp0));
@@ -701,7 +670,7 @@ gint gtk_mate_scope_inner_end_line_offset (GtkMateScope* self) {
 
 
 gint gtk_mate_scope_end_line_offset (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	if (self->end_mark != NULL) {
 		GtkTextIter _tmp0 = {0};
 		return gtk_text_iter_get_line_offset ((_tmp0 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->end_mark), &_tmp0));
@@ -712,7 +681,7 @@ gint gtk_mate_scope_end_line_offset (GtkMateScope* self) {
 
 
 GtkMateTextLoc* gtk_mate_scope_start_loc (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	if (self->dummy_start_loc != NULL) {
 		GtkMateTextLoc* _tmp0;
 		_tmp0 = NULL;
@@ -726,7 +695,7 @@ GtkMateTextLoc* gtk_mate_scope_start_loc (GtkMateScope* self) {
 
 
 GtkMateTextLoc* gtk_mate_scope_inner_start_loc (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	if (self->inner_start_mark != NULL) {
 		GtkTextIter is_iter;
 		is_iter = gtk_mate_scope_inner_start_iter (self);
@@ -738,7 +707,7 @@ GtkMateTextLoc* gtk_mate_scope_inner_start_loc (GtkMateScope* self) {
 
 
 GtkMateTextLoc* gtk_mate_scope_inner_end_loc (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	if (self->inner_end_mark != NULL) {
 		GtkTextIter ie_iter;
 		ie_iter = gtk_mate_scope_inner_end_iter (self);
@@ -750,7 +719,7 @@ GtkMateTextLoc* gtk_mate_scope_inner_end_loc (GtkMateScope* self) {
 
 
 GtkMateTextLoc* gtk_mate_scope_end_loc (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	if (self->dummy_end_loc != NULL) {
 		GtkMateTextLoc* _tmp0;
 		_tmp0 = NULL;
@@ -764,7 +733,7 @@ GtkMateTextLoc* gtk_mate_scope_end_loc (GtkMateScope* self) {
 
 
 GtkMateScope* gtk_mate_scope_root (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	if (self->parent == NULL) {
 		GtkMateScope* _tmp0;
 		_tmp0 = NULL;
@@ -776,7 +745,7 @@ GtkMateScope* gtk_mate_scope_root (GtkMateScope* self) {
 
 
 gint gtk_mate_scope_priority (GtkMateScope* self, gboolean inner) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), 0);
+	g_return_val_if_fail (self != NULL, 0);
 	if (self->parent == NULL) {
 		if (inner) {
 			return 2;
@@ -795,7 +764,7 @@ gint gtk_mate_scope_priority (GtkMateScope* self, gboolean inner) {
 
 char* gtk_mate_scope_hierarchy_names (GtkMateScope* self, gboolean inner) {
 	char* self_name;
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	self_name = NULL;
 	/* stdout.printf("'%s'.hierarchy_names(%s)\n", name, inner ? "true" : "false");*/
 	if (GTK_MATE_IS_DOUBLE_PATTERN (self->pattern) && (GTK_MATE_DOUBLE_PATTERN (self->pattern))->content_name != NULL && inner) {
@@ -844,7 +813,7 @@ char* gtk_mate_scope_hierarchy_names (GtkMateScope* self, gboolean inner) {
  return id;
  }*/
 char* gtk_mate_scope_nearest_background_colour (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	if (self->parent != NULL) {
 		return gtk_mate_scope_nearest_background_colour1 (self->parent);
 	}
@@ -853,7 +822,7 @@ char* gtk_mate_scope_nearest_background_colour (GtkMateScope* self) {
 
 
 char* gtk_mate_scope_nearest_background_colour1 (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	if (self->bg_colour != NULL) {
 		const char* _tmp0;
 		_tmp0 = NULL;
@@ -867,7 +836,7 @@ char* gtk_mate_scope_nearest_background_colour1 (GtkMateScope* self) {
 
 
 char* gtk_mate_scope_nearest_foreground_colour (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	if (self->parent != NULL) {
 		return gtk_mate_scope_nearest_foreground_colour1 (self->parent);
 	}
@@ -876,7 +845,7 @@ char* gtk_mate_scope_nearest_foreground_colour (GtkMateScope* self) {
 
 
 char* gtk_mate_scope_nearest_foreground_colour1 (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	if (self->fg_colour != NULL) {
 		const char* _tmp0;
 		_tmp0 = NULL;
@@ -890,7 +859,7 @@ char* gtk_mate_scope_nearest_foreground_colour1 (GtkMateScope* self) {
 
 
 const char* gtk_mate_scope_get_name (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	return self->priv->_name;
 }
 
@@ -898,7 +867,7 @@ const char* gtk_mate_scope_get_name (GtkMateScope* self) {
 void gtk_mate_scope_set_name (GtkMateScope* self, const char* value) {
 	char* _tmp2;
 	const char* _tmp1;
-	g_return_if_fail (GTK_MATE_IS_SCOPE (self));
+	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
 	self->priv->_name = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL ? NULL : g_strdup (_tmp1))), (self->priv->_name = (g_free (self->priv->_name), NULL)), _tmp2);
@@ -907,7 +876,7 @@ void gtk_mate_scope_set_name (GtkMateScope* self, const char* value) {
 
 
 GtkMateBuffer* gtk_mate_scope_get_buffer (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	return self->priv->_buffer;
 }
 
@@ -915,7 +884,7 @@ GtkMateBuffer* gtk_mate_scope_get_buffer (GtkMateScope* self) {
 void gtk_mate_scope_set_buffer (GtkMateScope* self, GtkMateBuffer* value) {
 	GtkMateBuffer* _tmp2;
 	GtkMateBuffer* _tmp1;
-	g_return_if_fail (GTK_MATE_IS_SCOPE (self));
+	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
 	self->priv->_buffer = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL ? NULL : g_object_ref (_tmp1))), (self->priv->_buffer == NULL ? NULL : (self->priv->_buffer = (g_object_unref (self->priv->_buffer), NULL))), _tmp2);
@@ -924,7 +893,7 @@ void gtk_mate_scope_set_buffer (GtkMateScope* self, GtkMateBuffer* value) {
 
 
 GSequence* gtk_mate_scope_get_children (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), NULL);
+	g_return_val_if_fail (self != NULL, NULL);
 	if (self->priv->_children == NULL) {
 		GSequence* _tmp0;
 		_tmp0 = NULL;
@@ -935,13 +904,13 @@ GSequence* gtk_mate_scope_get_children (GtkMateScope* self) {
 
 
 gboolean gtk_mate_scope_get_is_coloured (GtkMateScope* self) {
-	g_return_val_if_fail (GTK_MATE_IS_SCOPE (self), FALSE);
+	g_return_val_if_fail (self != NULL, FALSE);
 	return self->priv->_is_coloured;
 }
 
 
 void gtk_mate_scope_set_is_coloured (GtkMateScope* self, gboolean value) {
-	g_return_if_fail (GTK_MATE_IS_SCOPE (self));
+	g_return_if_fail (self != NULL);
 	self->priv->_is_coloured = value;
 	g_object_notify (((GObject *) (self)), "is-coloured");
 }
@@ -1025,7 +994,7 @@ static void gtk_mate_scope_instance_init (GtkMateScope * self) {
 }
 
 
-static void gtk_mate_scope_finalize (GObject * obj) {
+static void gtk_mate_scope_finalize (GObject* obj) {
 	GtkMateScope * self;
 	self = GTK_MATE_SCOPE (obj);
 	(self->pattern == NULL ? NULL : (self->pattern = (g_object_unref (self->pattern), NULL)));
@@ -1056,7 +1025,7 @@ static void gtk_mate_scope_finalize (GObject * obj) {
 GType gtk_mate_scope_get_type (void) {
 	static GType gtk_mate_scope_type_id = 0;
 	if (gtk_mate_scope_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (GtkMateScopeClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_scope_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateScope), 0, (GInstanceInitFunc) gtk_mate_scope_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (GtkMateScopeClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) gtk_mate_scope_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (GtkMateScope), 0, (GInstanceInitFunc) gtk_mate_scope_instance_init, NULL };
 		gtk_mate_scope_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateScope", &g_define_type_info, 0);
 	}
 	return gtk_mate_scope_type_id;

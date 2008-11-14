@@ -10,7 +10,7 @@
 #include <gee/arraylist.h>
 #include "pattern.h"
 #include "onig_wrap.h"
-#include "theme.h"
+#include "view.h"
 
 G_BEGIN_DECLS
 
@@ -56,6 +56,7 @@ struct _GtkMateScopeClass {
 
 
 extern gint gtk_mate_scope_scope_count;
+GtkMateScope* gtk_mate_scope_construct (GType object_type, GtkMateBuffer* buf, const char* name);
 GtkMateScope* gtk_mate_scope_new (GtkMateBuffer* buf, const char* name);
 gboolean gtk_mate_scope_is_root (GtkMateScope* self);
 gint gtk_mate_scope_compare (GtkMateScope* a, GtkMateScope* b, void* data);

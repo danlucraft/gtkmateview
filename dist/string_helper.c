@@ -106,14 +106,14 @@ GeeArrayList* string_helper_occurrences (const char* s, const char* t) {
 			spos = 0;
 			epos = 0;
 			g_match_info_fetch_pos (m, 0, &spos, &epos);
-			gee_collection_add (GEE_COLLECTION (poss), GINT_TO_POINTER (spos));
+			gee_collection_add (((GeeCollection*) (poss)), GINT_TO_POINTER (spos));
 			while (g_match_info_next (m, &inner_error)) {
 				gint spos;
 				gint epos;
 				spos = 0;
 				epos = 0;
 				g_match_info_fetch_pos (m, 0, &spos, &epos);
-				gee_collection_add (GEE_COLLECTION (poss), GINT_TO_POINTER (spos));
+				gee_collection_add (((GeeCollection*) (poss)), GINT_TO_POINTER (spos));
 			}
 		}
 	}
@@ -137,10 +137,15 @@ GeeArrayList* string_helper_occurrences (const char* s, const char* t) {
 
 
 /* Started: 30 Aug 08*/
-StringHelper* string_helper_new (void) {
+StringHelper* string_helper_construct (GType object_type) {
 	StringHelper * self;
-	self = g_object_newv (TYPE_STRING_HELPER, 0, NULL);
+	self = g_object_newv (object_type, 0, NULL);
 	return self;
+}
+
+
+StringHelper* string_helper_new (void) {
+	return string_helper_construct (TYPE_STRING_HELPER);
 }
 
 
@@ -156,7 +161,7 @@ static void string_helper_instance_init (StringHelper * self) {
 GType string_helper_get_type (void) {
 	static GType string_helper_type_id = 0;
 	if (string_helper_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (StringHelperClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) string_helper_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (StringHelper), 0, (GInstanceInitFunc) string_helper_instance_init };
+		static const GTypeInfo g_define_type_info = { sizeof (StringHelperClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) string_helper_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (StringHelper), 0, (GInstanceInitFunc) string_helper_instance_init, NULL };
 		string_helper_type_id = g_type_register_static (G_TYPE_OBJECT, "StringHelper", &g_define_type_info, 0);
 	}
 	return string_helper_type_id;

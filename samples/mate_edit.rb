@@ -1,7 +1,7 @@
 
 require 'gtk2'
 require 'gtksourceview2'
-require 'dist/gtkmateview_rb'
+require 'dist/gtkmateview'
 
 def new_view
   mv = Gtk::Mate::View.new
