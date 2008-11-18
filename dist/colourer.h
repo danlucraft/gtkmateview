@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gdk/gdk.h>
-#include "theme.h"
+#include "view.h"
 
 G_BEGIN_DECLS
 

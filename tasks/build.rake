@@ -31,12 +31,12 @@ def fix_vala_c_sources(sources)
   end
   
   # fix missing ScannerIterator typedefs
-  lines = File.readlines("theme.h")
-  ix = lines.index("typedef struct _GtkMateScannerClass GtkMateScannerClass;\n")
-  raise "couldn't patch theme.h" unless ix
-  lines.insert(ix+1, "typedef struct _GtkMateScannerIteratorClass GtkMateScannerIteratorClass;\n")
-  lines.insert(ix+1, "typedef struct _GtkMateScannerIterator GtkMateScannerIterator;\n")
-  File.open("theme.h", "w") {|f| f.puts lines.join }
+#   lines = File.readlines("theme.h")
+#   ix = lines.index("typedef struct _GtkMateScannerClass GtkMateScannerClass;\n")
+#   raise "couldn't patch theme.h" unless ix
+#   lines.insert(ix+1, "typedef struct _GtkMateScannerIteratorClass GtkMateScannerIteratorClass;\n")
+#   lines.insert(ix+1, "typedef struct _GtkMateScannerIterator GtkMateScannerIterator;\n")
+#   File.open("theme.h", "w") {|f| f.puts lines.join }
 end
 
 namespace :build do

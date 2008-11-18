@@ -84,6 +84,7 @@ namespace Gtk.Mate {
 		// Process all change ranges.
 		private void process_changes() {
 			int parsed_upto = -1;
+			stdout.printf("process_changes (last_visible_line: %d)\n", last_visible_line);
 			foreach (RangeSet.Range range in changes) {
 				if (range.b > parsed_upto && range.a <= last_visible_line + look_ahead) {
 					int range_end = int.min(last_visible_line + look_ahead, range.b);
@@ -98,11 +99,11 @@ namespace Gtk.Mate {
 		// more if necessary. Returns the index of the last line
 		// parsed.
 		private int parse_range(int from_line, int to_line) {
-			//stdout.printf("parse_from(%d, %d)\n", from_line, to_line);
+			stdout.printf("parse_range(%d, %d)\n", from_line, to_line);
 			int line_ix = from_line;
 			bool scope_changed = false;
 			bool scope_ever_changed = false;
-			while (line_ix <= to_line || (scope_ever_changed && line_ix <= buffer.get_line_count()-1)) {
+			while (line_ix <= to_line ) { // || (scope_ever_changed && line_ix <= buffer.get_line_count()-1)) {
 				scope_changed = parse_line(line_ix++);
 				if (scope_changed) {
 					scope_ever_changed = true;
@@ -125,8 +126,8 @@ namespace Gtk.Mate {
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line1(line_ix);
 			int length = (int) line.length;//buffer.get_line_length(line_ix);
-			// stdout.printf("%d, ", line_ix);
-			// stdout.flush();
+			stdout.printf("%d, ", line_ix);
+			stdout.flush();
 			var start_scope = this.root.scope_at(line_ix, -1);
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
 			//stdout.printf("scope_at returns: %s\n", start_scope.name);

@@ -333,34 +333,6 @@ namespace Gtk {
 		public static string? textmate_share_dir ();
 	}
 }
-[CCode (cprefix = "Onig", lower_case_cprefix = "onig_")]
-namespace Onig {
-	[CCode (cheader_filename = "onig_wrap.h")]
-	public class Match : GLib.Object {
-		public static int count;
-		public int begin (int capture);
-		public int end (int capture);
-		public Match ();
-		public int num_captures ();
-		public Oniguruma.Region rg { get; set; }
-		public Oniguruma.RegexT rx { get; set; }
-	}
-	[CCode (cheader_filename = "onig_wrap.h")]
-	public class OnigError : GLib.Object {
-		public int code;
-		public Oniguruma.OnigErrorInfo error_info;
-		public OnigError ();
-	}
-	[CCode (cheader_filename = "onig_wrap.h")]
-	public class Rx : GLib.Object {
-		public bool matches_start_of_line;
-		public static Onig.Rx? make (string pattern, Oniguruma.OnigOptionType options, out Onig.OnigError error);
-		public static Onig.Rx? make1 (string pattern);
-		public Rx ();
-		public Onig.Match? search (string target, int start, int end);
-		public Oniguruma.RegexT rx { get; set; }
-	}
-}
 [CCode (cprefix = "PList", lower_case_cprefix = "plist_")]
 namespace PList {
 	[CCode (cheader_filename = "plist.h")]
@@ -398,6 +370,34 @@ namespace PList {
 	public static PList.Dict parse (string filename) throws XmlError;
 	[CCode (cheader_filename = "plist.h")]
 	public static void print_plist (int indent, PList.Node node);
+}
+[CCode (cprefix = "Onig", lower_case_cprefix = "onig_")]
+namespace Onig {
+	[CCode (cheader_filename = "onig_wrap.h")]
+	public class Match : GLib.Object {
+		public static int count;
+		public int begin (int capture);
+		public int end (int capture);
+		public Match ();
+		public int num_captures ();
+		public Oniguruma.Region rg { get; set; }
+		public Oniguruma.RegexT rx { get; set; }
+	}
+	[CCode (cheader_filename = "onig_wrap.h")]
+	public class OnigError : GLib.Object {
+		public int code;
+		public Oniguruma.OnigErrorInfo error_info;
+		public OnigError ();
+	}
+	[CCode (cheader_filename = "onig_wrap.h")]
+	public class Rx : GLib.Object {
+		public bool matches_start_of_line;
+		public static Onig.Rx? make (string pattern, Oniguruma.OnigOptionType options, out Onig.OnigError error);
+		public static Onig.Rx? make1 (string pattern);
+		public Rx ();
+		public Onig.Match? search (string target, int start, int end);
+		public Oniguruma.RegexT rx { get; set; }
+	}
 }
 [CCode (cprefix = "XML_ERROR_", cheader_filename = "plist.h")]
 public errordomain XmlError {

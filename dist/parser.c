@@ -1,13 +1,14 @@
 
 #include "parser.h"
+#include <stdio.h>
 #include <gee/collection.h>
 #include <gee/hashmap.h>
 #include <gee/map.h>
+#include "theme.h"
 #include "colourer.h"
 #include "buffer.h"
 #include "scope.h"
 #include "pattern.h"
-#include "scanner.h"
 
 
 
@@ -200,6 +201,7 @@ static void gtk_mate_parser_process_changes (GtkMateParser* self) {
 	gint parsed_upto;
 	g_return_if_fail (self != NULL);
 	parsed_upto = -1;
+	fprintf (stdout, "process_changes (last_visible_line: %d)\n", self->last_visible_line);
 	{
 		RangeSet* range_collection;
 		GeeIterator* range_it;
@@ -232,11 +234,12 @@ static gint gtk_mate_parser_parse_range (GtkMateParser* self, gint from_line, gi
 	gboolean scope_changed;
 	gboolean scope_ever_changed;
 	g_return_val_if_fail (self != NULL, 0);
-	/*stdout.printf("parse_from(%d, %d)\n", from_line, to_line);*/
+	fprintf (stdout, "parse_range(%d, %d)\n", from_line, to_line);
 	line_ix = from_line;
 	scope_changed = FALSE;
 	scope_ever_changed = FALSE;
-	while (line_ix <= to_line || (scope_ever_changed && line_ix <= gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self->priv->_buffer))) - 1)) {
+	while (line_ix <= to_line) {
+		/* || (scope_ever_changed && line_ix <= buffer.get_line_count()-1)) {*/
 		scope_changed = gtk_mate_parser_parse_line (self, line_ix++);
 		if (scope_changed) {
 			scope_ever_changed = TRUE;
@@ -273,9 +276,9 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	g_return_val_if_fail (self != NULL, FALSE);
 	line = gtk_mate_buffer_get_line1 (self->priv->_buffer, line_ix);
 	length = ((gint) (string_get_length (line)));
-	/*buffer.get_line_length(line_ix);
-	 stdout.printf("%d, ", line_ix);
-	 stdout.flush();*/
+	/*buffer.get_line_length(line_ix);*/
+	fprintf (stdout, "%d, ", line_ix);
+	fflush (stdout);
 	start_scope = gtk_mate_scope_scope_at (self->root, line_ix, -1);
 	end_scope1 = gtk_mate_scope_scope_at (self->root, line_ix, G_MAXINT);
 	/*stdout.printf("scope_at returns: %s\n", start_scope.name);

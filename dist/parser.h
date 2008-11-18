@@ -8,9 +8,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gee/arraylist.h>
-#include "theme.h"
-#include "grammar.h"
+#include "view.h"
 #include "range_set.h"
+#include "grammar.h"
+#include "scanner.h"
 #include "onig_wrap.h"
 
 G_BEGIN_DECLS

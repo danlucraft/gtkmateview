@@ -2,137 +2,6 @@
 <repository version="1.0">
 <namespace name="Gtk" version="1.0">
 </namespace>
-<namespace name="Onig" version="1.0">
-	<class name="OnigError" parent="GLib.Object" glib:type-name="OnigOnigError" glib:get-type="onig_onig_error_get_type">
-		<field name="code">
-			<type name="int"/>
-		</field>
-		<field name="error_info">
-			<type name="Oniguruma.OnigErrorInfo"/>
-		</field>
-		<constructor name="new" c:identifier="onig_onig_error_new">
-			<parameters>
-			</parameters>
-			<return-value>
-				<type name="Onig.OnigError"/>
-			</return-value>
-		</constructor>
-	</class>
-	<class name="Match" parent="GLib.Object" glib:type-name="OnigMatch" glib:get-type="onig_match_get_type">
-		<field name="onig_match_count">
-			<type name="int"/>
-		</field>
-		<method name="num_captures" c:identifier="onig_match_num_captures">
-			<parameters>
-				<parameter name="self">
-					<type name="Onig.Match"/>
-				</parameter>
-			</parameters>
-			<return-value transfer-ownership="full">
-				<type name="int"/>
-			</return-value>
-		</method>
-		<method name="begin" c:identifier="onig_match_begin">
-			<parameters>
-				<parameter name="self">
-					<type name="Onig.Match"/>
-				</parameter>
-				<parameter name="capture">
-					<type name="int"/>
-				</parameter>
-			</parameters>
-			<return-value transfer-ownership="full">
-				<type name="int"/>
-			</return-value>
-		</method>
-		<method name="end" c:identifier="onig_match_end">
-			<parameters>
-				<parameter name="self">
-					<type name="Onig.Match"/>
-				</parameter>
-				<parameter name="capture">
-					<type name="int"/>
-				</parameter>
-			</parameters>
-			<return-value transfer-ownership="full">
-				<type name="int"/>
-			</return-value>
-		</method>
-		<constructor name="new" c:identifier="onig_match_new">
-			<parameters>
-			</parameters>
-			<return-value>
-				<type name="Onig.Match"/>
-			</return-value>
-		</constructor>
-		<property name="rx" readable="1" writable="1">
-			<type name="Oniguruma.RegexT"/>
-		</property>
-		<property name="rg" readable="1" writable="1">
-			<type name="Oniguruma.Region"/>
-		</property>
-	</class>
-	<class name="Rx" parent="GLib.Object" glib:type-name="OnigRx" glib:get-type="onig_rx_get_type">
-		<field name="matches_start_of_line">
-			<type name="bool"/>
-		</field>
-		<method name="search" c:identifier="onig_rx_search">
-			<parameters>
-				<parameter name="self">
-					<type name="Onig.Rx"/>
-				</parameter>
-				<parameter name="target">
-					<type name="string"/>
-				</parameter>
-				<parameter name="start">
-					<type name="int"/>
-				</parameter>
-				<parameter name="end">
-					<type name="int"/>
-				</parameter>
-			</parameters>
-			<return-value transfer-ownership="full">
-				<type name="Onig.Match?"/>
-			</return-value>
-		</method>
-		<method name="make" c:identifier="onig_rx_make">
-			<parameters>
-				<parameter name="pattern">
-					<type name="string"/>
-				</parameter>
-				<parameter name="options">
-					<type name="Oniguruma.OnigOptionType"/>
-				</parameter>
-				<parameter name="error" direction="out" transfer-ownership="full">
-					<type name="Onig.OnigError"/>
-				</parameter>
-			</parameters>
-			<return-value transfer-ownership="full">
-				<type name="Onig.Rx?"/>
-			</return-value>
-		</method>
-		<method name="make1" c:identifier="onig_rx_make1">
-			<parameters>
-				<parameter name="pattern">
-					<type name="string"/>
-				</parameter>
-			</parameters>
-			<return-value transfer-ownership="full">
-				<type name="Onig.Rx?"/>
-			</return-value>
-		</method>
-		<constructor name="new" c:identifier="onig_rx_new">
-			<parameters>
-			</parameters>
-			<return-value>
-				<type name="Onig.Rx"/>
-			</return-value>
-		</constructor>
-		<property name="rx" readable="1" writable="1">
-			<type name="Oniguruma.RegexT"/>
-		</property>
-	</class>
-</namespace>
 <namespace name="PList" version="1.0">
 	<class name="Node" parent="GLib.Object" glib:type-name="PListNode" glib:get-type="plist_node_get_type">
 		<method name="parse_xml_node" c:identifier="plist_node_parse_xml_node">
@@ -292,6 +161,137 @@
 			<type name="none"/>
 		</return-value>
 	</method>
+</namespace>
+<namespace name="Onig" version="1.0">
+	<class name="OnigError" parent="GLib.Object" glib:type-name="OnigOnigError" glib:get-type="onig_onig_error_get_type">
+		<field name="code">
+			<type name="int"/>
+		</field>
+		<field name="error_info">
+			<type name="Oniguruma.OnigErrorInfo"/>
+		</field>
+		<constructor name="new" c:identifier="onig_onig_error_new">
+			<parameters>
+			</parameters>
+			<return-value>
+				<type name="Onig.OnigError"/>
+			</return-value>
+		</constructor>
+	</class>
+	<class name="Match" parent="GLib.Object" glib:type-name="OnigMatch" glib:get-type="onig_match_get_type">
+		<field name="onig_match_count">
+			<type name="int"/>
+		</field>
+		<method name="num_captures" c:identifier="onig_match_num_captures">
+			<parameters>
+				<parameter name="self">
+					<type name="Onig.Match"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="int"/>
+			</return-value>
+		</method>
+		<method name="begin" c:identifier="onig_match_begin">
+			<parameters>
+				<parameter name="self">
+					<type name="Onig.Match"/>
+				</parameter>
+				<parameter name="capture">
+					<type name="int"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="int"/>
+			</return-value>
+		</method>
+		<method name="end" c:identifier="onig_match_end">
+			<parameters>
+				<parameter name="self">
+					<type name="Onig.Match"/>
+				</parameter>
+				<parameter name="capture">
+					<type name="int"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="int"/>
+			</return-value>
+		</method>
+		<constructor name="new" c:identifier="onig_match_new">
+			<parameters>
+			</parameters>
+			<return-value>
+				<type name="Onig.Match"/>
+			</return-value>
+		</constructor>
+		<property name="rx" readable="1" writable="1">
+			<type name="Oniguruma.RegexT"/>
+		</property>
+		<property name="rg" readable="1" writable="1">
+			<type name="Oniguruma.Region"/>
+		</property>
+	</class>
+	<class name="Rx" parent="GLib.Object" glib:type-name="OnigRx" glib:get-type="onig_rx_get_type">
+		<field name="matches_start_of_line">
+			<type name="bool"/>
+		</field>
+		<method name="search" c:identifier="onig_rx_search">
+			<parameters>
+				<parameter name="self">
+					<type name="Onig.Rx"/>
+				</parameter>
+				<parameter name="target">
+					<type name="string"/>
+				</parameter>
+				<parameter name="start">
+					<type name="int"/>
+				</parameter>
+				<parameter name="end">
+					<type name="int"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="Onig.Match?"/>
+			</return-value>
+		</method>
+		<method name="make" c:identifier="onig_rx_make">
+			<parameters>
+				<parameter name="pattern">
+					<type name="string"/>
+				</parameter>
+				<parameter name="options">
+					<type name="Oniguruma.OnigOptionType"/>
+				</parameter>
+				<parameter name="error" direction="out" transfer-ownership="full">
+					<type name="Onig.OnigError"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="Onig.Rx?"/>
+			</return-value>
+		</method>
+		<method name="make1" c:identifier="onig_rx_make1">
+			<parameters>
+				<parameter name="pattern">
+					<type name="string"/>
+				</parameter>
+			</parameters>
+			<return-value transfer-ownership="full">
+				<type name="Onig.Rx?"/>
+			</return-value>
+		</method>
+		<constructor name="new" c:identifier="onig_rx_new">
+			<parameters>
+			</parameters>
+			<return-value>
+				<type name="Onig.Rx"/>
+			</return-value>
+		</constructor>
+		<property name="rx" readable="1" writable="1">
+			<type name="Oniguruma.RegexT"/>
+		</property>
+	</class>
 </namespace>
 <errordomain name="XmlError">
 	<member name="XML_ERROR_FILE_NOT_FOUND"/>

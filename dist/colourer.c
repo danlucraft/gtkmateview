@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <gee/map.h>
 #include <pango/pango.h>
-#include "view.h"
 #include "scope.h"
+#include "theme.h"
 #include "buffer.h"
 #include "pattern.h"
 #include "parser.h"

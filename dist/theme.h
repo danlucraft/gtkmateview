@@ -9,33 +9,12 @@
 #include <string.h>
 #include <gee/hashmap.h>
 #include <gee/arraylist.h>
+#include "view.h"
 #include "plist.h"
 #include "onig_wrap.h"
 
 G_BEGIN_DECLS
 
-typedef struct _GtkMateThemeSetting GtkMateThemeSetting;
-typedef struct _GtkMateThemeSettingClass GtkMateThemeSettingClass;
-typedef struct _GtkMateTheme GtkMateTheme;
-typedef struct _GtkMateThemeClass GtkMateThemeClass;
-typedef struct _GtkMateScope GtkMateScope;
-typedef struct _GtkMateScopeClass GtkMateScopeClass;
-typedef struct _GtkMateTextLoc GtkMateTextLoc;
-typedef struct _GtkMateTextLocClass GtkMateTextLocClass;
-typedef struct _GtkMateParser GtkMateParser;
-typedef struct _GtkMateParserClass GtkMateParserClass;
-typedef struct _GtkMateColourer GtkMateColourer;
-typedef struct _GtkMateColourerClass GtkMateColourerClass;
-typedef struct _GtkMateView GtkMateView;
-typedef struct _GtkMateViewClass GtkMateViewClass;
-typedef struct _GtkMateBuffer GtkMateBuffer;
-typedef struct _GtkMateBufferClass GtkMateBufferClass;
-typedef struct _GtkMateMarker GtkMateMarker;
-typedef struct _GtkMateMarkerClass GtkMateMarkerClass;
-typedef struct _GtkMateScanner GtkMateScanner;
-typedef struct _GtkMateScannerClass GtkMateScannerClass;
-typedef struct _GtkMateScannerIterator GtkMateScannerIterator;
-typedef struct _GtkMateScannerIteratorClass GtkMateScannerIteratorClass;
 
 #define GTK_MATE_TYPE_THEME_SETTING (gtk_mate_theme_setting_get_type ())
 #define GTK_MATE_THEME_SETTING(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_MATE_TYPE_THEME_SETTING, GtkMateThemeSetting))
