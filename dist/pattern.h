@@ -4,10 +4,10 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <gee/arraylist.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gee/arraylist.h>
 #include <gee/hashmap.h>
 #include "plist.h"
 #include "grammar.h"

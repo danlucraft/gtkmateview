@@ -1,6 +1,5 @@
 
 #include "parser.h"
-#include <stdio.h>
 #include <gee/collection.h>
 #include <gee/hashmap.h>
 #include <gee/map.h>
@@ -37,6 +36,7 @@ enum  {
 GeeArrayList* gtk_mate_parser_existing_parsers = NULL;
 static void gtk_mate_parser_process_changes (GtkMateParser* self);
 static gint gtk_mate_parser_parse_range (GtkMateParser* self, gint from_line, gint to_line);
+static void gtk_mate_parser_remove_colour_after (GtkMateParser* self, gint line_ix, gint line_offset);
 static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix);
 static void _gtk_mate_parser_insert_text_handler_gtk_text_buffer_insert_text (GtkMateBuffer* _sender, GtkTextIter* pos, const char* text, gint length, gpointer self);
 static void _gtk_mate_parser_delete_range_handler_gtk_text_buffer_delete_range (GtkMateBuffer* _sender, GtkTextIter* start, GtkTextIter* end, gpointer self);
@@ -201,7 +201,7 @@ static void gtk_mate_parser_process_changes (GtkMateParser* self) {
 	gint parsed_upto;
 	g_return_if_fail (self != NULL);
 	parsed_upto = -1;
-	fprintf (stdout, "process_changes (last_visible_line: %d)\n", self->last_visible_line);
+	/* stdout.printf("process_changes (last_visible_line: %d)\n", last_visible_line);*/
 	{
 		RangeSet* range_collection;
 		GeeIterator* range_it;
@@ -233,13 +233,14 @@ static gint gtk_mate_parser_parse_range (GtkMateParser* self, gint from_line, gi
 	gint line_ix;
 	gboolean scope_changed;
 	gboolean scope_ever_changed;
+	gint end_line;
 	g_return_val_if_fail (self != NULL, 0);
-	fprintf (stdout, "parse_range(%d, %d)\n", from_line, to_line);
+	/* stdout.printf("parse_range(%d, %d)\n", from_line, to_line);*/
 	line_ix = from_line;
 	scope_changed = FALSE;
 	scope_ever_changed = FALSE;
-	while (line_ix <= to_line) {
-		/* || (scope_ever_changed && line_ix <= buffer.get_line_count()-1)) {*/
+	end_line = MIN (self->last_visible_line + 100, gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self->priv->_buffer))) - 1);
+	while (line_ix <= to_line || scope_ever_changed && line_ix <= end_line) {
 		scope_changed = gtk_mate_parser_parse_line (self, line_ix++);
 		if (scope_changed) {
 			scope_ever_changed = TRUE;
@@ -249,12 +250,33 @@ static gint gtk_mate_parser_parse_range (GtkMateParser* self, gint from_line, gi
 			 are inconsistent with earler ones. So we have to clear everything.
 			 TODO: figure out a way to OPTIMIZE this again.*/
 			gtk_mate_scope_clear_after (self->root, line_ix, -1);
+			gtk_mate_parser_remove_colour_after (self, line_ix, 0);
 		}
 	}
 	/*stdout.printf("parse_line returned: %s\n", scope_changed ? "true" : "false");
 	stdout.printf("pretty:\n%s\n", root.pretty(2));
 	stdout.printf("parse_from:out\n");*/
 	return to_line;
+}
+
+
+static void gtk_mate_parser_remove_colour_after (GtkMateParser* self, gint line_ix, gint line_offset) {
+	GSequenceIter* iter;
+	GtkTextIter start_iter;
+	GtkTextIter end_iter;
+	g_return_if_fail (self != NULL);
+	iter = g_sequence_get_begin_iter (self->tags);
+	start_iter = gtk_mate_buffer_iter_at_line_offset (self->priv->_buffer, line_ix, line_offset);
+	end_iter = gtk_mate_buffer_end_iter (self->priv->_buffer);
+	while (!g_sequence_iter_is_end (g_sequence_iter_next (iter))) {
+		GtkTextTag* _tmp0;
+		GtkTextTag* t;
+		_tmp0 = NULL;
+		t = (_tmp0 = ((GtkTextTag*) (g_sequence_get (iter))), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
+		gtk_text_buffer_remove_tag (((GtkTextBuffer*) (self->priv->_buffer)), t, &start_iter, &end_iter);
+		iter = g_sequence_iter_next (iter);
+		(t == NULL ? NULL : (t = (g_object_unref (t), NULL)));
+	}
 }
 
 
@@ -276,12 +298,12 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	g_return_val_if_fail (self != NULL, FALSE);
 	line = gtk_mate_buffer_get_line1 (self->priv->_buffer, line_ix);
 	length = ((gint) (string_get_length (line)));
-	/*buffer.get_line_length(line_ix);*/
-	fprintf (stdout, "%d, ", line_ix);
-	fflush (stdout);
+	/*buffer.get_line_length(line_ix);
+	 stdout.printf("%d, ", line_ix);
+	 stdout.flush();*/
 	start_scope = gtk_mate_scope_scope_at (self->root, line_ix, -1);
 	end_scope1 = gtk_mate_scope_scope_at (self->root, line_ix, G_MAXINT);
-	/*stdout.printf("scope_at returns: %s\n", start_scope.name);
+	/* stdout.printf("start_scope returns: %s\n", start_scope.name);
 	if (start_scope == null)
 	stdout.printf("pretty:\n%s\n", root.pretty(2));
 	stdout.printf("end_scope1: %s\n", end_scope1.name);*/
@@ -289,6 +311,7 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	i = 0;
 	s = NULL;
 	all_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
+	gee_collection_add (((GeeCollection*) (all_scopes)), start_scope);
 	closed_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
 	removed_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal);
 	gee_collection_add (((GeeCollection*) (all_scopes)), start_scope);

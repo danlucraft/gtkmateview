@@ -84,7 +84,7 @@ namespace Gtk.Mate {
 		// Process all change ranges.
 		private void process_changes() {
 			int parsed_upto = -1;
-			stdout.printf("process_changes (last_visible_line: %d)\n", last_visible_line);
+			// stdout.printf("process_changes (last_visible_line: %d)\n", last_visible_line);
 			foreach (RangeSet.Range range in changes) {
 				if (range.b > parsed_upto && range.a <= last_visible_line + look_ahead) {
 					int range_end = int.min(last_visible_line + look_ahead, range.b);
@@ -99,11 +99,12 @@ namespace Gtk.Mate {
 		// more if necessary. Returns the index of the last line
 		// parsed.
 		private int parse_range(int from_line, int to_line) {
-			stdout.printf("parse_range(%d, %d)\n", from_line, to_line);
+			// stdout.printf("parse_range(%d, %d)\n", from_line, to_line);
 			int line_ix = from_line;
 			bool scope_changed = false;
 			bool scope_ever_changed = false;
-			while (line_ix <= to_line ) { // || (scope_ever_changed && line_ix <= buffer.get_line_count()-1)) {
+			int end_line = int.min(last_visible_line + 100, buffer.get_line_count() - 1);
+			while (line_ix <= to_line || scope_ever_changed && line_ix <= end_line) {
 				scope_changed = parse_line(line_ix++);
 				if (scope_changed) {
 					scope_ever_changed = true;
@@ -113,6 +114,7 @@ namespace Gtk.Mate {
 					// are inconsistent with earler ones. So we have to clear everything.
 					// TODO: figure out a way to OPTIMIZE this again.
 					root.clear_after(line_ix, -1);
+					remove_colour_after(line_ix, 0);
 				}
 				//stdout.printf("parse_line returned: %s\n", scope_changed ? "true" : "false");
 				//stdout.printf("pretty:\n%s\n", root.pretty(2));
@@ -121,16 +123,27 @@ namespace Gtk.Mate {
 			return to_line;
 		}
 
+		private void remove_colour_after(int line_ix, int line_offset) {
+			GLib.SequenceIter iter = tags.get_begin_iter();
+			var start_iter = buffer.iter_at_line_offset(line_ix, line_offset);
+			var end_iter = buffer.end_iter();
+			while (!iter.next().is_end()) {
+				var t = tags.get(iter);
+				this.buffer.remove_tag(t, start_iter, end_iter);
+				iter = iter.next();
+			}
+		}
+	
 		// Parse line line_ix. Returns true if the ending
 		// scope of the line has changed.
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line1(line_ix);
 			int length = (int) line.length;//buffer.get_line_length(line_ix);
-			stdout.printf("%d, ", line_ix);
-			stdout.flush();
+			// stdout.printf("%d, ", line_ix);
+			// stdout.flush();
 			var start_scope = this.root.scope_at(line_ix, -1);
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
-			//stdout.printf("scope_at returns: %s\n", start_scope.name);
+			// stdout.printf("start_scope returns: %s\n", start_scope.name);
 //			if (start_scope == null)
 				//stdout.printf("pretty:\n%s\n", root.pretty(2));
 			//stdout.printf("end_scope1: %s\n", end_scope1.name);
@@ -138,6 +151,7 @@ namespace Gtk.Mate {
 			int i = 0;
 			Scope s;
 			var all_scopes = new ArrayList<Scope>();
+			all_scopes.add(start_scope);
 			var closed_scopes = new ArrayList<Scope>();
 			var removed_scopes = new ArrayList<Scope>();
 			all_scopes.add(start_scope);

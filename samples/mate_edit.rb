@@ -34,7 +34,7 @@ button_rb = Gtk::Button.new("Ruby")
 button_rb.signal_connect("clicked") do 
   if @current_view
     @current_view.buffer.set_grammar_by_name("Ruby")
-    @current_view.set_theme_by_name("Brilliance Dull")
+    @current_view.set_theme_by_name("Twilight")
   end
 end
 

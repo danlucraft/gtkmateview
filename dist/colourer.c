@@ -1,11 +1,11 @@
 
 #include "colourer.h"
-#include <stdio.h>
 #include <gee/map.h>
+#include <stdio.h>
 #include <pango/pango.h>
-#include "scope.h"
-#include "theme.h"
 #include "buffer.h"
+#include "theme.h"
+#include "scope.h"
 #include "pattern.h"
 #include "parser.h"
 
@@ -41,7 +41,7 @@ void gtk_mate_colourer_set_global_settings (GtkMateColourer* self, GtkMateView* 
 	char* fg_colour;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (view != NULL);
-	fprintf (stdout, "set_theme_settings()\n");
+	/*stdout.printf("set_theme_settings()\n");*/
 	bg_colour = ((char*) (gee_map_get (((GeeMap*) (self->priv->_theme->global_settings)), "background")));
 	if (bg_colour != NULL && _vala_strcmp0 (bg_colour, "") != 0) {
 		char* _tmp0;
@@ -111,11 +111,10 @@ void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayL
 					(scope == NULL ? NULL : (scope = (g_object_unref (scope), NULL)));
 					continue;
 				}
-				if (gtk_mate_scope_get_is_coloured (scope)) {
-					/*stdout.printf("  already coloured\n");*/
-					(scope == NULL ? NULL : (scope = (g_object_unref (scope), NULL)));
-					continue;
-				}
+				/* if (scope.is_coloured) {
+				 //stdout.printf("  already coloured\n");
+				 continue;
+				 }*/
 				gtk_mate_colourer_colour_scope (self, scope, FALSE, TRUE);
 				if (GTK_MATE_IS_DOUBLE_PATTERN (scope->pattern) && (GTK_MATE_DOUBLE_PATTERN (scope->pattern))->content_name != NULL) {
 					gtk_mate_colourer_colour_scope (self, scope, TRUE, TRUE);

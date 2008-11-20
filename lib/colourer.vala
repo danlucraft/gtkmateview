@@ -8,7 +8,7 @@ namespace Gtk.Mate {
 		public Theme theme {get; set;}
 		
 		public void set_global_settings(Gtk.Mate.View view) {
-			stdout.printf("set_theme_settings()\n");
+			//stdout.printf("set_theme_settings()\n");
 			string bg_colour = theme.global_settings.get("background");
 			if (bg_colour != null && bg_colour != "") {
 				bg_colour = Colourer.merge_colour("#FFFFFF", bg_colour);
@@ -46,10 +46,10 @@ namespace Gtk.Mate {
 					//stdout.printf("  no pattern name\n");
 					continue;
 				}
-				if (scope.is_coloured) {
-					//stdout.printf("  already coloured\n");
-					continue;
-				}
+				// if (scope.is_coloured) {
+				// 	//stdout.printf("  already coloured\n");
+				// 	continue;
+				// }
 				colour_scope(scope, false);
 				if (scope.pattern is DoublePattern && ((DoublePattern) scope.pattern).content_name != null)
 					colour_scope(scope, true);
