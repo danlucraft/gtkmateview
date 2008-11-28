@@ -250,71 +250,69 @@ void gtk_mate_colourer_set_tag_properties (GtkMateColourer* self, GtkMateScope* 
 		g_object_set (tag, "style", PANGO_STYLE_NORMAL | (g_object_get (G_OBJECT (tag), "style", &_tmp1, NULL), _tmp1), NULL);
 	}
 	if (_vala_strcmp0 (font_style, "underline") == 0) {
-		PangoStyle _tmp2;
-		g_object_set (tag, "style", PANGO_UNDERLINE_SINGLE | (g_object_get (G_OBJECT (tag), "style", &_tmp2, NULL), _tmp2), NULL);
+		g_object_set (tag, "underline", PANGO_UNDERLINE_SINGLE, NULL);
 	} else {
-		PangoStyle _tmp3;
-		g_object_set (tag, "style", PANGO_UNDERLINE_NONE | (g_object_get (G_OBJECT (tag), "style", &_tmp3, NULL), _tmp3), NULL);
+		g_object_set (tag, "underline", PANGO_UNDERLINE_NONE, NULL);
 	}
 	background = ((char*) (gee_map_get (((GeeMap*) (setting->settings)), "background")));
 	/* stdout.printf("        background:        %s\n", background);*/
 	merged_bg_colour = NULL;
 	parent_bg = gtk_mate_scope_nearest_background_colour (scope);
 	if (parent_bg == NULL) {
-		char* _tmp4;
-		_tmp4 = NULL;
-		parent_bg = (_tmp4 = ((char*) (gee_map_get (((GeeMap*) (self->priv->_theme->global_settings)), "background"))), (parent_bg = (g_free (parent_bg), NULL)), _tmp4);
+		char* _tmp2;
+		_tmp2 = NULL;
+		parent_bg = (_tmp2 = ((char*) (gee_map_get (((GeeMap*) (self->priv->_theme->global_settings)), "background"))), (parent_bg = (g_free (parent_bg), NULL)), _tmp2);
 	}
 	/* stdout.printf("        parent_background: %s\n", parent_bg);*/
 	if (background != NULL && _vala_strcmp0 (background, "") != 0) {
-		char* _tmp5;
-		_tmp5 = NULL;
-		merged_bg_colour = (_tmp5 = gtk_mate_colourer_merge_colour (parent_bg, background), (merged_bg_colour = (g_free (merged_bg_colour), NULL)), _tmp5);
+		char* _tmp3;
+		_tmp3 = NULL;
+		merged_bg_colour = (_tmp3 = gtk_mate_colourer_merge_colour (parent_bg, background), (merged_bg_colour = (g_free (merged_bg_colour), NULL)), _tmp3);
 		if (merged_bg_colour != NULL) {
-			char* _tmp7;
-			const char* _tmp6;
-			_tmp7 = NULL;
-			_tmp6 = NULL;
-			scope->bg_colour = (_tmp7 = (_tmp6 = merged_bg_colour, (_tmp6 == NULL ? NULL : g_strdup (_tmp6))), (scope->bg_colour = (g_free (scope->bg_colour), NULL)), _tmp7);
+			char* _tmp5;
+			const char* _tmp4;
+			_tmp5 = NULL;
+			_tmp4 = NULL;
+			scope->bg_colour = (_tmp5 = (_tmp4 = merged_bg_colour, (_tmp4 == NULL ? NULL : g_strdup (_tmp4))), (scope->bg_colour = (g_free (scope->bg_colour), NULL)), _tmp5);
 			g_object_set (tag, "background", merged_bg_colour, NULL);
 		}
 	} else {
-		char* _tmp9;
-		const char* _tmp8;
+		char* _tmp7;
+		const char* _tmp6;
 		/* stdout.printf("       tag.background = %s\n", merged_bg_colour);*/
-		_tmp9 = NULL;
-		_tmp8 = NULL;
-		merged_bg_colour = (_tmp9 = (_tmp8 = parent_bg, (_tmp8 == NULL ? NULL : g_strdup (_tmp8))), (merged_bg_colour = (g_free (merged_bg_colour), NULL)), _tmp9);
+		_tmp7 = NULL;
+		_tmp6 = NULL;
+		merged_bg_colour = (_tmp7 = (_tmp6 = parent_bg, (_tmp6 == NULL ? NULL : g_strdup (_tmp6))), (merged_bg_colour = (g_free (merged_bg_colour), NULL)), _tmp7);
 	}
 	/* stdout.printf("        merged_bg_colour:  %s\n", merged_bg_colour);*/
 	foreground = ((char*) (gee_map_get (((GeeMap*) (setting->settings)), "foreground")));
 	parent_fg = gtk_mate_scope_nearest_foreground_colour (scope);
 	if (parent_fg == NULL) {
-		char* _tmp10;
-		_tmp10 = NULL;
-		parent_fg = (_tmp10 = ((char*) (gee_map_get (((GeeMap*) (self->priv->_theme->global_settings)), "foreground"))), (parent_fg = (g_free (parent_fg), NULL)), _tmp10);
+		char* _tmp8;
+		_tmp8 = NULL;
+		parent_fg = (_tmp8 = ((char*) (gee_map_get (((GeeMap*) (self->priv->_theme->global_settings)), "foreground"))), (parent_fg = (g_free (parent_fg), NULL)), _tmp8);
 	}
 	/* stdout.printf("        foreground:        %s\n", foreground);*/
 	if (foreground != NULL && _vala_strcmp0 (foreground, "") != 0) {
 		char* merged_fg_colour;
 		merged_fg_colour = NULL;
 		if (parent_fg != NULL) {
-			char* _tmp11;
-			_tmp11 = NULL;
-			merged_fg_colour = (_tmp11 = gtk_mate_colourer_merge_colour (parent_fg, foreground), (merged_fg_colour = (g_free (merged_fg_colour), NULL)), _tmp11);
+			char* _tmp9;
+			_tmp9 = NULL;
+			merged_fg_colour = (_tmp9 = gtk_mate_colourer_merge_colour (parent_fg, foreground), (merged_fg_colour = (g_free (merged_fg_colour), NULL)), _tmp9);
 		} else {
+			char* _tmp11;
+			const char* _tmp10;
+			_tmp11 = NULL;
+			_tmp10 = NULL;
+			merged_fg_colour = (_tmp11 = (_tmp10 = foreground, (_tmp10 == NULL ? NULL : g_strdup (_tmp10))), (merged_fg_colour = (g_free (merged_fg_colour), NULL)), _tmp11);
+		}
+		if (merged_fg_colour != NULL) {
 			char* _tmp13;
 			const char* _tmp12;
 			_tmp13 = NULL;
 			_tmp12 = NULL;
-			merged_fg_colour = (_tmp13 = (_tmp12 = foreground, (_tmp12 == NULL ? NULL : g_strdup (_tmp12))), (merged_fg_colour = (g_free (merged_fg_colour), NULL)), _tmp13);
-		}
-		if (merged_fg_colour != NULL) {
-			char* _tmp15;
-			const char* _tmp14;
-			_tmp15 = NULL;
-			_tmp14 = NULL;
-			scope->fg_colour = (_tmp15 = (_tmp14 = merged_fg_colour, (_tmp14 == NULL ? NULL : g_strdup (_tmp14))), (scope->fg_colour = (g_free (scope->fg_colour), NULL)), _tmp15);
+			scope->fg_colour = (_tmp13 = (_tmp12 = merged_fg_colour, (_tmp12 == NULL ? NULL : g_strdup (_tmp12))), (scope->fg_colour = (g_free (scope->fg_colour), NULL)), _tmp13);
 			g_object_set (tag, "foreground", merged_fg_colour, NULL);
 		}
 		merged_fg_colour = (g_free (merged_fg_colour), NULL);

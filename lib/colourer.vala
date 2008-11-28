@@ -129,9 +129,9 @@ namespace Gtk.Mate {
 				tag.style = Pango.Style.NORMAL | tag.style;
 
 			if (font_style == "underline")
-				tag.style = Pango.Underline.SINGLE | tag.style;
+				tag.underline = Pango.Underline.SINGLE;
 			else
-				tag.style = Pango.Underline.NONE | tag.style;
+				tag.underline = Pango.Underline.NONE;
 			
 			string background = setting.settings.get("background");
 			// stdout.printf("        background:        %s\n", background);
