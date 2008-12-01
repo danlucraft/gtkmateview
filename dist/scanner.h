@@ -4,11 +4,11 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <stdlib.h>
-#include <string.h>
 #include <gtk/gtk.h>
 #include <gee/iterable.h>
 #include <gee/arraylist.h>
+#include <stdlib.h>
+#include <string.h>
 #include <gee/iterator.h>
 #include "scope.h"
 #include "pattern.h"

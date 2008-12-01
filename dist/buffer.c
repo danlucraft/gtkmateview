@@ -1,5 +1,7 @@
 
 #include "buffer.h"
+#include <gee/iterable.h>
+#include <gee/iterator.h>
 #include "parser.h"
 #include "grammar.h"
 #include "bundle.h"
@@ -30,41 +32,44 @@ static glong string_get_length (const char* self) {
 
 /* Sets the grammar explicitly by name.*/
 gboolean gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* name) {
+	gboolean _tmp0;
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
-	if (self->parser != NULL && _vala_strcmp0 (gtk_mate_grammar_get_name (gtk_mate_parser_get_grammar (self->parser)), name) == 0) {
+	_tmp0 = FALSE;
+	if (self->parser != NULL) {
+		_tmp0 = _vala_strcmp0 (gtk_mate_grammar_get_name (gtk_mate_parser_get_grammar (self->parser)), name) == 0;
+	} else {
+		_tmp0 = FALSE;
+	}
+	if (_tmp0) {
 		return TRUE;
 	}
 	{
-		GeeArrayList* bundle_collection;
-		int bundle_it;
-		bundle_collection = gtk_mate_buffer_bundles;
-		for (bundle_it = 0; bundle_it < gee_collection_get_size (GEE_COLLECTION (bundle_collection)); bundle_it = bundle_it + 1) {
+		GeeIterator* bundle_it;
+		bundle_it = gee_iterable_iterator ((GeeIterable*) gtk_mate_buffer_bundles);
+		while (gee_iterator_next (bundle_it)) {
 			GtkMateBundle* bundle;
-			bundle = ((GtkMateBundle*) (gee_list_get (GEE_LIST (bundle_collection), bundle_it)));
+			bundle = (GtkMateBundle*) gee_iterator_get (bundle_it);
 			{
-				{
-					GeeArrayList* gr_collection;
-					int gr_it;
-					gr_collection = bundle->grammars;
-					for (gr_it = 0; gr_it < gee_collection_get_size (GEE_COLLECTION (gr_collection)); gr_it = gr_it + 1) {
-						GtkMateGrammar* gr;
-						gr = ((GtkMateGrammar*) (gee_list_get (GEE_LIST (gr_collection), gr_it)));
-						{
-							if (_vala_strcmp0 (gtk_mate_grammar_get_name (gr), name) == 0) {
-								GtkMateParser* _tmp1;
-								gboolean _tmp2;
-								_tmp1 = NULL;
-								self->parser = (_tmp1 = gtk_mate_parser_create (gr, self), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp1);
-								return (_tmp2 = TRUE, (gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL))), (bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL))), _tmp2);
-							}
-							(gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL)));
-						}
+				GeeIterator* gr_it;
+				gr_it = gee_iterable_iterator ((GeeIterable*) bundle->grammars);
+				while (gee_iterator_next (gr_it)) {
+					GtkMateGrammar* gr;
+					gr = (GtkMateGrammar*) gee_iterator_get (gr_it);
+					if (_vala_strcmp0 (gtk_mate_grammar_get_name (gr), name) == 0) {
+						GtkMateParser* _tmp2;
+						gboolean _tmp3;
+						_tmp2 = NULL;
+						self->parser = (_tmp2 = gtk_mate_parser_create (gr, self), (self->parser == NULL) ? NULL : (self->parser = (g_object_unref (self->parser), NULL)), _tmp2);
+						return (_tmp3 = TRUE, (gr == NULL) ? NULL : (gr = (g_object_unref (gr), NULL)), (gr_it == NULL) ? NULL : (gr_it = (g_object_unref (gr_it), NULL)), (bundle == NULL) ? NULL : (bundle = (g_object_unref (bundle), NULL)), (bundle_it == NULL) ? NULL : (bundle_it = (g_object_unref (bundle_it), NULL)), _tmp3);
 					}
+					(gr == NULL) ? NULL : (gr = (g_object_unref (gr), NULL));
 				}
-				(bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL)));
+				(gr_it == NULL) ? NULL : (gr_it = (g_object_unref (gr_it), NULL));
 			}
+			(bundle == NULL) ? NULL : (bundle = (g_object_unref (bundle), NULL));
 		}
+		(bundle_it == NULL) ? NULL : (bundle_it = (g_object_unref (bundle_it), NULL));
 	}
 	return FALSE;
 }
@@ -76,73 +81,90 @@ gboolean gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* n
 char* gtk_mate_buffer_set_grammar_by_filename (GtkMateBuffer* self, const char* filename) {
 	GtkMateGrammar* best;
 	glong best_length;
-	char* _tmp6;
+	char* _tmp9;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (filename != NULL, NULL);
 	best = NULL;
-	best_length = 0L;
+	best_length = (glong) 0;
 	{
-		GeeArrayList* bundle_collection;
-		int bundle_it;
-		bundle_collection = gtk_mate_buffer_bundles;
-		for (bundle_it = 0; bundle_it < gee_collection_get_size (GEE_COLLECTION (bundle_collection)); bundle_it = bundle_it + 1) {
+		GeeIterator* bundle_it;
+		bundle_it = gee_iterable_iterator ((GeeIterable*) gtk_mate_buffer_bundles);
+		while (gee_iterator_next (bundle_it)) {
 			GtkMateBundle* bundle;
-			bundle = ((GtkMateBundle*) (gee_list_get (GEE_LIST (bundle_collection), bundle_it)));
+			bundle = (GtkMateBundle*) gee_iterator_get (bundle_it);
 			{
-				{
-					GeeArrayList* gr_collection;
-					int gr_it;
-					gr_collection = bundle->grammars;
-					for (gr_it = 0; gr_it < gee_collection_get_size (GEE_COLLECTION (gr_collection)); gr_it = gr_it + 1) {
-						GtkMateGrammar* gr;
-						gr = ((GtkMateGrammar*) (gee_list_get (GEE_LIST (gr_collection), gr_it)));
-						{
+				GeeIterator* gr_it;
+				gr_it = gee_iterable_iterator ((GeeIterable*) bundle->grammars);
+				while (gee_iterator_next (gr_it)) {
+					GtkMateGrammar* gr;
+					gr = (GtkMateGrammar*) gee_iterator_get (gr_it);
+					{
+						char** ext_collection;
+						int ext_collection_length1;
+						int ext_it;
+						ext_collection = gr->file_types;
+						ext_collection_length1 = gr->file_types_length1;
+						for (ext_it = 0; ((gr->file_types_length1 != -1) && (ext_it < gr->file_types_length1)) || ((gr->file_types_length1 == -1) && (ext_collection[ext_it] != NULL)); ext_it = ext_it + 1) {
+							const char* _tmp4;
+							char* ext;
+							_tmp4 = NULL;
+							ext = (_tmp4 = ext_collection[ext_it], (_tmp4 == NULL) ? NULL : g_strdup (_tmp4));
 							{
-								char** ext_collection;
-								int ext_collection_length1;
-								int ext_it;
-								ext_collection = gr->file_types;
-								ext_collection_length1 = gr->file_types_length1;
-								for (ext_it = 0; (gr->file_types_length1 != -1 && ext_it < gr->file_types_length1) || (gr->file_types_length1 == -1 && ext_collection[ext_it] != NULL); ext_it = ext_it + 1) {
-									const char* _tmp2;
-									char* ext;
-									_tmp2 = NULL;
-									ext = (_tmp2 = ext_collection[ext_it], (_tmp2 == NULL ? NULL : g_strdup (_tmp2)));
-									{
-										if (g_str_has_suffix (filename, ext) && (best == NULL || string_get_length (ext) > best_length)) {
-											GtkMateGrammar* _tmp1;
-											GtkMateGrammar* _tmp0;
-											_tmp1 = NULL;
-											_tmp0 = NULL;
-											best = (_tmp1 = (_tmp0 = gr, (_tmp0 == NULL ? NULL : g_object_ref (_tmp0))), (best == NULL ? NULL : (best = (g_object_unref (best), NULL))), _tmp1);
-											best_length = string_get_length (ext);
-										}
-										ext = (g_free (ext), NULL);
+								gboolean _tmp0;
+								_tmp0 = FALSE;
+								if (g_str_has_suffix (filename, ext)) {
+									gboolean _tmp1;
+									_tmp1 = FALSE;
+									if (best == NULL) {
+										_tmp1 = TRUE;
+									} else {
+										_tmp1 = string_get_length (ext) > best_length;
 									}
+									_tmp0 = (_tmp1);
+								} else {
+									_tmp0 = FALSE;
 								}
+								if (_tmp0) {
+									GtkMateGrammar* _tmp3;
+									GtkMateGrammar* _tmp2;
+									_tmp3 = NULL;
+									_tmp2 = NULL;
+									best = (_tmp3 = (_tmp2 = gr, (_tmp2 == NULL) ? NULL : g_object_ref (_tmp2)), (best == NULL) ? NULL : (best = (g_object_unref (best), NULL)), _tmp3);
+									best_length = string_get_length (ext);
+								}
+								ext = (g_free (ext), NULL);
 							}
-							(gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL)));
 						}
 					}
+					(gr == NULL) ? NULL : (gr = (g_object_unref (gr), NULL));
 				}
-				(bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL)));
+				(gr_it == NULL) ? NULL : (gr_it = (g_object_unref (gr_it), NULL));
 			}
+			(bundle == NULL) ? NULL : (bundle = (g_object_unref (bundle), NULL));
 		}
+		(bundle_it == NULL) ? NULL : (bundle_it = (g_object_unref (bundle_it), NULL));
 	}
 	if (best != NULL) {
-		const char* _tmp4;
-		char* _tmp5;
-		if (self->parser == NULL || _vala_strcmp0 (gtk_mate_grammar_get_name (gtk_mate_parser_get_grammar (self->parser)), gtk_mate_grammar_get_name (best)) != 0) {
-			GtkMateParser* _tmp3;
-			_tmp3 = NULL;
-			self->parser = (_tmp3 = gtk_mate_parser_create (best, self), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp3);
+		gboolean _tmp5;
+		const char* _tmp7;
+		char* _tmp8;
+		_tmp5 = FALSE;
+		if (self->parser == NULL) {
+			_tmp5 = TRUE;
+		} else {
+			_tmp5 = _vala_strcmp0 (gtk_mate_grammar_get_name (gtk_mate_parser_get_grammar (self->parser)), gtk_mate_grammar_get_name (best)) != 0;
 		}
-		_tmp4 = NULL;
-		_tmp5 = NULL;
-		return (_tmp5 = (_tmp4 = gtk_mate_grammar_get_name (best), (_tmp4 == NULL ? NULL : g_strdup (_tmp4))), (best == NULL ? NULL : (best = (g_object_unref (best), NULL))), _tmp5);
+		if (_tmp5) {
+			GtkMateParser* _tmp6;
+			_tmp6 = NULL;
+			self->parser = (_tmp6 = gtk_mate_parser_create (best, self), (self->parser == NULL) ? NULL : (self->parser = (g_object_unref (self->parser), NULL)), _tmp6);
+		}
+		_tmp7 = NULL;
+		_tmp8 = NULL;
+		return (_tmp8 = (_tmp7 = gtk_mate_grammar_get_name (best), (_tmp7 == NULL) ? NULL : g_strdup (_tmp7)), (best == NULL) ? NULL : (best = (g_object_unref (best), NULL)), _tmp8);
 	}
-	_tmp6 = NULL;
-	return (_tmp6 = NULL, (best == NULL ? NULL : (best = (g_object_unref (best), NULL))), _tmp6);
+	_tmp9 = NULL;
+	return (_tmp9 = NULL, (best == NULL) ? NULL : (best = (g_object_unref (best), NULL)), _tmp9);
 }
 
 
@@ -156,50 +178,46 @@ char* gtk_mate_buffer_set_grammar_by_first_line (GtkMateBuffer* self, const char
 	g_return_val_if_fail (first_line != NULL, NULL);
 	re = NULL;
 	{
-		GeeArrayList* bundle_collection;
-		int bundle_it;
-		bundle_collection = gtk_mate_buffer_bundles;
-		for (bundle_it = 0; bundle_it < gee_collection_get_size (GEE_COLLECTION (bundle_collection)); bundle_it = bundle_it + 1) {
+		GeeIterator* bundle_it;
+		bundle_it = gee_iterable_iterator ((GeeIterable*) gtk_mate_buffer_bundles);
+		while (gee_iterator_next (bundle_it)) {
 			GtkMateBundle* bundle;
-			bundle = ((GtkMateBundle*) (gee_list_get (GEE_LIST (bundle_collection), bundle_it)));
+			bundle = (GtkMateBundle*) gee_iterator_get (bundle_it);
 			{
-				{
-					GeeArrayList* gr_collection;
-					int gr_it;
-					gr_collection = bundle->grammars;
-					for (gr_it = 0; gr_it < gee_collection_get_size (GEE_COLLECTION (gr_collection)); gr_it = gr_it + 1) {
-						GtkMateGrammar* gr;
-						gr = ((GtkMateGrammar*) (gee_list_get (GEE_LIST (gr_collection), gr_it)));
-						{
-							OnigRx* _tmp1;
-							OnigRx* _tmp0;
-							_tmp1 = NULL;
-							_tmp0 = NULL;
-							if ((re = (_tmp1 = (_tmp0 = gr->first_line_match, (_tmp0 == NULL ? NULL : g_object_ref (_tmp0))), (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), _tmp1)) != NULL) {
-								OnigMatch* _tmp2;
-								gboolean _tmp3;
-								_tmp2 = NULL;
-								if ((_tmp3 = (_tmp2 = onig_rx_search (re, first_line, 0, ((gint) (strlen (first_line))))) != NULL, (_tmp2 == NULL ? NULL : (_tmp2 = (g_object_unref (_tmp2), NULL))), _tmp3)) {
-									GtkMateParser* _tmp4;
-									const char* _tmp5;
-									char* _tmp6;
-									_tmp4 = NULL;
-									self->parser = (_tmp4 = gtk_mate_parser_create (gr, self), (self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL))), _tmp4);
-									_tmp5 = NULL;
-									_tmp6 = NULL;
-									return (_tmp6 = (_tmp5 = gtk_mate_grammar_get_name (gr), (_tmp5 == NULL ? NULL : g_strdup (_tmp5))), (gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL))), (bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL))), (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), _tmp6);
-								}
-							}
-							(gr == NULL ? NULL : (gr = (g_object_unref (gr), NULL)));
+				GeeIterator* gr_it;
+				gr_it = gee_iterable_iterator ((GeeIterable*) bundle->grammars);
+				while (gee_iterator_next (gr_it)) {
+					GtkMateGrammar* gr;
+					OnigRx* _tmp1;
+					OnigRx* _tmp0;
+					gr = (GtkMateGrammar*) gee_iterator_get (gr_it);
+					_tmp1 = NULL;
+					_tmp0 = NULL;
+					if ((re = (_tmp1 = (_tmp0 = gr->first_line_match, (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0)), (re == NULL) ? NULL : (re = (g_object_unref (re), NULL)), _tmp1)) != NULL) {
+						OnigMatch* _tmp2;
+						gboolean _tmp3;
+						_tmp2 = NULL;
+						if ((_tmp3 = (_tmp2 = onig_rx_search (re, first_line, 0, (gint) strlen (first_line))) != NULL, (_tmp2 == NULL) ? NULL : (_tmp2 = (g_object_unref (_tmp2), NULL)), _tmp3)) {
+							GtkMateParser* _tmp4;
+							const char* _tmp5;
+							char* _tmp6;
+							_tmp4 = NULL;
+							self->parser = (_tmp4 = gtk_mate_parser_create (gr, self), (self->parser == NULL) ? NULL : (self->parser = (g_object_unref (self->parser), NULL)), _tmp4);
+							_tmp5 = NULL;
+							_tmp6 = NULL;
+							return (_tmp6 = (_tmp5 = gtk_mate_grammar_get_name (gr), (_tmp5 == NULL) ? NULL : g_strdup (_tmp5)), (gr == NULL) ? NULL : (gr = (g_object_unref (gr), NULL)), (gr_it == NULL) ? NULL : (gr_it = (g_object_unref (gr_it), NULL)), (bundle == NULL) ? NULL : (bundle = (g_object_unref (bundle), NULL)), (bundle_it == NULL) ? NULL : (bundle_it = (g_object_unref (bundle_it), NULL)), (re == NULL) ? NULL : (re = (g_object_unref (re), NULL)), _tmp6);
 						}
 					}
+					(gr == NULL) ? NULL : (gr = (g_object_unref (gr), NULL));
 				}
-				(bundle == NULL ? NULL : (bundle = (g_object_unref (bundle), NULL)));
+				(gr_it == NULL) ? NULL : (gr_it = (g_object_unref (gr_it), NULL));
 			}
+			(bundle == NULL) ? NULL : (bundle = (g_object_unref (bundle), NULL));
 		}
+		(bundle_it == NULL) ? NULL : (bundle_it = (g_object_unref (bundle_it), NULL));
 	}
 	_tmp7 = NULL;
-	return (_tmp7 = NULL, (re == NULL ? NULL : (re = (g_object_unref (re), NULL))), _tmp7);
+	return (_tmp7 = NULL, (re == NULL) ? NULL : (re = (g_object_unref (re), NULL)), _tmp7);
 }
 
 
@@ -208,7 +226,7 @@ char* gtk_mate_buffer_set_grammar_by_first_line (GtkMateBuffer* self, const char
 GtkTextIter gtk_mate_buffer_iter_ (GtkMateBuffer* self, gint offset) {
 	GtkTextIter i = {0};
 	0;
-	gtk_text_buffer_get_iter_at_offset (((GtkTextBuffer*) (self)), &i, offset);
+	gtk_text_buffer_get_iter_at_offset ((GtkTextBuffer*) self, &i, offset);
 	return i;
 }
 
@@ -216,7 +234,7 @@ GtkTextIter gtk_mate_buffer_iter_ (GtkMateBuffer* self, gint offset) {
 GtkTextIter gtk_mate_buffer_start_iter (GtkMateBuffer* self) {
 	GtkTextIter i = {0};
 	0;
-	gtk_text_buffer_get_iter_at_offset (((GtkTextBuffer*) (self)), &i, 0);
+	gtk_text_buffer_get_iter_at_offset ((GtkTextBuffer*) self, &i, 0);
 	return i;
 }
 
@@ -224,7 +242,7 @@ GtkTextIter gtk_mate_buffer_start_iter (GtkMateBuffer* self) {
 GtkTextIter gtk_mate_buffer_end_iter (GtkMateBuffer* self) {
 	GtkTextIter i = {0};
 	0;
-	gtk_text_buffer_get_iter_at_offset (((GtkTextBuffer*) (self)), &i, gtk_text_buffer_get_char_count (((GtkTextBuffer*) (self))));
+	gtk_text_buffer_get_iter_at_offset ((GtkTextBuffer*) self, &i, gtk_text_buffer_get_char_count ((GtkTextBuffer*) self));
 	return i;
 }
 
@@ -234,8 +252,8 @@ GtkTextIter gtk_mate_buffer_cursor_iter (GtkMateBuffer* self) {
 	GtkTextMark* _tmp0;
 	0;
 	_tmp0 = NULL;
-	gtk_text_buffer_get_iter_at_mark (((GtkTextBuffer*) (self)), &i, (_tmp0 = gtk_mate_buffer_cursor_mark (self)));
-	(_tmp0 == NULL ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL)));
+	gtk_text_buffer_get_iter_at_mark ((GtkTextBuffer*) self, &i, _tmp0 = gtk_mate_buffer_cursor_mark (self));
+	(_tmp0 == NULL) ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL));
 	return i;
 }
 
@@ -244,7 +262,7 @@ GtkTextIter gtk_mate_buffer_iter_from_mark (GtkMateBuffer* self, GtkTextMark* ma
 	GtkTextIter i = {0};
 	0;
 	0;
-	gtk_text_buffer_get_iter_at_mark (((GtkTextBuffer*) (self)), &i, mark);
+	gtk_text_buffer_get_iter_at_mark ((GtkTextBuffer*) self, &i, mark);
 	return i;
 }
 
@@ -252,7 +270,7 @@ GtkTextIter gtk_mate_buffer_iter_from_mark (GtkMateBuffer* self, GtkTextMark* ma
 GtkTextIter gtk_mate_buffer_iter_at_line_offset (GtkMateBuffer* self, gint line, gint line_offset) {
 	GtkTextIter i = {0};
 	0;
-	gtk_text_buffer_get_iter_at_line_offset (((GtkTextBuffer*) (self)), &i, line, line_offset);
+	gtk_text_buffer_get_iter_at_line_offset ((GtkTextBuffer*) self, &i, line, line_offset);
 	return i;
 }
 
@@ -260,7 +278,7 @@ GtkTextIter gtk_mate_buffer_iter_at_line_offset (GtkMateBuffer* self, gint line,
 GtkTextIter gtk_mate_buffer_line_start_iter (GtkMateBuffer* self, gint line) {
 	GtkTextIter i = {0};
 	0;
-	gtk_text_buffer_get_iter_at_line (((GtkTextBuffer*) (self)), &i, line);
+	gtk_text_buffer_get_iter_at_line ((GtkTextBuffer*) self, &i, line);
 	return i;
 }
 
@@ -268,7 +286,7 @@ GtkTextIter gtk_mate_buffer_line_start_iter (GtkMateBuffer* self, gint line) {
 /* Iter at end of line, after the "\n" (if present).*/
 GtkTextIter gtk_mate_buffer_line_end_iter (GtkMateBuffer* self, gint line) {
 	0;
-	if (line >= gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self))) - 1) {
+	if (line >= (gtk_text_buffer_get_line_count ((GtkTextBuffer*) self) - 1)) {
 		return gtk_mate_buffer_end_iter (self);
 	} else {
 		return gtk_mate_buffer_line_start_iter (self, line + 1);
@@ -279,7 +297,7 @@ GtkTextIter gtk_mate_buffer_line_end_iter (GtkMateBuffer* self, gint line) {
 /* Iter at end of line, before the "\n" (if present).*/
 GtkTextIter gtk_mate_buffer_line_end_iter1 (GtkMateBuffer* self, gint line) {
 	0;
-	if (line >= gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self))) - 1) {
+	if (line >= (gtk_text_buffer_get_line_count ((GtkTextBuffer*) self) - 1)) {
 		return gtk_mate_buffer_end_iter (self);
 	} else {
 		GtkTextIter i;
@@ -294,7 +312,7 @@ GtkTextMark* gtk_mate_buffer_start_mark (GtkMateBuffer* self) {
 	GtkTextMark* _tmp0;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0 = NULL;
-	return (_tmp0 = gtk_text_buffer_get_mark (((GtkTextBuffer*) (self)), "start_mark"), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
+	return (_tmp0 = gtk_text_buffer_get_mark ((GtkTextBuffer*) self, "start_mark"), (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0));
 }
 
 
@@ -302,7 +320,7 @@ GtkTextMark* gtk_mate_buffer_end_mark (GtkMateBuffer* self) {
 	GtkTextMark* _tmp0;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0 = NULL;
-	return (_tmp0 = gtk_text_buffer_get_mark (((GtkTextBuffer*) (self)), "end_mark"), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
+	return (_tmp0 = gtk_text_buffer_get_mark ((GtkTextBuffer*) self, "end_mark"), (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0));
 }
 
 
@@ -310,7 +328,7 @@ GtkTextMark* gtk_mate_buffer_cursor_mark (GtkMateBuffer* self) {
 	GtkTextMark* _tmp0;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0 = NULL;
-	return (_tmp0 = gtk_text_buffer_get_mark (((GtkTextBuffer*) (self)), "insert"), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
+	return (_tmp0 = gtk_text_buffer_get_mark ((GtkTextBuffer*) self, "insert"), (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0));
 }
 
 
@@ -318,7 +336,7 @@ GtkTextMark* gtk_mate_buffer_selection_mark (GtkMateBuffer* self) {
 	GtkTextMark* _tmp0;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0 = NULL;
-	return (_tmp0 = gtk_text_buffer_get_mark (((GtkTextBuffer*) (self)), "selection"), (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
+	return (_tmp0 = gtk_text_buffer_get_mark ((GtkTextBuffer*) self, "selection"), (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0));
 }
 
 
@@ -326,20 +344,27 @@ GtkTextMark* gtk_mate_buffer_selection_mark (GtkMateBuffer* self) {
  does not exist.*/
 char* gtk_mate_buffer_get_line (GtkMateBuffer* self, gint line) {
 	GtkTextIter ei = {0};
-	const char* _tmp2;
-	GtkTextIter _tmp1 = {0};
+	const char* _tmp3;
+	GtkTextIter _tmp2 = {0};
 	g_return_val_if_fail (self != NULL, NULL);
-	if (line == gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self))) - 1) {
+	if (line == (gtk_text_buffer_get_line_count ((GtkTextBuffer*) self) - 1)) {
 		ei = gtk_mate_buffer_end_iter (self);
 	} else {
-		if (line > gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self))) - 1 || line < 0) {
+		gboolean _tmp0;
+		_tmp0 = FALSE;
+		if (line > (gtk_text_buffer_get_line_count ((GtkTextBuffer*) self) - 1)) {
+			_tmp0 = TRUE;
+		} else {
+			_tmp0 = line < 0;
+		}
+		if (_tmp0) {
 			return NULL;
 		} else {
 			ei = gtk_mate_buffer_line_start_iter (self, line + 1);
 		}
 	}
-	_tmp2 = NULL;
-	return (_tmp2 = gtk_text_buffer_get_slice (((GtkTextBuffer*) (self)), (_tmp1 = gtk_mate_buffer_line_start_iter (self, line), &_tmp1), &ei, TRUE), (_tmp2 == NULL ? NULL : g_strdup (_tmp2)));
+	_tmp3 = NULL;
+	return (_tmp3 = gtk_text_buffer_get_slice ((GtkTextBuffer*) self, (_tmp2 = gtk_mate_buffer_line_start_iter (self, line), &_tmp2), &ei, TRUE), (_tmp3 == NULL) ? NULL : g_strdup (_tmp3));
 }
 
 
@@ -352,35 +377,42 @@ char* gtk_mate_buffer_get_line1 (GtkMateBuffer* self, gint line_ix) {
 	g_return_val_if_fail (self != NULL, NULL);
 	line = NULL;
 	_tmp0 = NULL;
-	if ((line = (_tmp0 = gtk_mate_buffer_get_line (self, line_ix), (line = (g_free (line), NULL)), _tmp0)) != NULL) {
-		if (line_ix == gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self))) - 1) {
+	if ((line = (_tmp0 = gtk_mate_buffer_get_line (self, line_ix), line = (g_free (line), NULL), _tmp0)) != NULL) {
+		if (line_ix == (gtk_text_buffer_get_line_count ((GtkTextBuffer*) self) - 1)) {
 			return line;
 		} else {
 			char* _tmp2;
 			char* _tmp3;
 			_tmp2 = NULL;
 			_tmp3 = NULL;
-			return (_tmp3 = (_tmp2 = g_utf8_offset_to_pointer (line, ((glong) (0))), g_strndup (_tmp2, g_utf8_offset_to_pointer (_tmp2, string_get_length (line) - 1) - _tmp2)), (line = (g_free (line), NULL)), _tmp3);
+			return (_tmp3 = (_tmp2 = g_utf8_offset_to_pointer (line, (glong) 0), g_strndup (_tmp2, g_utf8_offset_to_pointer (_tmp2, string_get_length (line) - 1) - _tmp2)), line = (g_free (line), NULL), _tmp3);
 		}
 	}
 	_tmp4 = NULL;
-	return (_tmp4 = NULL, (line = (g_free (line), NULL)), _tmp4);
+	return (_tmp4 = NULL, line = (g_free (line), NULL), _tmp4);
 }
 
 
 gint gtk_mate_buffer_get_line_length (GtkMateBuffer* self, gint line) {
+	gboolean _tmp0;
 	g_return_val_if_fail (self != NULL, 0);
-	if (line >= gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self))) || line < 0) {
+	_tmp0 = FALSE;
+	if (line >= gtk_text_buffer_get_line_count ((GtkTextBuffer*) self)) {
+		_tmp0 = TRUE;
+	} else {
+		_tmp0 = line < 0;
+	}
+	if (_tmp0) {
 		return -1;
 	}
-	if (line == gtk_text_buffer_get_line_count (((GtkTextBuffer*) (self))) - 1) {
+	if (line == (gtk_text_buffer_get_line_count ((GtkTextBuffer*) self) - 1)) {
+		GtkTextIter _tmp3 = {0};
 		GtkTextIter _tmp2 = {0};
-		GtkTextIter _tmp1 = {0};
-		return gtk_text_iter_get_offset ((_tmp1 = gtk_mate_buffer_end_iter (self), &_tmp1)) - gtk_text_iter_get_offset ((_tmp2 = gtk_mate_buffer_line_start_iter (self, line), &_tmp2));
+		return gtk_text_iter_get_offset ((_tmp2 = gtk_mate_buffer_end_iter (self), &_tmp2)) - gtk_text_iter_get_offset ((_tmp3 = gtk_mate_buffer_line_start_iter (self, line), &_tmp3));
 	} else {
+		GtkTextIter _tmp6 = {0};
 		GtkTextIter _tmp5 = {0};
-		GtkTextIter _tmp4 = {0};
-		return gtk_text_iter_get_offset ((_tmp4 = gtk_mate_buffer_line_end_iter (self, line), &_tmp4)) - gtk_text_iter_get_offset ((_tmp5 = gtk_mate_buffer_line_start_iter (self, line), &_tmp5)) - 1;
+		return (gtk_text_iter_get_offset ((_tmp5 = gtk_mate_buffer_line_end_iter (self, line), &_tmp5)) - gtk_text_iter_get_offset ((_tmp6 = gtk_mate_buffer_line_start_iter (self, line), &_tmp6))) - 1;
 	}
 }
 
@@ -449,7 +481,7 @@ static void gtk_mate_buffer_instance_init (GtkMateBuffer * self) {
 static void gtk_mate_buffer_finalize (GObject* obj) {
 	GtkMateBuffer * self;
 	self = GTK_MATE_BUFFER (obj);
-	(self->parser == NULL ? NULL : (self->parser = (g_object_unref (self->parser), NULL)));
+	(self->parser == NULL) ? NULL : (self->parser = (g_object_unref (self->parser), NULL));
 	G_OBJECT_CLASS (gtk_mate_buffer_parent_class)->finalize (obj);
 }
 
@@ -469,7 +501,7 @@ static int _vala_strcmp0 (const char * str1, const char * str2) {
 		return -(str1 != str2);
 	}
 	if (str2 == NULL) {
-		return (str1 != str2);
+		return str1 != str2;
 	}
 	return strcmp (str1, str2);
 }

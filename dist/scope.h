@@ -4,13 +4,13 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
 #include <gee/arraylist.h>
-#include <gtk/gtk.h>
-#include "view.h"
 #include "pattern.h"
 #include "onig_wrap.h"
+#include "view.h"
 
 G_BEGIN_DECLS
 

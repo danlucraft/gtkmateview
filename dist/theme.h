@@ -5,12 +5,12 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
+#include <gee/arraylist.h>
 #include <stdlib.h>
 #include <string.h>
 #include <gee/hashmap.h>
-#include <gee/arraylist.h>
-#include "plist.h"
 #include "view.h"
+#include "plist.h"
 #include "onig_wrap.h"
 
 G_BEGIN_DECLS

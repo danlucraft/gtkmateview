@@ -4,9 +4,9 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <oniguruma.h>
 #include <stdlib.h>
 #include <string.h>
-#include <oniguruma.h>
 
 G_BEGIN_DECLS
 

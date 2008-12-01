@@ -47,8 +47,8 @@ static void gtk_mate_bundle_set_name (GtkMateBundle* self, const char* value) {
 	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
-	self->priv->_name = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL ? NULL : g_strdup (_tmp1))), (self->priv->_name = (g_free (self->priv->_name), NULL)), _tmp2);
-	g_object_notify (((GObject *) (self)), "name");
+	self->priv->_name = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL) ? NULL : g_strdup (_tmp1)), self->priv->_name = (g_free (self->priv->_name), NULL), _tmp2);
+	g_object_notify ((GObject *) self, "name");
 }
 
 
@@ -64,7 +64,7 @@ static GObject * gtk_mate_bundle_constructor (GType type, guint n_construct_prop
 	{
 		GeeArrayList* _tmp0;
 		_tmp0 = NULL;
-		self->grammars = (_tmp0 = gee_array_list_new (GTK_MATE_TYPE_GRAMMAR, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal), (self->grammars == NULL ? NULL : (self->grammars = (g_object_unref (self->grammars), NULL))), _tmp0);
+		self->grammars = (_tmp0 = gee_array_list_new (GTK_MATE_TYPE_GRAMMAR, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), (self->grammars == NULL) ? NULL : (self->grammars = (g_object_unref (self->grammars), NULL)), _tmp0);
 	}
 	return obj;
 }
@@ -118,7 +118,7 @@ static void gtk_mate_bundle_finalize (GObject* obj) {
 	GtkMateBundle * self;
 	self = GTK_MATE_BUNDLE (obj);
 	self->priv->_name = (g_free (self->priv->_name), NULL);
-	(self->grammars == NULL ? NULL : (self->grammars = (g_object_unref (self->grammars), NULL)));
+	(self->grammars == NULL) ? NULL : (self->grammars = (g_object_unref (self->grammars), NULL));
 	G_OBJECT_CLASS (gtk_mate_bundle_parent_class)->finalize (obj);
 }
 

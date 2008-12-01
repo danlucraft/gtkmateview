@@ -9,9 +9,9 @@ namespace Gtk.Mate {
 
 		public static int compare_match(string scope_string, Onig.Match m1, Onig.Match m2) {
 			var space_ixs = StringHelper.occurrences(scope_string, " ");
-			foreach (var ix in space_ixs) {
+			// foreach (var ix in space_ixs) {
 				//stdout.printf("space at %d\n", ix);
-			}
+			// }
 			int max_cap1 = m1.num_captures();
 			int max_cap2 = m2.num_captures();
 			//stdout.printf("m1 has %d matches\n", m1.num_captures());
@@ -106,7 +106,6 @@ namespace Gtk.Mate {
 			string[] scope_ors1 = selector_string.split(",");
 			//stdout.printf("match: selector: '%s', scope: '%s'\n", selector_string, scope_string);
 			foreach (var selector_string1 in scope_ors1) {
-				Onig.Rx pos_rx;
 				var m = new Matcher();
 				m.neg_rxs = new ArrayList<Onig.Rx>();
 				string[] positives_and_negatives = selector_string1.split(" -");

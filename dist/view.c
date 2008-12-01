@@ -1,5 +1,7 @@
 
 #include "view.h"
+#include <gee/iterable.h>
+#include <gee/iterator.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include "theme.h"
@@ -22,32 +24,37 @@ gboolean gtk_mate_view_set_theme_by_name (GtkMateView* self, const char* name) {
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
 	{
-		GeeArrayList* theme_collection;
-		int theme_it;
-		theme_collection = gtk_mate_theme_themes;
-		for (theme_it = 0; theme_it < gee_collection_get_size (GEE_COLLECTION (theme_collection)); theme_it = theme_it + 1) {
+		GeeIterator* theme_it;
+		theme_it = gee_iterable_iterator ((GeeIterable*) gtk_mate_theme_themes);
+		while (gee_iterator_next (theme_it)) {
 			GtkMateTheme* theme;
-			theme = ((GtkMateTheme*) (gee_list_get (GEE_LIST (theme_collection), theme_it)));
-			{
-				if (_vala_strcmp0 (theme->name, name) == 0) {
-					gboolean _tmp0;
-					gtk_mate_theme_init_for_use (theme);
-					gtk_mate_parser_change_theme ((GTK_MATE_BUFFER (gtk_text_view_get_buffer (((GtkTextView*) (self)))))->parser, theme);
-					gtk_mate_view_set_global_theme_settings (self);
-					return (_tmp0 = TRUE, (theme == NULL ? NULL : (theme = (g_object_unref (theme), NULL))), _tmp0);
-				}
-				(theme == NULL ? NULL : (theme = (g_object_unref (theme), NULL)));
+			theme = (GtkMateTheme*) gee_iterator_get (theme_it);
+			if (_vala_strcmp0 (theme->name, name) == 0) {
+				gboolean _tmp0;
+				gtk_mate_theme_init_for_use (theme);
+				gtk_mate_parser_change_theme ((GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self)))->parser, theme);
+				gtk_mate_view_set_global_theme_settings (self);
+				return (_tmp0 = TRUE, (theme == NULL) ? NULL : (theme = (g_object_unref (theme), NULL)), (theme_it == NULL) ? NULL : (theme_it = (g_object_unref (theme_it), NULL)), _tmp0);
 			}
+			(theme == NULL) ? NULL : (theme = (g_object_unref (theme), NULL));
 		}
+		(theme_it == NULL) ? NULL : (theme_it = (g_object_unref (theme_it), NULL));
 	}
 	return FALSE;
 }
 
 
 void gtk_mate_view_set_global_theme_settings (GtkMateView* self) {
+	gboolean _tmp0;
 	g_return_if_fail (self != NULL);
-	if ((GTK_MATE_BUFFER (gtk_text_view_get_buffer (((GtkTextView*) (self)))))->parser != NULL && gtk_mate_parser_get_colourer ((GTK_MATE_BUFFER (gtk_text_view_get_buffer (((GtkTextView*) (self)))))->parser) != NULL) {
-		gtk_mate_colourer_set_global_settings (gtk_mate_parser_get_colourer ((GTK_MATE_BUFFER (gtk_text_view_get_buffer (((GtkTextView*) (self)))))->parser), self);
+	_tmp0 = FALSE;
+	if ((GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self)))->parser != NULL) {
+		_tmp0 = gtk_mate_parser_get_colourer ((GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self)))->parser) != NULL;
+	} else {
+		_tmp0 = FALSE;
+	}
+	if (_tmp0) {
+		gtk_mate_colourer_set_global_settings (gtk_mate_parser_get_colourer ((GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self)))->parser), self);
 	}
 }
 
@@ -68,7 +75,7 @@ void gtk_mate_view_value_changed_handler (GtkMateView* self) {
 	if (parser != NULL) {
 		gtk_mate_parser_last_visible_line_changed (parser, gtk_mate_view_last_visible_line (self));
 	}
-	(parser == NULL ? NULL : (parser = (g_object_unref (parser), NULL)));
+	(parser == NULL) ? NULL : (parser = (g_object_unref (parser), NULL));
 }
 
 
@@ -76,7 +83,7 @@ GtkMateParser* gtk_mate_view_get_parser (GtkMateView* self) {
 	GtkMateParser* _tmp0;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0 = NULL;
-	return (_tmp0 = (GTK_MATE_BUFFER (gtk_text_view_get_buffer (((GtkTextView*) (self)))))->parser, (_tmp0 == NULL ? NULL : g_object_ref (_tmp0)));
+	return (_tmp0 = (GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self)))->parser, (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0));
 }
 
 
@@ -86,9 +93,9 @@ gint gtk_mate_view_last_visible_line (GtkMateView* self) {
 	GtkTextIter iter = {0};
 	gint line;
 	g_return_val_if_fail (self != NULL, 0);
-	gtk_text_view_get_visible_rect (((GtkTextView*) (self)), &rect);
+	gtk_text_view_get_visible_rect ((GtkTextView*) self, &rect);
 	bufy = rect.y + rect.height;
-	gtk_text_view_get_line_at_y (((GtkTextView*) (self)), &iter, bufy, NULL);
+	gtk_text_view_get_line_at_y ((GtkTextView*) self, &iter, bufy, NULL);
 	line = gtk_text_iter_get_line (&iter);
 	return line;
 }
@@ -130,7 +137,7 @@ static int _vala_strcmp0 (const char * str1, const char * str2) {
 		return -(str1 != str2);
 	}
 	if (str2 == NULL) {
-		return (str1 != str2);
+		return str1 != str2;
 	}
 	return strcmp (str1, str2);
 }

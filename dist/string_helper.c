@@ -18,7 +18,7 @@ char* string_helper_gsub (const char* start_string, const char* match_string, co
 	GError * inner_error;
 	GRegex* grx;
 	char* result;
-	char* _tmp4;
+	char* _tmp5;
 	g_return_val_if_fail (start_string != NULL, NULL);
 	g_return_val_if_fail (match_string != NULL, NULL);
 	g_return_val_if_fail (replacement_string != NULL, NULL);
@@ -29,43 +29,45 @@ char* string_helper_gsub (const char* start_string, const char* match_string, co
 		GRegex* _tmp1;
 		char* _tmp0;
 		char* _tmp2;
+		char* _tmp3;
 		_tmp1 = NULL;
 		_tmp0 = NULL;
-		grx = (_tmp1 = g_regex_new ((_tmp0 = g_regex_escape_string (match_string, -1)), 0, 0, &inner_error), (grx == NULL ? NULL : (grx = (g_regex_unref (grx), NULL))), _tmp1);
+		grx = (_tmp1 = g_regex_new (_tmp0 = g_regex_escape_string (match_string, -1), 0, 0, &inner_error), (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), _tmp1);
 		if (inner_error != NULL) {
 			if (inner_error->domain == G_REGEX_ERROR) {
-				goto __catch0_g_regex_error;
+				goto __catch5_g_regex_error;
 			}
 			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
 			g_clear_error (&inner_error);
 		}
 		_tmp0 = (g_free (_tmp0), NULL);
-		_tmp2 = NULL;
-		result = (_tmp2 = g_regex_replace_literal (grx, start_string, strlen (start_string), 0, replacement_string, 0, &inner_error), (result = (g_free (result), NULL)), _tmp2);
+		_tmp2 = g_regex_replace_literal (grx, start_string, strlen (start_string), 0, replacement_string, 0, &inner_error);
 		if (inner_error != NULL) {
 			if (inner_error->domain == G_REGEX_ERROR) {
-				goto __catch0_g_regex_error;
+				goto __catch5_g_regex_error;
 			}
 			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
 			g_clear_error (&inner_error);
 		}
+		_tmp3 = NULL;
+		result = (_tmp3 = _tmp2, result = (g_free (result), NULL), _tmp3);
 	}
-	goto __finally0;
-	__catch0_g_regex_error:
+	goto __finally5;
+	__catch5_g_regex_error:
 	{
 		GError * e;
 		e = inner_error;
 		inner_error = NULL;
 		{
-			char* _tmp3;
-			_tmp3 = NULL;
-			return (_tmp3 = g_strdup (""), (e == NULL ? NULL : (e = (g_error_free (e), NULL))), (grx == NULL ? NULL : (grx = (g_regex_unref (grx), NULL))), (result = (g_free (result), NULL)), _tmp3);
+			char* _tmp4;
+			_tmp4 = NULL;
+			return (_tmp4 = g_strdup (""), (e == NULL) ? NULL : (e = (g_error_free (e), NULL)), (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), result = (g_free (result), NULL), _tmp4);
 		}
 	}
-	__finally0:
+	__finally5:
 	;
-	_tmp4 = NULL;
-	return (_tmp4 = result, (grx == NULL ? NULL : (grx = (g_regex_unref (grx), NULL))), _tmp4);
+	_tmp5 = NULL;
+	return (_tmp5 = result, (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), _tmp5);
 }
 
 
@@ -74,7 +76,7 @@ GeeArrayList* string_helper_occurrences (const char* s, const char* t) {
 	GRegex* grx;
 	GeeArrayList* poss;
 	GMatchInfo* m;
-	GeeArrayList* _tmp6;
+	GeeArrayList* _tmp7;
 	g_return_val_if_fail (s != NULL, NULL);
 	g_return_val_if_fail (t != NULL, NULL);
 	inner_error = NULL;
@@ -89,10 +91,10 @@ GeeArrayList* string_helper_occurrences (const char* s, const char* t) {
 		GMatchInfo* _tmp2;
 		_tmp1 = NULL;
 		_tmp0 = NULL;
-		grx = (_tmp1 = g_regex_new ((_tmp0 = g_regex_escape_string (t, -1)), 0, 0, &inner_error), (grx == NULL ? NULL : (grx = (g_regex_unref (grx), NULL))), _tmp1);
+		grx = (_tmp1 = g_regex_new (_tmp0 = g_regex_escape_string (t, -1), 0, 0, &inner_error), (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), _tmp1);
 		if (inner_error != NULL) {
 			if (inner_error->domain == G_REGEX_ERROR) {
-				goto __catch1_g_regex_error;
+				goto __catch6_g_regex_error;
 			}
 			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
 			g_clear_error (&inner_error);
@@ -100,39 +102,51 @@ GeeArrayList* string_helper_occurrences (const char* s, const char* t) {
 		_tmp0 = (g_free (_tmp0), NULL);
 		_tmp4 = NULL;
 		_tmp2 = NULL;
-		if ((_tmp3 = g_regex_match (grx, s, 0, &_tmp2), m = (_tmp4 = _tmp2, (m == NULL ? NULL : (m = (g_match_info_free (m), NULL))), _tmp4), _tmp3)) {
+		if ((_tmp3 = g_regex_match (grx, s, 0, &_tmp2), m = (_tmp4 = _tmp2, (m == NULL) ? NULL : (m = (g_match_info_free (m), NULL)), _tmp4), _tmp3)) {
 			gint spos;
 			gint epos;
 			spos = 0;
 			epos = 0;
 			g_match_info_fetch_pos (m, 0, &spos, &epos);
-			gee_collection_add (((GeeCollection*) (poss)), GINT_TO_POINTER (spos));
-			while (g_match_info_next (m, &inner_error)) {
+			gee_collection_add ((GeeCollection*) poss, GINT_TO_POINTER (spos));
+			while (TRUE) {
+				gboolean _tmp5;
 				gint spos;
 				gint epos;
+				_tmp5 = g_match_info_next (m, &inner_error);
+				if (inner_error != NULL) {
+					if (inner_error->domain == G_REGEX_ERROR) {
+						goto __catch6_g_regex_error;
+					}
+					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
+					g_clear_error (&inner_error);
+				}
+				if (!_tmp5) {
+					break;
+				}
 				spos = 0;
 				epos = 0;
 				g_match_info_fetch_pos (m, 0, &spos, &epos);
-				gee_collection_add (((GeeCollection*) (poss)), GINT_TO_POINTER (spos));
+				gee_collection_add ((GeeCollection*) poss, GINT_TO_POINTER (spos));
 			}
 		}
 	}
-	goto __finally1;
-	__catch1_g_regex_error:
+	goto __finally6;
+	__catch6_g_regex_error:
 	{
 		GError * e;
 		e = inner_error;
 		inner_error = NULL;
 		{
-			GeeArrayList* _tmp5;
-			_tmp5 = NULL;
-			return (_tmp5 = gee_array_list_new (G_TYPE_INT, NULL, NULL, g_direct_equal), (e == NULL ? NULL : (e = (g_error_free (e), NULL))), (grx == NULL ? NULL : (grx = (g_regex_unref (grx), NULL))), (poss == NULL ? NULL : (poss = (g_object_unref (poss), NULL))), (m == NULL ? NULL : (m = (g_match_info_free (m), NULL))), _tmp5);
+			GeeArrayList* _tmp6;
+			_tmp6 = NULL;
+			return (_tmp6 = gee_array_list_new (G_TYPE_INT, NULL, NULL, g_direct_equal), (e == NULL) ? NULL : (e = (g_error_free (e), NULL)), (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), (poss == NULL) ? NULL : (poss = (g_object_unref (poss), NULL)), (m == NULL) ? NULL : (m = (g_match_info_free (m), NULL)), _tmp6);
 		}
 	}
-	__finally1:
+	__finally6:
 	;
-	_tmp6 = NULL;
-	return (_tmp6 = poss, (grx == NULL ? NULL : (grx = (g_regex_unref (grx), NULL))), (m == NULL ? NULL : (m = (g_match_info_free (m), NULL))), _tmp6);
+	_tmp7 = NULL;
+	return (_tmp7 = poss, (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), (m == NULL) ? NULL : (m = (g_match_info_free (m), NULL)), _tmp7);
 }
 
 

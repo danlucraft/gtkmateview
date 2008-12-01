@@ -50,7 +50,7 @@ namespace Gtk.Mate {
 		// simply return the next cached marker (choosing the longest
 		// match in case of a tie).
 		public Marker? get_cached_marker() {
-			Marker? m;
+			Marker? m = null;
 			int best_length = 0;
 			int new_length;
 			foreach (var m1 in cached_markers) {
@@ -73,7 +73,6 @@ namespace Gtk.Mate {
 			int len = cached_markers.size;
 			//stdout.printf("num cached: %d\n", len);
 			for(int i = 0; i < len; i++, ix++) {
-				var cm = cached_markers.get(ix);
 				if (cached_markers.get(ix).from < m.match.end(0)) {
 					cached_markers.remove_at(ix);
 					ix--;
@@ -83,7 +82,7 @@ namespace Gtk.Mate {
 		}
 		
 		public Onig.Match? scan_for_match(int from, Pattern p) {
-			Onig.Match match;
+			Onig.Match match = null;
 			if (p is SinglePattern) {
 				var sp = (SinglePattern) p;
 				match = sp.match.search(line, from, line_length);

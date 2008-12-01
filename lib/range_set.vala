@@ -32,12 +32,10 @@ public class RangeSet : Object, Iterable<Range> {
 	}
 
 	public void add(int a, int b) {
-		bool merged = false;
 		int insert_ix = 0;
 		Range n = new Range();
 		n.a = a;
 		n.b = b;
-		Range p, p2;
 		foreach (var p in ranges) {
 			if (p.a < n.a)
 				insert_ix++;

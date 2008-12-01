@@ -33,8 +33,8 @@ namespace Gtk.Mate {
 		// a grammar, sets the grammar to null. Returns the grammar
 		// name or null.
 		public string? set_grammar_by_filename(string filename) {
-			Grammar best;
-			long best_length;
+			Grammar best = null;
+			long best_length = 0;
 			foreach (var bundle in Buffer.bundles) {
 				foreach (var gr in bundle.grammars) {
 					foreach (var ext in gr.file_types) {

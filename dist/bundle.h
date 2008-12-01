@@ -4,10 +4,10 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <stdlib.h>
-#include <string.h>
 #include <gtk/gtk.h>
 #include <gee/arraylist.h>
+#include <stdlib.h>
+#include <string.h>
 
 G_BEGIN_DECLS
 

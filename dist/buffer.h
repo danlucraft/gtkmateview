@@ -4,9 +4,9 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gtk/gtk.h>
 #include <gtksourceview/gtksourceview.h>
 #include <gee/arraylist.h>
+#include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
 #include "view.h"

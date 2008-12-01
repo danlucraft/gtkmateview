@@ -25,7 +25,7 @@ static void range_set_finalize (GObject* obj);
 
 gint range_set_length (RangeSet* self) {
 	g_return_val_if_fail (self != NULL, 0);
-	return ((gint) (gee_collection_get_size (((GeeCollection*) (self->ranges)))));
+	return (gint) gee_collection_get_size ((GeeCollection*) self->ranges);
 }
 
 
@@ -34,17 +34,15 @@ gint range_set_size (RangeSet* self) {
 	g_return_val_if_fail (self != NULL, 0);
 	sizec = 0;
 	{
-		GeeArrayList* p_collection;
-		int p_it;
-		p_collection = self->ranges;
-		for (p_it = 0; p_it < gee_collection_get_size (GEE_COLLECTION (p_collection)); p_it = p_it + 1) {
+		GeeIterator* p_it;
+		p_it = gee_iterable_iterator ((GeeIterable*) self->ranges);
+		while (gee_iterator_next (p_it)) {
 			RangeSetRange* p;
-			p = ((RangeSetRange*) (gee_list_get (GEE_LIST (p_collection), p_it)));
-			{
-				sizec = sizec + (p->b - p->a + 1);
-				(p == NULL ? NULL : (p = (g_object_unref (p), NULL)));
-			}
+			p = (RangeSetRange*) gee_iterator_get (p_it);
+			sizec = sizec + ((p->b - p->a) + 1);
+			(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
 		}
+		(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
 	}
 	return sizec;
 }
@@ -52,89 +50,89 @@ gint range_set_size (RangeSet* self) {
 
 gboolean range_set_is_empty (RangeSet* self) {
 	g_return_val_if_fail (self != NULL, FALSE);
-	return (gee_collection_get_size (((GeeCollection*) (self->ranges))) == 0);
+	return (gee_collection_get_size ((GeeCollection*) self->ranges) == 0);
 }
 
 
 void range_set_add (RangeSet* self, gint a, gint b) {
-	gboolean merged;
 	gint insert_ix;
 	RangeSetRange* n;
-	RangeSetRange* p;
-	RangeSetRange* p2;
 	g_return_if_fail (self != NULL);
-	merged = FALSE;
 	insert_ix = 0;
 	n = range_set_range_new ();
 	n->a = a;
 	n->b = b;
-	p = NULL;
-	p2 = NULL;
 	{
-		GeeArrayList* p_collection;
-		int p_it;
-		p_collection = self->ranges;
-		for (p_it = 0; p_it < gee_collection_get_size (GEE_COLLECTION (p_collection)); p_it = p_it + 1) {
+		GeeIterator* p_it;
+		p_it = gee_iterable_iterator ((GeeIterable*) self->ranges);
+		while (gee_iterator_next (p_it)) {
 			RangeSetRange* p;
-			p = ((RangeSetRange*) (gee_list_get (GEE_LIST (p_collection), p_it)));
-			{
-				if (p->a < n->a) {
-					insert_ix++;
-				}
-				(p == NULL ? NULL : (p = (g_object_unref (p), NULL)));
+			p = (RangeSetRange*) gee_iterator_get (p_it);
+			if (p->a < n->a) {
+				insert_ix++;
 			}
+			(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
 		}
+		(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
 	}
-	gee_list_insert (((GeeList*) (self->ranges)), insert_ix, n);
+	gee_list_insert ((GeeList*) self->ranges, insert_ix, n);
 	range_set_merge (self, insert_ix);
-	(n == NULL ? NULL : (n = (g_object_unref (n), NULL)));
-	(p == NULL ? NULL : (p = (g_object_unref (p), NULL)));
-	(p2 == NULL ? NULL : (p2 = (g_object_unref (p2), NULL)));
+	(n == NULL) ? NULL : (n = (g_object_unref (n), NULL));
 }
 
 
 void range_set_merge (RangeSet* self, gint ix) {
 	RangeSetRange* n;
 	g_return_if_fail (self != NULL);
-	n = ((RangeSetRange*) (gee_list_get (((GeeList*) (self->ranges)), ix)));
+	n = (RangeSetRange*) gee_list_get ((GeeList*) self->ranges, ix);
 	/* stdout.printf("merge(%d, %d..%d)\n", ix, n.a, n.b);*/
 	if (ix > 0) {
 		RangeSetRange* x;
 		/* stdout.printf("ix > 0\n");*/
-		x = ((RangeSetRange*) (gee_list_get (((GeeList*) (self->ranges)), ix - 1)));
+		x = (RangeSetRange*) gee_list_get ((GeeList*) self->ranges, ix - 1);
 		/* stdout.printf("x: %d..%d, n: %d..%d\n", x.a, x.b, n.a, n.b);*/
-		if (n->a <= x->b + 1) {
+		if (n->a <= (x->b + 1)) {
 			RangeSetRange* _tmp0;
-			gee_list_remove_at (((GeeList*) (self->ranges)), ix);
+			gee_list_remove_at ((GeeList*) self->ranges, ix);
 			x->b = range_set_max (self, x->b, n->b);
-			gee_list_set (((GeeList*) (self->ranges)), ix - 1, x);
+			gee_list_set ((GeeList*) self->ranges, ix - 1, x);
 			ix--;
 			_tmp0 = NULL;
-			n = (_tmp0 = ((RangeSetRange*) (gee_list_get (((GeeList*) (self->ranges)), ix))), (n == NULL ? NULL : (n = (g_object_unref (n), NULL))), _tmp0);
+			n = (_tmp0 = (RangeSetRange*) gee_list_get ((GeeList*) self->ranges, ix), (n == NULL) ? NULL : (n = (g_object_unref (n), NULL)), _tmp0);
 		}
-		(x == NULL ? NULL : (x = (g_object_unref (x), NULL)));
+		(x == NULL) ? NULL : (x = (g_object_unref (x), NULL));
 	}
-	if (ix < gee_collection_get_size (((GeeCollection*) (self->ranges))) - 1) {
+	if (ix < (gee_collection_get_size ((GeeCollection*) self->ranges) - 1)) {
 		RangeSetRange* y;
 		/* stdout.printf("ix < %d\n", ranges.size-1);*/
-		y = ((RangeSetRange*) (gee_list_get (((GeeList*) (self->ranges)), ix + 1)));
-		while (ix < gee_collection_get_size (((GeeCollection*) (self->ranges))) - 1 && n->b >= y->a - 1) {
+		y = (RangeSetRange*) gee_list_get ((GeeList*) self->ranges, ix + 1);
+		while (TRUE) {
+			gboolean _tmp1;
+			_tmp1 = FALSE;
+			if (ix < (gee_collection_get_size ((GeeCollection*) self->ranges) - 1)) {
+				_tmp1 = n->b >= (y->a - 1);
+			} else {
+				_tmp1 = FALSE;
+			}
+			if (!_tmp1) {
+				break;
+			}
 			/* stdout.printf("n: %d..%d, y: %d..%d\n", n.a, n.b, y.a, y.b);*/
 			y->a = range_set_min (self, n->a, y->a);
 			if (n->b > y->b) {
 				y->b = n->b;
 			}
-			gee_list_set (((GeeList*) (self->ranges)), ix + 1, y);
-			gee_list_remove_at (((GeeList*) (self->ranges)), ix);
-			if (ix < gee_collection_get_size (((GeeCollection*) (self->ranges))) - 1) {
-				RangeSetRange* _tmp1;
-				_tmp1 = NULL;
-				y = (_tmp1 = ((RangeSetRange*) (gee_list_get (((GeeList*) (self->ranges)), ix + 1))), (y == NULL ? NULL : (y = (g_object_unref (y), NULL))), _tmp1);
+			gee_list_set ((GeeList*) self->ranges, ix + 1, y);
+			gee_list_remove_at ((GeeList*) self->ranges, ix);
+			if (ix < (gee_collection_get_size ((GeeCollection*) self->ranges) - 1)) {
+				RangeSetRange* _tmp2;
+				_tmp2 = NULL;
+				y = (_tmp2 = (RangeSetRange*) gee_list_get ((GeeList*) self->ranges, ix + 1), (y == NULL) ? NULL : (y = (g_object_unref (y), NULL)), _tmp2);
 			}
 		}
-		(y == NULL ? NULL : (y = (g_object_unref (y), NULL)));
+		(y == NULL) ? NULL : (y = (g_object_unref (y), NULL));
 	}
-	(n == NULL ? NULL : (n = (g_object_unref (n), NULL)));
+	(n == NULL) ? NULL : (n = (g_object_unref (n), NULL));
 }
 
 
@@ -145,38 +143,36 @@ char* range_set_present (RangeSet* self) {
 	g_return_val_if_fail (self != NULL, NULL);
 	sb = g_string_new ("");
 	{
-		GeeArrayList* p_collection;
-		int p_it;
-		p_collection = self->ranges;
-		for (p_it = 0; p_it < gee_collection_get_size (GEE_COLLECTION (p_collection)); p_it = p_it + 1) {
+		GeeIterator* p_it;
+		p_it = gee_iterable_iterator ((GeeIterable*) self->ranges);
+		while (gee_iterator_next (p_it)) {
 			RangeSetRange* p;
-			p = ((RangeSetRange*) (gee_list_get (GEE_LIST (p_collection), p_it)));
-			{
-				if (p->b - p->a == 0) {
-					char* _tmp0;
-					_tmp0 = NULL;
-					g_string_append (sb, (_tmp0 = g_strdup_printf ("%i", p->a)));
-					_tmp0 = (g_free (_tmp0), NULL);
-					g_string_append (sb, ", ");
-				} else {
-					char* _tmp1;
-					char* _tmp2;
-					_tmp1 = NULL;
-					g_string_append (sb, (_tmp1 = g_strdup_printf ("%i", p->a)));
-					_tmp1 = (g_free (_tmp1), NULL);
-					g_string_append (sb, "..");
-					_tmp2 = NULL;
-					g_string_append (sb, (_tmp2 = g_strdup_printf ("%i", p->b)));
-					_tmp2 = (g_free (_tmp2), NULL);
-					g_string_append (sb, ", ");
-				}
-				(p == NULL ? NULL : (p = (g_object_unref (p), NULL)));
+			p = (RangeSetRange*) gee_iterator_get (p_it);
+			if ((p->b - p->a) == 0) {
+				char* _tmp0;
+				_tmp0 = NULL;
+				g_string_append (sb, _tmp0 = g_strdup_printf ("%i", p->a));
+				_tmp0 = (g_free (_tmp0), NULL);
+				g_string_append (sb, ", ");
+			} else {
+				char* _tmp1;
+				char* _tmp2;
+				_tmp1 = NULL;
+				g_string_append (sb, _tmp1 = g_strdup_printf ("%i", p->a));
+				_tmp1 = (g_free (_tmp1), NULL);
+				g_string_append (sb, "..");
+				_tmp2 = NULL;
+				g_string_append (sb, _tmp2 = g_strdup_printf ("%i", p->b));
+				_tmp2 = (g_free (_tmp2), NULL);
+				g_string_append (sb, ", ");
 			}
+			(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
 		}
+		(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
 	}
 	_tmp3 = NULL;
 	_tmp4 = NULL;
-	return (_tmp4 = (_tmp3 = sb->str, (_tmp3 == NULL ? NULL : g_strdup (_tmp3))), (sb == NULL ? NULL : (sb = (g_string_free (sb, TRUE), NULL))), _tmp4);
+	return (_tmp4 = (_tmp3 = sb->str, (_tmp3 == NULL) ? NULL : g_strdup (_tmp3)), (sb == NULL) ? NULL : (sb = (g_string_free (sb, TRUE), NULL)), _tmp4);
 }
 
 
@@ -214,15 +210,15 @@ RangeSet* range_set_new (void) {
 
 static GType range_set_real_get_element_type (GeeIterable* base) {
 	RangeSet * self;
-	self = ((RangeSet*) (base));
+	self = (RangeSet*) base;
 	return RANGE_SET_TYPE_RANGE;
 }
 
 
 static GeeIterator* range_set_real_iterator (GeeIterable* base) {
 	RangeSet * self;
-	self = ((RangeSet*) (base));
-	return gee_iterable_iterator (((GeeIterable*) (self->ranges)));
+	self = (RangeSet*) base;
+	return gee_iterable_iterator ((GeeIterable*) self->ranges);
 }
 
 
@@ -238,7 +234,7 @@ static GObject * range_set_constructor (GType type, guint n_construct_properties
 	{
 		GeeArrayList* _tmp0;
 		_tmp0 = NULL;
-		self->ranges = (_tmp0 = gee_array_list_new (RANGE_SET_TYPE_RANGE, ((GBoxedCopyFunc) (g_object_ref)), g_object_unref, g_direct_equal), (self->ranges == NULL ? NULL : (self->ranges = (g_object_unref (self->ranges), NULL))), _tmp0);
+		self->ranges = (_tmp0 = gee_array_list_new (RANGE_SET_TYPE_RANGE, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), (self->ranges == NULL) ? NULL : (self->ranges = (g_object_unref (self->ranges), NULL)), _tmp0);
 	}
 	return obj;
 }
@@ -304,7 +300,7 @@ static void range_set_instance_init (RangeSet * self) {
 static void range_set_finalize (GObject* obj) {
 	RangeSet * self;
 	self = RANGE_SET (obj);
-	(self->ranges == NULL ? NULL : (self->ranges = (g_object_unref (self->ranges), NULL)));
+	(self->ranges == NULL) ? NULL : (self->ranges = (g_object_unref (self->ranges), NULL));
 	G_OBJECT_CLASS (range_set_parent_class)->finalize (obj);
 }
 

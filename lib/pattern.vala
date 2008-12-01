@@ -10,8 +10,7 @@ namespace Gtk.Mate {
 		public bool disabled;
 		
 		public static Pattern? create_from_plist(ArrayList<Pattern> all_patterns, PList.Dict pd) {
-			PList.String? ns;
-			Pattern p;
+			Pattern p = null;
 			if (pd.get("match") != null) {
 				p = SinglePattern.create_from_plist(all_patterns, pd);
 			}
@@ -136,7 +135,6 @@ namespace Gtk.Mate {
 			pattern.match = Onig.Rx.make1(ns.str);
 
 			PList.Node? n = pd.get("captures");
-			PList.Dict? pcs, pcd;
 			pattern.captures = Pattern.make_captures_from_plist((PList.Dict?) n);
 
 			n = pd.get("disabled");

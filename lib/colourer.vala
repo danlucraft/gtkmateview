@@ -60,7 +60,7 @@ namespace Gtk.Mate {
 			// stdout.printf("colour_scope: %s (%s) [%d - %d]\n", scope.name, inner ? "true" : "false",
 			// 			  scope.start_offset(), scope.end_offset());
 			int priority = scope.priority(inner);
-			TextTag tag;
+			TextTag tag = null;
 			TextIter start_iter, end_iter;
 
 			// stdout.printf("  priority: %d\n", priority);
@@ -82,8 +82,8 @@ namespace Gtk.Mate {
 			}
 			// TODO: allow for multiple settings that set different 
 			// parts of the style.
-			ThemeSetting setting;
-			string tag_name;
+			ThemeSetting setting = null;
+			string tag_name = null;
 			if (tag == null || force) {
 				setting = theme.settings_for_scope(scope, inner);
 				if (setting == null) {

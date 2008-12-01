@@ -63,16 +63,7 @@ namespace Onig {
 			var rx = new Rx();
 			char* c_pattern = (char *) pattern;
 			RegexT rx1;
-			Oniguruma.OnigErrorInfo err_info;
-			// OnigSyntaxType syntax;
-			// stdout.printf("foo\n");
-			// Oniguruma.Syntax.copy(&syntax, Syntax.DEFAULT);
-			// // stdout.printf("bar\n");
-			// // stdout.printf("op2; %d\n", (int) syntax.get_op2()); 
-			// int newop2 = (int) (syntax.get_op2() | Syntax.Op2.ATMARK_CAPTURE_HISTORY);
-			// // stdout.printf("newop2; %d\n", newop2);
-			// syntax.set_op2((int) newop2);
-			// stdout.printf("baz\n");
+			var err_info = Oniguruma.OnigErrorInfo();
 			int r = Oniguruma.onig_new(out rx1, 
 									   c_pattern, (c_pattern+pattern.size()), 
 									   options,

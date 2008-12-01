@@ -16,7 +16,7 @@ namespace Gtk {
 			string syntax_dir, name;
 			Mate.Bundle bundle;
 			Mate.Grammar grammar;
-			PList.Dict plist;
+			PList.Dict plist = null;
 			foreach (string bundle_dir in bundle_dirs()) {
 				bundle = new Mate.Bundle(bundle_dir.split(".")[0]);
 				Buffer.bundles.add(bundle);

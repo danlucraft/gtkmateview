@@ -148,8 +148,6 @@ namespace Gtk.Mate {
 				//stdout.printf("pretty:\n%s\n", root.pretty(2));
 			//stdout.printf("end_scope1: %s\n", end_scope1.name);
 			var scanner = new Scanner(start_scope, line, length);
-			int i = 0;
-			Scope s;
 			var all_scopes = new ArrayList<Scope>();
 			all_scopes.add(start_scope);
 			var closed_scopes = new ArrayList<Scope>();

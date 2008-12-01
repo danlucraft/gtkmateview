@@ -107,7 +107,6 @@ namespace Gtk.Mate {
 			PList.Dict? pd = (PList.Dict?) plist.get("repository");
 			PList.Dict? pd1;
 			PList.Node? pa1;
-			ArrayList<Pattern> repo_array;
 			if (pd != null) {
 				foreach (string key in pd.map.get_keys()) {
 					// stdout.printf("convert repo name: %s\n", key);

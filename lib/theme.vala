@@ -125,8 +125,8 @@ namespace Gtk.Mate {
 				cached = this.cached_setting_for_scopes.get(scope_name);
 				return cached;
 			}
-			Onig.Match current_m, m;
-			ThemeSetting current;
+			Onig.Match current_m = null, m;
+			ThemeSetting current = null;
 			foreach (var setting in settings) {
 				if (setting.match(scope_name, out m)) {
 					//stdout.printf("    setting '%s' with selector '%s'\n", setting.name, setting.selector);

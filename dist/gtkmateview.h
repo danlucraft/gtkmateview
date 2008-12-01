@@ -4,9 +4,9 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gee/arraylist.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gee/arraylist.h>
 
 G_BEGIN_DECLS
 

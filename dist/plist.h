@@ -7,8 +7,8 @@
 #include <libxml/tree.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gee/arraylist.h>
 #include <gee/hashmap.h>
+#include <gee/arraylist.h>
 
 G_BEGIN_DECLS
 

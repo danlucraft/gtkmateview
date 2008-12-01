@@ -56,7 +56,6 @@ namespace PList {
 
 		public static Array parse_array(Xml.Node* node) {
 			var array = new Array();
-			String string_node;
 			for (Xml.Node* iter = node->children; iter != null; iter = iter->next) {
 				if (iter->type != ElementType.ELEMENT_NODE)
 					continue;
@@ -94,8 +93,7 @@ namespace PList {
 
 		public static Dict parse_dict(Xml.Node* node) {
 			var dict = new Dict();
-			string key;
-			String string_node;
+			string key = null;
 			for (Xml.Node* iter = node->children; iter != null; iter = iter->next) {
 				if (iter->type != ElementType.ELEMENT_NODE)
 					continue;
@@ -122,7 +120,7 @@ namespace PList {
 			delete xml_doc;
 			throw new XmlError.XML_DOCUMENT_EMPTY ("the xml'"+ filename + "' is empty");
 		}
-		Xml.Node* top_node;
+		Xml.Node* top_node = null;
 
 		for (Xml.Node* iter = root_node->children; iter != null; iter = iter->next) {
 			if (iter->type != ElementType.ELEMENT_NODE)
