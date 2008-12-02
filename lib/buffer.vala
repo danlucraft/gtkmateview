@@ -148,7 +148,7 @@ namespace Gtk.Mate {
 		}
 
 		public TextMark selection_mark() {
-			return get_mark("selection");
+			return get_mark("selection_bound");
 		}
 
 		// Get text of line, including the "\n" if present. Returns null if line 
@@ -201,5 +201,15 @@ namespace Gtk.Mate {
 		public int cursor_offset() {
 			return cursor_iter().get_offset();
 		}
+		
+		public void select_current_scope() {
+			var current_scope = this.parser.root.scope_at(cursor_iter().get_line(), cursor_iter().get_line_offset());
+			var start_iter = current_scope.start_iter();
+			var end_iter = current_scope.end_iter();
+			move_mark(selection_mark(), start_iter);
+			move_mark(cursor_mark(), end_iter);
+		}
 	}
 }
+
+

@@ -2,10 +2,12 @@
 #include "buffer.h"
 #include <gee/iterable.h>
 #include <gee/iterator.h>
+#include <stdio.h>
 #include "parser.h"
 #include "grammar.h"
 #include "bundle.h"
 #include "onig_wrap.h"
+#include "scope.h"
 #include "gtkmateview.h"
 
 
@@ -336,7 +338,7 @@ GtkTextMark* gtk_mate_buffer_selection_mark (GtkMateBuffer* self) {
 	GtkTextMark* _tmp0;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0 = NULL;
-	return (_tmp0 = gtk_text_buffer_get_mark ((GtkTextBuffer*) self, "selection"), (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0));
+	return (_tmp0 = gtk_text_buffer_get_mark ((GtkTextBuffer*) self, "selection_bound"), (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0));
 }
 
 
@@ -435,6 +437,29 @@ gint gtk_mate_buffer_cursor_offset (GtkMateBuffer* self) {
 	GtkTextIter _tmp0 = {0};
 	g_return_val_if_fail (self != NULL, 0);
 	return gtk_text_iter_get_offset ((_tmp0 = gtk_mate_buffer_cursor_iter (self), &_tmp0));
+}
+
+
+void gtk_mate_buffer_select_current_scope (GtkMateBuffer* self) {
+	GtkTextIter _tmp1 = {0};
+	GtkTextIter _tmp0 = {0};
+	GtkMateScope* current_scope;
+	GtkTextIter start_iter;
+	GtkTextIter end_iter;
+	GtkTextMark* _tmp2;
+	GtkTextMark* _tmp3;
+	g_return_if_fail (self != NULL);
+	current_scope = gtk_mate_scope_scope_at (self->parser->root, gtk_text_iter_get_line ((_tmp0 = gtk_mate_buffer_cursor_iter (self), &_tmp0)), gtk_text_iter_get_line_offset ((_tmp1 = gtk_mate_buffer_cursor_iter (self), &_tmp1)));
+	fprintf (stdout, "current_scope_from_vala: %s\n", gtk_mate_scope_get_name (current_scope));
+	start_iter = gtk_mate_scope_start_iter (current_scope);
+	end_iter = gtk_mate_scope_end_iter (current_scope);
+	_tmp2 = NULL;
+	gtk_text_buffer_move_mark ((GtkTextBuffer*) self, _tmp2 = gtk_mate_buffer_selection_mark (self), &start_iter);
+	(_tmp2 == NULL) ? NULL : (_tmp2 = (g_object_unref (_tmp2), NULL));
+	_tmp3 = NULL;
+	gtk_text_buffer_move_mark ((GtkTextBuffer*) self, _tmp3 = gtk_mate_buffer_cursor_mark (self), &end_iter);
+	(_tmp3 == NULL) ? NULL : (_tmp3 = (g_object_unref (_tmp3), NULL));
+	(current_scope == NULL) ? NULL : (current_scope = (g_object_unref (current_scope), NULL));
 }
 
 

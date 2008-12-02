@@ -26,6 +26,7 @@ namespace Gtk {
 			public Gtk.TextIter line_end_iter1 (int line);
 			public Gtk.TextIter line_start_iter (int line);
 			public Buffer ();
+			public void select_current_scope ();
 			public Gtk.TextMark selection_mark ();
 			public string? set_grammar_by_filename (string filename);
 			public string? set_grammar_by_first_line (string first_line);
