@@ -2,7 +2,7 @@
 #include "buffer.h"
 #include <gee/iterable.h>
 #include <gee/iterator.h>
-#include <stdio.h>
+#include <gee/collection.h>
 #include "parser.h"
 #include "grammar.h"
 #include "bundle.h"
@@ -450,7 +450,6 @@ void gtk_mate_buffer_select_current_scope (GtkMateBuffer* self) {
 	GtkTextMark* _tmp3;
 	g_return_if_fail (self != NULL);
 	current_scope = gtk_mate_scope_scope_at (self->parser->root, gtk_text_iter_get_line ((_tmp0 = gtk_mate_buffer_cursor_iter (self), &_tmp0)), gtk_text_iter_get_line_offset ((_tmp1 = gtk_mate_buffer_cursor_iter (self), &_tmp1)));
-	fprintf (stdout, "current_scope_from_vala: %s\n", gtk_mate_scope_get_name (current_scope));
 	start_iter = gtk_mate_scope_start_iter (current_scope);
 	end_iter = gtk_mate_scope_end_iter (current_scope);
 	_tmp2 = NULL;
@@ -460,6 +459,26 @@ void gtk_mate_buffer_select_current_scope (GtkMateBuffer* self) {
 	gtk_text_buffer_move_mark ((GtkTextBuffer*) self, _tmp3 = gtk_mate_buffer_cursor_mark (self), &end_iter);
 	(_tmp3 == NULL) ? NULL : (_tmp3 = (g_object_unref (_tmp3), NULL));
 	(current_scope == NULL) ? NULL : (current_scope = (g_object_unref (current_scope), NULL));
+}
+
+
+GeeArrayList* gtk_mate_buffer_current_scope_range (GtkMateBuffer* self) {
+	GtkTextIter _tmp1 = {0};
+	GtkTextIter _tmp0 = {0};
+	GtkMateScope* current_scope;
+	GtkTextIter start_iter;
+	GtkTextIter end_iter;
+	GeeArrayList* range;
+	GeeArrayList* _tmp2;
+	g_return_val_if_fail (self != NULL, NULL);
+	current_scope = gtk_mate_scope_scope_at (self->parser->root, gtk_text_iter_get_line ((_tmp0 = gtk_mate_buffer_cursor_iter (self), &_tmp0)), gtk_text_iter_get_line_offset ((_tmp1 = gtk_mate_buffer_cursor_iter (self), &_tmp1)));
+	start_iter = gtk_mate_scope_start_iter (current_scope);
+	end_iter = gtk_mate_scope_end_iter (current_scope);
+	range = gee_array_list_new (G_TYPE_INT, NULL, NULL, g_direct_equal);
+	gee_collection_add ((GeeCollection*) range, GINT_TO_POINTER (gtk_text_iter_get_offset (&start_iter)));
+	gee_collection_add ((GeeCollection*) range, GINT_TO_POINTER (gtk_text_iter_get_offset (&end_iter)));
+	_tmp2 = NULL;
+	return (_tmp2 = range, (current_scope == NULL) ? NULL : (current_scope = (g_object_unref (current_scope), NULL)), _tmp2);
 }
 
 

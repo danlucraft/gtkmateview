@@ -209,6 +209,16 @@ namespace Gtk.Mate {
 			move_mark(selection_mark(), start_iter);
 			move_mark(cursor_mark(), end_iter);
 		}
+		
+		public ArrayList<int> current_scope_range() {
+			var current_scope = this.parser.root.scope_at(cursor_iter().get_line(), cursor_iter().get_line_offset());
+			var start_iter = current_scope.start_iter();
+			var end_iter = current_scope.end_iter();
+			var range = new ArrayList<int>();
+			range.add(start_iter.get_offset());
+			range.add(end_iter.get_offset());
+			return range;
+		}
 	}
 }
 

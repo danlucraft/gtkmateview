@@ -58,7 +58,7 @@ namespace Gtk.Mate {
 
 		public void colour_scope(Scope scope, bool inner, bool force=true) {
 			// stdout.printf("colour_scope: %s (%s) [%d - %d]\n", scope.name, inner ? "true" : "false",
-			// 			  scope.start_offset(), scope.end_offset());
+			//  			  scope.start_offset(), scope.end_offset());
 			int priority = scope.priority(inner);
 			TextTag tag = null;
 			TextIter start_iter, end_iter;
@@ -139,10 +139,15 @@ namespace Gtk.Mate {
 			var parent_bg = scope.nearest_background_colour();
 			if (parent_bg == null) {
 				parent_bg = theme.global_settings.get("background");
+				// stdout.printf("        parent_background: %s\n", parent_bg);
 			}
-			// stdout.printf("        parent_background: %s\n", parent_bg);
 			if (background != null && background != "") {
-				merged_bg_colour = Colourer.merge_colour(parent_bg, background);
+				if (scope.is_capture && parent_bg != null) {
+					merged_bg_colour = parent_bg;
+				}
+				else {
+					merged_bg_colour = Colourer.merge_colour(parent_bg, background);
+				}
 				if (merged_bg_colour != null) {
 					scope.bg_colour = merged_bg_colour;
 					tag.background = merged_bg_colour;
@@ -161,7 +166,7 @@ namespace Gtk.Mate {
 			// stdout.printf("        foreground:        %s\n", foreground);
 			if (foreground != null && foreground != "") {
 				string merged_fg_colour;
-				if (parent_fg != null)
+				if (parent_fg != null && !scope.is_capture)
 					merged_fg_colour = Colourer.merge_colour(parent_fg, foreground);
 				else
 					merged_fg_colour = foreground;

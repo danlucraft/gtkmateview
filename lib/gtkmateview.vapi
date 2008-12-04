@@ -9,6 +9,7 @@ namespace Gtk {
 			public static Gee.ArrayList<Gtk.Mate.Bundle> bundles;
 			public Gtk.Mate.Parser parser;
 			public static Gee.ArrayList<Gtk.Mate.Theme> themes;
+			public Gee.ArrayList<int> current_scope_range ();
 			public Gtk.TextIter cursor_iter ();
 			public int cursor_line ();
 			public int cursor_line_offset ();

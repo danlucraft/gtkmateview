@@ -59,6 +59,7 @@ gint gtk_mate_buffer_cursor_line (GtkMateBuffer* self);
 gint gtk_mate_buffer_cursor_line_offset (GtkMateBuffer* self);
 gint gtk_mate_buffer_cursor_offset (GtkMateBuffer* self);
 void gtk_mate_buffer_select_current_scope (GtkMateBuffer* self);
+GeeArrayList* gtk_mate_buffer_current_scope_range (GtkMateBuffer* self);
 GtkMateBuffer* gtk_mate_buffer_construct (GType object_type);
 GtkMateBuffer* gtk_mate_buffer_new (void);
 GType gtk_mate_buffer_get_type (void);
