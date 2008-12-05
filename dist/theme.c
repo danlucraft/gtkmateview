@@ -374,7 +374,7 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 			_tmp4 = NULL;
 			_tmp2 = NULL;
 			if ((_tmp3 = gtk_mate_theme_setting_match (setting, scope_name, &_tmp2), m = (_tmp4 = _tmp2, (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp4), _tmp3)) {
-				/*stdout.printf("    setting '%s' with selector '%s'\n", setting.name, setting.selector);*/
+				fprintf (stdout, "    setting '%s' with selector '%s'\n", setting->name, setting->selector);
 				if (current == NULL) {
 					GtkMateThemeSetting* _tmp6;
 					GtkMateThemeSetting* _tmp5;
@@ -406,10 +406,10 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 		(setting_it == NULL) ? NULL : (setting_it = (g_object_unref (setting_it), NULL));
 	}
 	if (current == NULL) {
+		fprintf (stdout, "none match\n");
 	} else {
+		fprintf (stdout, "    best: '%s'\n", current->name);
 	}
-	/*stdout.printf("none match\n");
-	stdout.printf("    best: '%s'\n", current.name);*/
 	gee_map_set ((GeeMap*) self->cached_setting_for_scopes, scope_name, current);
 	_tmp13 = NULL;
 	return (_tmp13 = current, scope_name = (g_free (scope_name), NULL), (cached == NULL) ? NULL : (cached = (g_object_unref (cached), NULL)), (current_m == NULL) ? NULL : (current_m = (g_object_unref (current_m), NULL)), (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp13);

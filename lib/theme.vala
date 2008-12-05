@@ -129,7 +129,7 @@ namespace Gtk.Mate {
 			ThemeSetting current = null;
 			foreach (var setting in settings) {
 				if (setting.match(scope_name, out m)) {
-					//stdout.printf("    setting '%s' with selector '%s'\n", setting.name, setting.selector);
+					stdout.printf("    setting '%s' with selector '%s'\n", setting.name, setting.selector);
 					if (current == null) {
 						current = setting;
 						current_m = m;
@@ -141,10 +141,10 @@ namespace Gtk.Mate {
 				}
 			}
 			if (current == null) {
-				//stdout.printf("none match\n");
+				stdout.printf("none match\n");
 			}
 			else {
-				//stdout.printf("    best: '%s'\n", current.name);
+				stdout.printf("    best: '%s'\n", current.name);
 			}
 			this.cached_setting_for_scopes.set(scope_name, current);
 			return current;

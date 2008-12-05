@@ -88,7 +88,9 @@ namespace Gtk.Mate {
 		// this method is mainly for testing in the Ruby specs
 		public static bool test_match(string selector_string, string scope_string) {
 			Onig.Match m;
-			return match(selector_string, scope_string, out m);
+			var result = match(selector_string, scope_string, out m);
+			// stdout.printf("test_match('%s', '%s') == %d\n", selector_string, scope_string, result ? 1 : 0);
+			return result;
 		}
 
 		public static bool match(string selector_string, string scope_string, out Onig.Match match) {

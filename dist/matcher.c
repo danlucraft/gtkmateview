@@ -183,13 +183,16 @@ gboolean gtk_mate_matcher_test_match (const char* selector_string, const char* s
 	OnigMatch* _tmp2;
 	gboolean _tmp1;
 	OnigMatch* _tmp0;
+	gboolean result;
 	gboolean _tmp3;
 	g_return_val_if_fail (selector_string != NULL, FALSE);
 	g_return_val_if_fail (scope_string != NULL, FALSE);
 	m = NULL;
 	_tmp2 = NULL;
 	_tmp0 = NULL;
-	return (_tmp3 = (_tmp1 = gtk_mate_matcher_match (selector_string, scope_string, &_tmp0), m = (_tmp2 = _tmp0, (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp2), _tmp1), (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp3);
+	result = (_tmp1 = gtk_mate_matcher_match (selector_string, scope_string, &_tmp0), m = (_tmp2 = _tmp0, (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp2), _tmp1);
+	/* stdout.printf("test_match('%s', '%s') == %d\n", selector_string, scope_string, result ? 1 : 0);*/
+	return (_tmp3 = result, (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp3);
 }
 
 
