@@ -1116,6 +1116,7 @@ static void gtk_mate_scope_finalize (GObject* obj) {
 	(self->priv->_children == NULL) ? NULL : (self->priv->_children = (g_sequence_free (self->priv->_children), NULL));
 	(self->parent == NULL) ? NULL : (self->parent = (g_object_unref (self->parent), NULL));
 	(self->pretty_string == NULL) ? NULL : (self->pretty_string = (g_string_free (self->pretty_string, TRUE), NULL));
+	(self->theme_setting == NULL) ? NULL : (self->theme_setting = (g_object_unref (self->theme_setting), NULL));
 	G_OBJECT_CLASS (gtk_mate_scope_parent_class)->finalize (obj);
 }
 

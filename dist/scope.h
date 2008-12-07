@@ -8,9 +8,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gee/arraylist.h>
-#include "pattern.h"
-#include "onig_wrap.h"
 #include "view.h"
+#include "onig_wrap.h"
+#include "pattern.h"
 
 G_BEGIN_DECLS
 
@@ -48,6 +48,7 @@ struct _GtkMateScope {
 	GtkMateScope* parent;
 	GString* pretty_string;
 	gint indent;
+	GtkMateThemeSetting* theme_setting;
 };
 
 struct _GtkMateScopeClass {

@@ -51,6 +51,8 @@ namespace Gtk.Mate {
 		// public int id;
 
 		public static int scope_count = 0;
+		
+		public ThemeSetting theme_setting;
 
 		public Scope(Mate.Buffer buf, string? name) {
 			this.name = name;

@@ -1,15 +1,15 @@
 
 #include "parser.h"
-#include <gee/collection.h>
 #include <gee/iterator.h>
+#include <gee/collection.h>
 #include <gee/hashmap.h>
 #include <gee/map.h>
 #include <gee/iterable.h>
-#include "theme.h"
 #include "colourer.h"
-#include "scope.h"
 #include "buffer.h"
+#include "scope.h"
 #include "pattern.h"
+#include "theme.h"
 
 
 

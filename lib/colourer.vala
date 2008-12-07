@@ -83,13 +83,17 @@ namespace Gtk.Mate {
 			// TODO: allow for multiple settings that set different 
 			// parts of the style.
 			ThemeSetting setting = null;
+			ThemeSetting exclude_setting = null;
+			if (scope.parent != null) 
+				exclude_setting = scope.parent.theme_setting;
 			string tag_name = null;
 			if (tag == null || force) {
-				setting = theme.settings_for_scope(scope, inner);
+				setting = theme.settings_for_scope(scope, inner, null);//exclude_setting);
 				if (setting == null) {
 					tag_name = "gmv(%d):default".printf(priority-1);
 				}
-				else {
+				else {				
+					scope.theme_setting = setting;
 					tag_name = "gmv(%d):%s".printf(priority-1, scope.name);
 				}
 			}
@@ -136,21 +140,22 @@ namespace Gtk.Mate {
 			string background = setting.settings.get("background");
 			stdout.printf("        scope background:        %s\n", background);
 			string merged_bg_colour;
-			var parent_bg = scope.nearest_background_colour();
-			if (parent_bg == null) {
-				parent_bg = theme.global_settings.get("background");
-				stdout.printf("        global background: %s\n", parent_bg);
-			}
-			else {
-				stdout.printf("        parent background: %s\n", parent_bg);
-			}
+			var parent_bg = theme.global_settings.get("background");
+			stdout.printf("        global background: %s\n", parent_bg);
+			// TODO: wasn't this a better way of creating the background colours?
+//			var parent_bg = scope.nearest_background_colour();
+//			if (parent_bg == null) {
+//			}
+//			else {
+//				stdout.printf("        parent background: %s\n", parent_bg);
+//			}
 			if (background != null && background != "") {
-				if (scope.is_capture && parent_bg != null) {
-					merged_bg_colour = parent_bg;
-				}
-				else {
+//				if (parent_bg != null) {
+//					merged_bg_colour = parent_bg;
+//				}
+//				else {
 					merged_bg_colour = Colourer.merge_colour(parent_bg, background);
-				}
+//				}
 				if (merged_bg_colour != null) {
 					scope.bg_colour = merged_bg_colour;
 					tag.background = merged_bg_colour;

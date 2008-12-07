@@ -73,7 +73,7 @@ extern GeeArrayList* gtk_mate_theme_themes;
 GtkMateTheme* gtk_mate_theme_create_from_plist (PListDict* dict);
 void gtk_mate_theme_init_for_use (GtkMateTheme* self);
 GeeArrayList* gtk_mate_theme_theme_filenames (void);
-GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkMateScope* scope, gboolean inner);
+GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkMateScope* scope, gboolean inner, GtkMateThemeSetting* exclude_setting);
 GtkMateTheme* gtk_mate_theme_construct (GType object_type);
 GtkMateTheme* gtk_mate_theme_new (void);
 GType gtk_mate_theme_get_type (void);

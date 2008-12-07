@@ -219,6 +219,7 @@ namespace Gtk {
 			public static int scope_count;
 			public Gtk.TextMark start_mark;
 			public Gtk.TextTag tag;
+			public Gtk.Mate.ThemeSetting theme_setting;
 			public void add_child (Gtk.Mate.Scope s);
 			public void clear_after (int line_ix, int line_offset);
 			public static int compare (Gtk.Mate.Scope a, Gtk.Mate.Scope b, void* data);
@@ -302,7 +303,7 @@ namespace Gtk {
 			public static Gtk.Mate.Theme create_from_plist (PList.Dict dict);
 			public void init_for_use ();
 			public Theme ();
-			public Gtk.Mate.ThemeSetting settings_for_scope (Gtk.Mate.Scope scope, bool inner);
+			public Gtk.Mate.ThemeSetting settings_for_scope (Gtk.Mate.Scope scope, bool inner, Gtk.Mate.ThemeSetting? exclude_setting);
 			public static Gee.ArrayList<string>? theme_filenames ();
 		}
 		[CCode (cheader_filename = "theme.h")]
@@ -333,6 +334,34 @@ namespace Gtk {
 		public static void load_themes ();
 		[CCode (cheader_filename = "gtkmateview.h")]
 		public static string? textmate_share_dir ();
+	}
+}
+[CCode (cprefix = "Onig", lower_case_cprefix = "onig_")]
+namespace Onig {
+	[CCode (cheader_filename = "onig_wrap.h")]
+	public class Match : GLib.Object {
+		public static int count;
+		public int begin (int capture);
+		public int end (int capture);
+		public Match ();
+		public int num_captures ();
+		public Oniguruma.Region rg { get; set; }
+		public Oniguruma.RegexT rx { get; set; }
+	}
+	[CCode (cheader_filename = "onig_wrap.h")]
+	public class OnigError : GLib.Object {
+		public int code;
+		public Oniguruma.OnigErrorInfo error_info;
+		public OnigError ();
+	}
+	[CCode (cheader_filename = "onig_wrap.h")]
+	public class Rx : GLib.Object {
+		public bool matches_start_of_line;
+		public static Onig.Rx? make (string pattern, Oniguruma.OnigOptionType options, out Onig.OnigError error);
+		public static Onig.Rx? make1 (string pattern);
+		public Rx ();
+		public Onig.Match? search (string target, int start, int end);
+		public Oniguruma.RegexT rx { get; set; }
 	}
 }
 [CCode (cprefix = "PList", lower_case_cprefix = "plist_")]
@@ -373,38 +402,16 @@ namespace PList {
 	[CCode (cheader_filename = "plist.h")]
 	public static void print_plist (int indent, PList.Node node);
 }
-[CCode (cprefix = "Onig", lower_case_cprefix = "onig_")]
-namespace Onig {
-	[CCode (cheader_filename = "onig_wrap.h")]
-	public class Match : GLib.Object {
-		public static int count;
-		public int begin (int capture);
-		public int end (int capture);
-		public Match ();
-		public int num_captures ();
-		public Oniguruma.Region rg { get; set; }
-		public Oniguruma.RegexT rx { get; set; }
-	}
-	[CCode (cheader_filename = "onig_wrap.h")]
-	public class OnigError : GLib.Object {
-		public int code;
-		public Oniguruma.OnigErrorInfo error_info;
-		public OnigError ();
-	}
-	[CCode (cheader_filename = "onig_wrap.h")]
-	public class Rx : GLib.Object {
-		public bool matches_start_of_line;
-		public static Onig.Rx? make (string pattern, Oniguruma.OnigOptionType options, out Onig.OnigError error);
-		public static Onig.Rx? make1 (string pattern);
-		public Rx ();
-		public Onig.Match? search (string target, int start, int end);
-		public Oniguruma.RegexT rx { get; set; }
-	}
-}
 [CCode (cprefix = "XML_ERROR_", cheader_filename = "plist.h")]
 public errordomain XmlError {
 	FILE_NOT_FOUND,
 	XML_DOCUMENT_EMPTY,
+}
+[CCode (cheader_filename = "string_helper.h")]
+public class StringHelper : GLib.Object {
+	public static string gsub (string start_string, string match_string, string replacement_string);
+	public StringHelper ();
+	public static Gee.ArrayList<int> occurrences (string s, string t);
 }
 [CCode (cheader_filename = "range_set.h")]
 public class RangeSet : GLib.Object, Gee.Iterable<RangeSet.Range> {
@@ -424,10 +431,4 @@ public class RangeSet : GLib.Object, Gee.Iterable<RangeSet.Range> {
 	public RangeSet ();
 	public string present ();
 	public int size ();
-}
-[CCode (cheader_filename = "string_helper.h")]
-public class StringHelper : GLib.Object {
-	public static string gsub (string start_string, string match_string, string replacement_string);
-	public StringHelper ();
-	public static Gee.ArrayList<int> occurrences (string s, string t);
 }

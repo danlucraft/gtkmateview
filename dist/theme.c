@@ -295,7 +295,7 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
 		d = (_tmp1 = g_dir_open (_tmp0 = g_strconcat (share_dir, "/Themes", NULL), 0, &inner_error), _tmp0 = (g_free (_tmp0), NULL), _tmp1);
 		if (inner_error != NULL) {
 			if (inner_error->domain == G_FILE_ERROR) {
-				goto __catch0_g_file_error;
+				goto __catch6_g_file_error;
 			}
 			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
 			g_clear_error (&inner_error);
@@ -316,8 +316,8 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
 		_tmp6 = NULL;
 		return (_tmp6 = names, (d == NULL) ? NULL : (d = (g_dir_close (d), NULL)), share_dir = (g_free (share_dir), NULL), name = (g_free (name), NULL), _tmp6);
 	}
-	goto __finally0;
-	__catch0_g_file_error:
+	goto __finally6;
+	__catch6_g_file_error:
 	{
 		GError * e;
 		e = inner_error;
@@ -330,7 +330,7 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
 			(e == NULL) ? NULL : (e = (g_error_free (e), NULL));
 		}
 	}
-	__finally0:
+	__finally6:
 	;
 	_tmp8 = NULL;
 	return (_tmp8 = NULL, (names == NULL) ? NULL : (names = (g_object_unref (names), NULL)), share_dir = (g_free (share_dir), NULL), name = (g_free (name), NULL), _tmp8);
@@ -339,13 +339,13 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
 
 /* TODO make this return multiple themes if they are identical
  (see 13.5 of Textmate manual)*/
-GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkMateScope* scope, gboolean inner) {
+GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkMateScope* scope, gboolean inner, GtkMateThemeSetting* exclude_setting) {
 	char* scope_name;
 	GtkMateThemeSetting* cached;
 	OnigMatch* current_m;
 	OnigMatch* m;
 	GtkMateThemeSetting* current;
-	GtkMateThemeSetting* _tmp13;
+	GtkMateThemeSetting* _tmp14;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (scope != NULL, NULL);
 	scope_name = gtk_mate_scope_hierarchy_names (scope, inner);
@@ -367,37 +367,48 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 		setting_it = gee_iterable_iterator ((GeeIterable*) self->settings);
 		while (gee_iterator_next (setting_it)) {
 			GtkMateThemeSetting* setting;
-			OnigMatch* _tmp4;
-			gboolean _tmp3;
-			OnigMatch* _tmp2;
+			gboolean _tmp2;
 			setting = (GtkMateThemeSetting*) gee_iterator_get (setting_it);
-			_tmp4 = NULL;
-			_tmp2 = NULL;
-			if ((_tmp3 = gtk_mate_theme_setting_match (setting, scope_name, &_tmp2), m = (_tmp4 = _tmp2, (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp4), _tmp3)) {
-				fprintf (stdout, "    setting '%s' with selector '%s'\n", setting->name, setting->selector);
-				if (current == NULL) {
-					GtkMateThemeSetting* _tmp6;
-					GtkMateThemeSetting* _tmp5;
-					OnigMatch* _tmp8;
-					OnigMatch* _tmp7;
-					_tmp6 = NULL;
-					_tmp5 = NULL;
-					current = (_tmp6 = (_tmp5 = setting, (_tmp5 == NULL) ? NULL : g_object_ref (_tmp5)), (current == NULL) ? NULL : (current = (g_object_unref (current), NULL)), _tmp6);
-					_tmp8 = NULL;
-					_tmp7 = NULL;
-					current_m = (_tmp8 = (_tmp7 = m, (_tmp7 == NULL) ? NULL : g_object_ref (_tmp7)), (current_m == NULL) ? NULL : (current_m = (g_object_unref (current_m), NULL)), _tmp8);
-				} else {
-					if (gtk_mate_matcher_compare_match (scope_name, current_m, m) < 0) {
-						GtkMateThemeSetting* _tmp10;
-						GtkMateThemeSetting* _tmp9;
-						OnigMatch* _tmp12;
-						OnigMatch* _tmp11;
-						_tmp10 = NULL;
+			_tmp2 = FALSE;
+			if (setting == exclude_setting) {
+				_tmp2 = exclude_setting != NULL;
+			} else {
+				_tmp2 = FALSE;
+			}
+			if (_tmp2) {
+				fprintf (stdout, "    setting '%s' excluded due to parent\n", exclude_setting->name);
+			} else {
+				OnigMatch* _tmp5;
+				gboolean _tmp4;
+				OnigMatch* _tmp3;
+				_tmp5 = NULL;
+				_tmp3 = NULL;
+				if ((_tmp4 = gtk_mate_theme_setting_match (setting, scope_name, &_tmp3), m = (_tmp5 = _tmp3, (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp5), _tmp4)) {
+					fprintf (stdout, "    setting '%s' matches selector '%s'\n", setting->name, setting->selector);
+					if (current == NULL) {
+						GtkMateThemeSetting* _tmp7;
+						GtkMateThemeSetting* _tmp6;
+						OnigMatch* _tmp9;
+						OnigMatch* _tmp8;
+						_tmp7 = NULL;
+						_tmp6 = NULL;
+						current = (_tmp7 = (_tmp6 = setting, (_tmp6 == NULL) ? NULL : g_object_ref (_tmp6)), (current == NULL) ? NULL : (current = (g_object_unref (current), NULL)), _tmp7);
 						_tmp9 = NULL;
-						current = (_tmp10 = (_tmp9 = setting, (_tmp9 == NULL) ? NULL : g_object_ref (_tmp9)), (current == NULL) ? NULL : (current = (g_object_unref (current), NULL)), _tmp10);
-						_tmp12 = NULL;
-						_tmp11 = NULL;
-						current_m = (_tmp12 = (_tmp11 = m, (_tmp11 == NULL) ? NULL : g_object_ref (_tmp11)), (current_m == NULL) ? NULL : (current_m = (g_object_unref (current_m), NULL)), _tmp12);
+						_tmp8 = NULL;
+						current_m = (_tmp9 = (_tmp8 = m, (_tmp8 == NULL) ? NULL : g_object_ref (_tmp8)), (current_m == NULL) ? NULL : (current_m = (g_object_unref (current_m), NULL)), _tmp9);
+					} else {
+						if (gtk_mate_matcher_compare_match (scope_name, current_m, m) < 0) {
+							GtkMateThemeSetting* _tmp11;
+							GtkMateThemeSetting* _tmp10;
+							OnigMatch* _tmp13;
+							OnigMatch* _tmp12;
+							_tmp11 = NULL;
+							_tmp10 = NULL;
+							current = (_tmp11 = (_tmp10 = setting, (_tmp10 == NULL) ? NULL : g_object_ref (_tmp10)), (current == NULL) ? NULL : (current = (g_object_unref (current), NULL)), _tmp11);
+							_tmp13 = NULL;
+							_tmp12 = NULL;
+							current_m = (_tmp13 = (_tmp12 = m, (_tmp12 == NULL) ? NULL : g_object_ref (_tmp12)), (current_m == NULL) ? NULL : (current_m = (g_object_unref (current_m), NULL)), _tmp13);
+						}
 					}
 				}
 			}
@@ -411,8 +422,8 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 		fprintf (stdout, "    best: '%s'\n", current->name);
 	}
 	gee_map_set ((GeeMap*) self->cached_setting_for_scopes, scope_name, current);
-	_tmp13 = NULL;
-	return (_tmp13 = current, scope_name = (g_free (scope_name), NULL), (cached == NULL) ? NULL : (cached = (g_object_unref (cached), NULL)), (current_m == NULL) ? NULL : (current_m = (g_object_unref (current_m), NULL)), (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp13);
+	_tmp14 = NULL;
+	return (_tmp14 = current, scope_name = (g_free (scope_name), NULL), (cached == NULL) ? NULL : (cached = (g_object_unref (cached), NULL)), (current_m == NULL) ? NULL : (current_m = (g_object_unref (current_m), NULL)), (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp14);
 }
 
 

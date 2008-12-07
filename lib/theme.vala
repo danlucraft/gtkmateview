@@ -117,7 +117,7 @@ namespace Gtk.Mate {
 
 		// TODO make this return multiple themes if they are identical
 		// (see 13.5 of Textmate manual)
-		public ThemeSetting settings_for_scope(Scope scope, bool inner) {
+		public ThemeSetting settings_for_scope(Scope scope, bool inner, ThemeSetting? exclude_setting) {
 			string scope_name = scope.hierarchy_names(inner);
 			//stdout.printf("  finding settings for '%s'\n", scope_name);
 			ThemeSetting cached;
@@ -128,15 +128,20 @@ namespace Gtk.Mate {
 			Onig.Match current_m = null, m;
 			ThemeSetting current = null;
 			foreach (var setting in settings) {
-				if (setting.match(scope_name, out m)) {
-					stdout.printf("    setting '%s' with selector '%s'\n", setting.name, setting.selector);
-					if (current == null) {
-						current = setting;
-						current_m = m;
-					}
-					else if (Matcher.compare_match(scope_name, current_m, m) < 0) {
-						current = setting;
-						current_m = m;
+				if (setting == exclude_setting && exclude_setting != null) {
+					stdout.printf("    setting '%s' excluded due to parent\n", exclude_setting.name);
+				}
+				else {
+					if (setting.match(scope_name, out m)) {
+						stdout.printf("    setting '%s' matches selector '%s'\n", setting.name, setting.selector); 
+						if (current == null) {
+							current = setting;
+							current_m = m;
+						}
+						else if (Matcher.compare_match(scope_name, current_m, m) < 0) {
+							current = setting;
+							current_m = m;
+						}
 					}
 				}
 			}
