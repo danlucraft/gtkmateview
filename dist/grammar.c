@@ -1,6 +1,5 @@
 
 #include "grammar.h"
-#include <stdio.h>
 #include <gee/iterable.h>
 #include <gee/iterator.h>
 #include <gee/collection.h>
@@ -180,7 +179,7 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 		return;
 	}
 	self->loaded = TRUE;
-	fprintf (stdout, "initializing grammar for use: %s\n", self->priv->_name);
+	/*stdout.printf("initializing grammar for use: %s\n", name);*/
 	fsm = plist_dict_get (self->priv->_plist, "foldingStartMarker");
 	if (fsm != NULL) {
 		OnigRx* _tmp0;

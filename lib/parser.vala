@@ -137,13 +137,15 @@ namespace Gtk.Mate {
 		// Parse line line_ix. Returns true if the ending
 		// scope of the line has changed.
 		private bool parse_line(int line_ix) {
-			string? line = buffer.get_line1(line_ix);
+			string? line = buffer.get_line(line_ix);
 			int length = (int) line.length;//buffer.get_line_length(line_ix);
-			// stdout.printf("%d, ", line_ix);
+			stdout.printf("p%d, ", line_ix);
 			// stdout.flush();
-			var start_scope = this.root.scope_at(line_ix, -1);
+			var start_scope = this.root.scope_at(line_ix, 0);
+			while (start_scope.pattern is SinglePattern || start_scope.is_capture)
+			  start_scope = start_scope.parent;
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
-			// stdout.printf("start_scope returns: %s\n", start_scope.name);
+			stdout.printf("start_scope is: %s\n", start_scope.name);
 //			if (start_scope == null)
 				//stdout.printf("pretty:\n%s\n", root.pretty(2));
 			//stdout.printf("end_scope1: %s\n", end_scope1.name);
@@ -154,6 +156,7 @@ namespace Gtk.Mate {
 			var removed_scopes = new ArrayList<Scope>();
 			all_scopes.add(start_scope);
 			foreach (Marker m in scanner) {
+				stdout.printf("foo\n");
 				var expected_scope = get_expected_scope(scanner.current_scope, line_ix, scanner.position);
 				// if (expected_scope != null)
 				// 	stdout.printf("expected_scope: %s\n", expected_scope.name);
@@ -174,6 +177,7 @@ namespace Gtk.Mate {
 				}
 				scanner.position = m.match.end(0);
 			}
+			stdout.printf("bar\n");
 			clear_line(line_ix, start_scope, all_scopes, closed_scopes, removed_scopes);
 			var end_scope2 = this.root.scope_at(line_ix, int.MAX);
 			//stdout.printf("end_scope2: %s\n", end_scope2.name);
@@ -373,7 +377,10 @@ namespace Gtk.Mate {
 			s.pattern = m.pattern;
 			s.open_match = m.match;
 			s.start_mark_set(line_ix, m.from, false);
-			s.end_mark_set(line_ix, int.min(m.match.end(0), length), true);
+			if (m.match.end(0) == length && this.buffer.get_line_count() > line_ix+1) 
+				s.end_mark_set(line_ix+1, 0, true);
+			else
+				s.end_mark_set(line_ix, int.min(m.match.end(0), length), true);
 			s.is_open = false;
 			s.is_capture = false;
 			s.begin_match_string = line.substring(m.from, m.match.end(0)-m.from);

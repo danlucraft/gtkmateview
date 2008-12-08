@@ -96,7 +96,7 @@ namespace Gtk.Mate {
 						}
 					}
 					else {
-						stdout.printf("unknown include pattern: %s\n", p.name);
+//						stdout.printf("unknown include pattern: %s\n", p.name);
 					}
 				}
 			}

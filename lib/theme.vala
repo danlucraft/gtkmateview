@@ -129,11 +129,11 @@ namespace Gtk.Mate {
 			ThemeSetting current = null;
 			foreach (var setting in settings) {
 				if (setting == exclude_setting && exclude_setting != null) {
-					stdout.printf("    setting '%s' excluded due to parent\n", exclude_setting.name);
+//					stdout.printf("    setting '%s' excluded due to parent\n", exclude_setting.name);
 				}
 				else {
 					if (setting.match(scope_name, out m)) {
-						stdout.printf("    setting '%s' matches selector '%s'\n", setting.name, setting.selector); 
+//						stdout.printf("    setting '%s' matches selector '%s'\n", setting.name, setting.selector); 
 						if (current == null) {
 							current = setting;
 							current_m = m;
@@ -145,12 +145,12 @@ namespace Gtk.Mate {
 					}
 				}
 			}
-			if (current == null) {
-				stdout.printf("none match\n");
-			}
-			else {
-				stdout.printf("    best: '%s'\n", current.name);
-			}
+//			if (current == null) {
+//				stdout.printf("none match\n");
+//			}
+//			else {
+//				stdout.printf("    best: '%s'\n", current.name);
+//			}
 			this.cached_setting_for_scopes.set(scope_name, current);
 			return current;
 		}

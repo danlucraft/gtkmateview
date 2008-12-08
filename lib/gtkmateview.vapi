@@ -110,6 +110,7 @@ namespace Gtk {
 			public Onig.Rx pos_rx;
 			public static int compare_match (string scope_string, Onig.Match m1, Onig.Match m2);
 			public static Gee.ArrayList<Gtk.Mate.Matcher> compile (string selector_string);
+			public static Onig.Match get_match (string selector_string, string scope_string);
 			public static bool match (string selector_string, string scope_string, out Onig.Match match);
 			public Matcher ();
 			public static bool test_match (string selector_string, string scope_string);

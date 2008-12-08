@@ -180,19 +180,29 @@ char* gtk_mate_matcher_test_rank (const char* selector_a, const char* selector_b
 /* this method is mainly for testing in the Ruby specs*/
 gboolean gtk_mate_matcher_test_match (const char* selector_string, const char* scope_string) {
 	OnigMatch* m;
+	gboolean _tmp0;
+	g_return_val_if_fail (selector_string != NULL, FALSE);
+	g_return_val_if_fail (scope_string != NULL, FALSE);
+	m = gtk_mate_matcher_get_match (selector_string, scope_string);
+	return (_tmp0 = (m != NULL), (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp0);
+}
+
+
+OnigMatch* gtk_mate_matcher_get_match (const char* selector_string, const char* scope_string) {
+	OnigMatch* m;
 	OnigMatch* _tmp2;
 	gboolean _tmp1;
 	OnigMatch* _tmp0;
-	gboolean result;
-	gboolean _tmp3;
-	g_return_val_if_fail (selector_string != NULL, FALSE);
-	g_return_val_if_fail (scope_string != NULL, FALSE);
+	g_return_val_if_fail (selector_string != NULL, NULL);
+	g_return_val_if_fail (scope_string != NULL, NULL);
 	m = NULL;
 	_tmp2 = NULL;
 	_tmp0 = NULL;
-	result = (_tmp1 = gtk_mate_matcher_match (selector_string, scope_string, &_tmp0), m = (_tmp2 = _tmp0, (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp2), _tmp1);
+	_tmp1 = gtk_mate_matcher_match (selector_string, scope_string, &_tmp0);
+	m = (_tmp2 = _tmp0, (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp2);
+	_tmp1;
 	/* stdout.printf("test_match('%s', '%s') == %d\n", selector_string, scope_string, result ? 1 : 0);*/
-	return (_tmp3 = result, (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp3);
+	return m;
 }
 
 

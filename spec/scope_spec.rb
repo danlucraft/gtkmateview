@@ -11,6 +11,7 @@ describe Gtk::Mate::Scope do
   describe ".hierarchy_names" do
     it "scopes have hierarchy names" do
       @mb.text = "def foo"
+      puts @mb.parser.root.pretty(0)
       @mb.parser.root.scope_at(0, 1).hierarchy_names(false).should == "source.ruby meta.function.method.without-arguments.ruby keyword.control.def.ruby"
     end
 

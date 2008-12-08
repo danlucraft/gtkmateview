@@ -376,15 +376,15 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 				_tmp2 = FALSE;
 			}
 			if (_tmp2) {
-				fprintf (stdout, "    setting '%s' excluded due to parent\n", exclude_setting->name);
 			} else {
 				OnigMatch* _tmp5;
 				gboolean _tmp4;
 				OnigMatch* _tmp3;
+				/*stdout.printf("    setting '%s' excluded due to parent\n", exclude_setting.name);*/
 				_tmp5 = NULL;
 				_tmp3 = NULL;
 				if ((_tmp4 = gtk_mate_theme_setting_match (setting, scope_name, &_tmp3), m = (_tmp5 = _tmp3, (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp5), _tmp4)) {
-					fprintf (stdout, "    setting '%s' matches selector '%s'\n", setting->name, setting->selector);
+					/*stdout.printf("    setting '%s' matches selector '%s'\n", setting.name, setting.selector); */
 					if (current == NULL) {
 						GtkMateThemeSetting* _tmp7;
 						GtkMateThemeSetting* _tmp6;
@@ -416,11 +416,12 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 		}
 		(setting_it == NULL) ? NULL : (setting_it = (g_object_unref (setting_it), NULL));
 	}
-	if (current == NULL) {
-		fprintf (stdout, "none match\n");
-	} else {
-		fprintf (stdout, "    best: '%s'\n", current->name);
+	/*if (current == null) {
+	stdout.printf("none match\n");
 	}
+	else {
+	stdout.printf("    best: '%s'\n", current.name);
+	}*/
 	gee_map_set ((GeeMap*) self->cached_setting_for_scopes, scope_name, current);
 	_tmp14 = NULL;
 	return (_tmp14 = current, scope_name = (g_free (scope_name), NULL), (cached == NULL) ? NULL : (cached = (g_object_unref (cached), NULL)), (current_m == NULL) ? NULL : (current_m = (g_object_unref (current_m), NULL)), (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp14);

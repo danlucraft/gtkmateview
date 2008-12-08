@@ -57,13 +57,13 @@ namespace Gtk.Mate {
 		}
 
 		public void colour_scope(Scope scope, bool inner, bool force=true) {
-			stdout.printf("colour_scope: %s (%s) [%d - %d]\n", scope.name, inner ? "true" : "false",
-			 			  scope.start_offset(), scope.end_offset());
+//			stdout.printf("colour_scope: %s (%s) [%d - %d]\n", scope.name, inner ? "true" : "false",
+//			 			  scope.start_offset(), scope.end_offset());
 			int priority = scope.priority(inner);
 			TextTag tag = null;
 			TextIter start_iter, end_iter;
 
-			stdout.printf("  priority: %d\n", priority);
+//			stdout.printf("  priority: %d\n", priority);
 			scope.is_coloured = true;
 
 			if (inner) {
@@ -138,10 +138,10 @@ namespace Gtk.Mate {
 				tag.underline = Pango.Underline.NONE;
 			
 			string background = setting.settings.get("background");
-			stdout.printf("        scope background:        %s\n", background);
+//			stdout.printf("        scope background:        %s\n", background);
 			string merged_bg_colour;
 			var parent_bg = theme.global_settings.get("background");
-			stdout.printf("        global background: %s\n", parent_bg);
+//			stdout.printf("        global background: %s\n", parent_bg);
 			// TODO: wasn't this a better way of creating the background colours?
 //			var parent_bg = scope.nearest_background_colour();
 //			if (parent_bg == null) {
@@ -159,19 +159,19 @@ namespace Gtk.Mate {
 				if (merged_bg_colour != null) {
 					scope.bg_colour = merged_bg_colour;
 					tag.background = merged_bg_colour;
-					stdout.printf("       tag.background = %s\n", merged_bg_colour);
+//					stdout.printf("       tag.background = %s\n", merged_bg_colour);
 				}
 			}
 			else {
 				merged_bg_colour = parent_bg;
 			}
-			stdout.printf("        merged_bg_colour:  %s\n", merged_bg_colour);
+//			stdout.printf("        merged_bg_colour:  %s\n", merged_bg_colour);
 			string foreground = setting.settings.get("foreground");
-			stdout.printf("        scope foreground:        %s\n", foreground);
+//			stdout.printf("        scope foreground:        %s\n", foreground);
 			var parent_fg = scope.nearest_foreground_colour();
 			if (parent_fg == null) {
 				parent_fg = theme.global_settings.get("foreground");
-				stdout.printf("        global foreground:        %s\n", parent_fg);
+//				stdout.printf("        global foreground:        %s\n", parent_fg);
 			}
 			if (foreground != null && foreground != "") {
 				string merged_fg_colour;
@@ -183,9 +183,9 @@ namespace Gtk.Mate {
 					scope.fg_colour = merged_fg_colour;
 					tag.foreground = merged_fg_colour;
 				}
-				stdout.printf("       merged_fg_colour: %s\n", merged_fg_colour);
+//				stdout.printf("       merged_fg_colour: %s\n", merged_fg_colour);
 			}
-			stdout.printf("\n");
+//			stdout.printf("\n");
 		}
 
 		public static int char_to_hex(unichar ch) {

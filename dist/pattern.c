@@ -4,7 +4,6 @@
 #include <gee/collection.h>
 #include <gee/iterable.h>
 #include <gee/iterator.h>
-#include <stdio.h>
 
 
 
@@ -257,7 +256,6 @@ void gtk_mate_pattern_replace_base_and_self_includes (GeeArrayList* patlist, Gtk
 							(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
 						}
 					} else {
-						fprintf (stdout, "unknown include pattern: %s\n", p->name);
 					}
 				}
 			}
@@ -265,6 +263,7 @@ void gtk_mate_pattern_replace_base_and_self_includes (GeeArrayList* patlist, Gtk
 		}
 		(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
 	}
+	/*stdout.printf("unknown include pattern: %s\n", p.name);*/
 	gtk_mate_pattern_remove_patterns (patlist, include_patterns);
 	gtk_mate_pattern_add_patterns (patlist, patterns_to_include);
 	(include_patterns == NULL) ? NULL : (include_patterns = (g_object_unref (include_patterns), NULL));

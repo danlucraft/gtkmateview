@@ -14,7 +14,6 @@ describe Gtk::Mate::Buffer do
   end
 
   it "should go with the longest extension" do
-    @mb.set_grammar_by_filename("asdf.ml").should == "OCaml"
     @mb.set_grammar_by_filename("asdf.yaml").should == "YAML"
   end
 

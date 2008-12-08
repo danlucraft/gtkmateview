@@ -2333,6 +2333,31 @@ static VALUE rb_gtk_mate_matcher_compile(VALUE self, VALUE selector_string) {
     return _rb_return;
 }
 
+static VALUE rb_gtk_mate_matcher_get_match(VALUE self, VALUE selector_string, VALUE scope_string) {
+    // Method#type_checks
+    if (TYPE(selector_string) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    if (TYPE(scope_string) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    // Method#argument_type_conversions
+    char * _c_selector_string;
+    _c_selector_string = g_strdup(STR2CSTR(selector_string));
+    char * _c_scope_string;
+    _c_scope_string = g_strdup(STR2CSTR(scope_string));
+    // Method#body
+    
+    OnigMatch* _c_return;
+    _c_return = gtk_mate_matcher_get_match(_c_selector_string, _c_scope_string);
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+    _rb_return = GOBJ2RVAL(_c_return);
+    return _rb_return;
+}
+
 static VALUE rb_gtk_mate_matcher_test_match(VALUE self, VALUE selector_string, VALUE scope_string) {
     // Method#type_checks
     if (TYPE(selector_string) != T_STRING) {
@@ -7745,6 +7770,7 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_matcher, "pos_rx=", rb_gtk_mate_matcher_set_pos_rx, 1);
     rb_define_singleton_method(rbc_gtk_mate_matcher, "compare_match", rb_gtk_mate_matcher_compare_match, 3);
     rb_define_singleton_method(rbc_gtk_mate_matcher, "compile", rb_gtk_mate_matcher_compile, 1);
+    rb_define_singleton_method(rbc_gtk_mate_matcher, "get_match", rb_gtk_mate_matcher_get_match, 2);
     rb_define_singleton_method(rbc_gtk_mate_matcher, "test_match", rb_gtk_mate_matcher_test_match, 2);
     rb_define_singleton_method(rbc_gtk_mate_matcher, "test_rank", rb_gtk_mate_matcher_test_rank, 3);
     rbc_gtk_mate_pattern = G_DEF_CLASS(gtk_mate_pattern_get_type(), "Pattern", rbc_gtk_mate);

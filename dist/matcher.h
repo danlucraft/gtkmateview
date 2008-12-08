@@ -39,6 +39,7 @@ struct _GtkMateMatcherClass {
 gint gtk_mate_matcher_compare_match (const char* scope_string, OnigMatch* m1, OnigMatch* m2);
 char* gtk_mate_matcher_test_rank (const char* selector_a, const char* selector_b, const char* scope_string);
 gboolean gtk_mate_matcher_test_match (const char* selector_string, const char* scope_string);
+OnigMatch* gtk_mate_matcher_get_match (const char* selector_string, const char* scope_string);
 gboolean gtk_mate_matcher_match (const char* selector_string, const char* scope_string, OnigMatch** match);
 GeeArrayList* gtk_mate_matcher_compile (const char* selector_string);
 gboolean gtk_mate_matcher_test_match_re (OnigRx* positive_selector_regex, GeeArrayList* negative_selector_regex, const char* scope_string, OnigMatch** match);

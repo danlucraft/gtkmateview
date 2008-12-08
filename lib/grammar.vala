@@ -34,7 +34,7 @@ namespace Gtk.Mate {
 						return gr;
 					}
 				}
-			}
+			}				
 			return null;
 		}
 
@@ -79,7 +79,7 @@ namespace Gtk.Mate {
 			if (loaded)
 				return;
 			loaded = true;
-			stdout.printf("initializing grammar for use: %s\n", name);
+//			stdout.printf("initializing grammar for use: %s\n", name);
 
 			PList.Node? fsm = plist.get("foldingStartMarker");
 			if (fsm != null)
