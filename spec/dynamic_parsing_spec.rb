@@ -66,43 +66,49 @@ HI
 puts "hello"
 END
     1.times { @mb.type(4, 2, " ") }
-    @mb.pretty.should == @mb.clean_reparse
+    @mb.clean_reparse.should == @mb.pretty
   end
   
   it "opens expected scopes again" do
     @mb.text = "def foo(a, b, c"
     @mb.type(0, 15, ")")
-    puts @mb.clean_reparse
-    puts @mb.pretty
-#    @mb.pretty.should == @mb.clean_reparse
+    @mb.pretty.should == @mb.clean_reparse
   end
 
-#   it "clears after at multiple levels correctly" do
-#     @mb.text =<<END
-# f=<<-HTML
-#   <style>
-#     .foo {
-#     }
-#   </style>
-#   <br />
-# HTML
-# p :asdf
-# END
-#     8.times { |i| @mb.backspace(4, 10-i) }
+  it "clears after at multiple levels correctly" do
+    @mb.text =<<END
+f=<<-HTML
+  <style>
+    .foo {
+    }
+  </style>
+  <br />
+HTML
+p :asdf
+END
+    puts @mb.pretty
+    1.times { |i| @mb.backspace(4, 10-i)}
+    puts "\nclean_reparse"
+    puts(t1=@mb.clean_reparse)
+    puts(t2=@mb.pretty)
+    t1.should == t2
 #     @mb.pretty.should == @mb.clean_reparse
-#   end
+  end
 
-#   it "should interpolate an opening scope" do
-#     @mb.text = "\"asdf{1+2}asdf\""
-#     @mb.type(0, 5, "#")
+  it "should interpolate an opening scope" do
+    @mb.text = "\"asdf{1+2}asdf\""
+    @mb.type(0, 5, "#")
+    t1=@mb.clean_reparse
+    t2=@mb.pretty
+    t1.should == t2
 #     @mb.pretty.should == @mb.clean_reparse
-#   end
+  end
 
-#   it "should reparse closing scopes" do
-#     @mb.text = "fo=<<HI\nHI"
-#     puts @mb.parser.root.pretty(0)
-#     @mb.type(1, 2, "\n")
-#     puts @mb.parser.root.pretty(0)
-#     @mb.pretty.should == @mb.clean_reparse
-#   end
+  it "should reparse closing scopes" do
+    @mb.text = "fo=<<HI\nHI"
+    puts @mb.parser.root.pretty(0)
+    @mb.type(1, 2, "\n")
+    puts @mb.parser.root.pretty(0)
+    @mb.pretty.should == @mb.clean_reparse
+  end
 end

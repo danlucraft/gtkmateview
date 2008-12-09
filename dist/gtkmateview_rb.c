@@ -2813,7 +2813,7 @@ static VALUE rb_gtk_mate_parser_close(VALUE self) {
     return Qnil;
 }
 
-static VALUE rb_gtk_mate_parser_close_scope(VALUE self, VALUE scanner, VALUE expected_scope, VALUE line_ix, VALUE line, VALUE m, VALUE all_scopes, VALUE closed_scopes, VALUE removed_scopes) {
+static VALUE rb_gtk_mate_parser_close_scope(VALUE self, VALUE scanner, VALUE expected_scope, VALUE line_ix, VALUE line, VALUE length, VALUE m, VALUE all_scopes, VALUE closed_scopes, VALUE removed_scopes) {
     GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
     // Method#type_checks
     if (TYPE(line_ix) != T_FIXNUM) {
@@ -2823,6 +2823,10 @@ static VALUE rb_gtk_mate_parser_close_scope(VALUE self, VALUE scanner, VALUE exp
     if (TYPE(line) != T_STRING) {
         VALUE rb_arg_error = rb_eval_string("ArgumentError");
         rb_raise(rb_arg_error, "expected a string");
+    }
+    if (TYPE(length) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
     }
     if (TYPE(all_scopes) != T_ARRAY) {
         VALUE rb_arg_error = rb_eval_string("ArgumentError");
@@ -2849,6 +2853,8 @@ static VALUE rb_gtk_mate_parser_close_scope(VALUE self, VALUE scanner, VALUE exp
     _c_line_ix = FIX2INT(line_ix);
     char * _c_line;
     _c_line = g_strdup(STR2CSTR(line));
+    int _c_length;
+    _c_length = FIX2INT(length);
     GtkMateMarker* _c_m;
     _c_m = _GTK_MATE_MARKER_SELF(m);
     GeeArrayList* _c_all_scopes;
@@ -2895,7 +2901,7 @@ static VALUE rb_gtk_mate_parser_close_scope(VALUE self, VALUE scanner, VALUE exp
 
     // Method#body
     
-    gtk_mate_parser_close_scope(gtk_mate_parser, _c_scanner, _c_expected_scope, _c_line_ix, _c_line, _c_m, _c_all_scopes, _c_closed_scopes, _c_removed_scopes);
+    gtk_mate_parser_close_scope(gtk_mate_parser, _c_scanner, _c_expected_scope, _c_line_ix, _c_line, _c_length, _c_m, _c_all_scopes, _c_closed_scopes, _c_removed_scopes);
     // Method#return_type_conversion
     return Qnil;
 }
@@ -7721,7 +7727,7 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_parser, "change_theme", rb_gtk_mate_parser_change_theme, 1);
     rb_define_method(rbc_gtk_mate_parser, "clear_line", rb_gtk_mate_parser_clear_line, 5);
     rb_define_method(rbc_gtk_mate_parser, "close", rb_gtk_mate_parser_close, 0);
-    rb_define_method(rbc_gtk_mate_parser, "close_scope", rb_gtk_mate_parser_close_scope, 8);
+    rb_define_method(rbc_gtk_mate_parser, "close_scope", rb_gtk_mate_parser_close_scope, 9);
     rb_define_method(rbc_gtk_mate_parser, "collect_child_captures", rb_gtk_mate_parser_collect_child_captures, 5);
     rb_define_method(rbc_gtk_mate_parser, "connect_buffer_signals", rb_gtk_mate_parser_connect_buffer_signals, 0);
     rb_define_singleton_method(rbc_gtk_mate_parser, "create", rb_gtk_mate_parser_create, 2);

@@ -133,7 +133,7 @@ namespace Gtk {
 			public void change_theme (Gtk.Mate.Theme theme);
 			public void clear_line (int line_ix, Gtk.Mate.Scope start_scope, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes, Gee.ArrayList<Gtk.Mate.Scope> removed_scopes);
 			public void close ();
-			public void close_scope (Gtk.Mate.Scanner scanner, Gtk.Mate.Scope? expected_scope, int line_ix, string line, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes, Gee.ArrayList<Gtk.Mate.Scope> removed_scopes);
+			public void close_scope (Gtk.Mate.Scanner scanner, Gtk.Mate.Scope? expected_scope, int line_ix, string line, int length, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes, Gee.ArrayList<Gtk.Mate.Scope> removed_scopes);
 			public void collect_child_captures (int line_ix, Gtk.Mate.Scope scope, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes);
 			public void connect_buffer_signals ();
 			public static Gtk.Mate.Parser create (Gtk.Mate.Grammar grammar, Gtk.Mate.Buffer buffer);

@@ -1,7 +1,6 @@
 
 #include "scanner.h"
 #include <gee/collection.h>
-#include <stdio.h>
 #include <gee/list.h>
 
 
@@ -265,8 +264,8 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 	OnigRx* closing_regex;
 	GtkMateMarker* _tmp20;
 	g_return_val_if_fail (self != NULL, NULL);
-	fprintf (stdout, "find_next_marker (current_scope is %s)\n", gtk_mate_scope_get_name (gtk_mate_scanner_get_current_scope (self)));
-	fprintf (stdout, "scanning: '%s' from %d to %d\n", self->priv->_line, self->position, self->priv->_line_length);
+	/* stdout.printf("find_next_marker (current_scope is %s)\n", current_scope.name);
+	 stdout.printf("scanning: '%s' from %d to %d\n", line, position, line_length);*/
 	m = NULL;
 	best_length = 0;
 	new_length = 0;
@@ -349,7 +348,7 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 				}
 				/* some regex's have zero width (meta.selector.css)*/
 				position_prev = position_now;
-				fprintf (stdout, "matched: %s (%d-%d)\n", p->name, onig_match_begin (match, 0), onig_match_end (match, 0));
+				/* stdout.printf("matched: %s (%d-%d)\n", p.name, match.begin(0), match.end(0));*/
 				nm = g_object_ref_sink (gtk_mate_marker_new ());
 				_tmp12 = NULL;
 				_tmp11 = NULL;

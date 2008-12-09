@@ -94,8 +94,8 @@ namespace Gtk.Mate {
 		}
 
 		public Marker? find_next_marker() {
-			stdout.printf("find_next_marker (current_scope is %s)\n", current_scope.name);
-			stdout.printf("scanning: '%s' from %d to %d\n", line, position, line_length);
+			// stdout.printf("find_next_marker (current_scope is %s)\n", current_scope.name);
+			// stdout.printf("scanning: '%s' from %d to %d\n", line, position, line_length);
 			Marker m;
 			int best_length = 0;
 			int new_length;
@@ -132,7 +132,7 @@ namespace Gtk.Mate {
 					   position_now != position_prev // some regex's have zero width (meta.selector.css)
 					) {
 					position_prev = position_now;
-					stdout.printf("matched: %s (%d-%d)\n", p.name, match.begin(0), match.end(0));
+					// stdout.printf("matched: %s (%d-%d)\n", p.name, match.begin(0), match.end(0));
 					var nm = new Marker();
 					nm.pattern = p;
 					nm.match = match;
