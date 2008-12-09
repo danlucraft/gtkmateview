@@ -1,15 +1,15 @@
 
 #include "colourer.h"
 #include <gee/map.h>
-#include <stdio.h>
+#include <pango/pango.h>
 #include <gee/iterable.h>
 #include <gee/iterator.h>
-#include <pango/pango.h>
+#include <stdio.h>
 #include "buffer.h"
 #include "theme.h"
 #include "scope.h"
-#include "pattern.h"
 #include "parser.h"
+#include "pattern.h"
 
 
 

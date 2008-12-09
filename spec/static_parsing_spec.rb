@@ -187,7 +187,7 @@ END
   + keyword.operator.assignment.ruby (0,3)-(0,4) closed
   + string.unquoted.embedded.html.ruby text.html.embedded.ruby (0,4)-(6,4) closed
     c punctuation.definition.string.begin.ruby (0,4)-(0,11) closed
-    + source.css.embedded.html (1,0)-(5,8) closed
+    + source.css.embedded.html (1,0)-(6,0) closed
       c punctuation.definition.tag.html (1,0)-(1,1) closed
       c entity.name.tag.style.html (1,1)-(1,6) closed
       +  (1,6)-(5,0) closed

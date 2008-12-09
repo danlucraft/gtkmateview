@@ -7,8 +7,8 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gdk/gdk.h>
 #include <gee/arraylist.h>
+#include <gdk/gdk.h>
 #include "view.h"
 
 G_BEGIN_DECLS

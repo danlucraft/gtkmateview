@@ -86,13 +86,10 @@ f=<<-HTML
 HTML
 p :asdf
 END
-    puts @mb.pretty
-    1.times { |i| @mb.backspace(4, 10-i)}
-    puts "\nclean_reparse"
-    puts(t1=@mb.clean_reparse)
-    puts(t2=@mb.pretty)
-    t1.should == t2
-#     @mb.pretty.should == @mb.clean_reparse
+    4.times { |i| @mb.backspace(4, 10-i)}
+    t1=@mb.clean_reparse
+    t2=@mb.pretty
+    t2.should == t1
   end
 
   it "should interpolate an opening scope" do

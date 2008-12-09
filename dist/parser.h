@@ -5,14 +5,14 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
-#include <gee/arraylist.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gee/arraylist.h>
 #include "view.h"
-#include "range_set.h"
-#include "grammar.h"
 #include "scanner.h"
 #include "onig_wrap.h"
+#include "range_set.h"
+#include "grammar.h"
 
 G_BEGIN_DECLS
 

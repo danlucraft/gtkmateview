@@ -1,16 +1,16 @@
 
 #include "parser.h"
-#include <gee/iterator.h>
 #include <stdio.h>
 #include <gee/collection.h>
+#include <gee/iterator.h>
 #include <gee/hashmap.h>
 #include <gee/map.h>
 #include <gee/iterable.h>
-#include "colourer.h"
-#include "buffer.h"
-#include "scope.h"
-#include "pattern.h"
 #include "theme.h"
+#include "colourer.h"
+#include "scope.h"
+#include "buffer.h"
+#include "pattern.h"
 
 
 
@@ -307,7 +307,7 @@ static gint gtk_mate_parser_parse_range (GtkMateParser* self, gint from_line, gi
 			gtk_mate_parser_remove_colour_after (self, line_ix, 0);
 		}
 	}
-	/*stdout.printf("parse_line returned: %s\n", scope_changed ? "true" : "false");
+	/* stdout.printf("parse_line returned: %s\n", scope_changed ? "true" : "false");
 	stdout.printf("pretty:\n%s\n", root.pretty(2));
 	stdout.printf("parse_from:out\n");*/
 	return to_line;
@@ -385,8 +385,8 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 		_tmp3 = NULL;
 		start_scope = (_tmp4 = (_tmp3 = start_scope->parent, (_tmp3 == NULL) ? NULL : g_object_ref (_tmp3)), (start_scope == NULL) ? NULL : (start_scope = (g_object_unref (start_scope), NULL)), _tmp4);
 	}
+	/* stdout.printf("start_scope is: %s\n", start_scope.name);*/
 	end_scope1 = gtk_mate_scope_scope_at (self->root, line_ix, G_MAXINT);
-	fprintf (stdout, "start_scope is: %s\n", gtk_mate_scope_get_name (start_scope));
 	/*if (start_scope == null)
 	stdout.printf("pretty:\n%s\n", root.pretty(2));
 	stdout.printf("end_scope1: %s\n", end_scope1.name);*/
@@ -404,21 +404,20 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 			GtkMateScope* expected_scope;
 			m = (GtkMateMarker*) gee_iterator_get (m_it);
 			expected_scope = gtk_mate_parser_get_expected_scope (self, gtk_mate_scanner_get_current_scope (scanner), line_ix, scanner->position);
-			if (expected_scope != NULL) {
-				fprintf (stdout, "expected_scope: %s\n", gtk_mate_scope_get_name (expected_scope));
-			} else {
-				fprintf (stdout, "no expected scope\n");
-			}
-			fprintf (stdout, "  scope: %s\n", m->pattern->name);
+			/* if (expected_scope != null)
+			 stdout.printf("expected_scope: %s\n", expected_scope.name);
+			 else
+			 stdout.printf("no expected scope\n");
+			 stdout.printf("  scope: %s\n", m.pattern.name);*/
 			if (m->is_close_scope) {
-				fprintf (stdout, "     (closing)\n");
+				/* stdout.printf("     (closing)\n");*/
 				gtk_mate_parser_close_scope (self, scanner, expected_scope, line_ix, line, length, m, all_scopes, closed_scopes, removed_scopes);
 			} else {
 				if (GTK_MATE_IS_DOUBLE_PATTERN (m->pattern)) {
-					fprintf (stdout, "     (opening)\n");
+					/* stdout.printf("     (opening)\n");*/
 					gtk_mate_parser_open_scope (self, scanner, expected_scope, line_ix, line, length, m, all_scopes, closed_scopes, removed_scopes);
 				} else {
-					fprintf (stdout, "     (single)\n");
+					/* stdout.printf("     (single)\n");*/
 					gtk_mate_parser_single_scope (self, scanner, expected_scope, line_ix, line, length, m, all_scopes, closed_scopes, removed_scopes);
 				}
 			}
@@ -484,15 +483,17 @@ void gtk_mate_parser_clear_line (GtkMateParser* self, gint line_ix, GtkMateScope
 	}
 	/* @removed_scopes += removed_scopes
 	 any that we expected to close on this line that now don't?
-	  first build list of scopes that close on this line (including ones
-	  that did but haven't been removed yet).*/
+	 first build list of scopes that close on this line (including ones
+	 that did but haven't been removed yet).*/
 	scopes_that_closed_on_line = gee_array_list_new (GTK_MATE_TYPE_SCOPE, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal);
 	_tmp3 = NULL;
 	ts = (_tmp3 = start_scope, (_tmp3 == NULL) ? NULL : g_object_ref (_tmp3));
 	while (ts->parent != NULL) {
 		GtkMateScope* _tmp5;
 		GtkMateScope* _tmp4;
-		if (gtk_mate_scope_end_line (ts) == line_ix) {
+		/* stdout.printf("checking for closing scope: %s (%d)\n", ts.name, ts.inner_end_line());*/
+		if (gtk_mate_scope_inner_end_line (ts) == line_ix) {
+			/* stdout.printf("scope that closed on line: %s\n", ts.name);*/
 			gee_collection_add ((GeeCollection*) scopes_that_closed_on_line, ts);
 		}
 		_tmp5 = NULL;
@@ -662,9 +663,7 @@ void gtk_mate_parser_close_scope (GtkMateParser* self, GtkMateScanner* scanner, 
 		if (self->priv->_colourer != NULL) {
 			gtk_mate_colourer_uncolour_scope (self->priv->_colourer, gtk_mate_scanner_get_current_scope (scanner), FALSE);
 		}
-		fprintf (stdout, "foo\n");
 		gtk_mate_scope_inner_end_mark_set (gtk_mate_scanner_get_current_scope (scanner), line_ix, m->from, TRUE);
-		fprintf (stdout, "bar\n");
 		_tmp10 = FALSE;
 		if (onig_match_end (m->match, 0) == length) {
 			_tmp10 = gtk_text_buffer_get_line_count ((GtkTextBuffer*) self->priv->_buffer) > (line_ix + 1);
@@ -676,7 +675,6 @@ void gtk_mate_parser_close_scope (GtkMateParser* self, GtkMateScanner* scanner, 
 		} else {
 			gtk_mate_scope_end_mark_set (gtk_mate_scanner_get_current_scope (scanner), line_ix, MIN (onig_match_end (m->match, 0), length), TRUE);
 		}
-		fprintf (stdout, "baz\n");
 		gtk_mate_scanner_get_current_scope (scanner)->is_open = FALSE;
 		_tmp12 = NULL;
 		_tmp11 = NULL;
@@ -860,9 +858,14 @@ void gtk_mate_parser_single_scope (GtkMateParser* self, GtkMateScanner* scanner,
 		} else {
 			gtk_mate_parser_handle_captures (self, line_ix, line, s, m, all_scopes, closed_scopes);
 			if (gtk_mate_scope_overlaps_with (s, expected_scope)) {
-				gtk_mate_scope_delete_child (gtk_mate_scanner_get_current_scope (scanner), expected_scope);
-				/* removed_scopes << expected_scope*/
-				gee_collection_add ((GeeCollection*) removed_scopes, expected_scope);
+				/* stdout.printf("%s overlaps with expected %s (current: %s)\n", s.name, expected_scope.name, scanner.current_scope.name);*/
+				if (expected_scope == gtk_mate_scanner_get_current_scope (scanner)) {
+				} else {
+					/* we expected this scope to close, but it doesn't*/
+					gtk_mate_scope_delete_child (gtk_mate_scanner_get_current_scope (scanner), expected_scope);
+					/* removed_scopes << expected_scope*/
+					gee_collection_add ((GeeCollection*) removed_scopes, expected_scope);
+				}
 			}
 			gtk_mate_scope_add_child (gtk_mate_scanner_get_current_scope (scanner), s);
 		}
@@ -982,7 +985,6 @@ void gtk_mate_parser_collect_child_captures (GtkMateParser* self, gint line_ix, 
 	gint new_length;
 	GeeArrayList* placed_scopes;
 	GtkMateScope* parent_scope;
-	char* _tmp27;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (scope != NULL);
 	g_return_if_fail (m != NULL);
@@ -1151,9 +1153,6 @@ void gtk_mate_parser_collect_child_captures (GtkMateParser* self, gint line_ix, 
 		gee_collection_add ((GeeCollection*) placed_scopes, s);
 		gee_collection_remove ((GeeCollection*) capture_scopes, s);
 	}
-	_tmp27 = NULL;
-	fprintf (stdout, "    after captures: %s\n", _tmp27 = gtk_mate_scope_pretty (scope, 0));
-	_tmp27 = (g_free (_tmp27), NULL);
 	(s == NULL) ? NULL : (s = (g_object_unref (s), NULL));
 	(captures == NULL) ? NULL : (captures = (g_object_unref (captures), NULL));
 	(capture_scopes == NULL) ? NULL : (capture_scopes = (g_object_unref (capture_scopes), NULL));
