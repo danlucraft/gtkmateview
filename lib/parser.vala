@@ -83,12 +83,12 @@ namespace Gtk.Mate {
 
 		// Process all change ranges.
 		private void process_changes() {
-			int parsed_upto = -1;
+			int this_parsed_upto = -1;
 			// stdout.printf("process_changes (last_visible_line: %d)\n", last_visible_line);
 			foreach (RangeSet.Range range in changes) {
-				if (range.b > parsed_upto && range.a <= last_visible_line + look_ahead) {
+				if (range.b > this_parsed_upto && range.a <= last_visible_line + look_ahead) {
 					int range_end = int.min(last_visible_line + look_ahead, range.b);
-					parsed_upto = parse_range(range.a, range_end);
+					this_parsed_upto = parse_range(range.a, range_end);
 				}
 			}
 //			//stdout.printf("%s\n", root.pretty(0));
@@ -115,6 +115,7 @@ namespace Gtk.Mate {
 					// TODO: figure out a way to OPTIMIZE this again.
 					root.clear_after(line_ix, -1);
 					remove_colour_after(line_ix, 0);
+					this.parsed_upto = line_ix;
 				}
 				// stdout.printf("parse_line returned: %s\n", scope_changed ? "true" : "false");
 				//stdout.printf("pretty:\n%s\n", root.pretty(2));
@@ -140,6 +141,9 @@ namespace Gtk.Mate {
 			string? line = buffer.get_line(line_ix);
 			int length = (int) line.length;//buffer.get_line_length(line_ix);
 			stdout.printf("p%d, ", line_ix);
+			stdout.flush();
+			if (line_ix > this.parsed_upto)
+				this.parsed_upto = line_ix;
 			// stdout.flush();
 			var start_scope = this.root.scope_at(line_ix, 0);
 			while ((start_scope.pattern is SinglePattern || start_scope.is_capture || start_scope.start_line_offset() == 0) && 
@@ -599,24 +603,25 @@ namespace Gtk.Mate {
 		public void last_visible_line_changed(int new_last_visible_line) {
 			this.last_visible_line = new_last_visible_line;
 			// stdout.printf("last_visible_line: %d\n", last_visible_line);
-			// stdout.printf("already_parsed_upto: %d\n", last_line_parsed());
-			if (last_visible_line + look_ahead >= last_line_parsed()) {
+			// stdout.printf("already_parsed_upto: %d\n", parsed_upto);
+			if (last_visible_line + look_ahead >= parsed_upto) {
 				int end_range = int.min(buffer.get_line_count() - 1, last_visible_line + look_ahead);
-				// stdout.printf("parse_range(%d, %d)\n", last_line_parsed(), end_range);
-				parse_range(last_line_parsed(), end_range);
+				// stdout.printf("parse_range(%d, %d)\n", parsed_upto, end_range);
+				parse_range(parsed_upto, end_range);
 			}
 		}
 
 		public int last_line_parsed() {
-			GLib.SequenceIter iter = root.children.get_end_iter();
-			if (!iter.is_begin()) {
-				iter = iter.prev();
-				var child = root.children.get(iter);
-				return child.end_line();
-			}
-			else {
-				return 0;
-			}
+//			GLib.SequenceIter iter = root.children.get_end_iter();
+//			if (!iter.is_begin()) {
+//				iter = iter.prev();
+//				var child = root.children.get(iter);
+//				return child.end_line();
+//			}
+//			else {
+//				return 0;
+//			}
+			return root.end_line();
 		}
 
 		public void connect_buffer_signals() {

@@ -193,7 +193,7 @@ namespace Gtk.Mate {
 			children.insert_sorted(s, (CompareDataFunc) Scope.compare);
 		}
 
-		public void delete_child(Scope s) {
+		public void delete_child(Scope s) { 
 			var iter = children.search(s, (CompareDataFunc) Scope.compare);
 			// The gsequence docs don't say whether iter will now be pointing to
 			// the equal element, so we have to look on the left and on the right.

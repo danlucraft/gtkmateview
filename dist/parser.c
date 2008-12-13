@@ -1,16 +1,16 @@
 
 #include "parser.h"
+#include <gee/iterator.h>
 #include <stdio.h>
 #include <gee/collection.h>
-#include <gee/iterator.h>
 #include <gee/hashmap.h>
 #include <gee/map.h>
 #include <gee/iterable.h>
-#include "theme.h"
 #include "colourer.h"
-#include "scope.h"
 #include "buffer.h"
+#include "scope.h"
 #include "pattern.h"
+#include "theme.h"
 
 
 
@@ -229,9 +229,9 @@ gboolean gtk_mate_parser_is_parsing (GtkMateParser* self) {
 
 /* Process all change ranges.*/
 static void gtk_mate_parser_process_changes (GtkMateParser* self) {
-	gint parsed_upto;
+	gint this_parsed_upto;
 	g_return_if_fail (self != NULL);
-	parsed_upto = -1;
+	this_parsed_upto = -1;
 	/* stdout.printf("process_changes (last_visible_line: %d)\n", last_visible_line);*/
 	{
 		GeeIterator* range_it;
@@ -244,7 +244,7 @@ static void gtk_mate_parser_process_changes (GtkMateParser* self) {
 			/* stdout.printf("process_changes (last_visible_line: %d)\n", last_visible_line);*/
 			range = (RangeSetRange*) gee_iterator_get (range_it);
 			_tmp0 = FALSE;
-			if (range->b > parsed_upto) {
+			if (range->b > this_parsed_upto) {
 				_tmp0 = range->a <= (self->last_visible_line + self->priv->_look_ahead);
 			} else {
 				_tmp0 = FALSE;
@@ -252,7 +252,7 @@ static void gtk_mate_parser_process_changes (GtkMateParser* self) {
 			if (_tmp0) {
 				gint range_end;
 				range_end = MIN (self->last_visible_line + self->priv->_look_ahead, range->b);
-				parsed_upto = gtk_mate_parser_parse_range (self, range->a, range_end);
+				this_parsed_upto = gtk_mate_parser_parse_range (self, range->a, range_end);
 			}
 			(range == NULL) ? NULL : (range = (g_object_unref (range), NULL));
 		}
@@ -305,6 +305,7 @@ static gint gtk_mate_parser_parse_range (GtkMateParser* self, gint from_line, gi
 			 TODO: figure out a way to OPTIMIZE this again.*/
 			gtk_mate_scope_clear_after (self->root, line_ix, -1);
 			gtk_mate_parser_remove_colour_after (self, line_ix, 0);
+			self->parsed_upto = line_ix;
 		}
 	}
 	/* stdout.printf("parse_line returned: %s\n", scope_changed ? "true" : "false");
@@ -352,6 +353,10 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	length = (gint) string_get_length (line);
 	/*buffer.get_line_length(line_ix);*/
 	fprintf (stdout, "p%d, ", line_ix);
+	fflush (stdout);
+	if (line_ix > self->parsed_upto) {
+		self->parsed_upto = line_ix;
+	}
 	/* stdout.flush();*/
 	start_scope = gtk_mate_scope_scope_at (self->root, line_ix, 0);
 	while (TRUE) {
@@ -1242,32 +1247,29 @@ void gtk_mate_parser_recolour_children (GtkMateParser* self, GtkMateScope* scope
 void gtk_mate_parser_last_visible_line_changed (GtkMateParser* self, gint new_last_visible_line) {
 	g_return_if_fail (self != NULL);
 	self->last_visible_line = new_last_visible_line;
-	/* stdout.printf("last_visible_line: %d\n", last_visible_line);
-	 stdout.printf("already_parsed_upto: %d\n", last_line_parsed());*/
-	if ((self->last_visible_line + self->priv->_look_ahead) >= gtk_mate_parser_last_line_parsed (self)) {
+	fprintf (stdout, "last_visible_line: %d\n", self->last_visible_line);
+	fprintf (stdout, "already_parsed_upto: %d\n", self->parsed_upto);
+	if ((self->last_visible_line + self->priv->_look_ahead) >= self->parsed_upto) {
 		gint end_range;
 		end_range = MIN (gtk_text_buffer_get_line_count ((GtkTextBuffer*) self->priv->_buffer) - 1, self->last_visible_line + self->priv->_look_ahead);
-		/* stdout.printf("parse_range(%d, %d)\n", last_line_parsed(), end_range);*/
-		gtk_mate_parser_parse_range (self, gtk_mate_parser_last_line_parsed (self), end_range);
+		fprintf (stdout, "parse_range(%d, %d)\n", self->parsed_upto, end_range);
+		gtk_mate_parser_parse_range (self, self->parsed_upto, end_range);
 	}
 }
 
 
 gint gtk_mate_parser_last_line_parsed (GtkMateParser* self) {
-	GSequenceIter* iter;
 	g_return_val_if_fail (self != NULL, 0);
-	iter = g_sequence_get_end_iter (gtk_mate_scope_get_children (self->root));
-	if (!g_sequence_iter_is_begin (iter)) {
-		GtkMateScope* _tmp0;
-		GtkMateScope* child;
-		gint _tmp1;
-		iter = g_sequence_iter_prev (iter);
-		_tmp0 = NULL;
-		child = (_tmp0 = (GtkMateScope*) g_sequence_get (iter), (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0));
-		return (_tmp1 = gtk_mate_scope_end_line (child), (child == NULL) ? NULL : (child = (g_object_unref (child), NULL)), _tmp1);
-	} else {
-		return 0;
+	/*GLib.SequenceIter iter = root.children.get_end_iter();
+	if (!iter.is_begin()) {
+	iter = iter.prev();
+	var child = root.children.get(iter);
+	return child.end_line();
 	}
+	else {
+	return 0;
+	}*/
+	return gtk_mate_scope_end_line (self->root);
 }
 
 

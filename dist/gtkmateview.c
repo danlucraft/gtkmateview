@@ -82,7 +82,7 @@ gint gtk_mate_load_bundles (void) {
 					d = g_dir_open (syntax_dir, 0, &inner_error);
 					if (inner_error != NULL) {
 						if (inner_error->domain == G_FILE_ERROR) {
-							goto __catch1_g_file_error;
+							goto __catch2_g_file_error;
 						}
 						g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
 						g_clear_error (&inner_error);
@@ -117,7 +117,7 @@ gint gtk_mate_load_bundles (void) {
 								_tmp18 = (_tmp17 = plist_parse (_tmp16 = g_strconcat (_tmp15 = g_strconcat (syntax_dir, "/", NULL), name, NULL), &inner_error), _tmp16 = (g_free (_tmp16), NULL), _tmp15 = (g_free (_tmp15), NULL), _tmp17);
 								if (inner_error != NULL) {
 									if (inner_error->domain == XML_ERROR) {
-										goto __catch2_xml_error;
+										goto __catch3_xml_error;
 									}
 									g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
 									g_clear_error (&inner_error);
@@ -125,8 +125,8 @@ gint gtk_mate_load_bundles (void) {
 								_tmp19 = NULL;
 								plist = (_tmp19 = _tmp18, (plist == NULL) ? NULL : (plist = (g_object_unref (plist), NULL)), _tmp19);
 							}
-							goto __finally2;
-							__catch2_xml_error:
+							goto __finally3;
+							__catch3_xml_error:
 							{
 								GError * e;
 								e = inner_error;
@@ -142,7 +142,7 @@ gint gtk_mate_load_bundles (void) {
 									(e == NULL) ? NULL : (e = (g_error_free (e), NULL));
 								}
 							}
-							__finally2:
+							__finally3:
 							;
 							if (plist != NULL) {
 								GtkMateGrammar* _tmp22;
@@ -154,8 +154,8 @@ gint gtk_mate_load_bundles (void) {
 					}
 					(d == NULL) ? NULL : (d = (g_dir_close (d), NULL));
 				}
-				goto __finally1;
-				__catch1_g_file_error:
+				goto __finally2;
+				__catch2_g_file_error:
 				{
 					GError * e;
 					e = inner_error;
@@ -165,7 +165,7 @@ gint gtk_mate_load_bundles (void) {
 						(e == NULL) ? NULL : (e = (g_error_free (e), NULL));
 					}
 				}
-				__finally1:
+				__finally2:
 				;
 			}
 			bundle_dir = (g_free (bundle_dir), NULL);
@@ -223,7 +223,7 @@ void gtk_mate_load_themes (void) {
 				plist = plist_parse (fn, &inner_error);
 				if (inner_error != NULL) {
 					if (inner_error->domain == XML_ERROR) {
-						goto __catch3_xml_error;
+						goto __catch4_xml_error;
 					}
 					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
 					g_clear_error (&inner_error);
@@ -235,8 +235,8 @@ void gtk_mate_load_themes (void) {
 				(plist == NULL) ? NULL : (plist = (g_object_unref (plist), NULL));
 				(theme == NULL) ? NULL : (theme = (g_object_unref (theme), NULL));
 			}
-			goto __finally3;
-			__catch3_xml_error:
+			goto __finally4;
+			__catch4_xml_error:
 			{
 				GError * e;
 				e = inner_error;
@@ -246,7 +246,7 @@ void gtk_mate_load_themes (void) {
 					(e == NULL) ? NULL : (e = (g_error_free (e), NULL));
 				}
 			}
-			__finally3:
+			__finally4:
 			;
 			fn = (g_free (fn), NULL);
 		}
@@ -278,7 +278,7 @@ GeeArrayList* gtk_mate_bundle_dirs (void) {
 		d = (_tmp1 = g_dir_open (_tmp0 = g_strconcat (share_dir, "/Bundles", NULL), 0, &inner_error), _tmp0 = (g_free (_tmp0), NULL), _tmp1);
 		if (inner_error != NULL) {
 			if (inner_error->domain == G_FILE_ERROR) {
-				goto __catch4_g_file_error;
+				goto __catch5_g_file_error;
 			}
 			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
 			g_clear_error (&inner_error);
@@ -293,8 +293,8 @@ GeeArrayList* gtk_mate_bundle_dirs (void) {
 		_tmp4 = NULL;
 		return (_tmp4 = names, (d == NULL) ? NULL : (d = (g_dir_close (d), NULL)), name = (g_free (name), NULL), share_dir = (g_free (share_dir), NULL), _tmp4);
 	}
-	goto __finally4;
-	__catch4_g_file_error:
+	goto __finally5;
+	__catch5_g_file_error:
 	{
 		GError * e;
 		e = inner_error;
@@ -307,7 +307,7 @@ GeeArrayList* gtk_mate_bundle_dirs (void) {
 			(e == NULL) ? NULL : (e = (g_error_free (e), NULL));
 		}
 	}
-	__finally4:
+	__finally5:
 	;
 	_tmp6 = NULL;
 	return (_tmp6 = NULL, name = (g_free (name), NULL), share_dir = (g_free (share_dir), NULL), (names == NULL) ? NULL : (names = (g_object_unref (names), NULL)), _tmp6);
