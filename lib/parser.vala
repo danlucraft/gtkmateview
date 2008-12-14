@@ -140,8 +140,8 @@ namespace Gtk.Mate {
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line(line_ix);
 			int length = (int) line.length;//buffer.get_line_length(line_ix);
-			stdout.printf("p%d, ", line_ix);
-			stdout.flush();
+			// stdout.printf("p%d, ", line_ix);
+			// stdout.flush();
 			if (line_ix > this.parsed_upto)
 				this.parsed_upto = line_ix;
 			// stdout.flush();
