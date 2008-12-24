@@ -191,6 +191,7 @@ namespace Gtk.Mate {
 			clear_line(line_ix, start_scope, all_scopes, closed_scopes, removed_scopes);
 			var end_scope2 = this.root.scope_at(line_ix, int.MAX);
 			//stdout.printf("end_scope2: %s\n", end_scope2.name);
+//			stdout.printf("%s\n", this.root.pretty(0));
 			if (colourer != null) {
 				//stdout.printf("before_uncolour_scopes\n");
 				colourer.uncolour_scopes(removed_scopes);
@@ -201,7 +202,6 @@ namespace Gtk.Mate {
 			else {
 				// stdout.printf("no colourer");
 			}
-			// stdout.printf("%s\n", this.root.pretty(0));
 			return (end_scope1 != end_scope2);
 		}
 		
@@ -276,18 +276,13 @@ namespace Gtk.Mate {
 			return expected_scope;
 		}
 
-		public void close_scope(Scanner scanner, Scope? expected_scope, 
-								int line_ix, string line, int length, Marker m,
-								ArrayList<Scope> all_scopes,
-								ArrayList<Scope> closed_scopes, 
-								ArrayList<Scope> removed_scopes
-			) {
+		public void close_scope(Scanner scanner, Scope? expected_scope, int line_ix, string line, int length, Marker m, ArrayList<Scope> all_scopes, ArrayList<Scope> closed_scopes, ArrayList<Scope> removed_scopes) {
 			var end_match_string = line.substring(m.from, m.match.end(0)-m.from);
 			if (scanner.current_scope.end_mark != null &&
-				TextLoc.equal(scanner.current_scope.end_loc(), TextLoc.make(line_ix, m.match.end(0))) &&
-				TextLoc.equal(scanner.current_scope.inner_end_loc(), TextLoc.make(line_ix, m.from)) &&
-				scanner.current_scope.end_match_string == end_match_string) {
-				// we have already parsed this line and this scope ends here
+					TextLoc.equal(scanner.current_scope.end_loc(), TextLoc.make(line_ix, m.match.end(0))) &&
+					TextLoc.equal(scanner.current_scope.inner_end_loc(), TextLoc.make(line_ix, m.from)) &&
+					scanner.current_scope.end_match_string == end_match_string) {
+					// we have already parsed this line and this scope ends here
 
 				// Re-add the captures from the end of the current scope to the 
 				// tracking arrays
@@ -588,7 +583,7 @@ namespace Gtk.Mate {
 			while (!iter.is_end()) {
 				var child = scope.children.get(iter);
 				colourer.colour_scope(child, false, true);
-				if (child.pattern is DoublePattern && ((DoublePattern) child.pattern).content_name != null)
+				if (child.pattern is DoublePattern && ((DoublePattern) child.pattern).content_name != null && child.is_capture == false)
 					colourer.colour_scope(child, true, true);
 				recolour_children(child);
 				iter = iter.next();

@@ -436,7 +436,8 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	}
 	gtk_mate_parser_clear_line (self, line_ix, start_scope, all_scopes, closed_scopes, removed_scopes);
 	end_scope2 = gtk_mate_scope_scope_at (self->root, line_ix, G_MAXINT);
-	/*stdout.printf("end_scope2: %s\n", end_scope2.name);*/
+	/*stdout.printf("end_scope2: %s\n", end_scope2.name);
+	stdout.printf("%s\n", this.root.pretty(0));*/
 	if (self->priv->_colourer != NULL) {
 		/*stdout.printf("before_uncolour_scopes\n");*/
 		gtk_mate_colourer_uncolour_scopes (self->priv->_colourer, removed_scopes);
@@ -445,8 +446,7 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	} else {
 	}
 	/*stdout.printf("after_colour_line_with_scopes\n");
-	 stdout.printf("no colourer");
-	 stdout.printf("%s\n", this.root.pretty(0));*/
+	 stdout.printf("no colourer");*/
 	return (_tmp5 = (end_scope1 != end_scope2), line = (g_free (line), NULL), (start_scope == NULL) ? NULL : (start_scope = (g_object_unref (start_scope), NULL)), (end_scope1 == NULL) ? NULL : (end_scope1 = (g_object_unref (end_scope1), NULL)), (scanner == NULL) ? NULL : (scanner = (g_object_unref (scanner), NULL)), (all_scopes == NULL) ? NULL : (all_scopes = (g_object_unref (all_scopes), NULL)), (closed_scopes == NULL) ? NULL : (closed_scopes = (g_object_unref (closed_scopes), NULL)), (removed_scopes == NULL) ? NULL : (removed_scopes = (g_object_unref (removed_scopes), NULL)), (end_scope2 == NULL) ? NULL : (end_scope2 = (g_object_unref (end_scope2), NULL)), _tmp5);
 }
 
@@ -1234,12 +1234,19 @@ void gtk_mate_parser_recolour_children (GtkMateParser* self, GtkMateScope* scope
 		GtkMateScope* _tmp0;
 		GtkMateScope* child;
 		gboolean _tmp1;
+		gboolean _tmp2;
 		_tmp0 = NULL;
 		child = (_tmp0 = (GtkMateScope*) g_sequence_get (iter), (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0));
 		gtk_mate_colourer_colour_scope (self->priv->_colourer, child, FALSE, TRUE);
 		_tmp1 = FALSE;
+		_tmp2 = FALSE;
 		if (GTK_MATE_IS_DOUBLE_PATTERN (child->pattern)) {
-			_tmp1 = (GTK_MATE_DOUBLE_PATTERN (child->pattern))->content_name != NULL;
+			_tmp2 = (GTK_MATE_DOUBLE_PATTERN (child->pattern))->content_name != NULL;
+		} else {
+			_tmp2 = FALSE;
+		}
+		if (_tmp2) {
+			_tmp1 = child->is_capture == FALSE;
 		} else {
 			_tmp1 = FALSE;
 		}

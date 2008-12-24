@@ -118,6 +118,7 @@ void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayL
 			gboolean _tmp0;
 			gboolean _tmp1;
 			gboolean _tmp3;
+			gboolean _tmp4;
 			scope = (GtkMateScope*) gee_iterator_get (scope_it);
 			if (scope->parent == NULL) {
 				(scope == NULL) ? NULL : (scope = (g_object_unref (scope), NULL));
@@ -153,8 +154,14 @@ void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayL
 			 }*/
 			gtk_mate_colourer_colour_scope (self, scope, FALSE, TRUE);
 			_tmp3 = FALSE;
+			_tmp4 = FALSE;
 			if (GTK_MATE_IS_DOUBLE_PATTERN (scope->pattern)) {
-				_tmp3 = (GTK_MATE_DOUBLE_PATTERN (scope->pattern))->content_name != NULL;
+				_tmp4 = (GTK_MATE_DOUBLE_PATTERN (scope->pattern))->content_name != NULL;
+			} else {
+				_tmp4 = FALSE;
+			}
+			if (_tmp4) {
+				_tmp3 = scope->is_capture == FALSE;
 			} else {
 				_tmp3 = FALSE;
 			}

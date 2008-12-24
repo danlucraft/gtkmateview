@@ -42,7 +42,10 @@ button_file = Gtk::Button.new("Load file")
 button_file.signal_connect("clicked") do
   if @current_view
     s = Time.now
-    @current_view.buffer.text = File.read("samples/rak")
+    text = File.readlines("samples/rak")[0..4].join("")
+    p text
+    p :text=
+    @current_view.buffer.text = text
     puts "took #{Time.now - s} seconds"
     puts "created #{Gtk::Mate::Scope.scope_count} scopes"
     puts "created #{Onig::Match.count} regex matches"

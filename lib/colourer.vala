@@ -51,14 +51,14 @@ namespace Gtk.Mate {
 				// 	continue;
 				// }
 				colour_scope(scope, false);
-				if (scope.pattern is DoublePattern && ((DoublePattern) scope.pattern).content_name != null)
+				if (scope.pattern is DoublePattern && ((DoublePattern) scope.pattern).content_name != null && scope.is_capture == false)
 					colour_scope(scope, true);
 			}
 		}
 
 		public void colour_scope(Scope scope, bool inner, bool force=true) {
-	//		stdout.printf("colour_scope: %s (%s) [%d - %d]\n", scope.name, inner ? "true" : "false",
- 	//	 			  scope.start_offset(), scope.end_offset());
+//			stdout.printf("colour_scope: %s (%s) [%d - %d]\n", scope.name, inner ? "true" : "false",
+//		 			  scope.start_offset(), scope.end_offset());
 			int priority = scope.priority(inner);
 			TextTag tag = null;
 			TextIter start_iter, end_iter;
