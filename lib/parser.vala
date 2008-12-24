@@ -121,7 +121,6 @@ namespace Gtk.Mate {
 				// stdout.printf("parse_line returned: %s\n", scope_changed ? "true" : "false");
 				//stdout.printf("pretty:\n%s\n", root.pretty(2));
 			}
-			//stdout.printf("parse_from:out\n");
 			return to_line;
 		}
 
@@ -135,7 +134,7 @@ namespace Gtk.Mate {
 				iter = iter.next();
 			}
 		}
-	
+		
 		// Parse line line_ix. Returns true if the ending
 		// scope of the line has changed.
 		private bool parse_line(int line_ix) {
@@ -147,15 +146,14 @@ namespace Gtk.Mate {
 				this.parsed_upto = line_ix;
 			// stdout.flush();
 			var start_scope = this.root.scope_at(line_ix, 0);
-			while ((start_scope.pattern is SinglePattern || start_scope.is_capture || start_scope.start_line_offset() == 0) && 
-				   start_scope.parent != null
-				) {
-				start_scope = start_scope.parent;
+			if (start_scope != null) {
+				start_scope = start_scope.containing_double_scope();
 			}
-//			stdout.printf("start_scope is: %s\n", start_scope.name);
+			// stdout.printf("start_scope is: %s\n", start_scope.name);
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
-//			if (start_scope == null)
-//			stdout.printf("end_scope1: %s\n", end_scope1.name);
+			if (end_scope1 != null)
+				end_scope1 = end_scope1.containing_double_scope();
+			// stdout.printf("end_scope1: %s\n", end_scope1.name);
 			var scanner = new Scanner(start_scope, line, length);
 			var all_scopes = new ArrayList<Scope>();
 			all_scopes.add(start_scope);
@@ -165,24 +163,24 @@ namespace Gtk.Mate {
 			foreach (Marker m in scanner) {
 //				stdout.printf("pretty:\n%s\n", root.pretty(2));
 				var expected_scope = get_expected_scope(scanner.current_scope, line_ix, scanner.position);
-//				if (expected_scope != null)
-//					stdout.printf("expected_scope: %s (%d, %d)\n", expected_scope.name, expected_scope.start_loc().line, 
-//						expected_scope.start_loc().line_offset);
-//				else
-//					stdout.printf("no expected scope\n");
-//				stdout.printf("  scope: %s\n", m.pattern.name);
+				// if (expected_scope != null)
+				// 	stdout.printf("expected_scope: %s (%d, %d)\n", expected_scope.name, expected_scope.start_loc().line, 
+				// 		expected_scope.start_loc().line_offset);
+				// else
+				// 	stdout.printf("no expected scope\n");
+				// stdout.printf("  scope: %s\n", m.pattern.name);
 				if (m.is_close_scope) {
-//					stdout.printf("     (closing)\n");
+					// stdout.printf("     (closing)\n");
 					close_scope(scanner, expected_scope, line_ix, line, length, m, 
 								all_scopes, closed_scopes, removed_scopes);
 				}
 				else if (m.pattern is DoublePattern) {
-//					stdout.printf("     (opening)\n");
+					// stdout.printf("     (opening)\n");
 					open_scope(scanner, expected_scope, line_ix, line, length, m, 
 							   all_scopes, closed_scopes, removed_scopes);
 				}
 				else {
-//					stdout.printf("     (single)\n");
+					// stdout.printf("     (single)\n");
 					single_scope(scanner, expected_scope, line_ix, line, length, m, 
 								 all_scopes, closed_scopes, removed_scopes);
 				}
@@ -190,7 +188,9 @@ namespace Gtk.Mate {
 			}
 			clear_line(line_ix, start_scope, all_scopes, closed_scopes, removed_scopes);
 			var end_scope2 = this.root.scope_at(line_ix, int.MAX);
-			//stdout.printf("end_scope2: %s\n", end_scope2.name);
+			if (end_scope2 != null)
+				end_scope2 = end_scope2.containing_double_scope();
+			// stdout.printf("end_scope2: %s\n", end_scope2.name);
 //			stdout.printf("%s\n", this.root.pretty(0));
 			if (colourer != null) {
 				//stdout.printf("before_uncolour_scopes\n");
@@ -205,10 +205,7 @@ namespace Gtk.Mate {
 			return (end_scope1 != end_scope2);
 		}
 		
-		public void clear_line(int line_ix, Scope start_scope, 
-							   ArrayList<Scope> all_scopes, 
-							   ArrayList<Scope> closed_scopes, 
-							   ArrayList<Scope> removed_scopes) {
+		public void clear_line(int line_ix, Scope start_scope, ArrayList<Scope> all_scopes, ArrayList<Scope> closed_scopes, ArrayList<Scope> removed_scopes) {
 			// If we are reparsing, we might find that some scopes have disappeared,
 			// delete them:
 			var cs = start_scope;
@@ -349,7 +346,7 @@ namespace Gtk.Mate {
 				// check mod ending scopes as the new one will not have a closing marker
 				// but the expected one will:
 				if (s.surface_identical_to_modulo_ending(expected_scope)) {
-					//stdout.printf("surface_identical_mod_ending: keep expected\n");
+					// stdout.printf("surface_identical_mod_ending: keep expected\n");
 					// don't need to do anything as we have already found this,
 					// but let's keep the old scope since it will have children and what not.
 					new_scope = expected_scope;

@@ -155,6 +155,14 @@ namespace Gtk.Mate {
 			}
 		}
 
+		public Scope containing_double_scope() {
+			var scope = this;
+			while ((scope.pattern is SinglePattern || scope.is_capture || scope.start_line_offset() == 0) && scope.parent != null) {
+				scope = scope.parent;
+			}
+			return scope;
+		}
+
 		public Scope? first_child_after(TextLoc loc) {
 //			stdout.printf("\"%s\".first_child_after(%d, %d)\n", name, loc.line, loc.line_offset);
 			if (children.get_length() == 0)

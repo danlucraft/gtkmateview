@@ -4589,6 +4589,20 @@ static VALUE rb_gtk_mate_scope_clear_after(VALUE self, VALUE line_ix, VALUE line
     return Qnil;
 }
 
+static VALUE rb_gtk_mate_scope_containing_double_scope(VALUE self) {
+    GtkMateScope* gtk_mate_scope = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // Method#body
+    
+    GtkMateScope* _c_return;
+    _c_return = gtk_mate_scope_containing_double_scope(gtk_mate_scope);
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+    _rb_return = GOBJ2RVAL(_c_return);
+    return _rb_return;
+}
+
 static VALUE rb_gtk_mate_scope_contains_loc(VALUE self, VALUE loc) {
     GtkMateScope* gtk_mate_scope = RVAL2GOBJ(self);
     // Method#type_checks
@@ -7654,6 +7668,7 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_scope, "theme_setting=", rb_gtk_mate_scope_set_theme_setting, 1);
     rb_define_method(rbc_gtk_mate_scope, "add_child", rb_gtk_mate_scope_add_child, 1);
     rb_define_method(rbc_gtk_mate_scope, "clear_after", rb_gtk_mate_scope_clear_after, 2);
+    rb_define_method(rbc_gtk_mate_scope, "containing_double_scope", rb_gtk_mate_scope_containing_double_scope, 0);
     rb_define_method(rbc_gtk_mate_scope, "contains_loc", rb_gtk_mate_scope_contains_loc, 1);
     rb_define_method(rbc_gtk_mate_scope, "delete_any_on_line_not_in", rb_gtk_mate_scope_delete_any_on_line_not_in, 2);
     rb_define_method(rbc_gtk_mate_scope, "delete_child", rb_gtk_mate_scope_delete_child, 1);

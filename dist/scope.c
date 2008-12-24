@@ -276,6 +276,47 @@ GtkMateScope* gtk_mate_scope_scope_at (GtkMateScope* self, gint line, gint line_
 }
 
 
+GtkMateScope* gtk_mate_scope_containing_double_scope (GtkMateScope* self) {
+	GtkMateScope* _tmp0;
+	GtkMateScope* scope;
+	g_return_val_if_fail (self != NULL, NULL);
+	_tmp0 = NULL;
+	scope = (_tmp0 = self, (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0));
+	while (TRUE) {
+		gboolean _tmp1;
+		gboolean _tmp2;
+		gboolean _tmp3;
+		GtkMateScope* _tmp5;
+		GtkMateScope* _tmp4;
+		_tmp1 = FALSE;
+		_tmp2 = FALSE;
+		_tmp3 = FALSE;
+		if (GTK_MATE_IS_SINGLE_PATTERN (scope->pattern)) {
+			_tmp3 = TRUE;
+		} else {
+			_tmp3 = scope->is_capture;
+		}
+		if (_tmp3) {
+			_tmp2 = TRUE;
+		} else {
+			_tmp2 = gtk_mate_scope_start_line_offset (scope) == 0;
+		}
+		if ((_tmp2)) {
+			_tmp1 = scope->parent != NULL;
+		} else {
+			_tmp1 = FALSE;
+		}
+		if (!_tmp1) {
+			break;
+		}
+		_tmp5 = NULL;
+		_tmp4 = NULL;
+		scope = (_tmp5 = (_tmp4 = scope->parent, (_tmp4 == NULL) ? NULL : g_object_ref (_tmp4)), (scope == NULL) ? NULL : (scope = (g_object_unref (scope), NULL)), _tmp5);
+	}
+	return scope;
+}
+
+
 GtkMateScope* gtk_mate_scope_first_child_after (GtkMateScope* self, GtkMateTextLoc* loc) {
 	GtkMateScope* s;
 	GtkMateTextLoc* _tmp2;
