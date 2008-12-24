@@ -8,8 +8,14 @@
 
 
 
+struct _GtkMatePatternPrivate {
+	GtkMateGrammar* _grammar;
+};
+
+#define GTK_MATE_PATTERN_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GTK_MATE_TYPE_PATTERN, GtkMatePatternPrivate))
 enum  {
-	GTK_MATE_PATTERN_DUMMY_PROPERTY
+	GTK_MATE_PATTERN_DUMMY_PROPERTY,
+	GTK_MATE_PATTERN_GRAMMAR
 };
 GeeArrayList* gtk_mate_pattern_all_patterns = NULL;
 static void gtk_mate_pattern_remove_patterns (GeeArrayList* patlist, GeeArrayList* ps);
@@ -318,13 +324,63 @@ GtkMatePattern* gtk_mate_pattern_new (void) {
 }
 
 
+GtkMateGrammar* gtk_mate_pattern_get_grammar (GtkMatePattern* self) {
+	g_return_val_if_fail (self != NULL, NULL);
+	return self->priv->_grammar;
+}
+
+
+void gtk_mate_pattern_set_grammar (GtkMatePattern* self, GtkMateGrammar* value) {
+	GtkMateGrammar* _tmp2;
+	GtkMateGrammar* _tmp1;
+	g_return_if_fail (self != NULL);
+	_tmp2 = NULL;
+	_tmp1 = NULL;
+	self->priv->_grammar = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL) ? NULL : g_object_ref (_tmp1)), (self->priv->_grammar == NULL) ? NULL : (self->priv->_grammar = (g_object_unref (self->priv->_grammar), NULL)), _tmp2);
+	g_object_notify ((GObject *) self, "grammar");
+}
+
+
+static void gtk_mate_pattern_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
+	GtkMatePattern * self;
+	self = GTK_MATE_PATTERN (object);
+	switch (property_id) {
+		case GTK_MATE_PATTERN_GRAMMAR:
+		g_value_set_object (value, gtk_mate_pattern_get_grammar (self));
+		break;
+		default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+		break;
+	}
+}
+
+
+static void gtk_mate_pattern_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
+	GtkMatePattern * self;
+	self = GTK_MATE_PATTERN (object);
+	switch (property_id) {
+		case GTK_MATE_PATTERN_GRAMMAR:
+		gtk_mate_pattern_set_grammar (self, g_value_get_object (value));
+		break;
+		default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+		break;
+	}
+}
+
+
 static void gtk_mate_pattern_class_init (GtkMatePatternClass * klass) {
 	gtk_mate_pattern_parent_class = g_type_class_peek_parent (klass);
+	g_type_class_add_private (klass, sizeof (GtkMatePatternPrivate));
+	G_OBJECT_CLASS (klass)->get_property = gtk_mate_pattern_get_property;
+	G_OBJECT_CLASS (klass)->set_property = gtk_mate_pattern_set_property;
 	G_OBJECT_CLASS (klass)->finalize = gtk_mate_pattern_finalize;
+	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_PATTERN_GRAMMAR, g_param_spec_object ("grammar", "grammar", "grammar", GTK_MATE_TYPE_GRAMMAR, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 }
 
 
 static void gtk_mate_pattern_instance_init (GtkMatePattern * self) {
+	self->priv = GTK_MATE_PATTERN_GET_PRIVATE (self);
 }
 
 
@@ -333,6 +389,7 @@ static void gtk_mate_pattern_finalize (GObject* obj) {
 	self = GTK_MATE_PATTERN (obj);
 	self->name = (g_free (self->name), NULL);
 	self->comment = (g_free (self->comment), NULL);
+	(self->priv->_grammar == NULL) ? NULL : (self->priv->_grammar = (g_object_unref (self->priv->_grammar), NULL));
 	G_OBJECT_CLASS (gtk_mate_pattern_parent_class)->finalize (obj);
 }
 

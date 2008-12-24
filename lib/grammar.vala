@@ -14,6 +14,7 @@ namespace Gtk.Mate {
 		public string scope_name;
 		public string comment;
 		public ArrayList<Pattern> all_patterns;
+		public string filename {get; set;}
 
 		public Onig.Rx folding_start_marker;
 		public Onig.Rx folding_stop_marker;
@@ -98,6 +99,7 @@ namespace Gtk.Mate {
 			if (ps != null)
 				foreach (var p in ((PList.Array) ps).array) {
 					pattern = Pattern.create_from_plist(this.all_patterns, (PList.Dict) p);
+					pattern.grammar = this;
 					if (pattern != null)
 						patterns.add(pattern);
 				}
@@ -115,6 +117,7 @@ namespace Gtk.Mate {
 					// repository name can go straight to a pattern
 					if (pd1.get("begin") != null || pd1.get("match") != null) {
 						pattern = Pattern.create_from_plist(this.all_patterns, (PList.Dict) pd1);
+						pattern.grammar = this;
 						if (pattern != null) {
 							repo_array.add(pattern);
 						}
@@ -124,6 +127,7 @@ namespace Gtk.Mate {
 						pa1 = pd1.get("patterns");
 						foreach (PList.Node ps1 in ((PList.Array) pa1).array) {
 							pattern = Pattern.create_from_plist(this.all_patterns, (PList.Dict) ps1);
+							pattern.grammar = this;
 							if (pattern != null) {
 								repo_array.add(pattern);
 							}

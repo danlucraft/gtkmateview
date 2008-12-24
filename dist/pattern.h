@@ -9,8 +9,8 @@
 #include <string.h>
 #include <gee/arraylist.h>
 #include <gee/hashmap.h>
-#include "plist.h"
 #include "onig_wrap.h"
+#include "plist.h"
 #include "grammar.h"
 
 G_BEGIN_DECLS
@@ -119,6 +119,8 @@ void gtk_mate_pattern_replace_repository_includes (GeeArrayList* patlist, GtkMat
 void gtk_mate_pattern_replace_base_and_self_includes (GeeArrayList* patlist, GtkMateGrammar* g);
 GtkMatePattern* gtk_mate_pattern_construct (GType object_type);
 GtkMatePattern* gtk_mate_pattern_new (void);
+GtkMateGrammar* gtk_mate_pattern_get_grammar (GtkMatePattern* self);
+void gtk_mate_pattern_set_grammar (GtkMatePattern* self, GtkMateGrammar* value);
 GType gtk_mate_pattern_get_type (void);
 GtkMateSinglePattern* gtk_mate_single_pattern_create_from_plist (GeeArrayList* all_patterns, PListDict* pd);
 GtkMateSinglePattern* gtk_mate_single_pattern_construct (GType object_type);

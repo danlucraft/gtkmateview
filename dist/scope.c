@@ -517,9 +517,10 @@ char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent) {
 	GString* _tmp0;
 	char* _tmp1;
 	gboolean _tmp2;
-	const char* _tmp10;
+	gboolean _tmp3;
+	const char* _tmp11;
 	GSequenceIter* iter;
-	const char* _tmp12;
+	const char* _tmp13;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0 = NULL;
 	self->pretty_string = (_tmp0 = g_string_new (""), (self->pretty_string == NULL) ? NULL : (self->pretty_string = (g_string_free (self->pretty_string, TRUE), NULL)), _tmp0);
@@ -540,60 +541,66 @@ char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent) {
 	g_string_append (self->pretty_string, _tmp1 = g_strconcat (" ", self->priv->_name, NULL));
 	_tmp1 = (g_free (_tmp1), NULL);
 	_tmp2 = FALSE;
+	_tmp3 = FALSE;
 	if (GTK_MATE_IS_DOUBLE_PATTERN (self->pattern)) {
+		_tmp3 = self->is_capture == FALSE;
+	} else {
+		_tmp3 = FALSE;
+	}
+	if (_tmp3) {
 		_tmp2 = (GTK_MATE_DOUBLE_PATTERN (self->pattern))->content_name != NULL;
 	} else {
 		_tmp2 = FALSE;
 	}
 	if (_tmp2) {
-		char* _tmp3;
-		_tmp3 = NULL;
-		g_string_append (self->pretty_string, _tmp3 = g_strconcat (" ", (GTK_MATE_DOUBLE_PATTERN (self->pattern))->content_name, NULL));
-		_tmp3 = (g_free (_tmp3), NULL);
+		char* _tmp4;
+		_tmp4 = NULL;
+		g_string_append (self->pretty_string, _tmp4 = g_strconcat (" ", (GTK_MATE_DOUBLE_PATTERN (self->pattern))->content_name, NULL));
+		_tmp4 = (g_free (_tmp4), NULL);
 	}
 	g_string_append (self->pretty_string, " (");
 	if (self->start_mark == NULL) {
 		g_string_append (self->pretty_string, "inf");
 	} else {
-		char* _tmp6;
+		char* _tmp7;
+		GtkTextIter _tmp6 = {0};
 		GtkTextIter _tmp5 = {0};
-		GtkTextIter _tmp4 = {0};
-		_tmp6 = NULL;
-		g_string_append (self->pretty_string, _tmp6 = g_strdup_printf ("%d,%d", gtk_text_iter_get_line ((_tmp4 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->start_mark), &_tmp4)), gtk_text_iter_get_line_offset ((_tmp5 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->start_mark), &_tmp5))));
-		_tmp6 = (g_free (_tmp6), NULL);
+		_tmp7 = NULL;
+		g_string_append (self->pretty_string, _tmp7 = g_strdup_printf ("%d,%d", gtk_text_iter_get_line ((_tmp5 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->start_mark), &_tmp5)), gtk_text_iter_get_line_offset ((_tmp6 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->start_mark), &_tmp6))));
+		_tmp7 = (g_free (_tmp7), NULL);
 	}
 	g_string_append (self->pretty_string, ")-(");
 	if (self->end_mark == NULL) {
 		g_string_append (self->pretty_string, "inf");
 	} else {
-		char* _tmp9;
+		char* _tmp10;
+		GtkTextIter _tmp9 = {0};
 		GtkTextIter _tmp8 = {0};
-		GtkTextIter _tmp7 = {0};
-		_tmp9 = NULL;
-		g_string_append (self->pretty_string, _tmp9 = g_strdup_printf ("%d,%d", gtk_text_iter_get_line ((_tmp7 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->end_mark), &_tmp7)), gtk_text_iter_get_line_offset ((_tmp8 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->end_mark), &_tmp8))));
-		_tmp9 = (g_free (_tmp9), NULL);
+		_tmp10 = NULL;
+		g_string_append (self->pretty_string, _tmp10 = g_strdup_printf ("%d,%d", gtk_text_iter_get_line ((_tmp8 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->end_mark), &_tmp8)), gtk_text_iter_get_line_offset ((_tmp9 = gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->end_mark), &_tmp9))));
+		_tmp10 = (g_free (_tmp10), NULL);
 	}
 	g_string_append (self->pretty_string, ")");
-	_tmp10 = NULL;
+	_tmp11 = NULL;
 	if (self->is_open) {
-		_tmp10 = " open";
+		_tmp11 = " open";
 	} else {
-		_tmp10 = " closed";
+		_tmp11 = " closed";
 	}
-	g_string_append (self->pretty_string, (_tmp10));
+	g_string_append (self->pretty_string, (_tmp11));
 	g_string_append (self->pretty_string, "\n");
 	self->indent = self->indent + (1);
 	iter = g_sequence_get_begin_iter (gtk_mate_scope_get_children (self));
 	while (!g_sequence_iter_is_end (iter)) {
-		char* _tmp11;
-		_tmp11 = NULL;
-		g_string_append (self->pretty_string, _tmp11 = gtk_mate_scope_pretty ((GtkMateScope*) g_sequence_get (iter), self->indent));
-		_tmp11 = (g_free (_tmp11), NULL);
+		char* _tmp12;
+		_tmp12 = NULL;
+		g_string_append (self->pretty_string, _tmp12 = gtk_mate_scope_pretty ((GtkMateScope*) g_sequence_get (iter), self->indent));
+		_tmp12 = (g_free (_tmp12), NULL);
 		iter = g_sequence_iter_next (iter);
 	}
 	self->indent = self->indent - (1);
-	_tmp12 = NULL;
-	return (_tmp12 = self->pretty_string->str, (_tmp12 == NULL) ? NULL : g_strdup (_tmp12));
+	_tmp13 = NULL;
+	return (_tmp13 = self->pretty_string->str, (_tmp13 == NULL) ? NULL : g_strdup (_tmp13));
 }
 
 

@@ -55,6 +55,8 @@ void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self);
 void gtk_mate_grammar_init_for_use (GtkMateGrammar* self);
 const char* gtk_mate_grammar_get_name (GtkMateGrammar* self);
 PListDict* gtk_mate_grammar_get_plist (GtkMateGrammar* self);
+const char* gtk_mate_grammar_get_filename (GtkMateGrammar* self);
+void gtk_mate_grammar_set_filename (GtkMateGrammar* self, const char* value);
 GType gtk_mate_grammar_get_type (void);
 
 

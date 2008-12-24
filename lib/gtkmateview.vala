@@ -37,6 +37,7 @@ namespace Gtk {
 								}
 								if (plist != null) {
 									grammar = new Mate.Grammar(plist);
+									grammar.filename = name;
 									bundle.grammars.add(grammar);
 								}
 							}

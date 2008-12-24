@@ -87,6 +87,7 @@ namespace Gtk {
 			public void init_for_reference ();
 			public void init_for_use ();
 			public Grammar (PList.Dict plist);
+			public string filename { get; set; }
 			public string name { get; set; }
 			public PList.Dict plist { get; set; }
 		}
@@ -176,6 +177,7 @@ namespace Gtk {
 			public static void replace_base_and_self_includes (Gee.ArrayList<Gtk.Mate.Pattern> patlist, Gtk.Mate.Grammar g);
 			public static void replace_include_patterns (Gee.ArrayList<Gtk.Mate.Pattern> patlist, Gtk.Mate.Grammar g);
 			public static void replace_repository_includes (Gee.ArrayList<Gtk.Mate.Pattern> patlist, Gtk.Mate.Grammar g);
+			public Gtk.Mate.Grammar grammar { get; set; }
 		}
 		[CCode (cheader_filename = "scanner.h")]
 		public class Scanner : Gtk.Object, Gee.Iterable<Gtk.Mate.Marker> {

@@ -14,13 +14,15 @@
 struct _GtkMateGrammarPrivate {
 	char* _name;
 	PListDict* _plist;
+	char* _filename;
 };
 
 #define GTK_MATE_GRAMMAR_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GTK_MATE_TYPE_GRAMMAR, GtkMateGrammarPrivate))
 enum  {
 	GTK_MATE_GRAMMAR_DUMMY_PROPERTY,
 	GTK_MATE_GRAMMAR_NAME,
-	GTK_MATE_GRAMMAR_PLIST
+	GTK_MATE_GRAMMAR_PLIST,
+	GTK_MATE_GRAMMAR_FILENAME
 };
 static void gtk_mate_grammar_set_name (GtkMateGrammar* self, const char* value);
 static void gtk_mate_grammar_set_plist (GtkMateGrammar* self, PListDict* value);
@@ -209,6 +211,7 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 				p = (PListNode*) gee_iterator_get (p_it);
 				_tmp4 = NULL;
 				pattern = (_tmp4 = gtk_mate_pattern_create_from_plist (self->all_patterns, PLIST_DICT (p)), (pattern == NULL) ? NULL : (pattern = (g_object_unref (pattern), NULL)), _tmp4);
+				gtk_mate_pattern_set_grammar (pattern, self);
 				if (pattern != NULL) {
 					gee_collection_add ((GeeCollection*) self->patterns, pattern);
 				}
@@ -258,6 +261,7 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 					GtkMatePattern* _tmp13;
 					_tmp13 = NULL;
 					pattern = (_tmp13 = gtk_mate_pattern_create_from_plist (self->all_patterns, PLIST_DICT (pd1)), (pattern == NULL) ? NULL : (pattern = (g_object_unref (pattern), NULL)), _tmp13);
+					gtk_mate_pattern_set_grammar (pattern, self);
 					if (pattern != NULL) {
 						gee_collection_add ((GeeCollection*) repo_array, pattern);
 					}
@@ -275,6 +279,7 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 							ps1 = (PListNode*) gee_iterator_get (ps1_it);
 							_tmp15 = NULL;
 							pattern = (_tmp15 = gtk_mate_pattern_create_from_plist (self->all_patterns, PLIST_DICT (ps1)), (pattern == NULL) ? NULL : (pattern = (g_object_unref (pattern), NULL)), _tmp15);
+							gtk_mate_pattern_set_grammar (pattern, self);
 							if (pattern != NULL) {
 								gee_collection_add ((GeeCollection*) repo_array, pattern);
 							}
@@ -352,6 +357,23 @@ static void gtk_mate_grammar_set_plist (GtkMateGrammar* self, PListDict* value) 
 }
 
 
+const char* gtk_mate_grammar_get_filename (GtkMateGrammar* self) {
+	g_return_val_if_fail (self != NULL, NULL);
+	return self->priv->_filename;
+}
+
+
+void gtk_mate_grammar_set_filename (GtkMateGrammar* self, const char* value) {
+	char* _tmp2;
+	const char* _tmp1;
+	g_return_if_fail (self != NULL);
+	_tmp2 = NULL;
+	_tmp1 = NULL;
+	self->priv->_filename = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL) ? NULL : g_strdup (_tmp1)), self->priv->_filename = (g_free (self->priv->_filename), NULL), _tmp2);
+	g_object_notify ((GObject *) self, "filename");
+}
+
+
 static void gtk_mate_grammar_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	GtkMateGrammar * self;
 	self = GTK_MATE_GRAMMAR (object);
@@ -361,6 +383,9 @@ static void gtk_mate_grammar_get_property (GObject * object, guint property_id, 
 		break;
 		case GTK_MATE_GRAMMAR_PLIST:
 		g_value_set_object (value, gtk_mate_grammar_get_plist (self));
+		break;
+		case GTK_MATE_GRAMMAR_FILENAME:
+		g_value_set_string (value, gtk_mate_grammar_get_filename (self));
 		break;
 		default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -379,6 +404,9 @@ static void gtk_mate_grammar_set_property (GObject * object, guint property_id, 
 		case GTK_MATE_GRAMMAR_PLIST:
 		gtk_mate_grammar_set_plist (self, g_value_get_object (value));
 		break;
+		case GTK_MATE_GRAMMAR_FILENAME:
+		gtk_mate_grammar_set_filename (self, g_value_get_string (value));
+		break;
 		default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 		break;
@@ -394,6 +422,7 @@ static void gtk_mate_grammar_class_init (GtkMateGrammarClass * klass) {
 	G_OBJECT_CLASS (klass)->finalize = gtk_mate_grammar_finalize;
 	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_GRAMMAR_NAME, g_param_spec_string ("name", "name", "name", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_GRAMMAR_PLIST, g_param_spec_object ("plist", "plist", "plist", PLIST_TYPE_DICT, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), GTK_MATE_GRAMMAR_FILENAME, g_param_spec_string ("filename", "filename", "filename", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 }
 
 
@@ -413,6 +442,7 @@ static void gtk_mate_grammar_finalize (GObject* obj) {
 	self->scope_name = (g_free (self->scope_name), NULL);
 	self->comment = (g_free (self->comment), NULL);
 	(self->all_patterns == NULL) ? NULL : (self->all_patterns = (g_object_unref (self->all_patterns), NULL));
+	self->priv->_filename = (g_free (self->priv->_filename), NULL);
 	(self->folding_start_marker == NULL) ? NULL : (self->folding_start_marker = (g_object_unref (self->folding_start_marker), NULL));
 	(self->folding_stop_marker == NULL) ? NULL : (self->folding_stop_marker = (g_object_unref (self->folding_stop_marker), NULL));
 	(self->patterns == NULL) ? NULL : (self->patterns = (g_object_unref (self->patterns), NULL));

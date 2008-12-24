@@ -63,6 +63,7 @@ namespace Gtk.Mate {
 			var dp = new DoublePattern();
 			dp.name = this.grammar.name;
 			dp.patterns = this.grammar.patterns;
+			dp.grammar = this.grammar;
 			this.root.pattern = dp;
 		}
 
@@ -499,6 +500,7 @@ namespace Gtk.Mate {
 				foreach (int cap in captures.get_keys()) {
 					if (m.match.begin(cap) != -1) {
 						s = new Scope(this.buffer, captures.get(cap));
+						s.pattern = scope.pattern;
 						s.start_mark_set(line_ix, m.match.begin(cap), false);
 						s.end_mark_set(line_ix, m.match.end(cap), true);
 						s.is_open = false;

@@ -25,4 +25,11 @@ describe Gtk::Mate::Scope do
       @mb.parser.root.scope_at(0, 10).hierarchy_names(true).should == "source.ruby meta.function.method.with-arguments.ruby variable.parameter.function.ruby"
     end
   end
+  
+  describe "pattern" do
+    it "should return the pattern" do
+      @mb.text = "def foo"
+      @mb.parser.root.scope_at(0, 1).pattern.should be_an_instance_of(Gtk::Mate::SinglePattern)
+    end
+  end
 end

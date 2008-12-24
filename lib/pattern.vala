@@ -8,6 +8,7 @@ namespace Gtk.Mate {
 		public string comment;
 		public static ArrayList<Pattern> all_patterns;
 		public bool disabled;
+		public Grammar grammar {get; set;}
 		
 		public static Pattern? create_from_plist(ArrayList<Pattern> all_patterns, PList.Dict pd) {
 			Pattern p = null;

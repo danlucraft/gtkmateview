@@ -286,7 +286,7 @@ namespace Gtk.Mate {
 			else
 				pretty_string.append("+");
 			pretty_string.append(" " + name);
-			if (pattern is DoublePattern && ((DoublePattern) pattern).content_name != null) 
+			if (pattern is DoublePattern && is_capture == false && ((DoublePattern) pattern).content_name != null) 
 				pretty_string.append(" " + ((DoublePattern) pattern).content_name);
 			pretty_string.append(" (");
 			if (start_mark == null) {

@@ -148,6 +148,7 @@ gint gtk_mate_load_bundles (void) {
 								GtkMateGrammar* _tmp22;
 								_tmp22 = NULL;
 								grammar = (_tmp22 = g_object_ref_sink (gtk_mate_grammar_new (plist)), (grammar == NULL) ? NULL : (grammar = (g_object_unref (grammar), NULL)), _tmp22);
+								gtk_mate_grammar_set_filename (grammar, name);
 								gee_collection_add ((GeeCollection*) bundle->grammars, grammar);
 							}
 						}
