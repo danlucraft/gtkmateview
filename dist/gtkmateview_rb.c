@@ -6776,13 +6776,17 @@ static VALUE rb_plist_parse(VALUE self, VALUE filename) {
     PListDict* _c_return;
     _c_return = plist_parse(_c_filename, &inner_error);
     if (inner_error != NULL) {
-        if (inner_error->domain == XML_ERROR) {
-            rb_raise(rb_vala_error, "[XmlError]: %s", inner_error->message);
+        if (inner_error->domain == G_FILE_ERROR) {
+            rb_raise(rb_vala_error, "[GLib.FileError]: %s", inner_error->message);
         }
     }
     // Method#return_type_conversion
-    VALUE _rb_return; 
-    _rb_return = GOBJ2RVAL(_c_return);
+    VALUE _rb_return;
+    if (_c_return == NULL)
+        _rb_return = Qnil;
+    else {
+        _rb_return = GOBJ2RVAL(_c_return);
+    }
     return _rb_return;
 }
 

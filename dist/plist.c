@@ -6,6 +6,7 @@
 #include <gee/iterable.h>
 #include <gee/iterator.h>
 #include <stdio.h>
+#include <glib/gstdio.h>
 #include <libxml/parser.h>
 
 
@@ -435,41 +436,51 @@ GType plist_dict_get_type (void) {
 
 PListDict* plist_parse (const char* filename, GError** error) {
 	GError * inner_error;
+	char* file_contents;
+	gulong len;
+	char* _tmp2;
+	gboolean _tmp1;
+	char* _tmp0;
 	xmlDoc* xml_doc;
 	xmlNode* root_node;
 	xmlNode* top_node;
 	PListDict* dict;
+	PListDict* _tmp6;
 	g_return_val_if_fail (filename != NULL, NULL);
 	inner_error = NULL;
-	xml_doc = xmlParseFile (filename);
+	file_contents = NULL;
+	len = 0UL;
+	_tmp2 = NULL;
+	_tmp0 = NULL;
+	_tmp1 = g_file_get_contents (filename, &_tmp0, &len, &inner_error);
+	file_contents = (_tmp2 = _tmp0, file_contents = (g_free (file_contents), NULL), _tmp2);
+	_tmp1;
+	if (inner_error != NULL) {
+		g_propagate_error (error, inner_error);
+		file_contents = (g_free (file_contents), NULL);
+		return NULL;
+	}
+	if (!g_utf8_validate (file_contents, -1, NULL)) {
+		PListDict* _tmp3;
+		fprintf (stdout, "%s contents not UTF-8\n", filename);
+		_tmp3 = NULL;
+		return (_tmp3 = NULL, file_contents = (g_free (file_contents), NULL), _tmp3);
+	}
+	xml_doc = xmlParseMemory (file_contents, (gint) len);
 	if (xml_doc == NULL) {
-		char* _tmp1;
-		char* _tmp0;
-		GError* _tmp2;
-		_tmp1 = NULL;
-		_tmp0 = NULL;
-		_tmp2 = NULL;
-		inner_error = (_tmp2 = g_error_new (XML_ERROR, XML_ERROR_FILE_NOT_FOUND, _tmp1 = g_strconcat (_tmp0 = g_strconcat ("file ", filename, NULL), " not found or permissions missing", NULL)), _tmp1 = (g_free (_tmp1), NULL), _tmp0 = (g_free (_tmp0), NULL), _tmp2);
-		if (inner_error != NULL) {
-			g_propagate_error (error, inner_error);
-			return NULL;
-		}
+		PListDict* _tmp4;
+		/*throw new XmlError.FILE_NOT_FOUND ("file "+ filename + " not found or permissions missing");*/
+		_tmp4 = NULL;
+		return (_tmp4 = NULL, file_contents = (g_free (file_contents), NULL), _tmp4);
 	}
 	root_node = xmlDocGetRootElement (xml_doc);
 	if (root_node == NULL) {
-		char* _tmp4;
-		char* _tmp3;
-		GError* _tmp5;
-		/*free the document manually before throwing because the garbage collector can't work on pointers*/
+		PListDict* _tmp5;
+		/* free the document manually before throwing because the garbage collector can't work on pointers*/
 		xmlFreeDoc (xml_doc);
-		_tmp4 = NULL;
-		_tmp3 = NULL;
+		fprintf (stdout, "XML document is empty when opening %s\n", filename);
 		_tmp5 = NULL;
-		inner_error = (_tmp5 = g_error_new (XML_ERROR, XML_ERROR_XML_DOCUMENT_EMPTY, _tmp4 = g_strconcat (_tmp3 = g_strconcat ("the xml'", filename, NULL), "' is empty", NULL)), _tmp4 = (g_free (_tmp4), NULL), _tmp3 = (g_free (_tmp3), NULL), _tmp5);
-		if (inner_error != NULL) {
-			g_propagate_error (error, inner_error);
-			return NULL;
-		}
+		return (_tmp5 = NULL, file_contents = (g_free (file_contents), NULL), _tmp5);
 	}
 	top_node = NULL;
 	{
@@ -488,7 +499,8 @@ PListDict* plist_parse (const char* filename, GError** error) {
 	dict = plist_dict_parse_dict (top_node);
 	/*free the document*/
 	xmlFreeDoc (xml_doc);
-	return dict;
+	_tmp6 = NULL;
+	return (_tmp6 = dict, file_contents = (g_free (file_contents), NULL), _tmp6);
 }
 
 

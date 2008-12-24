@@ -276,7 +276,7 @@
 			</parameter>
 		</parameters>
 		<return-value transfer-ownership="full">
-			<type name="PList.Dict"/>
+			<type name="PList.Dict?"/>
 		</return-value>
 	</method>
 	<method name="print_plist" c:identifier="plist_print_plist">

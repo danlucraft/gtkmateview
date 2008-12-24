@@ -108,17 +108,27 @@ namespace PList {
 		}
 	}
 
-	public static Dict parse(string filename) throws XmlError {
-		Xml.Doc* xml_doc = Xml.Parser.parse_file (filename);
+	public static Dict? parse(string filename) throws FileError {
+		string file_contents;
+		ulong len;
+		FileUtils.get_contents(filename, out file_contents, out len);
+		
+		if (!file_contents.validate()) {
+			stdout.printf("%s contents not UTF-8\n", filename);
+			return null;
+		}
+		Xml.Doc* xml_doc = Xml.Parser.parse_memory (file_contents, (int) len);
 		if (xml_doc == null) {
-			throw new XmlError.FILE_NOT_FOUND ("file "+ filename + " not found or permissions missing");
+//			throw new XmlError.FILE_NOT_FOUND ("file "+ filename + " not found or permissions missing");
+			return null;
 		}
 
 		Xml.Node* root_node = xml_doc->get_root_element ();
 		if (root_node == null) {
-			//free the document manually before throwing because the garbage collector can't work on pointers
+			// free the document manually before throwing because the garbage collector can't work on pointers
 			delete xml_doc;
-			throw new XmlError.XML_DOCUMENT_EMPTY ("the xml'"+ filename + "' is empty");
+			stdout.printf("XML document is empty when opening %s\n", filename);
+			return null;
 		}
 		Xml.Node* top_node = null;
 

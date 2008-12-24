@@ -399,7 +399,7 @@ namespace PList {
 		public String ();
 	}
 	[CCode (cheader_filename = "plist.h")]
-	public static PList.Dict parse (string filename) throws XmlError;
+	public static PList.Dict? parse (string filename) throws GLib.FileError;
 	[CCode (cheader_filename = "plist.h")]
 	public static void print_plist (int indent, PList.Node node);
 }
