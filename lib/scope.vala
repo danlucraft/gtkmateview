@@ -79,13 +79,18 @@ namespace Gtk.Mate {
 		public static int compare_by_loc(Scope a, Scope b, void* data) {
 			var a_start = a.start_loc();
 			var b_start = b.start_loc();
+//			stdout.printf("comparing: %s (%d, %d) to %s (%d, %d)\n", a.name, a_start.line, a_start.line_offset,
+//				b.name, b_start.line, b_start.line_offset);
 			if (TextLoc.lt(a_start, b_start)) {
+//				stdout.printf("  -1\n");
 				return -1;
 			}
 			else if (TextLoc.equal(a_start, b_start)) {
+//				stdout.printf("  0\n");
 				return 0;
 			}
 			else {
+//				stdout.printf("  1\n");
 				return 1;
 			}
 		}
@@ -151,7 +156,7 @@ namespace Gtk.Mate {
 		}
 
 		public Scope? first_child_after(TextLoc loc) {
-			// stdout.printf("\"%s\".first_child_after(%d, %d)\n", name, loc.line, loc.line_offset);
+//			stdout.printf("\"%s\".first_child_after(%d, %d)\n", name, loc.line, loc.line_offset);
 			if (children.get_length() == 0)
 				return null;
 			
@@ -159,8 +164,15 @@ namespace Gtk.Mate {
 			s.dummy_start_loc = loc;
 			s.dummy_end_loc = loc;
 			var iter = children.search(s, (CompareDataFunc) Scope.compare_by_loc);
-			if (!iter.is_end())
+			
+			if (!iter.is_begin()) {
+				var prev_scope = children.get(iter.prev());
+				if (Scope.compare_by_loc(prev_scope, s, null) == 0)
+					return prev_scope;
+			}
+			if (!iter.is_end()) {
 				return children.get(iter);
+			}
 			return null;
 		}
 

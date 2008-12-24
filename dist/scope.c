@@ -73,15 +73,20 @@ gint gtk_mate_scope_compare_by_loc (GtkMateScope* a, GtkMateScope* b, void* data
 	g_return_val_if_fail (b != NULL, 0);
 	a_start = gtk_mate_scope_start_loc (a);
 	b_start = gtk_mate_scope_start_loc (b);
+	/*stdout.printf("comparing: %s (%d, %d) to %s (%d, %d)\n", a.name, a_start.line, a_start.line_offset,
+	b.name, b_start.line, b_start.line_offset);*/
 	if (gtk_mate_text_loc_lt (a_start, b_start)) {
 		gint _tmp0;
+		/*stdout.printf("  -1\n");*/
 		return (_tmp0 = -1, (a_start == NULL) ? NULL : (a_start = (g_object_unref (a_start), NULL)), (b_start == NULL) ? NULL : (b_start = (g_object_unref (b_start), NULL)), _tmp0);
 	} else {
 		if (gtk_mate_text_loc_equal (a_start, b_start)) {
 			gint _tmp1;
+			/*stdout.printf("  0\n");*/
 			return (_tmp1 = 0, (a_start == NULL) ? NULL : (a_start = (g_object_unref (a_start), NULL)), (b_start == NULL) ? NULL : (b_start = (g_object_unref (b_start), NULL)), _tmp1);
 		} else {
 			gint _tmp2;
+			/*stdout.printf("  1\n");*/
 			return (_tmp2 = 1, (a_start == NULL) ? NULL : (a_start = (g_object_unref (a_start), NULL)), (b_start == NULL) ? NULL : (b_start = (g_object_unref (b_start), NULL)), _tmp2);
 		}
 	}
@@ -278,10 +283,10 @@ GtkMateScope* gtk_mate_scope_first_child_after (GtkMateScope* self, GtkMateTextL
 	GtkMateTextLoc* _tmp4;
 	GtkMateTextLoc* _tmp3;
 	GSequenceIter* iter;
-	GtkMateScope* _tmp7;
+	GtkMateScope* _tmp9;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (loc != NULL, NULL);
-	/* stdout.printf("\"%s\".first_child_after(%d, %d)\n", name, loc.line, loc.line_offset);*/
+	/*stdout.printf("\"%s\".first_child_after(%d, %d)\n", name, loc.line, loc.line_offset);*/
 	if (g_sequence_get_length (gtk_mate_scope_get_children (self)) == 0) {
 		return NULL;
 	}
@@ -293,15 +298,27 @@ GtkMateScope* gtk_mate_scope_first_child_after (GtkMateScope* self, GtkMateTextL
 	_tmp3 = NULL;
 	s->dummy_end_loc = (_tmp4 = (_tmp3 = loc, (_tmp3 == NULL) ? NULL : g_object_ref (_tmp3)), (s->dummy_end_loc == NULL) ? NULL : (s->dummy_end_loc = (g_object_unref (s->dummy_end_loc), NULL)), _tmp4);
 	iter = g_sequence_search (gtk_mate_scope_get_children (self), s, (GCompareDataFunc) gtk_mate_scope_compare_by_loc, NULL);
-	if (!g_sequence_iter_is_end (iter)) {
+	if (!g_sequence_iter_is_begin (iter)) {
 		GtkMateScope* _tmp5;
-		GtkMateScope* _tmp6;
+		GtkMateScope* prev_scope;
 		_tmp5 = NULL;
-		_tmp6 = NULL;
-		return (_tmp6 = (_tmp5 = (GtkMateScope*) g_sequence_get (iter), (_tmp5 == NULL) ? NULL : g_object_ref (_tmp5)), (s == NULL) ? NULL : (s = (g_object_unref (s), NULL)), _tmp6);
+		prev_scope = (_tmp5 = (GtkMateScope*) g_sequence_get (g_sequence_iter_prev (iter)), (_tmp5 == NULL) ? NULL : g_object_ref (_tmp5));
+		if (gtk_mate_scope_compare_by_loc (prev_scope, s, NULL) == 0) {
+			GtkMateScope* _tmp6;
+			_tmp6 = NULL;
+			return (_tmp6 = prev_scope, (s == NULL) ? NULL : (s = (g_object_unref (s), NULL)), _tmp6);
+		}
+		(prev_scope == NULL) ? NULL : (prev_scope = (g_object_unref (prev_scope), NULL));
 	}
-	_tmp7 = NULL;
-	return (_tmp7 = NULL, (s == NULL) ? NULL : (s = (g_object_unref (s), NULL)), _tmp7);
+	if (!g_sequence_iter_is_end (iter)) {
+		GtkMateScope* _tmp7;
+		GtkMateScope* _tmp8;
+		_tmp7 = NULL;
+		_tmp8 = NULL;
+		return (_tmp8 = (_tmp7 = (GtkMateScope*) g_sequence_get (iter), (_tmp7 == NULL) ? NULL : g_object_ref (_tmp7)), (s == NULL) ? NULL : (s = (g_object_unref (s), NULL)), _tmp8);
+	}
+	_tmp9 = NULL;
+	return (_tmp9 = NULL, (s == NULL) ? NULL : (s = (g_object_unref (s), NULL)), _tmp9);
 }
 
 

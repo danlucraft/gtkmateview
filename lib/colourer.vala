@@ -57,8 +57,8 @@ namespace Gtk.Mate {
 		}
 
 		public void colour_scope(Scope scope, bool inner, bool force=true) {
-//			stdout.printf("colour_scope: %s (%s) [%d - %d]\n", scope.name, inner ? "true" : "false",
-//			 			  scope.start_offset(), scope.end_offset());
+	//		stdout.printf("colour_scope: %s (%s) [%d - %d]\n", scope.name, inner ? "true" : "false",
+ 	//	 			  scope.start_offset(), scope.end_offset());
 			int priority = scope.priority(inner);
 			TextTag tag = null;
 			TextIter start_iter, end_iter;

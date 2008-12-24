@@ -117,6 +117,7 @@ namespace PList {
 			stdout.printf("%s contents not UTF-8\n", filename);
 			return null;
 		}
+		
 		Xml.Doc* xml_doc = Xml.Parser.parse_memory (file_contents, (int) len);
 		if (xml_doc == null) {
 //			throw new XmlError.FILE_NOT_FOUND ("file "+ filename + " not found or permissions missing");

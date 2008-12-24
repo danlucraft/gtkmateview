@@ -97,15 +97,21 @@ END
     @mb.type(0, 5, "#")
     t1=@mb.clean_reparse
     t2=@mb.pretty
-    t1.should == t2
-#     @mb.pretty.should == @mb.clean_reparse
-  end
+    t2.should == t1
+   end
 
   it "should reparse closing scopes" do
     @mb.text = "fo=<<HI\nHI"
-    puts @mb.parser.root.pretty(0)
     @mb.type(1, 2, "\n")
-    puts @mb.parser.root.pretty(0)
+    @mb.pretty.should == @mb.clean_reparse
+  end
+  
+  it "should reparse strings correctly" do
+    @mb.text = "bus(\"les/\#{name}\").data = self\n\n"
+    @mb.type(0, 30, " ")
     @mb.pretty.should == @mb.clean_reparse
   end
 end
+
+
+
