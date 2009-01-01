@@ -135,13 +135,13 @@ namespace Gtk {
 			public void clear_line (int line_ix, Gtk.Mate.Scope start_scope, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes, Gee.ArrayList<Gtk.Mate.Scope> removed_scopes);
 			public void close ();
 			public void close_scope (Gtk.Mate.Scanner scanner, Gtk.Mate.Scope? expected_scope, int line_ix, string line, int length, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes, Gee.ArrayList<Gtk.Mate.Scope> removed_scopes);
-			public void collect_child_captures (int line_ix, Gtk.Mate.Scope scope, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes);
+			public void collect_child_captures (int line_ix, int length, Gtk.Mate.Scope scope, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes);
 			public void connect_buffer_signals ();
 			public static Gtk.Mate.Parser create (Gtk.Mate.Grammar grammar, Gtk.Mate.Buffer buffer);
 			public void delete_range_after_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);
 			public void delete_range_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);
 			public Gtk.Mate.Scope? get_expected_scope (Gtk.Mate.Scope current_scope, int line, int line_offset);
-			public void handle_captures (int line_ix, string line, Gtk.Mate.Scope scope, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes);
+			public void handle_captures (int line_ix, int length, string line, Gtk.Mate.Scope scope, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes);
 			public void insert_text_after_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, string text, int length);
 			public void insert_text_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, string text, int length);
 			public bool is_parsing ();
@@ -297,18 +297,19 @@ namespace Gtk {
 		}
 		[CCode (cheader_filename = "theme.h")]
 		public class Theme : Gtk.Object {
+			public static Gee.ArrayList<Gtk.Mate.Theme> _themes;
 			public string author;
 			public Gee.HashMap<string,Gtk.Mate.ThemeSetting> cached_setting_for_scopes;
 			public Gee.HashMap<string,string> global_settings;
 			public bool is_initialized;
 			public string name;
 			public Gee.ArrayList<Gtk.Mate.ThemeSetting> settings;
-			public static Gee.ArrayList<Gtk.Mate.Theme> themes;
 			public static Gtk.Mate.Theme create_from_plist (PList.Dict dict);
 			public void init_for_use ();
 			public Theme ();
 			public Gtk.Mate.ThemeSetting settings_for_scope (Gtk.Mate.Scope scope, bool inner, Gtk.Mate.ThemeSetting? exclude_setting);
 			public static Gee.ArrayList<string>? theme_filenames ();
+			public static Gee.ArrayList<Gtk.Mate.Theme> themes ();
 		}
 		[CCode (cheader_filename = "theme.h")]
 		public class ThemeSetting : Gtk.Object {

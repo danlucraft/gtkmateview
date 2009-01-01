@@ -2,14 +2,14 @@
 #include "gtkmateview.h"
 #include <glib/gstdio.h>
 #include <stdio.h>
-#include <gee/collection.h>
 #include <gee/iterable.h>
 #include <gee/iterator.h>
+#include <gee/collection.h>
+#include "theme.h"
+#include "plist.h"
 #include "buffer.h"
 #include "bundle.h"
-#include "theme.h"
 #include "grammar.h"
-#include "plist.h"
 
 
 
@@ -203,11 +203,11 @@ void gtk_mate_load_themes (void) {
 	GError * inner_error;
 	GeeArrayList* _tmp0;
 	inner_error = NULL;
-	if (gtk_mate_theme_themes != NULL) {
+	if (gtk_mate_theme__themes != NULL) {
 		return;
 	}
 	_tmp0 = NULL;
-	gtk_mate_theme_themes = (_tmp0 = gee_array_list_new (GTK_MATE_TYPE_THEME, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), (gtk_mate_theme_themes == NULL) ? NULL : (gtk_mate_theme_themes = (g_object_unref (gtk_mate_theme_themes), NULL)), _tmp0);
+	gtk_mate_theme__themes = (_tmp0 = gee_array_list_new (GTK_MATE_TYPE_THEME, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), (gtk_mate_theme__themes == NULL) ? NULL : (gtk_mate_theme__themes = (g_object_unref (gtk_mate_theme__themes), NULL)), _tmp0);
 	{
 		GeeArrayList* _tmp1;
 		GeeIterator* _tmp2;
@@ -231,7 +231,7 @@ void gtk_mate_load_themes (void) {
 				}
 				theme = gtk_mate_theme_create_from_plist (PLIST_DICT (plist));
 				if (theme != NULL) {
-					gee_collection_add ((GeeCollection*) gtk_mate_theme_themes, theme);
+					gee_collection_add ((GeeCollection*) gtk_mate_theme__themes, theme);
 				}
 				(plist == NULL) ? NULL : (plist = (g_object_unref (plist), NULL));
 				(theme == NULL) ? NULL : (theme = (g_object_unref (theme), NULL));

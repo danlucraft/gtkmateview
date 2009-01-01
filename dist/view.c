@@ -24,17 +24,21 @@ gboolean gtk_mate_view_set_theme_by_name (GtkMateView* self, const char* name) {
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
 	{
+		GeeArrayList* _tmp0;
+		GeeIterator* _tmp1;
 		GeeIterator* theme_it;
-		theme_it = gee_iterable_iterator ((GeeIterable*) gtk_mate_theme_themes);
+		_tmp0 = NULL;
+		_tmp1 = NULL;
+		theme_it = (_tmp1 = gee_iterable_iterator ((GeeIterable*) (_tmp0 = gtk_mate_theme_themes ())), (_tmp0 == NULL) ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL)), _tmp1);
 		while (gee_iterator_next (theme_it)) {
 			GtkMateTheme* theme;
 			theme = (GtkMateTheme*) gee_iterator_get (theme_it);
 			if (_vala_strcmp0 (theme->name, name) == 0) {
-				gboolean _tmp0;
+				gboolean _tmp2;
 				gtk_mate_theme_init_for_use (theme);
 				gtk_mate_parser_change_theme ((GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self)))->parser, theme);
 				gtk_mate_view_set_global_theme_settings (self);
-				return (_tmp0 = TRUE, (theme == NULL) ? NULL : (theme = (g_object_unref (theme), NULL)), (theme_it == NULL) ? NULL : (theme_it = (g_object_unref (theme_it), NULL)), _tmp0);
+				return (_tmp2 = TRUE, (theme == NULL) ? NULL : (theme = (g_object_unref (theme), NULL)), (theme_it == NULL) ? NULL : (theme_it = (g_object_unref (theme_it), NULL)), _tmp2);
 			}
 			(theme == NULL) ? NULL : (theme = (g_object_unref (theme), NULL));
 		}

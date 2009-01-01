@@ -5,7 +5,7 @@ using Gee;
 namespace Gtk.Mate {
 	public class View : SourceView {
 		public bool set_theme_by_name(string name) {
-			foreach (var theme in Theme.themes) {
+			foreach (var theme in Theme.themes()) {
 				if (theme.name == name) {
 					theme.init_for_use();
 					((Gtk.Mate.Buffer) buffer).parser.change_theme(theme);

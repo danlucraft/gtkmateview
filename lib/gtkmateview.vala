@@ -57,15 +57,15 @@ namespace Gtk {
 
 		// Loads themes from /usr/share/textmate/Themes/. 
 		public static void load_themes() {
-			if (Theme.themes != null)
+			if (Theme._themes != null)
 				return;
-			Theme.themes = new ArrayList<Theme>();
+			Theme._themes = new ArrayList<Theme>();
 			foreach (string fn in Theme.theme_filenames()) {
 				try {
 					var plist = PList.parse(fn);
 					var theme = Theme.create_from_plist((PList.Dict) plist);
 					if (theme != null)
-						Theme.themes.add(theme);
+						Theme._themes.add(theme);
 				}
 				catch(XmlError e) {
 					stdout.printf("error opening %s\n", fn);

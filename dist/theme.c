@@ -1,12 +1,12 @@
 
 #include "theme.h"
+#include <gee/collection.h>
+#include <stdio.h>
 #include <gee/map.h>
 #include <gee/iterable.h>
 #include <gee/iterator.h>
-#include <gee/collection.h>
-#include <stdio.h>
-#include "matcher.h"
 #include "gtkmateview.h"
+#include "matcher.h"
 #include "scope.h"
 
 
@@ -20,7 +20,7 @@ static void gtk_mate_theme_setting_finalize (GObject* obj);
 enum  {
 	GTK_MATE_THEME_DUMMY_PROPERTY
 };
-GeeArrayList* gtk_mate_theme_themes = NULL;
+GeeArrayList* gtk_mate_theme__themes = NULL;
 static gpointer gtk_mate_theme_parent_class = NULL;
 static void gtk_mate_theme_finalize (GObject* obj);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
@@ -158,6 +158,16 @@ GType gtk_mate_theme_setting_get_type (void) {
 		gtk_mate_theme_setting_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateThemeSetting", &g_define_type_info, 0);
 	}
 	return gtk_mate_theme_setting_type_id;
+}
+
+
+GeeArrayList* gtk_mate_theme_themes (void) {
+	GeeArrayList* _tmp0;
+	if (gtk_mate_theme__themes == NULL) {
+		gtk_mate_load_themes ();
+	}
+	_tmp0 = NULL;
+	return (_tmp0 = gtk_mate_theme__themes, (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0));
 }
 
 

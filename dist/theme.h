@@ -69,7 +69,8 @@ gboolean gtk_mate_theme_setting_match (GtkMateThemeSetting* self, const char* sc
 GtkMateThemeSetting* gtk_mate_theme_setting_construct (GType object_type);
 GtkMateThemeSetting* gtk_mate_theme_setting_new (void);
 GType gtk_mate_theme_setting_get_type (void);
-extern GeeArrayList* gtk_mate_theme_themes;
+extern GeeArrayList* gtk_mate_theme__themes;
+GeeArrayList* gtk_mate_theme_themes (void);
 GtkMateTheme* gtk_mate_theme_create_from_plist (PListDict* dict);
 void gtk_mate_theme_init_for_use (GtkMateTheme* self);
 GeeArrayList* gtk_mate_theme_theme_filenames (void);

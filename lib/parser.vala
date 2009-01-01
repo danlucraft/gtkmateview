@@ -310,7 +310,7 @@ namespace Gtk.Mate {
 				scanner.current_scope.is_open = false;
 				scanner.current_scope.end_match_string = end_match_string;
 				//stdout.printf("end_match_string: '%s'\n", scanner.current_scope.end_match_string);
-				handle_captures(line_ix, line, scanner.current_scope, m, all_scopes, closed_scopes);
+				handle_captures(line_ix, length, line, scanner.current_scope, m, all_scopes, closed_scopes);
 				if (expected_scope != null) {
 					scanner.current_scope.delete_child(expected_scope);
 					removed_scopes.add(expected_scope);
@@ -366,13 +366,13 @@ namespace Gtk.Mate {
 						// removed_scopes << expected_scope
 						removed_scopes.add(expected_scope);
 					}
-					handle_captures(line_ix, line, s, m, all_scopes, closed_scopes);
+					handle_captures(line_ix, length, line, s, m, all_scopes, closed_scopes);
 					scanner.current_scope.add_child(s);
 					scanner.current_scope = s;
 				}
 			}
 			else {
-				handle_captures(line_ix, line, s, m, all_scopes, closed_scopes);
+				handle_captures(line_ix, length, line, s, m, all_scopes, closed_scopes);
 				scanner.current_scope.add_child(s);
 				scanner.current_scope = s;
 			}
@@ -404,7 +404,7 @@ namespace Gtk.Mate {
 					}
 				}
 				else {
-					handle_captures(line_ix, line, s, m, all_scopes, closed_scopes);
+					handle_captures(line_ix, length, line, s, m, all_scopes, closed_scopes);
 					if (s.overlaps_with(expected_scope)) {
 						// stdout.printf("%s overlaps with expected %s (current: %s)\n", s.name, expected_scope.name, scanner.current_scope.name);
 						if (expected_scope == scanner.current_scope) {
@@ -420,7 +420,7 @@ namespace Gtk.Mate {
 				}
 			}
 			else {
-				handle_captures(line_ix, line, s, m, all_scopes, closed_scopes);
+				handle_captures(line_ix, length, line, s, m, all_scopes, closed_scopes);
 				scanner.current_scope.add_child(s);
 			}
 			all_scopes.add(new_scope);
@@ -429,9 +429,9 @@ namespace Gtk.Mate {
 
 		// Opens scopes for captures AND creates closing regexp from
 		// captures if necessary.
-		public void handle_captures(int line_ix, string line, Scope scope, Marker m, ArrayList<Scope> all_scopes, ArrayList<Scope> closed_scopes) {
+		public void handle_captures(int line_ix, int length, string line, Scope scope, Marker m, ArrayList<Scope> all_scopes, ArrayList<Scope> closed_scopes) {
 			make_closing_regex(line, scope, m);
-			collect_child_captures(line_ix, scope, m, all_scopes, closed_scopes);
+			collect_child_captures(line_ix, length, scope, m, all_scopes, closed_scopes);
 		}
 
 		public Onig.Rx? make_closing_regex(string line, Scope scope, Marker m) {
@@ -467,7 +467,7 @@ namespace Gtk.Mate {
 			return null;
 		}
 		
-		public void collect_child_captures(int line_ix, Scope scope, Marker m, 
+		public void collect_child_captures(int line_ix, int length, Scope scope, Marker m, 
 										   ArrayList<Scope> all_scopes,
 										   ArrayList<Scope> closed_scopes) {
 			Scope s;
@@ -493,8 +493,11 @@ namespace Gtk.Mate {
 					if (m.match.begin(cap) != -1) {
 						s = new Scope(this.buffer, captures.get(cap));
 						s.pattern = scope.pattern;
-						s.start_mark_set(line_ix, m.match.begin(cap), false);
-						s.end_mark_set(line_ix, m.match.end(cap), true);
+						s.start_mark_set(line_ix, int.min(m.match.begin(cap), length-1), false);
+						if (m.match.end(0) == length && this.buffer.get_line_count() > line_ix+1) 
+							s.end_mark_set(line_ix + 1, 0, true);
+						else
+							s.end_mark_set(line_ix, int.min(m.match.end(0), length), true);
 						s.is_open = false;
 						s.is_capture = true;
 						s.parent = scope;

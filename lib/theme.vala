@@ -45,7 +45,13 @@ namespace Gtk.Mate {
 	}
 	
 	public class Theme : Object {
-		public static ArrayList<Theme> themes;
+		public static ArrayList<Theme> _themes;
+		public static ArrayList<Theme> themes() {
+			if (Theme._themes == null) {
+				Gtk.Mate.load_themes();
+			}
+			return Theme._themes;
+		}
 
 		public string author;
 		public string name;
