@@ -389,7 +389,7 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 			expected_scope = gtk_mate_parser_get_expected_scope (self, gtk_mate_scanner_get_current_scope (scanner), line_ix, scanner->position);
 			/* if (expected_scope != null)
 			 stdout.printf("expected_scope: %s (%d, %d)\n", expected_scope.name, expected_scope.start_loc().line, 
-			 expected_scope.start_loc().line_offset);
+			  expected_scope.start_loc().line_offset);
 			 else
 			 stdout.printf("no expected scope\n");
 			 stdout.printf("  scope: %s\n", m.pattern.name);*/
@@ -1041,7 +1041,7 @@ void gtk_mate_parser_collect_child_captures (GtkMateParser* self, gint line_ix, 
 					s->pattern = (_tmp13 = (_tmp12 = scope->pattern, (_tmp12 == NULL) ? NULL : g_object_ref (_tmp12)), (s->pattern == NULL) ? NULL : (s->pattern = (g_object_unref (s->pattern), NULL)), _tmp13);
 					gtk_mate_scope_start_mark_set (s, line_ix, MIN (onig_match_begin (m->match, cap), length - 1), FALSE);
 					_tmp14 = FALSE;
-					if (onig_match_end (m->match, 0) == length) {
+					if (onig_match_end (m->match, 0) > length) {
 						_tmp14 = gtk_text_buffer_get_line_count ((GtkTextBuffer*) self->priv->_buffer) > (line_ix + 1);
 					} else {
 						_tmp14 = FALSE;
@@ -1049,7 +1049,7 @@ void gtk_mate_parser_collect_child_captures (GtkMateParser* self, gint line_ix, 
 					if (_tmp14) {
 						gtk_mate_scope_end_mark_set (s, line_ix + 1, 0, TRUE);
 					} else {
-						gtk_mate_scope_end_mark_set (s, line_ix, MIN (onig_match_end (m->match, 0), length), TRUE);
+						gtk_mate_scope_end_mark_set (s, line_ix, MIN (onig_match_end (m->match, cap), length), TRUE);
 					}
 					s->is_open = FALSE;
 					s->is_capture = TRUE;

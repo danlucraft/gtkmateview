@@ -165,7 +165,7 @@ namespace Gtk.Mate {
 				var expected_scope = get_expected_scope(scanner.current_scope, line_ix, scanner.position);
 				// if (expected_scope != null)
 				// 	stdout.printf("expected_scope: %s (%d, %d)\n", expected_scope.name, expected_scope.start_loc().line, 
-				// 		expected_scope.start_loc().line_offset);
+				//  		expected_scope.start_loc().line_offset);
 				// else
 				// 	stdout.printf("no expected scope\n");
 				// stdout.printf("  scope: %s\n", m.pattern.name);
@@ -467,9 +467,7 @@ namespace Gtk.Mate {
 			return null;
 		}
 		
-		public void collect_child_captures(int line_ix, int length, Scope scope, Marker m, 
-										   ArrayList<Scope> all_scopes,
-										   ArrayList<Scope> closed_scopes) {
+		public void collect_child_captures(int line_ix, int length, Scope scope, Marker m, ArrayList<Scope> all_scopes, ArrayList<Scope> closed_scopes) {
 			Scope s;
 			HashMap<int, string> captures;
 			if (m.pattern is SinglePattern) {
@@ -494,10 +492,10 @@ namespace Gtk.Mate {
 						s = new Scope(this.buffer, captures.get(cap));
 						s.pattern = scope.pattern;
 						s.start_mark_set(line_ix, int.min(m.match.begin(cap), length-1), false);
-						if (m.match.end(0) == length && this.buffer.get_line_count() > line_ix+1) 
+						if (m.match.end(0) > length && this.buffer.get_line_count() > line_ix+1) 
 							s.end_mark_set(line_ix + 1, 0, true);
 						else
-							s.end_mark_set(line_ix, int.min(m.match.end(0), length), true);
+							s.end_mark_set(line_ix, int.min(m.match.end(cap), length), true);
 						s.is_open = false;
 						s.is_capture = true;
 						s.parent = scope;
