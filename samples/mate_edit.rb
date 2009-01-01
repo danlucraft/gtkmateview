@@ -42,7 +42,7 @@ button_file = Gtk::Button.new("Load file")
 button_file.signal_connect("clicked") do
   if @current_view
     s = Time.now
-    text = File.read("../gitcase/config/settings.yml")
+    text = File.read("../redcar/notes/notes.txt")
     @current_view.buffer.text = text
     puts "took #{Time.now - s} seconds"
     puts "created #{Gtk::Mate::Scope.scope_count} scopes"

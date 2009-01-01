@@ -267,25 +267,25 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 					}
 				} else {
 					PListNode* _tmp14;
-					/* or it can go to an array of patterns*/
 					_tmp14 = NULL;
-					pa1 = (_tmp14 = plist_dict_get (pd1, "patterns"), (pa1 == NULL) ? NULL : (pa1 = (g_object_unref (pa1), NULL)), _tmp14);
-					{
-						GeeIterator* ps1_it;
-						ps1_it = gee_iterable_iterator ((GeeIterable*) (PLIST_ARRAY (pa1))->array);
-						while (gee_iterator_next (ps1_it)) {
-							PListNode* ps1;
-							GtkMatePattern* _tmp15;
-							ps1 = (PListNode*) gee_iterator_get (ps1_it);
-							_tmp15 = NULL;
-							pattern = (_tmp15 = gtk_mate_pattern_create_from_plist (self->all_patterns, PLIST_DICT (ps1)), (pattern == NULL) ? NULL : (pattern = (g_object_unref (pattern), NULL)), _tmp15);
-							gtk_mate_pattern_set_grammar (pattern, self);
-							if (pattern != NULL) {
-								gee_collection_add ((GeeCollection*) repo_array, pattern);
+					if ((pa1 = (_tmp14 = plist_dict_get (pd1, "patterns"), (pa1 == NULL) ? NULL : (pa1 = (g_object_unref (pa1), NULL)), _tmp14)) != NULL) {
+						{
+							GeeIterator* ps1_it;
+							ps1_it = gee_iterable_iterator ((GeeIterable*) (PLIST_ARRAY (pa1))->array);
+							while (gee_iterator_next (ps1_it)) {
+								PListNode* ps1;
+								GtkMatePattern* _tmp15;
+								ps1 = (PListNode*) gee_iterator_get (ps1_it);
+								_tmp15 = NULL;
+								pattern = (_tmp15 = gtk_mate_pattern_create_from_plist (self->all_patterns, PLIST_DICT (ps1)), (pattern == NULL) ? NULL : (pattern = (g_object_unref (pattern), NULL)), _tmp15);
+								gtk_mate_pattern_set_grammar (pattern, self);
+								if (pattern != NULL) {
+									gee_collection_add ((GeeCollection*) repo_array, pattern);
+								}
+								(ps1 == NULL) ? NULL : (ps1 = (g_object_unref (ps1), NULL));
 							}
-							(ps1 == NULL) ? NULL : (ps1 = (g_object_unref (ps1), NULL));
+							(ps1_it == NULL) ? NULL : (ps1_it = (g_object_unref (ps1_it), NULL));
 						}
-						(ps1_it == NULL) ? NULL : (ps1_it = (g_object_unref (ps1_it), NULL));
 					}
 				}
 				gee_map_set ((GeeMap*) self->repository, key, repo_array);

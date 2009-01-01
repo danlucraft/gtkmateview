@@ -85,11 +85,11 @@ namespace Gtk.Mate {
 			PList.Node? fsm = plist.get("foldingStartMarker");
 			if (fsm != null)
 				folding_start_marker = Onig.Rx.make1(((PList.String) fsm).str);
-
+				
 			PList.Node? ftm = plist.get("foldingStopMarker");
 			if (ftm != null)
 				folding_stop_marker = Onig.Rx.make1(((PList.String) ftm).str);
-
+				
 			this.all_patterns = new ArrayList<Pattern>();
 
 			// stdout.printf("getting patterns\n");
@@ -103,7 +103,7 @@ namespace Gtk.Mate {
 					if (pattern != null)
 						patterns.add(pattern);
 				}
-
+				
 			// stdout.printf("getting repository\n");
 			repository = new HashMap<string, ArrayList<Pattern>>(str_hash, str_equal);
 			PList.Dict? pd = (PList.Dict?) plist.get("repository");
@@ -123,8 +123,7 @@ namespace Gtk.Mate {
 						}
 					}
 					// or it can go to an array of patterns
-					else {
-						pa1 = pd1.get("patterns");
+					else if ((pa1 = pd1.get("patterns")) != null) {
 						foreach (PList.Node ps1 in ((PList.Array) pa1).array) {
 							pattern = Pattern.create_from_plist(this.all_patterns, (PList.Dict) ps1);
 							pattern.grammar = this;
@@ -136,7 +135,7 @@ namespace Gtk.Mate {
 					repository.set(key, repo_array);
 				}
 			}
-
+			
 			// stdout.printf("all_patterns: %d\n", all_patterns.size);
 			foreach (var p in this.all_patterns) {
 				if (p is DoublePattern) {

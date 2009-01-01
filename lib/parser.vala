@@ -686,7 +686,7 @@ namespace Gtk.Mate {
 		
 		public static Parser create(Grammar grammar, Mate.Buffer buffer) {
 			grammar.init_for_use();
-
+			
 			var p = new Parser();
 			// remove when signal_connect_after works:
 			if (Parser.existing_parsers == null) 
