@@ -45,7 +45,7 @@ namespace Gtk.Mate {
 			PList.Node? nm = plist.get("name");
 			if (nm != null)
 				name = ((PList.String) nm).str;
-
+				
 			PList.Node? flm = plist.get("firstLineMatch");
 			if (flm != null)
 				first_line_match = Onig.Rx.make1(((PList.String) flm).str);
@@ -144,6 +144,7 @@ namespace Gtk.Mate {
 			}
 
 			Pattern.replace_include_patterns(this.patterns, this);
+			
 		}
 	}
 }

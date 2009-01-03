@@ -139,11 +139,13 @@ namespace Gtk.Mate {
 			pattern.captures = Pattern.make_captures_from_plist((PList.Dict?) n);
 
 			n = pd.get("disabled");
-			if (n != null && ((PList.Integer) n).value == 1)
+			if (n != null && n is PList.Integer && ((PList.Integer) n).value == 1)
+				pattern.disabled = true;
+			else if (n != null && n is PList.String && ((PList.String) n).str == "1")
 				pattern.disabled = true;
 			else
 				pattern.disabled = false;
-
+				
 			all_patterns.add(pattern);
 			return pattern;
 		}
@@ -204,11 +206,12 @@ namespace Gtk.Mate {
 			}
 
 			n = pd.get("disabled");
-			if (n != null && ((PList.Integer) n).value == 1)
+			if (n != null && n is PList.Integer && ((PList.Integer) n).value == 1)
+				pattern.disabled = true;
+			else if (n != null && n is PList.String && ((PList.String) n).str == "1")
 				pattern.disabled = true;
 			else
 				pattern.disabled = false;
-
 
 			all_patterns.add(pattern);
 			return pattern;

@@ -10,7 +10,7 @@ describe Gtk::Mate::Parser, "when parsing Ruby from scratch" do
   
   it "parses flat SinglePatterns" do
     @mb.text = "1 + 2 + Redcar"
-    @mb.parser.root.pretty(0).should == <<END
+    @mb.parser.root.pretty(0).should == (t=<<END)
 + source.ruby (0,0)-(0,14) open
   + constant.numeric.ruby (0,0)-(0,1) closed
   + keyword.operator.arithmetic.ruby (0,2)-(0,3) closed
@@ -22,7 +22,7 @@ END
   
   it "parses flat SinglePatterns on multiple lines" do
     @mb.text = "1 + \n3 + Redcar"
-    @mb.parser.root.pretty(0).should == <<END
+    @mb.parser.root.pretty(0).should == (t=<<END)
 + source.ruby (0,0)-(1,10) open
   + constant.numeric.ruby (0,0)-(0,1) closed
   + keyword.operator.arithmetic.ruby (0,2)-(0,3) closed
@@ -34,7 +34,7 @@ END
   
   it "arranges SinglePattern captures into trees" do
     @mb.text = "class Red < Car"
-    @mb.parser.root.pretty(0).should == <<END
+    @mb.parser.root.pretty(0).should == (t=<<END)
 + source.ruby (0,0)-(0,15) open
   + meta.class.ruby (0,0)-(0,15) closed
     c keyword.control.class.ruby (0,0)-(0,5) closed
@@ -46,7 +46,7 @@ END
   
   it "opens DoublePatterns" do
     @mb.text = "\"asdf"
-    @mb.parser.root.pretty(0).should == <<END
+    @mb.parser.root.pretty(0).should == (t=<<END)
 + source.ruby (0,0)-(0,5) open
   + string.quoted.double.ruby (0,0)-(0,5) open
     c punctuation.definition.string.begin.ruby (0,0)-(0,1) closed
@@ -55,7 +55,7 @@ END
   
   it "closes DoublePatterns" do
     @mb.text = "\"asdf\""
-    @mb.parser.root.pretty(0).should == <<END
+    @mb.parser.root.pretty(0).should == (t=<<END)
 + source.ruby (0,0)-(0,6) open
   + string.quoted.double.ruby (0,0)-(0,6) closed
     c punctuation.definition.string.begin.ruby (0,0)-(0,1) closed
@@ -65,7 +65,7 @@ END
   
   it "knows content_names of DoublePatterns" do
     @mb.text = "def foo(a, b)"
-    @mb.parser.root.pretty(0).should == <<END
+    @mb.parser.root.pretty(0).should == (t=<<END)
 + source.ruby (0,0)-(0,13) open
   + meta.function.method.with-arguments.ruby variable.parameter.function.ruby (0,0)-(0,13) closed
     c keyword.control.def.ruby (0,0)-(0,3) closed
@@ -78,7 +78,7 @@ END
   
   it "creates scopes as children of DoublePatterns" do
     @mb.text = "\"laura\\nroslin\""
-    @mb.parser.root.pretty(0).should == <<END
+    @mb.parser.root.pretty(0).should == (t=<<END)
 + source.ruby (0,0)-(0,15) open
   + string.quoted.double.ruby (0,0)-(0,15) closed
     c punctuation.definition.string.begin.ruby (0,0)-(0,1) closed
@@ -89,7 +89,7 @@ END
   
   it "creates closing regexes correctly" do
     @mb.text = "foo=\<\<END\nstring\nEND"
-    @mb.parser.root.pretty(0).should == <<END
+    @mb.parser.root.pretty(0).should == (t=<<END)
 + source.ruby (0,0)-(2,3) open
   + string.unquoted.heredoc.ruby (0,3)-(2,3) closed
     c punctuation.definition.string.begin.ruby (0,3)-(0,9) closed
@@ -100,7 +100,7 @@ END
   it "creates multiple levels of scopes" do
     @mb.text = "\"william \#{:joseph} adama\""
     puts @mb.parser.root.pretty(0)
-    @mb.parser.root.pretty(0).should == <<END
+    @mb.parser.root.pretty(0).should == (t=<<END)
 + source.ruby (0,0)-(0,26) open
   + string.quoted.double.ruby (0,0)-(0,26) closed
     c punctuation.definition.string.begin.ruby (0,0)-(0,1) closed
@@ -122,7 +122,7 @@ class Red < Car
   end
 end
 END
-    @mb.parser.root.pretty(0).should == <<END
+    @mb.parser.root.pretty(0).should == (t=<<END)
 + source.ruby (0,0)-(6,0) open
   + meta.class.ruby (0,0)-(0,15) closed
     c keyword.control.class.ruby (0,0)-(0,5) closed
@@ -155,7 +155,7 @@ foo=<<-HTML
 <p>FOO</p>
 HTML
 END
-    @mb.parser.root.pretty(0).should == <<END
+    @mb.parser.root.pretty(0).should == (t=<<END)
 + source.ruby (0,0)-(3,0) open
   + keyword.operator.assignment.ruby (0,3)-(0,4) closed
   + string.unquoted.embedded.html.ruby text.html.embedded.ruby (0,4)-(2,4) closed
@@ -182,7 +182,7 @@ foo=<<-HTML
 </style>
 HTML
 END
-    @mb.parser.root.pretty(0).should == <<END
+    @mb.parser.root.pretty(0).should == (t=<<END)
 + source.ruby (0,0)-(7,0) open
   + keyword.operator.assignment.ruby (0,3)-(0,4) closed
   + string.unquoted.embedded.html.ruby text.html.embedded.ruby (0,4)-(6,4) closed
@@ -204,4 +204,26 @@ END
     c punctuation.definition.string.end.ruby (6,0)-(6,4) closed
 END
   end
+  
+  it "should do YAML" do
+    @mb.set_grammar_by_name("YAML")
+    @mb.text = <<YAML
+--- !ruby/object:FreeBASE::PluginConfiguration 
+name: edit_tab
+description: The source editing tab.
+author: Daniel Lucraft
+version: 1.0
+autoload: true
+require_path: edit_tab/edit_tab.rb
+startup_module: Redcar::EditTabPlugin
+load_dependencies: 
+  core: "*"
+  edit_view: "*"
+start_dependencies: 
+  core: "*"
+  edit_view: "*"
+YAML
+  end
 end
+
+

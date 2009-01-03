@@ -113,6 +113,9 @@ namespace PList {
 		ulong len;
 		FileUtils.get_contents(filename, out file_contents, out len);
 		
+		// libxml doesn't like vertical tabs 
+		file_contents = StringHelper.gsub(file_contents, "\v", "");
+		
 		if (!file_contents.validate()) {
 			stdout.printf("%s contents not UTF-8\n", filename);
 			return null;
@@ -138,9 +141,11 @@ namespace PList {
 				continue;
 			top_node = iter;
 		}
+
 		if (top_node->name != "dict") {
 			stdout.printf("error top node is not a dict");
 		}
+
 		var dict = PList.Dict.parse_dict(top_node);
 
 		//free the document
@@ -149,7 +154,7 @@ namespace PList {
 	}
 
 	public static void print_plist(int indent, Node node) {
-        string str_indent = string.nfill(indent * 2, ' ');
+		string str_indent = string.nfill(indent * 2, ' ');
 		if (node is String) {
 			stdout.printf("%s%s,\n", str_indent, ((String) node).str);
 		}

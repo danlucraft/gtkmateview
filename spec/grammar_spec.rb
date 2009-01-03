@@ -64,4 +64,8 @@ describe Gtk::Mate::Grammar do
     smarty = html.all_patterns.find{|pt| pt.name == "source.smarty.embedded.html"}
     smarty.disabled.should be_true
   end
+  
+  it "should load YAML" do
+    @mb.set_grammar_by_name("YAML")
+  end
 end

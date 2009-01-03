@@ -414,7 +414,8 @@ GtkMateSinglePattern* gtk_mate_single_pattern_create_from_plist (GeeArrayList* a
 	GeeHashMap* _tmp5;
 	PListNode* _tmp6;
 	gboolean _tmp7;
-	GtkMateSinglePattern* _tmp8;
+	gboolean _tmp8;
+	GtkMateSinglePattern* _tmp11;
 	g_return_val_if_fail (all_patterns != NULL, NULL);
 	g_return_val_if_fail (pd != NULL, NULL);
 	ns = NULL;
@@ -441,7 +442,13 @@ GtkMateSinglePattern* gtk_mate_single_pattern_create_from_plist (GeeArrayList* a
 	_tmp6 = NULL;
 	n = (_tmp6 = plist_dict_get (pd, "disabled"), (n == NULL) ? NULL : (n = (g_object_unref (n), NULL)), _tmp6);
 	_tmp7 = FALSE;
+	_tmp8 = FALSE;
 	if (n != NULL) {
+		_tmp8 = PLIST_IS_INTEGER (n);
+	} else {
+		_tmp8 = FALSE;
+	}
+	if (_tmp8) {
 		_tmp7 = (PLIST_INTEGER (n))->value == 1;
 	} else {
 		_tmp7 = FALSE;
@@ -449,11 +456,29 @@ GtkMateSinglePattern* gtk_mate_single_pattern_create_from_plist (GeeArrayList* a
 	if (_tmp7) {
 		((GtkMatePattern*) pattern)->disabled = TRUE;
 	} else {
-		((GtkMatePattern*) pattern)->disabled = FALSE;
+		gboolean _tmp9;
+		gboolean _tmp10;
+		_tmp9 = FALSE;
+		_tmp10 = FALSE;
+		if (n != NULL) {
+			_tmp10 = PLIST_IS_STRING (n);
+		} else {
+			_tmp10 = FALSE;
+		}
+		if (_tmp10) {
+			_tmp9 = _vala_strcmp0 ((PLIST_STRING (n))->str, "1") == 0;
+		} else {
+			_tmp9 = FALSE;
+		}
+		if (_tmp9) {
+			((GtkMatePattern*) pattern)->disabled = TRUE;
+		} else {
+			((GtkMatePattern*) pattern)->disabled = FALSE;
+		}
 	}
 	gee_collection_add ((GeeCollection*) all_patterns, (GtkMatePattern*) pattern);
-	_tmp8 = NULL;
-	return (_tmp8 = pattern, (ns == NULL) ? NULL : (ns = (g_object_unref (ns), NULL)), (n == NULL) ? NULL : (n = (g_object_unref (n), NULL)), _tmp8);
+	_tmp11 = NULL;
+	return (_tmp11 = pattern, (ns == NULL) ? NULL : (ns = (g_object_unref (ns), NULL)), (n == NULL) ? NULL : (n = (g_object_unref (n), NULL)), _tmp11);
 }
 
 
@@ -519,7 +544,8 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 	GtkMatePattern* subpattern;
 	PListNode* _tmp20;
 	gboolean _tmp21;
-	GtkMateDoublePattern* _tmp22;
+	gboolean _tmp22;
+	GtkMateDoublePattern* _tmp25;
 	g_return_val_if_fail (all_patterns != NULL, NULL);
 	g_return_val_if_fail (pd != NULL, NULL);
 	ns = NULL;
@@ -596,7 +622,13 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 	_tmp20 = NULL;
 	n = (_tmp20 = plist_dict_get (pd, "disabled"), (n == NULL) ? NULL : (n = (g_object_unref (n), NULL)), _tmp20);
 	_tmp21 = FALSE;
+	_tmp22 = FALSE;
 	if (n != NULL) {
+		_tmp22 = PLIST_IS_INTEGER (n);
+	} else {
+		_tmp22 = FALSE;
+	}
+	if (_tmp22) {
 		_tmp21 = (PLIST_INTEGER (n))->value == 1;
 	} else {
 		_tmp21 = FALSE;
@@ -604,11 +636,29 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 	if (_tmp21) {
 		((GtkMatePattern*) pattern)->disabled = TRUE;
 	} else {
-		((GtkMatePattern*) pattern)->disabled = FALSE;
+		gboolean _tmp23;
+		gboolean _tmp24;
+		_tmp23 = FALSE;
+		_tmp24 = FALSE;
+		if (n != NULL) {
+			_tmp24 = PLIST_IS_STRING (n);
+		} else {
+			_tmp24 = FALSE;
+		}
+		if (_tmp24) {
+			_tmp23 = _vala_strcmp0 ((PLIST_STRING (n))->str, "1") == 0;
+		} else {
+			_tmp23 = FALSE;
+		}
+		if (_tmp23) {
+			((GtkMatePattern*) pattern)->disabled = TRUE;
+		} else {
+			((GtkMatePattern*) pattern)->disabled = FALSE;
+		}
 	}
 	gee_collection_add ((GeeCollection*) all_patterns, (GtkMatePattern*) pattern);
-	_tmp22 = NULL;
-	return (_tmp22 = pattern, (ns == NULL) ? NULL : (ns = (g_object_unref (ns), NULL)), (n == NULL) ? NULL : (n = (g_object_unref (n), NULL)), (ps == NULL) ? NULL : (ps = (g_object_unref (ps), NULL)), (subpattern == NULL) ? NULL : (subpattern = (g_object_unref (subpattern), NULL)), _tmp22);
+	_tmp25 = NULL;
+	return (_tmp25 = pattern, (ns == NULL) ? NULL : (ns = (g_object_unref (ns), NULL)), (n == NULL) ? NULL : (n = (g_object_unref (n), NULL)), (ps == NULL) ? NULL : (ps = (g_object_unref (ps), NULL)), (subpattern == NULL) ? NULL : (subpattern = (g_object_unref (subpattern), NULL)), _tmp25);
 }
 
 
