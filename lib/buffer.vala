@@ -21,6 +21,9 @@ namespace Gtk.Mate {
 			foreach (var bundle in Buffer.bundles) {
 				foreach (var gr in bundle.grammars) {
 					if (gr.name == name) {
+						if (this.parser != null) {
+							this.parser.close();
+						}
 						this.parser = Parser.create(gr, this);
 						return true;
 					}

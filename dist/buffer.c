@@ -61,6 +61,9 @@ gboolean gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* n
 					if (_vala_strcmp0 (gtk_mate_grammar_get_name (gr), name) == 0) {
 						GtkMateParser* _tmp2;
 						gboolean _tmp3;
+						if (self->parser != NULL) {
+							gtk_mate_parser_close (self->parser);
+						}
 						_tmp2 = NULL;
 						self->parser = (_tmp2 = gtk_mate_parser_create (gr, self), (self->parser == NULL) ? NULL : (self->parser = (g_object_unref (self->parser), NULL)), _tmp2);
 						return (_tmp3 = TRUE, (gr == NULL) ? NULL : (gr = (g_object_unref (gr), NULL)), (gr_it == NULL) ? NULL : (gr_it = (g_object_unref (gr_it), NULL)), (bundle == NULL) ? NULL : (bundle = (g_object_unref (bundle), NULL)), (bundle_it == NULL) ? NULL : (bundle_it = (g_object_unref (bundle_it), NULL)), _tmp3);

@@ -168,7 +168,7 @@ namespace Gtk.Mate {
 				//  		expected_scope.start_loc().line_offset);
 				// else
 				// 	stdout.printf("no expected scope\n");
-				// stdout.printf("  scope: %s\n", m.pattern.name);
+				// stdout.printf("  scope: %s (%d, %d) (line length: %d)\n", m.pattern.name, m.from, m.match.end(0), length);
 				if (m.is_close_scope) {
 					// stdout.printf("     (closing)\n");
 					close_scope(scanner, expected_scope, line_ix, line, length, m, 
@@ -303,10 +303,7 @@ namespace Gtk.Mate {
 					colourer.uncolour_scope(scanner.current_scope, false);
 				}
 				scanner.current_scope.inner_end_mark_set(line_ix, m.from, true);
-				if (m.match.end(0) == length && this.buffer.get_line_count() > line_ix+1) 
-					scanner.current_scope.end_mark_set(line_ix+1, 0, true);
-				else
-					scanner.current_scope.end_mark_set(line_ix, int.min(m.match.end(0), length), true);
+				set_end_mark_safely(scanner.current_scope, m, line_ix, length, 0);
 				scanner.current_scope.is_open = false;
 				scanner.current_scope.end_match_string = end_match_string;
 				//stdout.printf("end_match_string: '%s'\n", scanner.current_scope.end_match_string);
@@ -384,10 +381,7 @@ namespace Gtk.Mate {
 			s.pattern = m.pattern;
 			s.open_match = m.match;
 			s.start_mark_set(line_ix, m.from, false);
-			if (m.match.end(0) == length && this.buffer.get_line_count() > line_ix+1) 
-				s.end_mark_set(line_ix+1, 0, true);
-			else
-				s.end_mark_set(line_ix, int.min(m.match.end(0), length), true);
+			set_end_mark_safely(s, m, line_ix, length, 0);
 			s.is_open = false;
 			s.is_capture = false;
 			s.begin_match_string = line.substring(m.from, m.match.end(0)-m.from);
@@ -466,6 +460,14 @@ namespace Gtk.Mate {
 			}
 			return null;
 		}
+
+		public void set_end_mark_safely(Scope scope, Marker m, int line_ix, int length, int cap) {
+			int to = m.match.end(cap);
+			if (to == length && this.buffer.get_line_count() > line_ix+1) 
+				scope.end_mark_set(line_ix+1, 0, true);
+			else
+				scope.end_mark_set(line_ix, int.min(to, length), true);
+		}
 		
 		public void collect_child_captures(int line_ix, int length, Scope scope, Marker m, ArrayList<Scope> all_scopes, ArrayList<Scope> closed_scopes) {
 			Scope s;
@@ -492,10 +494,7 @@ namespace Gtk.Mate {
 						s = new Scope(this.buffer, captures.get(cap));
 						s.pattern = scope.pattern;
 						s.start_mark_set(line_ix, int.min(m.match.begin(cap), length-1), false);
-						if (m.match.end(0) > length && this.buffer.get_line_count() > line_ix+1) 
-							s.end_mark_set(line_ix + 1, 0, true);
-						else
-							s.end_mark_set(line_ix, int.min(m.match.end(cap), length), true);
+						set_end_mark_safely(s, m, line_ix, length, cap);
 						s.is_open = false;
 						s.is_capture = true;
 						s.parent = scope;
@@ -681,6 +680,7 @@ namespace Gtk.Mate {
 		}
 
 		public void close() {
+			stdout.printf("closing\n");
 			Parser.existing_parsers.remove(this);
 		}
 		

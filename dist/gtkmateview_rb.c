@@ -3314,6 +3314,39 @@ static VALUE rb_gtk_mate_parser_reset_table_priorities(VALUE self) {
     return Qnil;
 }
 
+static VALUE rb_gtk_mate_parser_set_end_mark_safely(VALUE self, VALUE scope, VALUE m, VALUE line_ix, VALUE length, VALUE cap) {
+    GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(line_ix) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    if (TYPE(length) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    if (TYPE(cap) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    // Method#argument_type_conversions
+    GtkMateScope* _c_scope;
+    _c_scope = _GTK_MATE_SCOPE_SELF(scope);
+    GtkMateMarker* _c_m;
+    _c_m = _GTK_MATE_MARKER_SELF(m);
+    int _c_line_ix;
+    _c_line_ix = FIX2INT(line_ix);
+    int _c_length;
+    _c_length = FIX2INT(length);
+    int _c_cap;
+    _c_cap = FIX2INT(cap);
+    // Method#body
+    
+    gtk_mate_parser_set_end_mark_safely(gtk_mate_parser, _c_scope, _c_m, _c_line_ix, _c_length, _c_cap);
+    // Method#return_type_conversion
+    return Qnil;
+}
+
 static VALUE rb_gtk_mate_parser_single_scope(VALUE self, VALUE scanner, VALUE expected_scope, VALUE line_ix, VALUE line, VALUE length, VALUE m, VALUE all_scopes, VALUE closed_scopes, VALUE removed_scopes) {
     GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
     // Method#type_checks
@@ -7802,6 +7835,7 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_parser, "recolour_children", rb_gtk_mate_parser_recolour_children, 1);
     rb_define_method(rbc_gtk_mate_parser, "remove_tags", rb_gtk_mate_parser_remove_tags, 0);
     rb_define_method(rbc_gtk_mate_parser, "reset_table_priorities", rb_gtk_mate_parser_reset_table_priorities, 0);
+    rb_define_method(rbc_gtk_mate_parser, "set_end_mark_safely", rb_gtk_mate_parser_set_end_mark_safely, 5);
     rb_define_method(rbc_gtk_mate_parser, "single_scope", rb_gtk_mate_parser_single_scope, 9);
     rb_define_method(rbc_gtk_mate_parser, "start_parsing", rb_gtk_mate_parser_start_parsing, 0);
     rb_define_method(rbc_gtk_mate_parser, "stop_parsing", rb_gtk_mate_parser_stop_parsing, 0);

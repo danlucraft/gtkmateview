@@ -208,20 +208,7 @@ END
   it "should do YAML" do
     @mb.set_grammar_by_name("YAML")
     @mb.text = <<YAML
---- !ruby/object:FreeBASE::PluginConfiguration 
-name: edit_tab
-description: The source editing tab.
-author: Daniel Lucraft
-version: 1.0
-autoload: true
-require_path: edit_tab/edit_tab.rb
-startup_module: Redcar::EditTabPlugin
-load_dependencies: 
-  core: "*"
-  edit_view: "*"
-start_dependencies: 
-  core: "*"
-  edit_view: "*"
+--- !ruby/object:Free
 YAML
   end
 end
