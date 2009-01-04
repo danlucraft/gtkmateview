@@ -7,6 +7,9 @@ namespace Gtk.Mate {
 		public static ArrayList<Mate.Bundle> bundles;
 		public static ArrayList<Mate.Theme>  themes;
 
+		// TODO: fix up valar to make this work.
+		public signal	void grammar_changed(string name);
+
 		public Parser parser;
 		
 		construct {

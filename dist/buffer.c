@@ -518,6 +518,7 @@ static void gtk_mate_buffer_class_init (GtkMateBufferClass * klass) {
 	gtk_mate_buffer_parent_class = g_type_class_peek_parent (klass);
 	G_OBJECT_CLASS (klass)->constructor = gtk_mate_buffer_constructor;
 	G_OBJECT_CLASS (klass)->finalize = gtk_mate_buffer_finalize;
+	g_signal_new ("grammar_changed", GTK_MATE_TYPE_BUFFER, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__STRING, G_TYPE_NONE, 1, G_TYPE_STRING);
 }
 
 

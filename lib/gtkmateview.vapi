@@ -34,6 +34,7 @@ namespace Gtk {
 			public bool set_grammar_by_name (string name);
 			public Gtk.TextIter start_iter ();
 			public Gtk.TextMark start_mark ();
+			public signal void grammar_changed (string name);
 		}
 		[CCode (cheader_filename = "bundle.h")]
 		public class Bundle : Gtk.Object {
