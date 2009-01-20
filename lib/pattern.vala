@@ -60,9 +60,14 @@ namespace Gtk.Mate {
 						string reponame = p.name.substring(1, ((int) p.name.size())-1);
 						ArrayList<Pattern> ps = g.repository.get(reponame);
 						// stdout.printf("(%s) getting reponame: %s (%d)\n", this.name, reponame, ps.size);
-						foreach (var p1 in ps) {
-							any_included = true;
-							patterns_to_include.add(p1);
+						if (ps != null) {
+							foreach (var p1 in ps) {
+								any_included = true;
+								patterns_to_include.add(p1);
+							}
+						}
+						else {
+							stdout.printf("warning: couldn't find repository key '%s' in grammar '%s'\n", reponame, g.name);
 						}
 					}
 				}

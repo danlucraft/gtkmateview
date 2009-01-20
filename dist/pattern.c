@@ -4,6 +4,7 @@
 #include <gee/collection.h>
 #include <gee/iterable.h>
 #include <gee/iterator.h>
+#include <stdio.h>
 
 
 
@@ -163,20 +164,21 @@ void gtk_mate_pattern_replace_repository_includes (GeeArrayList* patlist, GtkMat
 					reponame = (_tmp1 = g_utf8_offset_to_pointer (p->name, (glong) 1), g_strndup (_tmp1, g_utf8_offset_to_pointer (_tmp1, (glong) (((gint) strlen (p->name)) - 1)) - _tmp1));
 					ps = (GeeArrayList*) gee_map_get ((GeeMap*) g->repository, reponame);
 					/* stdout.printf("(%s) getting reponame: %s (%d)\n", this.name, reponame, ps.size);*/
-					{
-						GeeIterator* p1_it;
-						/* stdout.printf("(%s) getting reponame: %s (%d)\n", this.name, reponame, ps.size);*/
-						p1_it = gee_iterable_iterator ((GeeIterable*) ps);
-						/* stdout.printf("(%s) getting reponame: %s (%d)\n", this.name, reponame, ps.size);*/
-						while (gee_iterator_next (p1_it)) {
-							GtkMatePattern* p1;
-							/* stdout.printf("(%s) getting reponame: %s (%d)\n", this.name, reponame, ps.size);*/
-							p1 = (GtkMatePattern*) gee_iterator_get (p1_it);
-							any_included = TRUE;
-							gee_collection_add ((GeeCollection*) patterns_to_include, p1);
-							(p1 == NULL) ? NULL : (p1 = (g_object_unref (p1), NULL));
+					if (ps != NULL) {
+						{
+							GeeIterator* p1_it;
+							p1_it = gee_iterable_iterator ((GeeIterable*) ps);
+							while (gee_iterator_next (p1_it)) {
+								GtkMatePattern* p1;
+								p1 = (GtkMatePattern*) gee_iterator_get (p1_it);
+								any_included = TRUE;
+								gee_collection_add ((GeeCollection*) patterns_to_include, p1);
+								(p1 == NULL) ? NULL : (p1 = (g_object_unref (p1), NULL));
+							}
+							(p1_it == NULL) ? NULL : (p1_it = (g_object_unref (p1_it), NULL));
 						}
-						(p1_it == NULL) ? NULL : (p1_it = (g_object_unref (p1_it), NULL));
+					} else {
+						fprintf (stdout, "warning: couldn't find repository key '%s' in grammar '%s'\n", reponame, gtk_mate_grammar_get_name (g));
 					}
 					reponame = (g_free (reponame), NULL);
 					(ps == NULL) ? NULL : (ps = (g_object_unref (ps), NULL));
