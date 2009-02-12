@@ -16,14 +16,14 @@ typedef struct _GtkMateTextLoc GtkMateTextLoc;
 typedef struct _GtkMateTextLocClass GtkMateTextLocClass;
 typedef struct _GtkMateParser GtkMateParser;
 typedef struct _GtkMateParserClass GtkMateParserClass;
-typedef struct _GtkMateScope GtkMateScope;
-typedef struct _GtkMateScopeClass GtkMateScopeClass;
-typedef struct _GtkMateBuffer GtkMateBuffer;
-typedef struct _GtkMateBufferClass GtkMateBufferClass;
 typedef struct _GtkMateThemeSetting GtkMateThemeSetting;
 typedef struct _GtkMateThemeSettingClass GtkMateThemeSettingClass;
 typedef struct _GtkMateTheme GtkMateTheme;
 typedef struct _GtkMateThemeClass GtkMateThemeClass;
+typedef struct _GtkMateScope GtkMateScope;
+typedef struct _GtkMateScopeClass GtkMateScopeClass;
+typedef struct _GtkMateBuffer GtkMateBuffer;
+typedef struct _GtkMateBufferClass GtkMateBufferClass;
 typedef struct _GtkMateColourer GtkMateColourer;
 typedef struct _GtkMateColourerClass GtkMateColourerClass;
 

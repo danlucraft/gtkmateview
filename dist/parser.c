@@ -1,16 +1,16 @@
 
 #include "parser.h"
-#include <gee/iterator.h>
 #include <stdio.h>
 #include <gee/collection.h>
+#include <gee/iterator.h>
 #include <gee/hashmap.h>
 #include <gee/map.h>
 #include <gee/iterable.h>
-#include "colourer.h"
-#include "buffer.h"
-#include "scope.h"
-#include "pattern.h"
 #include "theme.h"
+#include "colourer.h"
+#include "scope.h"
+#include "buffer.h"
+#include "pattern.h"
 
 
 
@@ -705,8 +705,7 @@ void gtk_mate_parser_open_scope (GtkMateParser* self, GtkMateScanner* scanner, G
 	_tmp2 = NULL;
 	s->open_match = (_tmp3 = (_tmp2 = m->match, (_tmp2 == NULL) ? NULL : g_object_ref (_tmp2)), (s->open_match == NULL) ? NULL : (s->open_match = (g_object_unref (s->open_match), NULL)), _tmp3);
 	gtk_mate_scope_start_mark_set (s, line_ix, m->from, FALSE);
-	gtk_mate_scope_inner_start_mark_set (s, line_ix, MIN (onig_match_end (m->match, 0), length), TRUE);
-	/* had right gravity in Ruby version. Important?*/
+	gtk_mate_parser_set_inner_start_mark_safely (self, s, m, line_ix, length, 0);
 	_tmp5 = NULL;
 	_tmp4 = NULL;
 	s->begin_match_string = (_tmp5 = (_tmp4 = g_utf8_offset_to_pointer (line, (glong) m->from), g_strndup (_tmp4, g_utf8_offset_to_pointer (_tmp4, (glong) (onig_match_end (m->match, 0) - m->from)) - _tmp4)), s->begin_match_string = (g_free (s->begin_match_string), NULL), _tmp5);
@@ -943,6 +942,27 @@ OnigRx* gtk_mate_parser_make_closing_regex (GtkMateParser* self, const char* lin
 		(src == NULL) ? NULL : (src = (g_string_free (src, TRUE), NULL));
 	}
 	return NULL;
+}
+
+
+void gtk_mate_parser_set_inner_start_mark_safely (GtkMateParser* self, GtkMateScope* scope, GtkMateMarker* m, gint line_ix, gint length, gint cap) {
+	gint to;
+	gboolean _tmp0;
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (scope != NULL);
+	g_return_if_fail (m != NULL);
+	to = onig_match_end (m->match, cap);
+	_tmp0 = FALSE;
+	if (to == length) {
+		_tmp0 = gtk_text_buffer_get_line_count ((GtkTextBuffer*) self->priv->_buffer) > (line_ix + 1);
+	} else {
+		_tmp0 = FALSE;
+	}
+	if (_tmp0) {
+		gtk_mate_scope_inner_start_mark_set (scope, line_ix + 1, 0, TRUE);
+	} else {
+		gtk_mate_scope_inner_start_mark_set (scope, line_ix, MIN (to, length), TRUE);
+	}
 }
 
 

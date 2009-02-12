@@ -156,6 +156,7 @@ namespace Gtk {
 			public void remove_tags ();
 			public void reset_table_priorities ();
 			public void set_end_mark_safely (Gtk.Mate.Scope scope, Gtk.Mate.Marker m, int line_ix, int length, int cap);
+			public void set_inner_start_mark_safely (Gtk.Mate.Scope scope, Gtk.Mate.Marker m, int line_ix, int length, int cap);
 			public void single_scope (Gtk.Mate.Scanner scanner, Gtk.Mate.Scope? expected_scope, int line_ix, string line, int length, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes, Gee.ArrayList<Gtk.Mate.Scope> removed_scopes);
 			public void start_parsing ();
 			public static void static_delete_range_after_handler (Gtk.Mate.Buffer bf, Gtk.TextIter pos, Gtk.TextIter pos2);
@@ -343,34 +344,6 @@ namespace Gtk {
 		public static string? textmate_share_dir ();
 	}
 }
-[CCode (cprefix = "Onig", lower_case_cprefix = "onig_")]
-namespace Onig {
-	[CCode (cheader_filename = "onig_wrap.h")]
-	public class Match : GLib.Object {
-		public static int count;
-		public int begin (int capture);
-		public int end (int capture);
-		public Match ();
-		public int num_captures ();
-		public Oniguruma.Region rg { get; set; }
-		public Oniguruma.RegexT rx { get; set; }
-	}
-	[CCode (cheader_filename = "onig_wrap.h")]
-	public class OnigError : GLib.Object {
-		public int code;
-		public Oniguruma.OnigErrorInfo error_info;
-		public OnigError ();
-	}
-	[CCode (cheader_filename = "onig_wrap.h")]
-	public class Rx : GLib.Object {
-		public bool matches_start_of_line;
-		public static Onig.Rx? make (string pattern, Oniguruma.OnigOptionType options, out Onig.OnigError error);
-		public static Onig.Rx? make1 (string pattern);
-		public Rx ();
-		public Onig.Match? search (string target, int start, int end);
-		public Oniguruma.RegexT rx { get; set; }
-	}
-}
 [CCode (cprefix = "PList", lower_case_cprefix = "plist_")]
 namespace PList {
 	[CCode (cheader_filename = "plist.h")]
@@ -409,16 +382,38 @@ namespace PList {
 	[CCode (cheader_filename = "plist.h")]
 	public static void print_plist (int indent, PList.Node node);
 }
+[CCode (cprefix = "Onig", lower_case_cprefix = "onig_")]
+namespace Onig {
+	[CCode (cheader_filename = "onig_wrap.h")]
+	public class Match : GLib.Object {
+		public static int count;
+		public int begin (int capture);
+		public int end (int capture);
+		public Match ();
+		public int num_captures ();
+		public Oniguruma.Region rg { get; set; }
+		public Oniguruma.RegexT rx { get; set; }
+	}
+	[CCode (cheader_filename = "onig_wrap.h")]
+	public class OnigError : GLib.Object {
+		public int code;
+		public Oniguruma.OnigErrorInfo error_info;
+		public OnigError ();
+	}
+	[CCode (cheader_filename = "onig_wrap.h")]
+	public class Rx : GLib.Object {
+		public bool matches_start_of_line;
+		public static Onig.Rx? make (string pattern, Oniguruma.OnigOptionType options, out Onig.OnigError error);
+		public static Onig.Rx? make1 (string pattern);
+		public Rx ();
+		public Onig.Match? search (string target, int start, int end);
+		public Oniguruma.RegexT rx { get; set; }
+	}
+}
 [CCode (cprefix = "XML_ERROR_", cheader_filename = "plist.h")]
 public errordomain XmlError {
 	FILE_NOT_FOUND,
 	XML_DOCUMENT_EMPTY,
-}
-[CCode (cheader_filename = "string_helper.h")]
-public class StringHelper : GLib.Object {
-	public static string gsub (string start_string, string match_string, string replacement_string);
-	public StringHelper ();
-	public static Gee.ArrayList<int> occurrences (string s, string t);
 }
 [CCode (cheader_filename = "range_set.h")]
 public class RangeSet : GLib.Object, Gee.Iterable<RangeSet.Range> {
@@ -438,4 +433,10 @@ public class RangeSet : GLib.Object, Gee.Iterable<RangeSet.Range> {
 	public RangeSet ();
 	public string present ();
 	public int size ();
+}
+[CCode (cheader_filename = "string_helper.h")]
+public class StringHelper : GLib.Object {
+	public static string gsub (string start_string, string match_string, string replacement_string);
+	public StringHelper ();
+	public static Gee.ArrayList<int> occurrences (string s, string t);
 }

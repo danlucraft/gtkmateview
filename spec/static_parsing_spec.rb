@@ -211,6 +211,17 @@ END
 --- !ruby/object:Free
 YAML
   end
+
+  it "should parse this Python without falling off the end of the line" do
+    source = <<-PYTHON
+      __gsignals__ =  { 
+        "completed": (
+            gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [])
+      }
+    PYTHON
+    @mb.set_grammar_by_name("Python")
+    @mb.text = source
+  end
 end
 
 

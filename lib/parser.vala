@@ -326,7 +326,7 @@ namespace Gtk.Mate {
 			s.pattern = m.pattern;
 			s.open_match = m.match;
 			s.start_mark_set(line_ix, m.from, false);
-			s.inner_start_mark_set(line_ix, int.min(m.match.end(0), length), true); // had right gravity in Ruby version. Important?
+			set_inner_start_mark_safely(s, m, line_ix, length, 0);
 			s.begin_match_string = line.substring(m.from, m.match.end(0)-m.from);
 			// stdout.printf("begin_match_string: '%s'\n", s.begin_match_string);
 			var end_iter = buffer.end_iter();
@@ -461,6 +461,14 @@ namespace Gtk.Mate {
 			return null;
 		}
 
+		public void set_inner_start_mark_safely(Scope scope, Marker m, int line_ix, int length, int cap) {
+			int to = m.match.end(cap);
+			if (to == length && this.buffer.get_line_count() > line_ix+1) 
+				scope.inner_start_mark_set(line_ix+1, 0, true);
+			else
+				scope.inner_start_mark_set(line_ix, int.min(to, length), true);
+		}
+		
 		public void set_end_mark_safely(Scope scope, Marker m, int line_ix, int length, int cap) {
 			int to = m.match.end(cap);
 			if (to == length && this.buffer.get_line_count() > line_ix+1) 

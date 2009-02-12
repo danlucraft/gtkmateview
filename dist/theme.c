@@ -305,7 +305,7 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
 		d = (_tmp1 = g_dir_open (_tmp0 = g_strconcat (share_dir, "/Themes", NULL), 0, &inner_error), _tmp0 = (g_free (_tmp0), NULL), _tmp1);
 		if (inner_error != NULL) {
 			if (inner_error->domain == G_FILE_ERROR) {
-				goto __catch6_g_file_error;
+				goto __catch0_g_file_error;
 			}
 			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
 			g_clear_error (&inner_error);
@@ -326,8 +326,8 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
 		_tmp6 = NULL;
 		return (_tmp6 = names, (d == NULL) ? NULL : (d = (g_dir_close (d), NULL)), share_dir = (g_free (share_dir), NULL), name = (g_free (name), NULL), _tmp6);
 	}
-	goto __finally6;
-	__catch6_g_file_error:
+	goto __finally0;
+	__catch0_g_file_error:
 	{
 		GError * e;
 		e = inner_error;
@@ -340,7 +340,7 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
 			(e == NULL) ? NULL : (e = (g_error_free (e), NULL));
 		}
 	}
-	__finally6:
+	__finally0:
 	;
 	_tmp8 = NULL;
 	return (_tmp8 = NULL, (names == NULL) ? NULL : (names = (g_object_unref (names), NULL)), share_dir = (g_free (share_dir), NULL), name = (g_free (name), NULL), _tmp8);
