@@ -1,3 +1,90 @@
+
+GtkMateView
+    by Daniel Lucraft
+    http://www.RedcarIDE.com/
+
+== DESCRIPTION:
+  
+A textmate-compatible source highlighting widget for Gnome. Based
+on GtkSourceView2, but with a new highlighting engine.
+
+== FEATURES:
+
+ * Highlights many languages, using the Textmate syntaxes.
+ * On-demand in-thread parsing.
+
+== FUTURE PLANS
+
+ * Background threaded document parsing.
+ * Export documents to marked up HTML.
+
+== PREREQUISITES
+
+For the widget: 
+
+ * Glib, Gtk, GtkSourceView2. (available in Ubuntu packages)
+ * Oniguruma http://www.geocities.jp/kosako3/oniguruma/ (available in Ubuntu packages)
+
+For the Ruby bindings as well: 
+
+ * Ruby-GNOME2  http://ruby-gnome2.sourceforge.jp/ (install from latest SVN version)
+
+To rebuild the C dist files from the Vala source: 
+
+ * Vala    http://live.gnome.org/Vala  (Ubuntu packages way out of date in Intrepid)
+ * libgee  http://live.gnome.org/Libgee  (Ubuntu packages way out of date in Intrepid)
+ * Valar   http://github.com/danlucraft/valar/tree  (not packaged for Ubuntu)
+
+To install the grammars for many languages, download either from Macromates:
+
+    export LC_CTYPE=en_US.UTF-8
+    cd /usr/local/share/
+    sudo svn co http://macromates.com/svn/Bundles/trunk textmate
+
+or from the redcar-bundles port, which is probably better if you are intending
+to use GtkMateView with Redcar, though it has fewer languages:
+
+    cd /usr/local/share
+    sudo git clone git://github.com/danlucraft/redcar-bundles.git textmate
+
+== BUILDING THE WIDGET WITH RUBY BINDINGS
+
+    cd dist/
+    ruby extconf.rb
+    make
+
+== USING THE RUBY BINDINGS
+
+    require 'gtk2'
+    require 'dist/gtkmateview'
+
+    gmv = Gtk::Mate::View.new
+    gmv.buffer = Gtk::Mate::Buffer.new
+    Gtk.idle_add do
+      gmv.buffer.set_grammar_by_name("Ruby")
+      gmv.set_theme_by_name("Twilight")
+      false
+    end
+    win = Gtk::Window.new
+    win.set_size_request(800, 600)
+    win.add(gmv)
+    win.show_all
+    Gtk.main
+
+== REGENERATING C SOURCE FILES FROM VALA
+
+To rebuild the C dist files from the Vala sources, first make sure that
+you have current versions of the Vala compiler (0.5.6 at this time) and
+libgee installed. The build script will also expect Valar to be present, and
+the valar/ directory should be a sibling of the gtkmateview/ directory (hack in 
+tasks/build.rake to change this.) Then execute from the gtkmateview directory:
+
+    rake build:all
+
+== BUILDING BINARY FOR PROFILING
+
+(This currently does not work, please fix.)
+
 Basic waf[1] based project template for Vala[2]. To build and run the resulting
 binaries:
 
@@ -5,6 +92,10 @@ binaries:
     ./waf
     ./_build_/default/src/hello-gtk
 
-
 [1] http://code.google.com/p/waf/
 [2] http://live.gnome.org/Vala
+
+
+== LICENSE:
+
+Redcar is copyright 2008 Daniel B. Lucraft and contributors. It is licensed under the GPL2. 
