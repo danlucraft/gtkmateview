@@ -140,14 +140,14 @@ GtkMateMarker* gtk_mate_scanner_get_cached_marker (GtkMateScanner* self) {
 	best_length = 0;
 	new_length = 0;
 	{
-		GeeIterator* m1_it;
-		m1_it = gee_iterable_iterator ((GeeIterable*) self->cached_markers);
-		while (gee_iterator_next (m1_it)) {
+		GeeIterator* _m1_it;
+		_m1_it = gee_iterable_iterator ((GeeIterable*) self->cached_markers);
+		while (gee_iterator_next (_m1_it)) {
 			GtkMateMarker* m1;
 			gboolean _tmp0;
 			gboolean _tmp1;
 			gboolean _tmp2;
-			m1 = (GtkMateMarker*) gee_iterator_get (m1_it);
+			m1 = (GtkMateMarker*) gee_iterator_get (_m1_it);
 			new_length = onig_match_end (m1->match, 0) - m1->from;
 			_tmp0 = FALSE;
 			_tmp1 = FALSE;
@@ -198,7 +198,7 @@ GtkMateMarker* gtk_mate_scanner_get_cached_marker (GtkMateScanner* self) {
 			}
 			(m1 == NULL) ? NULL : (m1 = (g_object_unref (m1), NULL));
 		}
-		(m1_it == NULL) ? NULL : (m1_it = (g_object_unref (m1_it), NULL));
+		(_m1_it == NULL) ? NULL : (_m1_it = (g_object_unref (_m1_it), NULL));
 	}
 	return m;
 }
@@ -311,14 +311,14 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 		(match == NULL) ? NULL : (match = (g_object_unref (match), NULL));
 	}
 	{
-		GeeIterator* p_it;
-		p_it = gee_iterable_iterator ((GeeIterable*) (GTK_MATE_DOUBLE_PATTERN (gtk_mate_scanner_get_current_scope (self)->pattern))->patterns);
-		while (gee_iterator_next (p_it)) {
+		GeeIterator* _p_it;
+		_p_it = gee_iterable_iterator ((GeeIterable*) (GTK_MATE_DOUBLE_PATTERN (gtk_mate_scanner_get_current_scope (self)->pattern))->patterns);
+		while (gee_iterator_next (_p_it)) {
 			GtkMatePattern* p;
 			gint position_now;
 			gint position_prev;
 			OnigMatch* match;
-			p = (GtkMatePattern*) gee_iterator_get (p_it);
+			p = (GtkMatePattern*) gee_iterator_get (_p_it);
 			if (p->disabled) {
 				(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
 				continue;
@@ -393,7 +393,7 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 			(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
 			(match == NULL) ? NULL : (match = (g_object_unref (match), NULL));
 		}
-		(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
+		(_p_it == NULL) ? NULL : (_p_it = (g_object_unref (_p_it), NULL));
 	}
 	if (m != NULL) {
 		gee_collection_remove ((GeeCollection*) self->cached_markers, m);
@@ -573,6 +573,7 @@ static GObject * gtk_mate_scanner_iterator_constructor (GType type, guint n_cons
 
 static void gtk_mate_scanner_iterator_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	GtkMateScannerIterator * self;
+	gpointer boxed;
 	self = GTK_MATE_SCANNER_ITERATOR (object);
 	switch (property_id) {
 		case GTK_MATE_SCANNER_ITERATOR_SCANNER:
@@ -657,6 +658,7 @@ GType gtk_mate_scanner_iterator_get_type (void) {
 
 static void gtk_mate_scanner_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	GtkMateScanner * self;
+	gpointer boxed;
 	self = GTK_MATE_SCANNER (object);
 	switch (property_id) {
 		case GTK_MATE_SCANNER_CURRENT_SCOPE:

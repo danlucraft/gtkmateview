@@ -97,8 +97,6 @@ GtkMateColourer* gtk_mate_colourer_new (GtkMateBuffer* buffer) {
 
 GdkColor gtk_mate_colourer_parse_colour (GtkMateColourer* self, const char* colour) {
 	GdkColor c = {0};
-	0;
-	0;
 	gdk_color_parse (colour, &c);
 	return c;
 }
@@ -111,15 +109,15 @@ void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayL
 		return;
 	}
 	{
-		GeeIterator* scope_it;
-		scope_it = gee_iterable_iterator ((GeeIterable*) scopes);
-		while (gee_iterator_next (scope_it)) {
+		GeeIterator* _scope_it;
+		_scope_it = gee_iterable_iterator ((GeeIterable*) scopes);
+		while (gee_iterator_next (_scope_it)) {
 			GtkMateScope* scope;
 			gboolean _tmp0;
 			gboolean _tmp1;
 			gboolean _tmp3;
 			gboolean _tmp4;
-			scope = (GtkMateScope*) gee_iterator_get (scope_it);
+			scope = (GtkMateScope*) gee_iterator_get (_scope_it);
 			if (scope->parent == NULL) {
 				(scope == NULL) ? NULL : (scope = (g_object_unref (scope), NULL));
 				continue;
@@ -170,7 +168,7 @@ void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayL
 			}
 			(scope == NULL) ? NULL : (scope = (g_object_unref (scope), NULL));
 		}
-		(scope_it == NULL) ? NULL : (scope_it = (g_object_unref (scope_it), NULL));
+		(_scope_it == NULL) ? NULL : (_scope_it = (g_object_unref (_scope_it), NULL));
 	}
 }
 
@@ -325,10 +323,10 @@ void gtk_mate_colourer_set_tag_properties (GtkMateColourer* self, GtkMateScope* 
 	font_style = (char*) gee_map_get ((GeeMap*) setting->settings, "fontStyle");
 	if (_vala_strcmp0 (font_style, "italic") == 0) {
 		PangoStyle _tmp0;
-		g_object_set (tag, "style", PANGO_STYLE_ITALIC | (g_object_get (G_OBJECT (tag), "style", &_tmp0, NULL), _tmp0), NULL);
+		g_object_set (tag, "style", PANGO_STYLE_ITALIC | (g_object_get (tag, "style", &_tmp0, NULL), _tmp0), NULL);
 	} else {
 		PangoStyle _tmp1;
-		g_object_set (tag, "style", PANGO_STYLE_NORMAL | (g_object_get (G_OBJECT (tag), "style", &_tmp1, NULL), _tmp1), NULL);
+		g_object_set (tag, "style", PANGO_STYLE_NORMAL | (g_object_get (tag, "style", &_tmp1, NULL), _tmp1), NULL);
 	}
 	if (_vala_strcmp0 (font_style, "underline") == 0) {
 		g_object_set (tag, "underline", PANGO_UNDERLINE_SINGLE, NULL);
@@ -509,15 +507,15 @@ void gtk_mate_colourer_uncolour_scopes (GtkMateColourer* self, GeeArrayList* sco
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (scopes != NULL);
 	{
-		GeeIterator* scope_it;
-		scope_it = gee_iterable_iterator ((GeeIterable*) scopes);
-		while (gee_iterator_next (scope_it)) {
+		GeeIterator* _scope_it;
+		_scope_it = gee_iterable_iterator ((GeeIterable*) scopes);
+		while (gee_iterator_next (_scope_it)) {
 			GtkMateScope* scope;
-			scope = (GtkMateScope*) gee_iterator_get (scope_it);
+			scope = (GtkMateScope*) gee_iterator_get (_scope_it);
 			gtk_mate_colourer_uncolour_scope (self, scope, TRUE);
 			(scope == NULL) ? NULL : (scope = (g_object_unref (scope), NULL));
 		}
-		(scope_it == NULL) ? NULL : (scope_it = (g_object_unref (scope_it), NULL));
+		(_scope_it == NULL) ? NULL : (_scope_it = (g_object_unref (_scope_it), NULL));
 	}
 }
 
@@ -584,6 +582,7 @@ void gtk_mate_colourer_set_theme (GtkMateColourer* self, GtkMateTheme* value) {
 
 static void gtk_mate_colourer_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	GtkMateColourer * self;
+	gpointer boxed;
 	self = GTK_MATE_COLOURER (object);
 	switch (property_id) {
 		case GTK_MATE_COLOURER_BUFFER:

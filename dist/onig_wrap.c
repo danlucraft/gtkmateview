@@ -135,12 +135,8 @@ regex_t* onig_match_get_rx (OnigMatch* self) {
 
 
 void onig_match_set_rx (OnigMatch* self, regex_t* value) {
-	regex_t* _tmp2;
-	regex_t* _tmp1;
 	g_return_if_fail (self != NULL);
-	_tmp2 = NULL;
-	_tmp1 = NULL;
-	self->priv->_rx = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL) ? NULL :  (_tmp1)), (self->priv->_rx == NULL) ? NULL : (self->priv->_rx = ( (self->priv->_rx), NULL)), _tmp2);
+	self->priv->_rx = value;
 	g_object_notify ((GObject *) self, "rx");
 }
 
@@ -152,12 +148,8 @@ OnigRegion* onig_match_get_rg (OnigMatch* self) {
 
 
 void onig_match_set_rg (OnigMatch* self, OnigRegion* value) {
-	OnigRegion* _tmp2;
-	OnigRegion* _tmp1;
 	g_return_if_fail (self != NULL);
-	_tmp2 = NULL;
-	_tmp1 = NULL;
-	self->priv->_rg = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL) ? NULL :  (_tmp1)), (self->priv->_rg == NULL) ? NULL : (self->priv->_rg = ( (self->priv->_rg), NULL)), _tmp2);
+	self->priv->_rg = value;
 	g_object_notify ((GObject *) self, "rg");
 }
 
@@ -180,6 +172,7 @@ static GObject * onig_match_constructor (GType type, guint n_construct_propertie
 
 static void onig_match_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	OnigMatch * self;
+	gpointer boxed;
 	self = ONIG_MATCH (object);
 	switch (property_id) {
 		case ONIG_MATCH_RX:
@@ -232,8 +225,6 @@ static void onig_match_instance_init (OnigMatch * self) {
 static void onig_match_finalize (GObject* obj) {
 	OnigMatch * self;
 	self = ONIG_MATCH (obj);
-	(self->priv->_rx == NULL) ? NULL : (self->priv->_rx = ( (self->priv->_rx), NULL));
-	(self->priv->_rg == NULL) ? NULL : (self->priv->_rg = ( (self->priv->_rg), NULL));
 	G_OBJECT_CLASS (onig_match_parent_class)->finalize (obj);
 }
 
@@ -258,19 +249,14 @@ OnigMatch* onig_rx_search (OnigRx* self, const char* target, gint start, gint en
 	ctarget = (gchar*) target;
 	r = onig_search (self->priv->_rx, ctarget, (ctarget + strlen (target)), ctarget + start, (ctarget + end), rg, ONIG_OPTION_NONE);
 	if (r < 0) {
-		OnigMatch* _tmp0;
-		_tmp0 = NULL;
-		return (_tmp0 = NULL, (rg == NULL) ? NULL : (rg = ( (rg), NULL)), _tmp0);
+		return NULL;
 	} else {
 		OnigMatch* md;
-		OnigMatch* _tmp1;
 		md = onig_match_new ();
 		onig_match_set_rg (md, rg);
 		onig_match_set_rx (md, self->priv->_rx);
-		_tmp1 = NULL;
-		return (_tmp1 = md, (rg == NULL) ? NULL : (rg = ( (rg), NULL)), _tmp1);
+		return md;
 	}
-	(rg == NULL) ? NULL : (rg = ( (rg), NULL));
 }
 
 
@@ -280,34 +266,27 @@ OnigRx* onig_rx_make (const char* pattern, OnigOptionType* options, OnigOnigErro
 	regex_t* rx1;
 	OnigErrorInfo _tmp0 = {0};
 	OnigErrorInfo err_info;
-	regex_t* _tmp3;
-	gint _tmp2;
-	regex_t* _tmp1;
 	gint r;
-	OnigRx* _tmp6;
 	g_return_val_if_fail (pattern != NULL, NULL);
 	*error = NULL;
 	rx = onig_rx_new ();
 	c_pattern = (gchar*) pattern;
 	rx1 = NULL;
 	err_info = (memset (&_tmp0, 0, sizeof (OnigErrorInfo)), _tmp0);
-	_tmp3 = NULL;
-	_tmp1 = NULL;
-	r = (_tmp2 = onig_new (&_tmp1, c_pattern, (c_pattern + strlen (pattern)), options, (gint) ONIG_ENCODING_ASCII, ONIG_SYNTAX_DEFAULT, &err_info), rx1 = (_tmp3 = _tmp1, (rx1 == NULL) ? NULL : (rx1 = ( (rx1), NULL)), _tmp3), _tmp2);
+	r = onig_new (&rx1, c_pattern, (c_pattern + strlen (pattern)), options, (gint) ONIG_ENCODING_ASCII, ONIG_SYNTAX_DEFAULT, &err_info);
 	rx->matches_start_of_line = g_str_has_prefix (pattern, "^");
 	if (r < 0) {
-		OnigOnigError* _tmp4;
-		OnigRx* _tmp5;
-		_tmp4 = NULL;
-		(*error) = (_tmp4 = onig_onig_error_new (), ((*error) == NULL) ? NULL : ((*error) = (g_object_unref ((*error)), NULL)), _tmp4);
+		OnigOnigError* _tmp1;
+		OnigRx* _tmp2;
+		_tmp1 = NULL;
+		(*error) = (_tmp1 = onig_onig_error_new (), ((*error) == NULL) ? NULL : ((*error) = (g_object_unref ((*error)), NULL)), _tmp1);
 		(*error)->code = r;
 		(*error)->error_info = err_info;
-		_tmp5 = NULL;
-		return (_tmp5 = NULL, (rx == NULL) ? NULL : (rx = (g_object_unref (rx), NULL)), (rx1 == NULL) ? NULL : (rx1 = ( (rx1), NULL)), _tmp5);
+		_tmp2 = NULL;
+		return (_tmp2 = NULL, (rx == NULL) ? NULL : (rx = (g_object_unref (rx), NULL)), _tmp2);
 	}
 	onig_rx_set_rx (rx, rx1);
-	_tmp6 = NULL;
-	return (_tmp6 = rx, (rx1 == NULL) ? NULL : (rx1 = ( (rx1), NULL)), _tmp6);
+	return rx;
 }
 
 
@@ -346,18 +325,15 @@ regex_t* onig_rx_get_rx (OnigRx* self) {
 
 
 void onig_rx_set_rx (OnigRx* self, regex_t* value) {
-	regex_t* _tmp2;
-	regex_t* _tmp1;
 	g_return_if_fail (self != NULL);
-	_tmp2 = NULL;
-	_tmp1 = NULL;
-	self->priv->_rx = (_tmp2 = (_tmp1 = value, (_tmp1 == NULL) ? NULL :  (_tmp1)), (self->priv->_rx == NULL) ? NULL : (self->priv->_rx = ( (self->priv->_rx), NULL)), _tmp2);
+	self->priv->_rx = value;
 	g_object_notify ((GObject *) self, "rx");
 }
 
 
 static void onig_rx_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	OnigRx * self;
+	gpointer boxed;
 	self = ONIG_RX (object);
 	switch (property_id) {
 		case ONIG_RX_RX:
@@ -402,7 +378,6 @@ static void onig_rx_instance_init (OnigRx * self) {
 static void onig_rx_finalize (GObject* obj) {
 	OnigRx * self;
 	self = ONIG_RX (obj);
-	(self->priv->_rx == NULL) ? NULL : (self->priv->_rx = ( (self->priv->_rx), NULL));
 	G_OBJECT_CLASS (onig_rx_parent_class)->finalize (obj);
 }
 

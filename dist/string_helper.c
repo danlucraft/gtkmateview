@@ -37,8 +37,7 @@ char* string_helper_gsub (const char* start_string, const char* match_string, co
 			if (inner_error->domain == G_REGEX_ERROR) {
 				goto __catch5_g_regex_error;
 			}
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
-			g_clear_error (&inner_error);
+			goto __finally5;
 		}
 		_tmp0 = (g_free (_tmp0), NULL);
 		_tmp2 = g_regex_replace_literal (grx, start_string, strlen (start_string), 0, replacement_string, 0, &inner_error);
@@ -46,8 +45,7 @@ char* string_helper_gsub (const char* start_string, const char* match_string, co
 			if (inner_error->domain == G_REGEX_ERROR) {
 				goto __catch5_g_regex_error;
 			}
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
-			g_clear_error (&inner_error);
+			goto __finally5;
 		}
 		_tmp3 = NULL;
 		result = (_tmp3 = _tmp2, result = (g_free (result), NULL), _tmp3);
@@ -65,7 +63,13 @@ char* string_helper_gsub (const char* start_string, const char* match_string, co
 		}
 	}
 	__finally5:
-	;
+	if (inner_error != NULL) {
+		(grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL));
+		result = (g_free (result), NULL);
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
+		g_clear_error (&inner_error);
+		return NULL;
+	}
 	_tmp5 = NULL;
 	return (_tmp5 = result, (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), _tmp5);
 }
@@ -96,8 +100,7 @@ GeeArrayList* string_helper_occurrences (const char* s, const char* t) {
 			if (inner_error->domain == G_REGEX_ERROR) {
 				goto __catch6_g_regex_error;
 			}
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
-			g_clear_error (&inner_error);
+			goto __finally6;
 		}
 		_tmp0 = (g_free (_tmp0), NULL);
 		_tmp4 = NULL;
@@ -111,23 +114,22 @@ GeeArrayList* string_helper_occurrences (const char* s, const char* t) {
 			gee_collection_add ((GeeCollection*) poss, GINT_TO_POINTER (spos));
 			while (TRUE) {
 				gboolean _tmp5;
-				gint spos;
-				gint epos;
+				gint mspos;
+				gint mepos;
 				_tmp5 = g_match_info_next (m, &inner_error);
 				if (inner_error != NULL) {
 					if (inner_error->domain == G_REGEX_ERROR) {
 						goto __catch6_g_regex_error;
 					}
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
-					g_clear_error (&inner_error);
+					goto __finally6;
 				}
 				if (!_tmp5) {
 					break;
 				}
-				spos = 0;
-				epos = 0;
-				g_match_info_fetch_pos (m, 0, &spos, &epos);
-				gee_collection_add ((GeeCollection*) poss, GINT_TO_POINTER (spos));
+				mspos = 0;
+				mepos = 0;
+				g_match_info_fetch_pos (m, 0, &mspos, &mepos);
+				gee_collection_add ((GeeCollection*) poss, GINT_TO_POINTER (mspos));
 			}
 		}
 	}
@@ -144,7 +146,14 @@ GeeArrayList* string_helper_occurrences (const char* s, const char* t) {
 		}
 	}
 	__finally6:
-	;
+	if (inner_error != NULL) {
+		(grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL));
+		(poss == NULL) ? NULL : (poss = (g_object_unref (poss), NULL));
+		(m == NULL) ? NULL : (m = (g_match_info_free (m), NULL));
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
+		g_clear_error (&inner_error);
+		return NULL;
+	}
 	_tmp7 = NULL;
 	return (_tmp7 = poss, (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), (m == NULL) ? NULL : (m = (g_match_info_free (m), NULL)), _tmp7);
 }

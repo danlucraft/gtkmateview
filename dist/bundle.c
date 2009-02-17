@@ -72,6 +72,7 @@ static GObject * gtk_mate_bundle_constructor (GType type, guint n_construct_prop
 
 static void gtk_mate_bundle_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	GtkMateBundle * self;
+	gpointer boxed;
 	self = GTK_MATE_BUNDLE (object);
 	switch (property_id) {
 		case GTK_MATE_BUNDLE_NAME:

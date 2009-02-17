@@ -1,6 +1,7 @@
 
 #include "matcher.h"
 #include <gee/collection.h>
+#include <gee/list.h>
 #include <gee/iterable.h>
 #include <gee/iterator.h>
 #include "string_helper.h"
@@ -15,6 +16,7 @@ static gint gtk_mate_matcher_sorted_ix (GeeArrayList* ixs, gint val);
 static gpointer gtk_mate_matcher_parent_class = NULL;
 static void gtk_mate_matcher_finalize (GObject* obj);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
+static gint _vala_array_length (gpointer array);
 
 
 
@@ -214,23 +216,23 @@ gboolean gtk_mate_matcher_match (const char* selector_string, const char* scope_
 	*match = NULL;
 	matchers = gtk_mate_matcher_compile (selector_string);
 	{
-		GeeIterator* matcher_it;
-		matcher_it = gee_iterable_iterator ((GeeIterable*) matchers);
-		while (gee_iterator_next (matcher_it)) {
+		GeeIterator* _matcher_it;
+		_matcher_it = gee_iterable_iterator ((GeeIterable*) matchers);
+		while (gee_iterator_next (_matcher_it)) {
 			GtkMateMatcher* matcher;
 			OnigMatch* _tmp2;
 			gboolean _tmp1;
 			OnigMatch* _tmp0;
-			matcher = (GtkMateMatcher*) gee_iterator_get (matcher_it);
+			matcher = (GtkMateMatcher*) gee_iterator_get (_matcher_it);
 			_tmp2 = NULL;
 			_tmp0 = NULL;
 			if ((_tmp1 = gtk_mate_matcher_test_match_re (matcher->pos_rx, matcher->neg_rxs, scope_string, &_tmp0), (*match) = (_tmp2 = _tmp0, ((*match) == NULL) ? NULL : ((*match) = (g_object_unref ((*match)), NULL)), _tmp2), _tmp1)) {
 				gboolean _tmp3;
-				return (_tmp3 = TRUE, (matcher == NULL) ? NULL : (matcher = (g_object_unref (matcher), NULL)), (matcher_it == NULL) ? NULL : (matcher_it = (g_object_unref (matcher_it), NULL)), (matchers == NULL) ? NULL : (matchers = (g_object_unref (matchers), NULL)), _tmp3);
+				return (_tmp3 = TRUE, (matcher == NULL) ? NULL : (matcher = (g_object_unref (matcher), NULL)), (_matcher_it == NULL) ? NULL : (_matcher_it = (g_object_unref (_matcher_it), NULL)), (matchers == NULL) ? NULL : (matchers = (g_object_unref (matchers), NULL)), _tmp3);
 			}
 			(matcher == NULL) ? NULL : (matcher = (g_object_unref (matcher), NULL));
 		}
-		(matcher_it == NULL) ? NULL : (matcher_it = (g_object_unref (matcher_it), NULL));
+		(_matcher_it == NULL) ? NULL : (_matcher_it = (g_object_unref (_matcher_it), NULL));
 	}
 	return (_tmp4 = FALSE, (matchers == NULL) ? NULL : (matchers = (g_object_unref (matchers), NULL)), _tmp4);
 }
@@ -238,15 +240,18 @@ gboolean gtk_mate_matcher_match (const char* selector_string, const char* scope_
 
 GeeArrayList* gtk_mate_matcher_compile (const char* selector_string) {
 	GeeArrayList* ms;
-	char** _tmp0;
+	char** _tmp1;
+	gint scope_ors1_size;
 	gint scope_ors1_length1;
+	char** _tmp0;
 	char** scope_ors1;
-	GeeArrayList* _tmp9;
+	GeeArrayList* _tmp11;
 	g_return_val_if_fail (selector_string != NULL, NULL);
 	ms = gee_array_list_new (GTK_MATE_TYPE_MATCHER, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal);
 	/* FIXME should validate and throw UTF8 error if bad.*/
+	_tmp1 = NULL;
 	_tmp0 = NULL;
-	scope_ors1 = (_tmp0 = g_strsplit (selector_string, ",", 0), scope_ors1_length1 = -1, _tmp0);
+	scope_ors1 = (_tmp1 = _tmp0 = g_strsplit (selector_string, ",", 0), scope_ors1_length1 = _vala_array_length (_tmp0), scope_ors1_size = scope_ors1_length1, _tmp1);
 	/*stdout.printf("match: selector: '%s', scope: '%s'\n", selector_string, scope_string);*/
 	{
 		char** selector_string1_collection;
@@ -254,61 +259,64 @@ GeeArrayList* gtk_mate_matcher_compile (const char* selector_string) {
 		int selector_string1_it;
 		selector_string1_collection = scope_ors1;
 		selector_string1_collection_length1 = scope_ors1_length1;
-		for (selector_string1_it = 0; ((scope_ors1_length1 != -1) && (selector_string1_it < scope_ors1_length1)) || ((scope_ors1_length1 == -1) && (selector_string1_collection[selector_string1_it] != NULL)); selector_string1_it = selector_string1_it + 1) {
-			const char* _tmp8;
+		for (selector_string1_it = 0; selector_string1_it < scope_ors1_length1; selector_string1_it = selector_string1_it + 1) {
+			const char* _tmp10;
 			char* selector_string1;
-			_tmp8 = NULL;
-			selector_string1 = (_tmp8 = selector_string1_collection[selector_string1_it], (_tmp8 == NULL) ? NULL : g_strdup (_tmp8));
+			_tmp10 = NULL;
+			selector_string1 = (_tmp10 = selector_string1_collection[selector_string1_it], (_tmp10 == NULL) ? NULL : g_strdup (_tmp10));
 			{
 				GtkMateMatcher* m;
-				GeeArrayList* _tmp1;
-				char** _tmp2;
+				GeeArrayList* _tmp2;
+				char** _tmp4;
+				gint positives_and_negatives_size;
 				gint positives_and_negatives_length1;
+				char** _tmp3;
 				char** positives_and_negatives;
 				m = g_object_ref_sink (gtk_mate_matcher_new ());
-				_tmp1 = NULL;
-				m->neg_rxs = (_tmp1 = gee_array_list_new (ONIG_TYPE_RX, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), (m->neg_rxs == NULL) ? NULL : (m->neg_rxs = (g_object_unref (m->neg_rxs), NULL)), _tmp1);
 				_tmp2 = NULL;
-				positives_and_negatives = (_tmp2 = g_strsplit (selector_string1, " -", 0), positives_and_negatives_length1 = -1, _tmp2);
+				m->neg_rxs = (_tmp2 = gee_array_list_new (ONIG_TYPE_RX, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), (m->neg_rxs == NULL) ? NULL : (m->neg_rxs = (g_object_unref (m->neg_rxs), NULL)), _tmp2);
+				_tmp4 = NULL;
+				_tmp3 = NULL;
+				positives_and_negatives = (_tmp4 = _tmp3 = g_strsplit (selector_string1, " -", 0), positives_and_negatives_length1 = _vala_array_length (_tmp3), positives_and_negatives_size = positives_and_negatives_length1, _tmp4);
 				{
 					char** sub_selector_string_collection;
 					int sub_selector_string_collection_length1;
 					int sub_selector_string_it;
 					sub_selector_string_collection = positives_and_negatives;
 					sub_selector_string_collection_length1 = positives_and_negatives_length1;
-					for (sub_selector_string_it = 0; ((positives_and_negatives_length1 != -1) && (sub_selector_string_it < positives_and_negatives_length1)) || ((positives_and_negatives_length1 == -1) && (sub_selector_string_collection[sub_selector_string_it] != NULL)); sub_selector_string_it = sub_selector_string_it + 1) {
-						const char* _tmp7;
+					for (sub_selector_string_it = 0; sub_selector_string_it < positives_and_negatives_length1; sub_selector_string_it = sub_selector_string_it + 1) {
+						const char* _tmp9;
 						char* sub_selector_string;
-						_tmp7 = NULL;
-						sub_selector_string = (_tmp7 = sub_selector_string_collection[sub_selector_string_it], (_tmp7 == NULL) ? NULL : g_strdup (_tmp7));
+						_tmp9 = NULL;
+						sub_selector_string = (_tmp9 = sub_selector_string_collection[sub_selector_string_it], (_tmp9 == NULL) ? NULL : g_strdup (_tmp9));
 						{
 							if (m->pos_rx == NULL) {
 								char* s1;
 								char* s2;
-								OnigRx* _tmp5;
-								char* _tmp4;
-								char* _tmp3;
+								OnigRx* _tmp7;
+								char* _tmp6;
+								char* _tmp5;
 								s1 = string_helper_gsub (g_strstrip (sub_selector_string), ".", "\\.");
 								s2 = string_helper_gsub (s1, " ", ").* .*(");
 								/*stdout.printf("positive '%s' -> '%s'\n", selector_string, "("+s2+")");*/
+								_tmp7 = NULL;
+								_tmp6 = NULL;
 								_tmp5 = NULL;
-								_tmp4 = NULL;
-								_tmp3 = NULL;
-								m->pos_rx = (_tmp5 = onig_rx_make1 (_tmp4 = g_strconcat (_tmp3 = g_strconcat ("(", s2, NULL), ")", NULL)), (m->pos_rx == NULL) ? NULL : (m->pos_rx = (g_object_unref (m->pos_rx), NULL)), _tmp5);
-								_tmp4 = (g_free (_tmp4), NULL);
-								_tmp3 = (g_free (_tmp3), NULL);
+								m->pos_rx = (_tmp7 = onig_rx_make1 (_tmp6 = g_strconcat (_tmp5 = g_strconcat ("(", s2, NULL), ")", NULL)), (m->pos_rx == NULL) ? NULL : (m->pos_rx = (g_object_unref (m->pos_rx), NULL)), _tmp7);
+								_tmp6 = (g_free (_tmp6), NULL);
+								_tmp5 = (g_free (_tmp5), NULL);
 								s1 = (g_free (s1), NULL);
 								s2 = (g_free (s2), NULL);
 							} else {
 								char* s1;
 								char* s2;
-								OnigRx* _tmp6;
+								OnigRx* _tmp8;
 								s1 = string_helper_gsub (g_strstrip (sub_selector_string), ".", "\\.");
 								s2 = string_helper_gsub (s1, " ", ".* .*");
 								/*stdout.printf("negative '%s' -> '%s'\n", selector_string, s2);*/
-								_tmp6 = NULL;
-								gee_collection_add ((GeeCollection*) m->neg_rxs, _tmp6 = onig_rx_make1 (s2));
-								(_tmp6 == NULL) ? NULL : (_tmp6 = (g_object_unref (_tmp6), NULL));
+								_tmp8 = NULL;
+								gee_collection_add ((GeeCollection*) m->neg_rxs, _tmp8 = onig_rx_make1 (s2));
+								(_tmp8 == NULL) ? NULL : (_tmp8 = (g_object_unref (_tmp8), NULL));
 								s1 = (g_free (s1), NULL);
 								s2 = (g_free (s2), NULL);
 							}
@@ -323,8 +331,8 @@ GeeArrayList* gtk_mate_matcher_compile (const char* selector_string) {
 			}
 		}
 	}
-	_tmp9 = NULL;
-	return (_tmp9 = ms, scope_ors1 = (_vala_array_free (scope_ors1, scope_ors1_length1, (GDestroyNotify) g_free), NULL), _tmp9);
+	_tmp11 = NULL;
+	return (_tmp11 = ms, scope_ors1 = (_vala_array_free (scope_ors1, scope_ors1_length1, (GDestroyNotify) g_free), NULL), _tmp11);
 }
 
 
@@ -340,21 +348,21 @@ gboolean gtk_mate_matcher_test_match_re (OnigRx* positive_selector_regex, GeeArr
 		OnigMatch* _tmp1;
 		gboolean _tmp3;
 		{
-			GeeIterator* neg_rx_it;
-			neg_rx_it = gee_iterable_iterator ((GeeIterable*) negative_selector_regex);
-			while (gee_iterator_next (neg_rx_it)) {
+			GeeIterator* _neg_rx_it;
+			_neg_rx_it = gee_iterable_iterator ((GeeIterable*) negative_selector_regex);
+			while (gee_iterator_next (_neg_rx_it)) {
 				OnigRx* neg_rx;
 				OnigMatch* m1;
-				neg_rx = (OnigRx*) gee_iterator_get (neg_rx_it);
+				neg_rx = (OnigRx*) gee_iterator_get (_neg_rx_it);
 				m1 = onig_rx_search (neg_rx, scope_string, 0, (gint) strlen (scope_string));
 				if (m1 != NULL) {
 					gboolean _tmp0;
-					return (_tmp0 = FALSE, (neg_rx == NULL) ? NULL : (neg_rx = (g_object_unref (neg_rx), NULL)), (m1 == NULL) ? NULL : (m1 = (g_object_unref (m1), NULL)), (neg_rx_it == NULL) ? NULL : (neg_rx_it = (g_object_unref (neg_rx_it), NULL)), (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp0);
+					return (_tmp0 = FALSE, (neg_rx == NULL) ? NULL : (neg_rx = (g_object_unref (neg_rx), NULL)), (m1 == NULL) ? NULL : (m1 = (g_object_unref (m1), NULL)), (_neg_rx_it == NULL) ? NULL : (_neg_rx_it = (g_object_unref (_neg_rx_it), NULL)), (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp0);
 				}
 				(neg_rx == NULL) ? NULL : (neg_rx = (g_object_unref (neg_rx), NULL));
 				(m1 == NULL) ? NULL : (m1 = (g_object_unref (m1), NULL));
 			}
-			(neg_rx_it == NULL) ? NULL : (neg_rx_it = (g_object_unref (neg_rx_it), NULL));
+			(_neg_rx_it == NULL) ? NULL : (_neg_rx_it = (g_object_unref (_neg_rx_it), NULL));
 		}
 		_tmp2 = NULL;
 		_tmp1 = NULL;
@@ -412,17 +420,25 @@ GType gtk_mate_matcher_get_type (void) {
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
 	if ((array != NULL) && (destroy_func != NULL)) {
 		int i;
-		if (array_length >= 0)
 		for (i = 0; i < array_length; i = i + 1) {
-			if (((gpointer*) array)[i] != NULL)
-			destroy_func (((gpointer*) array)[i]);
-		}
-		else
-		for (i = 0; ((gpointer*) array)[i] != NULL; i = i + 1) {
-			destroy_func (((gpointer*) array)[i]);
+			if (((gpointer*) array)[i] != NULL) {
+				destroy_func (((gpointer*) array)[i]);
+			}
 		}
 	}
 	g_free (array);
+}
+
+
+static gint _vala_array_length (gpointer array) {
+	int length;
+	length = 0;
+	if (array) {
+		while (((gpointer*) array)[length]) {
+			length++;
+		}
+	}
+	return length;
 }
 
 

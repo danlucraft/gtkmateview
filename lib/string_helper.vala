@@ -30,9 +30,9 @@ public class StringHelper : Object {
 				m.fetch_pos(0, out spos, out epos);
 				poss.add(spos);
 				while (m.next()) {
-					int spos, epos;
-					m.fetch_pos(0, out spos, out epos);
-					poss.add(spos);
+					int mspos, mepos;
+					m.fetch_pos(0, out mspos, out mepos);
+					poss.add(mspos);
 				}
 			}
 		}

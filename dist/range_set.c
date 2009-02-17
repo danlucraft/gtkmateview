@@ -34,15 +34,15 @@ gint range_set_size (RangeSet* self) {
 	g_return_val_if_fail (self != NULL, 0);
 	sizec = 0;
 	{
-		GeeIterator* p_it;
-		p_it = gee_iterable_iterator ((GeeIterable*) self->ranges);
-		while (gee_iterator_next (p_it)) {
+		GeeIterator* _p_it;
+		_p_it = gee_iterable_iterator ((GeeIterable*) self->ranges);
+		while (gee_iterator_next (_p_it)) {
 			RangeSetRange* p;
-			p = (RangeSetRange*) gee_iterator_get (p_it);
+			p = (RangeSetRange*) gee_iterator_get (_p_it);
 			sizec = sizec + ((p->b - p->a) + 1);
 			(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
 		}
-		(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
+		(_p_it == NULL) ? NULL : (_p_it = (g_object_unref (_p_it), NULL));
 	}
 	return sizec;
 }
@@ -63,17 +63,17 @@ void range_set_add (RangeSet* self, gint a, gint b) {
 	n->a = a;
 	n->b = b;
 	{
-		GeeIterator* p_it;
-		p_it = gee_iterable_iterator ((GeeIterable*) self->ranges);
-		while (gee_iterator_next (p_it)) {
+		GeeIterator* _p_it;
+		_p_it = gee_iterable_iterator ((GeeIterable*) self->ranges);
+		while (gee_iterator_next (_p_it)) {
 			RangeSetRange* p;
-			p = (RangeSetRange*) gee_iterator_get (p_it);
+			p = (RangeSetRange*) gee_iterator_get (_p_it);
 			if (p->a < n->a) {
 				insert_ix++;
 			}
 			(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
 		}
-		(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
+		(_p_it == NULL) ? NULL : (_p_it = (g_object_unref (_p_it), NULL));
 	}
 	gee_list_insert ((GeeList*) self->ranges, insert_ix, n);
 	range_set_merge (self, insert_ix);
@@ -143,11 +143,11 @@ char* range_set_present (RangeSet* self) {
 	g_return_val_if_fail (self != NULL, NULL);
 	sb = g_string_new ("");
 	{
-		GeeIterator* p_it;
-		p_it = gee_iterable_iterator ((GeeIterable*) self->ranges);
-		while (gee_iterator_next (p_it)) {
+		GeeIterator* _p_it;
+		_p_it = gee_iterable_iterator ((GeeIterable*) self->ranges);
+		while (gee_iterator_next (_p_it)) {
 			RangeSetRange* p;
-			p = (RangeSetRange*) gee_iterator_get (p_it);
+			p = (RangeSetRange*) gee_iterator_get (_p_it);
 			if ((p->b - p->a) == 0) {
 				char* _tmp0;
 				_tmp0 = NULL;
@@ -168,7 +168,7 @@ char* range_set_present (RangeSet* self) {
 			}
 			(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
 		}
-		(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
+		(_p_it == NULL) ? NULL : (_p_it = (g_object_unref (_p_it), NULL));
 	}
 	_tmp3 = NULL;
 	_tmp4 = NULL;

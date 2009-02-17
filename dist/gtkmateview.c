@@ -15,6 +15,7 @@
 
 
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
+static gint _vala_array_length (gpointer array);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
@@ -30,7 +31,7 @@ gint gtk_mate_load_bundles (void) {
 	GtkMateBundle* bundle;
 	GtkMateGrammar* grammar;
 	PListDict* plist;
-	gint _tmp23;
+	gint _tmp24;
 	inner_error = NULL;
 	if (gtk_mate_buffer_bundles != NULL) {
 		return 1;
@@ -47,83 +48,83 @@ gint gtk_mate_load_bundles (void) {
 	{
 		GeeArrayList* _tmp3;
 		GeeIterator* _tmp4;
-		GeeIterator* bundle_dir_it;
+		GeeIterator* _bundle_dir_it;
 		_tmp3 = NULL;
 		_tmp4 = NULL;
-		bundle_dir_it = (_tmp4 = gee_iterable_iterator ((GeeIterable*) (_tmp3 = gtk_mate_bundle_dirs ())), (_tmp3 == NULL) ? NULL : (_tmp3 = (g_object_unref (_tmp3), NULL)), _tmp4);
-		while (gee_iterator_next (bundle_dir_it)) {
+		_bundle_dir_it = (_tmp4 = gee_iterable_iterator ((GeeIterable*) (_tmp3 = gtk_mate_bundle_dirs ())), (_tmp3 == NULL) ? NULL : (_tmp3 = (g_object_unref (_tmp3), NULL)), _tmp4);
+		while (gee_iterator_next (_bundle_dir_it)) {
 			char* bundle_dir;
-			GtkMateBundle* _tmp6;
-			gint _tmp5_length1;
+			GtkMateBundle* _tmp7;
+			gint _tmp6_length1;
+			char** _tmp6;
 			char** _tmp5;
+			char* _tmp11;
 			char* _tmp10;
 			char* _tmp9;
 			char* _tmp8;
-			char* _tmp7;
-			bundle_dir = (char*) gee_iterator_get (bundle_dir_it);
+			bundle_dir = (char*) gee_iterator_get (_bundle_dir_it);
+			_tmp7 = NULL;
 			_tmp6 = NULL;
 			_tmp5 = NULL;
-			bundle = (_tmp6 = g_object_ref_sink (gtk_mate_bundle_new ((_tmp5 = g_strsplit (bundle_dir, ".", 0), _tmp5_length1 = -1, _tmp5)[0])), (bundle == NULL) ? NULL : (bundle = (g_object_unref (bundle), NULL)), _tmp6);
-			_tmp5 = (_vala_array_free (_tmp5, _tmp5_length1, (GDestroyNotify) g_free), NULL);
+			bundle = (_tmp7 = g_object_ref_sink (gtk_mate_bundle_new ((_tmp6 = _tmp5 = g_strsplit (bundle_dir, ".", 0), _tmp6_length1 = _vala_array_length (_tmp5), _tmp6)[0])), (bundle == NULL) ? NULL : (bundle = (g_object_unref (bundle), NULL)), _tmp7);
+			_tmp6 = (_vala_array_free (_tmp6, _tmp6_length1, (GDestroyNotify) g_free), NULL);
 			gee_collection_add ((GeeCollection*) gtk_mate_buffer_bundles, bundle);
+			_tmp11 = NULL;
 			_tmp10 = NULL;
 			_tmp9 = NULL;
 			_tmp8 = NULL;
-			_tmp7 = NULL;
-			syntax_dir = (_tmp10 = g_strconcat (_tmp9 = g_strconcat (_tmp8 = g_strconcat (_tmp7 = gtk_mate_textmate_share_dir (), "/Bundles/", NULL), bundle_dir, NULL), "/Syntaxes", NULL), syntax_dir = (g_free (syntax_dir), NULL), _tmp10);
+			syntax_dir = (_tmp11 = g_strconcat (_tmp10 = g_strconcat (_tmp9 = g_strconcat (_tmp8 = gtk_mate_textmate_share_dir (), "/Bundles/", NULL), bundle_dir, NULL), "/Syntaxes", NULL), syntax_dir = (g_free (syntax_dir), NULL), _tmp11);
+			_tmp10 = (g_free (_tmp10), NULL);
 			_tmp9 = (g_free (_tmp9), NULL);
 			_tmp8 = (g_free (_tmp8), NULL);
-			_tmp7 = (g_free (_tmp7), NULL);
 			if (g_file_test (syntax_dir, G_FILE_TEST_EXISTS)) {
 				{
 					GDir* d;
-					char* _tmp12;
-					const char* _tmp11;
+					char* _tmp13;
+					const char* _tmp12;
 					d = g_dir_open (syntax_dir, 0, &inner_error);
 					if (inner_error != NULL) {
 						if (inner_error->domain == G_FILE_ERROR) {
 							goto __catch1_g_file_error;
 						}
-						g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
-						g_clear_error (&inner_error);
+						goto __finally1;
 					}
+					_tmp13 = NULL;
 					_tmp12 = NULL;
-					_tmp11 = NULL;
-					while ((name = (_tmp12 = (_tmp11 = g_dir_read_name (d), (_tmp11 == NULL) ? NULL : g_strdup (_tmp11)), name = (g_free (name), NULL), _tmp12)) != NULL) {
-						gboolean _tmp13;
-						_tmp13 = FALSE;
+					while ((name = (_tmp13 = (_tmp12 = g_dir_read_name (d), (_tmp12 == NULL) ? NULL : g_strdup (_tmp12)), name = (g_free (name), NULL), _tmp13)) != NULL) {
+						gboolean _tmp14;
+						_tmp14 = FALSE;
 						if (_vala_strcmp0 (name, ".svn") != 0) {
-							gboolean _tmp14;
-							_tmp14 = FALSE;
+							gboolean _tmp15;
+							_tmp15 = FALSE;
 							if (g_str_has_suffix (name, ".tmLanguage")) {
-								_tmp14 = TRUE;
+								_tmp15 = TRUE;
 							} else {
-								_tmp14 = g_str_has_suffix (name, ".plist");
+								_tmp15 = g_str_has_suffix (name, ".plist");
 							}
-							_tmp13 = (_tmp14);
+							_tmp14 = (_tmp15);
 						} else {
-							_tmp13 = FALSE;
+							_tmp14 = FALSE;
 						}
-						if (_tmp13) {
+						if (_tmp14) {
 							{
+								char* _tmp17;
 								char* _tmp16;
-								char* _tmp15;
-								PListDict* _tmp17;
 								PListDict* _tmp18;
 								PListDict* _tmp19;
-								_tmp16 = NULL;
-								_tmp15 = NULL;
+								PListDict* _tmp20;
 								_tmp17 = NULL;
-								_tmp18 = (_tmp17 = plist_parse (_tmp16 = g_strconcat (_tmp15 = g_strconcat (syntax_dir, "/", NULL), name, NULL), &inner_error), _tmp16 = (g_free (_tmp16), NULL), _tmp15 = (g_free (_tmp15), NULL), _tmp17);
+								_tmp16 = NULL;
+								_tmp18 = NULL;
+								_tmp19 = (_tmp18 = plist_parse (_tmp17 = g_strconcat (_tmp16 = g_strconcat (syntax_dir, "/", NULL), name, NULL), &inner_error), _tmp17 = (g_free (_tmp17), NULL), _tmp16 = (g_free (_tmp16), NULL), _tmp18);
 								if (inner_error != NULL) {
 									if (inner_error->domain == XML_ERROR) {
 										goto __catch2_xml_error;
 									}
-									g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
-									g_clear_error (&inner_error);
+									goto __finally2;
 								}
-								_tmp19 = NULL;
-								plist = (_tmp19 = _tmp18, (plist == NULL) ? NULL : (plist = (g_object_unref (plist), NULL)), _tmp19);
+								_tmp20 = NULL;
+								plist = (_tmp20 = _tmp19, (plist == NULL) ? NULL : (plist = (g_object_unref (plist), NULL)), _tmp20);
 							}
 							goto __finally2;
 							__catch2_xml_error:
@@ -132,22 +133,28 @@ gint gtk_mate_load_bundles (void) {
 								e = inner_error;
 								inner_error = NULL;
 								{
+									char* _tmp22;
 									char* _tmp21;
-									char* _tmp20;
+									_tmp22 = NULL;
 									_tmp21 = NULL;
-									_tmp20 = NULL;
-									fprintf (stdout, "error opening %s\n", _tmp21 = g_strconcat (_tmp20 = g_strconcat (syntax_dir, "/", NULL), name, NULL));
+									fprintf (stdout, "error opening %s\n", _tmp22 = g_strconcat (_tmp21 = g_strconcat (syntax_dir, "/", NULL), name, NULL));
+									_tmp22 = (g_free (_tmp22), NULL);
 									_tmp21 = (g_free (_tmp21), NULL);
-									_tmp20 = (g_free (_tmp20), NULL);
 									(e == NULL) ? NULL : (e = (g_error_free (e), NULL));
 								}
 							}
 							__finally2:
-							;
+							if (inner_error != NULL) {
+								(d == NULL) ? NULL : (d = (g_dir_close (d), NULL));
+								if (inner_error->domain == G_FILE_ERROR) {
+									goto __catch1_g_file_error;
+								}
+								goto __finally1;
+							}
 							if (plist != NULL) {
-								GtkMateGrammar* _tmp22;
-								_tmp22 = NULL;
-								grammar = (_tmp22 = g_object_ref_sink (gtk_mate_grammar_new (plist)), (grammar == NULL) ? NULL : (grammar = (g_object_unref (grammar), NULL)), _tmp22);
+								GtkMateGrammar* _tmp23;
+								_tmp23 = NULL;
+								grammar = (_tmp23 = g_object_ref_sink (gtk_mate_grammar_new (plist)), (grammar == NULL) ? NULL : (grammar = (g_object_unref (grammar), NULL)), _tmp23);
 								gtk_mate_grammar_set_filename (grammar, name);
 								gee_collection_add ((GeeCollection*) bundle->grammars, grammar);
 							}
@@ -167,34 +174,45 @@ gint gtk_mate_load_bundles (void) {
 					}
 				}
 				__finally1:
-				;
+				if (inner_error != NULL) {
+					bundle_dir = (g_free (bundle_dir), NULL);
+					(_bundle_dir_it == NULL) ? NULL : (_bundle_dir_it = (g_object_unref (_bundle_dir_it), NULL));
+					syntax_dir = (g_free (syntax_dir), NULL);
+					name = (g_free (name), NULL);
+					(bundle == NULL) ? NULL : (bundle = (g_object_unref (bundle), NULL));
+					(grammar == NULL) ? NULL : (grammar = (g_object_unref (grammar), NULL));
+					(plist == NULL) ? NULL : (plist = (g_object_unref (plist), NULL));
+					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
+					g_clear_error (&inner_error);
+					return 0;
+				}
 			}
 			bundle_dir = (g_free (bundle_dir), NULL);
 		}
-		(bundle_dir_it == NULL) ? NULL : (bundle_dir_it = (g_object_unref (bundle_dir_it), NULL));
+		(_bundle_dir_it == NULL) ? NULL : (_bundle_dir_it = (g_object_unref (_bundle_dir_it), NULL));
 	}
 	{
-		GeeIterator* b_it;
-		b_it = gee_iterable_iterator ((GeeIterable*) gtk_mate_buffer_bundles);
-		while (gee_iterator_next (b_it)) {
+		GeeIterator* _b_it;
+		_b_it = gee_iterable_iterator ((GeeIterable*) gtk_mate_buffer_bundles);
+		while (gee_iterator_next (_b_it)) {
 			GtkMateBundle* b;
-			b = (GtkMateBundle*) gee_iterator_get (b_it);
+			b = (GtkMateBundle*) gee_iterator_get (_b_it);
 			{
-				GeeIterator* g_it;
-				g_it = gee_iterable_iterator ((GeeIterable*) b->grammars);
-				while (gee_iterator_next (g_it)) {
+				GeeIterator* _g_it;
+				_g_it = gee_iterable_iterator ((GeeIterable*) b->grammars);
+				while (gee_iterator_next (_g_it)) {
 					GtkMateGrammar* g;
-					g = (GtkMateGrammar*) gee_iterator_get (g_it);
+					g = (GtkMateGrammar*) gee_iterator_get (_g_it);
 					gtk_mate_grammar_init_for_reference (g);
 					(g == NULL) ? NULL : (g = (g_object_unref (g), NULL));
 				}
-				(g_it == NULL) ? NULL : (g_it = (g_object_unref (g_it), NULL));
+				(_g_it == NULL) ? NULL : (_g_it = (g_object_unref (_g_it), NULL));
 			}
 			(b == NULL) ? NULL : (b = (g_object_unref (b), NULL));
 		}
-		(b_it == NULL) ? NULL : (b_it = (g_object_unref (b_it), NULL));
+		(_b_it == NULL) ? NULL : (_b_it = (g_object_unref (_b_it), NULL));
 	}
-	return (_tmp23 = -1, syntax_dir = (g_free (syntax_dir), NULL), name = (g_free (name), NULL), (bundle == NULL) ? NULL : (bundle = (g_object_unref (bundle), NULL)), (grammar == NULL) ? NULL : (grammar = (g_object_unref (grammar), NULL)), (plist == NULL) ? NULL : (plist = (g_object_unref (plist), NULL)), _tmp23);
+	return (_tmp24 = -1, syntax_dir = (g_free (syntax_dir), NULL), name = (g_free (name), NULL), (bundle == NULL) ? NULL : (bundle = (g_object_unref (bundle), NULL)), (grammar == NULL) ? NULL : (grammar = (g_object_unref (grammar), NULL)), (plist == NULL) ? NULL : (plist = (g_object_unref (plist), NULL)), _tmp24);
 }
 
 
@@ -211,13 +229,13 @@ void gtk_mate_load_themes (void) {
 	{
 		GeeArrayList* _tmp1;
 		GeeIterator* _tmp2;
-		GeeIterator* fn_it;
+		GeeIterator* _fn_it;
 		_tmp1 = NULL;
 		_tmp2 = NULL;
-		fn_it = (_tmp2 = gee_iterable_iterator ((GeeIterable*) (_tmp1 = gtk_mate_theme_theme_filenames ())), (_tmp1 == NULL) ? NULL : (_tmp1 = (g_object_unref (_tmp1), NULL)), _tmp2);
-		while (gee_iterator_next (fn_it)) {
+		_fn_it = (_tmp2 = gee_iterable_iterator ((GeeIterable*) (_tmp1 = gtk_mate_theme_theme_filenames ())), (_tmp1 == NULL) ? NULL : (_tmp1 = (g_object_unref (_tmp1), NULL)), _tmp2);
+		while (gee_iterator_next (_fn_it)) {
 			char* fn;
-			fn = (char*) gee_iterator_get (fn_it);
+			fn = (char*) gee_iterator_get (_fn_it);
 			{
 				PListDict* plist;
 				GtkMateTheme* theme;
@@ -226,8 +244,7 @@ void gtk_mate_load_themes (void) {
 					if (inner_error->domain == XML_ERROR) {
 						goto __catch3_xml_error;
 					}
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
-					g_clear_error (&inner_error);
+					goto __finally3;
 				}
 				theme = gtk_mate_theme_create_from_plist (PLIST_DICT (plist));
 				if (theme != NULL) {
@@ -248,10 +265,16 @@ void gtk_mate_load_themes (void) {
 				}
 			}
 			__finally3:
-			;
+			if (inner_error != NULL) {
+				fn = (g_free (fn), NULL);
+				(_fn_it == NULL) ? NULL : (_fn_it = (g_object_unref (_fn_it), NULL));
+				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
+				g_clear_error (&inner_error);
+				return;
+			}
 			fn = (g_free (fn), NULL);
 		}
-		(fn_it == NULL) ? NULL : (fn_it = (g_object_unref (fn_it), NULL));
+		(_fn_it == NULL) ? NULL : (_fn_it = (g_object_unref (_fn_it), NULL));
 	}
 }
 
@@ -281,8 +304,7 @@ GeeArrayList* gtk_mate_bundle_dirs (void) {
 			if (inner_error->domain == G_FILE_ERROR) {
 				goto __catch4_g_file_error;
 			}
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
-			g_clear_error (&inner_error);
+			goto __finally4;
 		}
 		_tmp3 = NULL;
 		_tmp2 = NULL;
@@ -309,7 +331,14 @@ GeeArrayList* gtk_mate_bundle_dirs (void) {
 		}
 	}
 	__finally4:
-	;
+	if (inner_error != NULL) {
+		name = (g_free (name), NULL);
+		share_dir = (g_free (share_dir), NULL);
+		(names == NULL) ? NULL : (names = (g_object_unref (names), NULL));
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
+		g_clear_error (&inner_error);
+		return NULL;
+	}
 	_tmp6 = NULL;
 	return (_tmp6 = NULL, name = (g_free (name), NULL), share_dir = (g_free (share_dir), NULL), (names == NULL) ? NULL : (names = (g_object_unref (names), NULL)), _tmp6);
 }
@@ -339,17 +368,25 @@ char* gtk_mate_textmate_share_dir (void) {
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
 	if ((array != NULL) && (destroy_func != NULL)) {
 		int i;
-		if (array_length >= 0)
 		for (i = 0; i < array_length; i = i + 1) {
-			if (((gpointer*) array)[i] != NULL)
-			destroy_func (((gpointer*) array)[i]);
-		}
-		else
-		for (i = 0; ((gpointer*) array)[i] != NULL; i = i + 1) {
-			destroy_func (((gpointer*) array)[i]);
+			if (((gpointer*) array)[i] != NULL) {
+				destroy_func (((gpointer*) array)[i]);
+			}
 		}
 	}
 	g_free (array);
+}
+
+
+static gint _vala_array_length (gpointer array) {
+	int length;
+	length = 0;
+	if (array) {
+		while (((gpointer*) array)[length]) {
+			length++;
+		}
+	}
+	return length;
 }
 
 

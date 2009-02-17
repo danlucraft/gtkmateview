@@ -281,6 +281,7 @@ PListNode* plist_dict_get (PListDict* self, const char* key) {
 
 char** plist_dict_keys (PListDict* self, int* result_length1) {
 	char** _tmp3;
+	gint ks_size;
 	gint ks_length1;
 	gint _tmp1;
 	GeeSet* _tmp0;
@@ -292,27 +293,27 @@ char** plist_dict_keys (PListDict* self, int* result_length1) {
 	_tmp3 = NULL;
 	_tmp0 = NULL;
 	_tmp2 = NULL;
-	ks = (_tmp3 = (_tmp2 = g_new0 (char*, (_tmp1 = gee_collection_get_size ((GeeCollection*) (_tmp0 = gee_map_get_keys ((GeeMap*) self->map)))) + 1), (_tmp0 == NULL) ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL)), _tmp2), ks_length1 = _tmp1, _tmp3);
+	ks = (_tmp3 = (_tmp2 = g_new0 (char*, (_tmp1 = gee_collection_get_size ((GeeCollection*) (_tmp0 = gee_map_get_keys ((GeeMap*) self->map)))) + 1), (_tmp0 == NULL) ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL)), _tmp2), ks_length1 = _tmp1, ks_size = ks_length1, _tmp3);
 	i = 0;
 	{
 		GeeSet* _tmp4;
 		GeeIterator* _tmp5;
-		GeeIterator* s_it;
+		GeeIterator* _s_it;
 		_tmp4 = NULL;
 		_tmp5 = NULL;
-		s_it = (_tmp5 = gee_iterable_iterator ((GeeIterable*) (_tmp4 = gee_map_get_keys ((GeeMap*) self->map))), (_tmp4 == NULL) ? NULL : (_tmp4 = (g_object_unref (_tmp4), NULL)), _tmp5);
-		while (gee_iterator_next (s_it)) {
+		_s_it = (_tmp5 = gee_iterable_iterator ((GeeIterable*) (_tmp4 = gee_map_get_keys ((GeeMap*) self->map))), (_tmp4 == NULL) ? NULL : (_tmp4 = (g_object_unref (_tmp4), NULL)), _tmp5);
+		while (gee_iterator_next (_s_it)) {
 			char* s;
 			char* _tmp7;
 			const char* _tmp6;
-			s = (char*) gee_iterator_get (s_it);
+			s = (char*) gee_iterator_get (_s_it);
 			_tmp7 = NULL;
 			_tmp6 = NULL;
 			ks[i] = (_tmp7 = (_tmp6 = s, (_tmp6 == NULL) ? NULL : g_strdup (_tmp6)), ks[i] = (g_free (ks[i]), NULL), _tmp7);
 			i = i + (1);
 			s = (g_free (s), NULL);
 		}
-		(s_it == NULL) ? NULL : (s_it = (g_object_unref (s_it), NULL));
+		(_s_it == NULL) ? NULL : (_s_it = (g_object_unref (_s_it), NULL));
 	}
 	_tmp8 = NULL;
 	return (_tmp8 = ks, *result_length1 = ks_length1, _tmp8);
@@ -328,7 +329,7 @@ void plist_dict_print_keys (PListDict* self) {
 		int s_it;
 		s_collection = plist_dict_keys (self, &_tmp0);
 		s_collection_length1 = _tmp0;
-		for (s_it = 0; ((_tmp0 != -1) && (s_it < _tmp0)) || ((_tmp0 == -1) && (s_collection[s_it] != NULL)); s_it = s_it + 1) {
+		for (s_it = 0; s_it < _tmp0; s_it = s_it + 1) {
 			const char* _tmp1;
 			char* s;
 			_tmp1 = NULL;
@@ -525,14 +526,14 @@ void plist_print_plist (gint indent, PListNode* node) {
 		{
 			GeeSet* _tmp1;
 			GeeIterator* _tmp2;
-			GeeIterator* key_it;
+			GeeIterator* _key_it;
 			_tmp1 = NULL;
 			_tmp2 = NULL;
-			key_it = (_tmp2 = gee_iterable_iterator ((GeeIterable*) (_tmp1 = gee_map_get_keys ((GeeMap*) (PLIST_DICT (node))->map))), (_tmp1 == NULL) ? NULL : (_tmp1 = (g_object_unref (_tmp1), NULL)), _tmp2);
-			while (gee_iterator_next (key_it)) {
+			_key_it = (_tmp2 = gee_iterable_iterator ((GeeIterable*) (_tmp1 = gee_map_get_keys ((GeeMap*) (PLIST_DICT (node))->map))), (_tmp1 == NULL) ? NULL : (_tmp1 = (g_object_unref (_tmp1), NULL)), _tmp2);
+			while (gee_iterator_next (_key_it)) {
 				char* key;
 				PListNode* value;
-				key = (char*) gee_iterator_get (key_it);
+				key = (char*) gee_iterator_get (_key_it);
 				fprintf (stdout, "%s%s => ", str_indent, key);
 				value = (PListNode*) gee_map_get ((GeeMap*) (PLIST_DICT (node))->map, key);
 				if (PLIST_IS_STRING (value)) {
@@ -544,7 +545,7 @@ void plist_print_plist (gint indent, PListNode* node) {
 				key = (g_free (key), NULL);
 				(value == NULL) ? NULL : (value = (g_object_unref (value), NULL));
 			}
-			(key_it == NULL) ? NULL : (key_it = (g_object_unref (key_it), NULL));
+			(_key_it == NULL) ? NULL : (_key_it = (g_object_unref (_key_it), NULL));
 		}
 		_tmp3 = NULL;
 		str_indent = (_tmp3 = g_strnfill ((gulong) (indent * 2), ' '), str_indent = (g_free (str_indent), NULL), _tmp3);
@@ -557,15 +558,15 @@ void plist_print_plist (gint indent, PListNode* node) {
 		_tmp4 = NULL;
 		str_indent = (_tmp4 = g_strnfill ((gulong) ((indent + 1) * 2), ' '), str_indent = (g_free (str_indent), NULL), _tmp4);
 		{
-			GeeIterator* sub_node_it;
-			sub_node_it = gee_iterable_iterator ((GeeIterable*) (PLIST_ARRAY (node))->array);
-			while (gee_iterator_next (sub_node_it)) {
+			GeeIterator* _sub_node_it;
+			_sub_node_it = gee_iterable_iterator ((GeeIterable*) (PLIST_ARRAY (node))->array);
+			while (gee_iterator_next (_sub_node_it)) {
 				PListNode* sub_node;
-				sub_node = (PListNode*) gee_iterator_get (sub_node_it);
+				sub_node = (PListNode*) gee_iterator_get (_sub_node_it);
 				plist_print_plist (indent + 1, sub_node);
 				(sub_node == NULL) ? NULL : (sub_node = (g_object_unref (sub_node), NULL));
 			}
-			(sub_node_it == NULL) ? NULL : (sub_node_it = (g_object_unref (sub_node_it), NULL));
+			(_sub_node_it == NULL) ? NULL : (_sub_node_it = (g_object_unref (_sub_node_it), NULL));
 		}
 		_tmp5 = NULL;
 		str_indent = (_tmp5 = g_strnfill ((gulong) (indent * 2), ' '), str_indent = (g_free (str_indent), NULL), _tmp5);
@@ -578,14 +579,10 @@ void plist_print_plist (gint indent, PListNode* node) {
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
 	if ((array != NULL) && (destroy_func != NULL)) {
 		int i;
-		if (array_length >= 0)
 		for (i = 0; i < array_length; i = i + 1) {
-			if (((gpointer*) array)[i] != NULL)
-			destroy_func (((gpointer*) array)[i]);
-		}
-		else
-		for (i = 0; ((gpointer*) array)[i] != NULL; i = i + 1) {
-			destroy_func (((gpointer*) array)[i]);
+			if (((gpointer*) array)[i] != NULL) {
+				destroy_func (((gpointer*) array)[i]);
+			}
 		}
 	}
 	g_free (array);

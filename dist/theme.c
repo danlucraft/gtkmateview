@@ -59,20 +59,20 @@ GtkMateThemeSetting* gtk_mate_theme_setting_create_from_plist (PListDict* dict) 
 	{
 		GeeSet* _tmp6;
 		GeeIterator* _tmp7;
-		GeeIterator* key_it;
+		GeeIterator* _key_it;
 		_tmp6 = NULL;
 		_tmp7 = NULL;
-		key_it = (_tmp7 = gee_iterable_iterator ((GeeIterable*) (_tmp6 = gee_map_get_keys ((GeeMap*) pd->map))), (_tmp6 == NULL) ? NULL : (_tmp6 = (g_object_unref (_tmp6), NULL)), _tmp7);
-		while (gee_iterator_next (key_it)) {
+		_key_it = (_tmp7 = gee_iterable_iterator ((GeeIterable*) (_tmp6 = gee_map_get_keys ((GeeMap*) pd->map))), (_tmp6 == NULL) ? NULL : (_tmp6 = (g_object_unref (_tmp6), NULL)), _tmp7);
+		while (gee_iterator_next (_key_it)) {
 			char* key;
 			PListString* _tmp8;
-			key = (char*) gee_iterator_get (key_it);
+			key = (char*) gee_iterator_get (_key_it);
 			_tmp8 = NULL;
 			gee_map_set ((GeeMap*) tsetting->settings, key, (_tmp8 = (PLIST_STRING ((PListNode*) gee_map_get ((GeeMap*) pd->map, key))))->str);
 			(_tmp8 == NULL) ? NULL : (_tmp8 = (g_object_unref (_tmp8), NULL));
 			key = (g_free (key), NULL);
 		}
-		(key_it == NULL) ? NULL : (key_it = (g_object_unref (key_it), NULL));
+		(_key_it == NULL) ? NULL : (_key_it = (g_object_unref (_key_it), NULL));
 	}
 	_tmp9 = NULL;
 	return (_tmp9 = tsetting, (nm == NULL) ? NULL : (nm = (g_object_unref (nm), NULL)), (pd == NULL) ? NULL : (pd = (g_object_unref (pd), NULL)), _tmp9);
@@ -96,23 +96,23 @@ gboolean gtk_mate_theme_setting_match (GtkMateThemeSetting* self, const char* sc
 		gtk_mate_theme_setting_compile_scope_matchers (self);
 	}
 	{
-		GeeIterator* matcher_it;
-		matcher_it = gee_iterable_iterator ((GeeIterable*) self->matchers);
-		while (gee_iterator_next (matcher_it)) {
+		GeeIterator* _matcher_it;
+		_matcher_it = gee_iterable_iterator ((GeeIterable*) self->matchers);
+		while (gee_iterator_next (_matcher_it)) {
 			GtkMateMatcher* matcher;
 			OnigMatch* _tmp2;
 			gboolean _tmp1;
 			OnigMatch* _tmp0;
-			matcher = (GtkMateMatcher*) gee_iterator_get (matcher_it);
+			matcher = (GtkMateMatcher*) gee_iterator_get (_matcher_it);
 			_tmp2 = NULL;
 			_tmp0 = NULL;
 			if ((_tmp1 = gtk_mate_matcher_test_match_re (matcher->pos_rx, matcher->neg_rxs, scope, &_tmp0), (*match) = (_tmp2 = _tmp0, ((*match) == NULL) ? NULL : ((*match) = (g_object_unref ((*match)), NULL)), _tmp2), _tmp1)) {
 				gboolean _tmp3;
-				return (_tmp3 = TRUE, (matcher == NULL) ? NULL : (matcher = (g_object_unref (matcher), NULL)), (matcher_it == NULL) ? NULL : (matcher_it = (g_object_unref (matcher_it), NULL)), _tmp3);
+				return (_tmp3 = TRUE, (matcher == NULL) ? NULL : (matcher = (g_object_unref (matcher), NULL)), (_matcher_it == NULL) ? NULL : (_matcher_it = (g_object_unref (_matcher_it), NULL)), _tmp3);
 			}
 			(matcher == NULL) ? NULL : (matcher = (g_object_unref (matcher), NULL));
 		}
-		(matcher_it == NULL) ? NULL : (matcher_it = (g_object_unref (matcher_it), NULL));
+		(_matcher_it == NULL) ? NULL : (_matcher_it = (g_object_unref (_matcher_it), NULL));
 	}
 	return FALSE;
 }
@@ -205,15 +205,15 @@ GtkMateTheme* gtk_mate_theme_create_from_plist (PListDict* dict) {
 	theme->settings = (_tmp6 = gee_array_list_new (GTK_MATE_TYPE_THEME_SETTING, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), (theme->settings == NULL) ? NULL : (theme->settings = (g_object_unref (theme->settings), NULL)), _tmp6);
 	na = PLIST_ARRAY (plist_dict_get (dict, "settings"));
 	{
-		GeeIterator* nn_it;
-		nn_it = gee_iterable_iterator ((GeeIterable*) na->array);
-		while (gee_iterator_next (nn_it)) {
+		GeeIterator* _nn_it;
+		_nn_it = gee_iterable_iterator ((GeeIterable*) na->array);
+		while (gee_iterator_next (_nn_it)) {
 			PListNode* nn;
 			PListDict* _tmp7;
 			PListDict* nd;
 			PListNode* _tmp8;
 			gboolean _tmp9;
-			nn = (PListNode*) gee_iterator_get (nn_it);
+			nn = (PListNode*) gee_iterator_get (_nn_it);
 			_tmp7 = NULL;
 			nd = (_tmp7 = PLIST_DICT (nn), (_tmp7 == NULL) ? NULL : g_object_ref (_tmp7));
 			_tmp8 = NULL;
@@ -227,7 +227,7 @@ GtkMateTheme* gtk_mate_theme_create_from_plist (PListDict* dict) {
 					int key_it;
 					key_collection = plist_dict_keys (gsd, &_tmp10);
 					key_collection_length1 = _tmp10;
-					for (key_it = 0; ((_tmp10 != -1) && (key_it < _tmp10)) || ((_tmp10 == -1) && (key_collection[key_it] != NULL)); key_it = key_it + 1) {
+					for (key_it = 0; key_it < _tmp10; key_it = key_it + 1) {
 						const char* _tmp12;
 						char* key;
 						_tmp12 = NULL;
@@ -252,7 +252,7 @@ GtkMateTheme* gtk_mate_theme_create_from_plist (PListDict* dict) {
 			(nn == NULL) ? NULL : (nn = (g_object_unref (nn), NULL));
 			(nd == NULL) ? NULL : (nd = (g_object_unref (nd), NULL));
 		}
-		(nn_it == NULL) ? NULL : (nn_it = (g_object_unref (nn_it), NULL));
+		(_nn_it == NULL) ? NULL : (_nn_it = (g_object_unref (_nn_it), NULL));
 	}
 	_tmp14 = NULL;
 	return (_tmp14 = theme, (nm == NULL) ? NULL : (nm = (g_object_unref (nm), NULL)), (na == NULL) ? NULL : (na = (g_object_unref (na), NULL)), _tmp14);
@@ -270,15 +270,15 @@ void gtk_mate_theme_init_for_use (GtkMateTheme* self) {
 	_tmp0 = NULL;
 	self->cached_setting_for_scopes = (_tmp0 = gee_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, GTK_MATE_TYPE_THEME_SETTING, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_str_hash, g_str_equal, g_direct_equal), (self->cached_setting_for_scopes == NULL) ? NULL : (self->cached_setting_for_scopes = (g_object_unref (self->cached_setting_for_scopes), NULL)), _tmp0);
 	{
-		GeeIterator* setting_it;
-		setting_it = gee_iterable_iterator ((GeeIterable*) self->settings);
-		while (gee_iterator_next (setting_it)) {
+		GeeIterator* _setting_it;
+		_setting_it = gee_iterable_iterator ((GeeIterable*) self->settings);
+		while (gee_iterator_next (_setting_it)) {
 			GtkMateThemeSetting* setting;
-			setting = (GtkMateThemeSetting*) gee_iterator_get (setting_it);
+			setting = (GtkMateThemeSetting*) gee_iterator_get (_setting_it);
 			gtk_mate_theme_setting_compile_scope_matchers (setting);
 			(setting == NULL) ? NULL : (setting = (g_object_unref (setting), NULL));
 		}
-		(setting_it == NULL) ? NULL : (setting_it = (g_object_unref (setting_it), NULL));
+		(_setting_it == NULL) ? NULL : (_setting_it = (g_object_unref (_setting_it), NULL));
 	}
 }
 
@@ -307,8 +307,7 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
 			if (inner_error->domain == G_FILE_ERROR) {
 				goto __catch0_g_file_error;
 			}
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
-			g_clear_error (&inner_error);
+			goto __finally0;
 		}
 		_tmp3 = NULL;
 		_tmp2 = NULL;
@@ -341,7 +340,14 @@ GeeArrayList* gtk_mate_theme_theme_filenames (void) {
 		}
 	}
 	__finally0:
-	;
+	if (inner_error != NULL) {
+		(names == NULL) ? NULL : (names = (g_object_unref (names), NULL));
+		share_dir = (g_free (share_dir), NULL);
+		name = (g_free (name), NULL);
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
+		g_clear_error (&inner_error);
+		return NULL;
+	}
 	_tmp8 = NULL;
 	return (_tmp8 = NULL, (names == NULL) ? NULL : (names = (g_object_unref (names), NULL)), share_dir = (g_free (share_dir), NULL), name = (g_free (name), NULL), _tmp8);
 }
@@ -373,12 +379,12 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 	m = NULL;
 	current = NULL;
 	{
-		GeeIterator* setting_it;
-		setting_it = gee_iterable_iterator ((GeeIterable*) self->settings);
-		while (gee_iterator_next (setting_it)) {
+		GeeIterator* _setting_it;
+		_setting_it = gee_iterable_iterator ((GeeIterable*) self->settings);
+		while (gee_iterator_next (_setting_it)) {
 			GtkMateThemeSetting* setting;
 			gboolean _tmp2;
-			setting = (GtkMateThemeSetting*) gee_iterator_get (setting_it);
+			setting = (GtkMateThemeSetting*) gee_iterator_get (_setting_it);
 			_tmp2 = FALSE;
 			if (setting == exclude_setting) {
 				_tmp2 = exclude_setting != NULL;
@@ -424,7 +430,7 @@ GtkMateThemeSetting* gtk_mate_theme_settings_for_scope (GtkMateTheme* self, GtkM
 			}
 			(setting == NULL) ? NULL : (setting = (g_object_unref (setting), NULL));
 		}
-		(setting_it == NULL) ? NULL : (setting_it = (g_object_unref (setting_it), NULL));
+		(_setting_it == NULL) ? NULL : (_setting_it = (g_object_unref (_setting_it), NULL));
 	}
 	/*if (current == null) {
 	stdout.printf("none match\n");
@@ -485,14 +491,10 @@ GType gtk_mate_theme_get_type (void) {
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
 	if ((array != NULL) && (destroy_func != NULL)) {
 		int i;
-		if (array_length >= 0)
 		for (i = 0; i < array_length; i = i + 1) {
-			if (((gpointer*) array)[i] != NULL)
-			destroy_func (((gpointer*) array)[i]);
-		}
-		else
-		for (i = 0; ((gpointer*) array)[i] != NULL; i = i + 1) {
-			destroy_func (((gpointer*) array)[i]);
+			if (((gpointer*) array)[i] != NULL) {
+				destroy_func (((gpointer*) array)[i]);
+			}
 		}
 	}
 	g_free (array);

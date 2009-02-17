@@ -690,19 +690,16 @@ void gtk_mate_scope_end_mark_set (GtkMateScope* self, gint line, gint line_offse
 
 
 GtkTextIter gtk_mate_scope_start_iter (GtkMateScope* self) {
-	0;
 	return gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->start_mark);
 }
 
 
 GtkTextIter gtk_mate_scope_inner_start_iter (GtkMateScope* self) {
-	0;
 	return gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->inner_start_mark);
 }
 
 
 GtkTextIter gtk_mate_scope_inner_end_iter (GtkMateScope* self) {
-	0;
 	if (self->inner_end_mark != NULL) {
 		return gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->inner_end_mark);
 	} else {
@@ -712,7 +709,6 @@ GtkTextIter gtk_mate_scope_inner_end_iter (GtkMateScope* self) {
 
 
 GtkTextIter gtk_mate_scope_end_iter (GtkMateScope* self) {
-	0;
 	if (self->end_mark != NULL) {
 		return gtk_mate_buffer_iter_from_mark (self->priv->_buffer, self->end_mark);
 	} else {
@@ -1097,6 +1093,7 @@ static GObject * gtk_mate_scope_constructor (GType type, guint n_construct_prope
 
 static void gtk_mate_scope_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	GtkMateScope * self;
+	gpointer boxed;
 	self = GTK_MATE_SCOPE (object);
 	switch (property_id) {
 		case GTK_MATE_SCOPE_NAME:

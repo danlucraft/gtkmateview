@@ -89,16 +89,16 @@ namespace Gtk.Mate {
 						include_patterns.add(p);
 						if ((p.name == "$self" || p.name == "$base") && !already_self) {
 							already_self = true;
-							foreach (var p in g.patterns) {
-								patterns_to_include.add(p);
+							foreach (var pat in g.patterns) {
+								patterns_to_include.add(pat);
 							}
 						}
 					}
 					else if ((ng = Grammar.find_by_scope_name(p.name)) != null) {
 						ng.init_for_use();
 						include_patterns.add(p);
-						foreach (var p in ng.patterns) {
-							patterns_to_include.add(p);
+						foreach (var pat in ng.patterns) {
+							patterns_to_include.add(pat);
 						}
 					}
 					else {

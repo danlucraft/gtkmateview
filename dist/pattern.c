@@ -9,6 +9,7 @@
 
 
 
+static char* string_substring (const char* self, glong offset, glong len);
 struct _GtkMatePatternPrivate {
 	GtkMateGrammar* _grammar;
 };
@@ -40,6 +41,26 @@ static gpointer gtk_mate_include_pattern_parent_class = NULL;
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
+
+
+static char* string_substring (const char* self, glong offset, glong len) {
+	glong string_length;
+	const char* start;
+	g_return_val_if_fail (self != NULL, NULL);
+	string_length = g_utf8_strlen (self, -1);
+	if (offset < 0) {
+		offset = string_length + offset;
+		g_return_val_if_fail (offset >= 0, NULL);
+	} else {
+		g_return_val_if_fail (offset <= string_length, NULL);
+	}
+	if (len < 0) {
+		len = string_length - offset;
+	}
+	g_return_val_if_fail ((offset + len) <= string_length, NULL);
+	start = g_utf8_offset_to_pointer (self, offset);
+	return g_strndup (start, ((gchar*) g_utf8_offset_to_pointer (start, len)) - ((gchar*) start));
+}
 
 
 GtkMatePattern* gtk_mate_pattern_create_from_plist (GeeArrayList* all_patterns, PListDict* pd) {
@@ -95,7 +116,7 @@ GeeHashMap* gtk_mate_pattern_make_captures_from_plist (PListDict* pd) {
 		int s_capnum_it;
 		s_capnum_collection = plist_dict_keys (pd, &_tmp1);
 		s_capnum_collection_length1 = _tmp1;
-		for (s_capnum_it = 0; ((_tmp1 != -1) && (s_capnum_it < _tmp1)) || ((_tmp1 == -1) && (s_capnum_collection[s_capnum_it] != NULL)); s_capnum_it = s_capnum_it + 1) {
+		for (s_capnum_it = 0; s_capnum_it < _tmp1; s_capnum_it = s_capnum_it + 1) {
 			const char* _tmp4;
 			char* s_capnum;
 			_tmp4 = NULL;
@@ -143,12 +164,12 @@ void gtk_mate_pattern_replace_repository_includes (GeeArrayList* patlist, GtkMat
 		/* stdout.printf("repo replacement pass\n");*/
 		any_included = FALSE;
 		{
-			GeeIterator* p_it;
-			p_it = gee_iterable_iterator ((GeeIterable*) patlist);
-			while (gee_iterator_next (p_it)) {
+			GeeIterator* _p_it;
+			_p_it = gee_iterable_iterator ((GeeIterable*) patlist);
+			while (gee_iterator_next (_p_it)) {
 				GtkMatePattern* p;
 				gboolean _tmp0;
-				p = (GtkMatePattern*) gee_iterator_get (p_it);
+				p = (GtkMatePattern*) gee_iterator_get (_p_it);
 				_tmp0 = FALSE;
 				if (GTK_MATE_IS_INCLUDE_PATTERN (p)) {
 					_tmp0 = g_str_has_prefix (p->name, "#");
@@ -156,26 +177,24 @@ void gtk_mate_pattern_replace_repository_includes (GeeArrayList* patlist, GtkMat
 					_tmp0 = FALSE;
 				}
 				if (_tmp0) {
-					char* _tmp1;
 					char* reponame;
 					GeeArrayList* ps;
 					gee_collection_add ((GeeCollection*) include_patterns, p);
-					_tmp1 = NULL;
-					reponame = (_tmp1 = g_utf8_offset_to_pointer (p->name, (glong) 1), g_strndup (_tmp1, g_utf8_offset_to_pointer (_tmp1, (glong) (((gint) strlen (p->name)) - 1)) - _tmp1));
+					reponame = string_substring (p->name, (glong) 1, (glong) (((gint) strlen (p->name)) - 1));
 					ps = (GeeArrayList*) gee_map_get ((GeeMap*) g->repository, reponame);
 					/* stdout.printf("(%s) getting reponame: %s (%d)\n", this.name, reponame, ps.size);*/
 					if (ps != NULL) {
 						{
-							GeeIterator* p1_it;
-							p1_it = gee_iterable_iterator ((GeeIterable*) ps);
-							while (gee_iterator_next (p1_it)) {
+							GeeIterator* _p1_it;
+							_p1_it = gee_iterable_iterator ((GeeIterable*) ps);
+							while (gee_iterator_next (_p1_it)) {
 								GtkMatePattern* p1;
-								p1 = (GtkMatePattern*) gee_iterator_get (p1_it);
+								p1 = (GtkMatePattern*) gee_iterator_get (_p1_it);
 								any_included = TRUE;
 								gee_collection_add ((GeeCollection*) patterns_to_include, p1);
 								(p1 == NULL) ? NULL : (p1 = (g_object_unref (p1), NULL));
 							}
-							(p1_it == NULL) ? NULL : (p1_it = (g_object_unref (p1_it), NULL));
+							(_p1_it == NULL) ? NULL : (_p1_it = (g_object_unref (_p1_it), NULL));
 						}
 					} else {
 						fprintf (stdout, "warning: couldn't find repository key '%s' in grammar '%s'\n", reponame, gtk_mate_grammar_get_name (g));
@@ -185,7 +204,7 @@ void gtk_mate_pattern_replace_repository_includes (GeeArrayList* patlist, GtkMat
 				}
 				(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
 			}
-			(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
+			(_p_it == NULL) ? NULL : (_p_it = (g_object_unref (_p_it), NULL));
 		}
 		gtk_mate_pattern_remove_patterns (patlist, include_patterns);
 		gtk_mate_pattern_add_patterns (patlist, patterns_to_include);
@@ -210,11 +229,11 @@ void gtk_mate_pattern_replace_base_and_self_includes (GeeArrayList* patlist, Gtk
 	/* some patterns have $self twice*/
 	ng = NULL;
 	{
-		GeeIterator* p_it;
-		p_it = gee_iterable_iterator ((GeeIterable*) patlist);
-		while (gee_iterator_next (p_it)) {
+		GeeIterator* _p_it;
+		_p_it = gee_iterable_iterator ((GeeIterable*) patlist);
+		while (gee_iterator_next (_p_it)) {
 			GtkMatePattern* p;
-			p = (GtkMatePattern*) gee_iterator_get (p_it);
+			p = (GtkMatePattern*) gee_iterator_get (_p_it);
 			if (GTK_MATE_IS_INCLUDE_PATTERN (p)) {
 				if (g_str_has_prefix (p->name, "$")) {
 					gboolean _tmp0;
@@ -235,15 +254,15 @@ void gtk_mate_pattern_replace_base_and_self_includes (GeeArrayList* patlist, Gtk
 					if (_tmp0) {
 						already_self = TRUE;
 						{
-							GeeIterator* p_it;
-							p_it = gee_iterable_iterator ((GeeIterable*) g->patterns);
-							while (gee_iterator_next (p_it)) {
-								GtkMatePattern* p;
-								p = (GtkMatePattern*) gee_iterator_get (p_it);
-								gee_collection_add ((GeeCollection*) patterns_to_include, p);
-								(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
+							GeeIterator* _pat_it;
+							_pat_it = gee_iterable_iterator ((GeeIterable*) g->patterns);
+							while (gee_iterator_next (_pat_it)) {
+								GtkMatePattern* pat;
+								pat = (GtkMatePattern*) gee_iterator_get (_pat_it);
+								gee_collection_add ((GeeCollection*) patterns_to_include, pat);
+								(pat == NULL) ? NULL : (pat = (g_object_unref (pat), NULL));
 							}
-							(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
+							(_pat_it == NULL) ? NULL : (_pat_it = (g_object_unref (_pat_it), NULL));
 						}
 					}
 				} else {
@@ -253,15 +272,15 @@ void gtk_mate_pattern_replace_base_and_self_includes (GeeArrayList* patlist, Gtk
 						gtk_mate_grammar_init_for_use (ng);
 						gee_collection_add ((GeeCollection*) include_patterns, p);
 						{
-							GeeIterator* p_it;
-							p_it = gee_iterable_iterator ((GeeIterable*) ng->patterns);
-							while (gee_iterator_next (p_it)) {
-								GtkMatePattern* p;
-								p = (GtkMatePattern*) gee_iterator_get (p_it);
-								gee_collection_add ((GeeCollection*) patterns_to_include, p);
-								(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
+							GeeIterator* _pat_it;
+							_pat_it = gee_iterable_iterator ((GeeIterable*) ng->patterns);
+							while (gee_iterator_next (_pat_it)) {
+								GtkMatePattern* pat;
+								pat = (GtkMatePattern*) gee_iterator_get (_pat_it);
+								gee_collection_add ((GeeCollection*) patterns_to_include, pat);
+								(pat == NULL) ? NULL : (pat = (g_object_unref (pat), NULL));
 							}
-							(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
+							(_pat_it == NULL) ? NULL : (_pat_it = (g_object_unref (_pat_it), NULL));
 						}
 					} else {
 					}
@@ -269,7 +288,7 @@ void gtk_mate_pattern_replace_base_and_self_includes (GeeArrayList* patlist, Gtk
 			}
 			(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
 		}
-		(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
+		(_p_it == NULL) ? NULL : (_p_it = (g_object_unref (_p_it), NULL));
 	}
 	/*stdout.printf("unknown include pattern: %s\n", p.name);*/
 	gtk_mate_pattern_remove_patterns (patlist, include_patterns);
@@ -284,15 +303,15 @@ static void gtk_mate_pattern_remove_patterns (GeeArrayList* patlist, GeeArrayLis
 	g_return_if_fail (patlist != NULL);
 	g_return_if_fail (ps != NULL);
 	{
-		GeeIterator* p_it;
-		p_it = gee_iterable_iterator ((GeeIterable*) ps);
-		while (gee_iterator_next (p_it)) {
+		GeeIterator* _p_it;
+		_p_it = gee_iterable_iterator ((GeeIterable*) ps);
+		while (gee_iterator_next (_p_it)) {
 			GtkMatePattern* p;
-			p = (GtkMatePattern*) gee_iterator_get (p_it);
+			p = (GtkMatePattern*) gee_iterator_get (_p_it);
 			gee_collection_remove ((GeeCollection*) patlist, p);
 			(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
 		}
-		(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
+		(_p_it == NULL) ? NULL : (_p_it = (g_object_unref (_p_it), NULL));
 	}
 }
 
@@ -301,15 +320,15 @@ static void gtk_mate_pattern_add_patterns (GeeArrayList* patlist, GeeArrayList* 
 	g_return_if_fail (patlist != NULL);
 	g_return_if_fail (ps != NULL);
 	{
-		GeeIterator* p_it;
-		p_it = gee_iterable_iterator ((GeeIterable*) ps);
-		while (gee_iterator_next (p_it)) {
+		GeeIterator* _p_it;
+		_p_it = gee_iterable_iterator ((GeeIterable*) ps);
+		while (gee_iterator_next (_p_it)) {
 			GtkMatePattern* p;
-			p = (GtkMatePattern*) gee_iterator_get (p_it);
+			p = (GtkMatePattern*) gee_iterator_get (_p_it);
 			gee_collection_add ((GeeCollection*) patlist, p);
 			(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
 		}
-		(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
+		(_p_it == NULL) ? NULL : (_p_it = (g_object_unref (_p_it), NULL));
 	}
 }
 
@@ -345,6 +364,7 @@ void gtk_mate_pattern_set_grammar (GtkMatePattern* self, GtkMateGrammar* value) 
 
 static void gtk_mate_pattern_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	GtkMatePattern * self;
+	gpointer boxed;
 	self = GTK_MATE_PATTERN (object);
 	switch (property_id) {
 		case GTK_MATE_PATTERN_GRAMMAR:
@@ -605,12 +625,12 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 	subpattern = NULL;
 	if (ps != NULL) {
 		{
-			GeeIterator* p_it;
-			p_it = gee_iterable_iterator ((GeeIterable*) (PLIST_ARRAY (ps))->array);
-			while (gee_iterator_next (p_it)) {
+			GeeIterator* _p_it;
+			_p_it = gee_iterable_iterator ((GeeIterable*) (PLIST_ARRAY (ps))->array);
+			while (gee_iterator_next (_p_it)) {
 				PListNode* p;
 				GtkMatePattern* _tmp19;
-				p = (PListNode*) gee_iterator_get (p_it);
+				p = (PListNode*) gee_iterator_get (_p_it);
 				_tmp19 = NULL;
 				subpattern = (_tmp19 = gtk_mate_pattern_create_from_plist (all_patterns, PLIST_DICT (p)), (subpattern == NULL) ? NULL : (subpattern = (g_object_unref (subpattern), NULL)), _tmp19);
 				if (subpattern != NULL) {
@@ -618,7 +638,7 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 				}
 				(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
 			}
-			(p_it == NULL) ? NULL : (p_it = (g_object_unref (p_it), NULL));
+			(_p_it == NULL) ? NULL : (_p_it = (g_object_unref (_p_it), NULL));
 		}
 	}
 	_tmp20 = NULL;
@@ -767,14 +787,10 @@ GType gtk_mate_include_pattern_get_type (void) {
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
 	if ((array != NULL) && (destroy_func != NULL)) {
 		int i;
-		if (array_length >= 0)
 		for (i = 0; i < array_length; i = i + 1) {
-			if (((gpointer*) array)[i] != NULL)
-			destroy_func (((gpointer*) array)[i]);
-		}
-		else
-		for (i = 0; ((gpointer*) array)[i] != NULL; i = i + 1) {
-			destroy_func (((gpointer*) array)[i]);
+			if (((gpointer*) array)[i] != NULL) {
+				destroy_func (((gpointer*) array)[i]);
+			}
 		}
 	}
 	g_free (array);

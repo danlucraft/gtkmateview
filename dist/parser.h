@@ -97,12 +97,12 @@ void gtk_mate_parser_recolour_children (GtkMateParser* self, GtkMateScope* scope
 void gtk_mate_parser_last_visible_line_changed (GtkMateParser* self, gint new_last_visible_line);
 gint gtk_mate_parser_last_line_parsed (GtkMateParser* self);
 void gtk_mate_parser_connect_buffer_signals (GtkMateParser* self);
-void gtk_mate_parser_insert_text_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, const char* text, gint length);
-void gtk_mate_parser_delete_range_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, GtkTextIter* pos2);
-void gtk_mate_parser_insert_text_after_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, const char* text, gint length);
-void gtk_mate_parser_delete_range_after_handler (GtkMateParser* self, GtkMateBuffer* bf, GtkTextIter* pos, GtkTextIter* pos2);
-void gtk_mate_parser_static_insert_text_after_handler (GtkMateBuffer* bf, GtkTextIter* pos, const char* text, gint length);
-void gtk_mate_parser_static_delete_range_after_handler (GtkMateBuffer* bf, GtkTextIter* pos, GtkTextIter* pos2);
+void gtk_mate_parser_insert_text_handler (GtkMateParser* self, GtkMateBuffer* bf, const GtkTextIter* pos, const char* text, gint length);
+void gtk_mate_parser_delete_range_handler (GtkMateParser* self, GtkMateBuffer* bf, const GtkTextIter* pos, const GtkTextIter* pos2);
+void gtk_mate_parser_insert_text_after_handler (GtkMateParser* self, GtkMateBuffer* bf, const GtkTextIter* pos, const char* text, gint length);
+void gtk_mate_parser_delete_range_after_handler (GtkMateParser* self, GtkMateBuffer* bf, const GtkTextIter* pos, const GtkTextIter* pos2);
+void gtk_mate_parser_static_insert_text_after_handler (GtkMateBuffer* bf, const GtkTextIter* pos, const char* text, gint length);
+void gtk_mate_parser_static_delete_range_after_handler (GtkMateBuffer* bf, const GtkTextIter* pos, const GtkTextIter* pos2);
 void gtk_mate_parser_added_tag (GtkMateParser* self, GtkTextTag* tag);
 gint gtk_mate_parser_tag_compare (GtkTextTag* tag1, GtkTextTag* tag2, void* data);
 void gtk_mate_parser_close (GtkMateParser* self);
