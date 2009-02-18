@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gee/arraylist.h>
-#include "view.h"
+#include "buffer.h"
 #include "scanner.h"
 #include "onig_wrap.h"
 #include "range_set.h"

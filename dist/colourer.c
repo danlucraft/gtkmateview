@@ -5,11 +5,11 @@
 #include <gee/iterable.h>
 #include <gee/iterator.h>
 #include <stdio.h>
-#include "buffer.h"
 #include "theme.h"
 #include "scope.h"
 #include "parser.h"
 #include "pattern.h"
+#include "view.h"
 
 
 

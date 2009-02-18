@@ -4,9 +4,9 @@
 #include <gee/iterator.h>
 #include <gee/collection.h>
 #include <gee/map.h>
-#include "pattern.h"
 #include "buffer.h"
 #include "bundle.h"
+#include "pattern.h"
 
 
 

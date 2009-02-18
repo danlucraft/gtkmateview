@@ -9,10 +9,25 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
-#include "view.h"
 
 G_BEGIN_DECLS
 
+typedef struct _GtkMateBuffer GtkMateBuffer;
+typedef struct _GtkMateBufferClass GtkMateBufferClass;
+typedef struct _GtkMateTextLoc GtkMateTextLoc;
+typedef struct _GtkMateTextLocClass GtkMateTextLocClass;
+typedef struct _GtkMateParser GtkMateParser;
+typedef struct _GtkMateParserClass GtkMateParserClass;
+typedef struct _GtkMateThemeSetting GtkMateThemeSetting;
+typedef struct _GtkMateThemeSettingClass GtkMateThemeSettingClass;
+typedef struct _GtkMateTheme GtkMateTheme;
+typedef struct _GtkMateThemeClass GtkMateThemeClass;
+typedef struct _GtkMateScope GtkMateScope;
+typedef struct _GtkMateScopeClass GtkMateScopeClass;
+typedef struct _GtkMateColourer GtkMateColourer;
+typedef struct _GtkMateColourerClass GtkMateColourerClass;
+typedef struct _GtkMateView GtkMateView;
+typedef struct _GtkMateViewClass GtkMateViewClass;
 
 #define GTK_MATE_TYPE_BUFFER (gtk_mate_buffer_get_type ())
 #define GTK_MATE_BUFFER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_MATE_TYPE_BUFFER, GtkMateBuffer))

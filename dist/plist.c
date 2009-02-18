@@ -1,11 +1,11 @@
 
 #include "plist.h"
 #include <gee/map.h>
+#include <gee/list.h>
 #include <gee/collection.h>
 #include <gee/iterable.h>
 #include <gee/iterator.h>
 #include <stdio.h>
-#include <gee/list.h>
 #include <glib/gstdio.h>
 #include <libxml/parser.h>
 #include "string_helper.h"

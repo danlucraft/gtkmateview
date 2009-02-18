@@ -85,9 +85,9 @@ gint gtk_mate_load_bundles (void) {
 					d = g_dir_open (syntax_dir, 0, &inner_error);
 					if (inner_error != NULL) {
 						if (inner_error->domain == G_FILE_ERROR) {
-							goto __catch1_g_file_error;
+							goto __catch0_g_file_error;
 						}
-						goto __finally1;
+						goto __finally0;
 					}
 					_tmp13 = NULL;
 					_tmp12 = NULL;
@@ -119,15 +119,15 @@ gint gtk_mate_load_bundles (void) {
 								_tmp19 = (_tmp18 = plist_parse (_tmp17 = g_strconcat (_tmp16 = g_strconcat (syntax_dir, "/", NULL), name, NULL), &inner_error), _tmp17 = (g_free (_tmp17), NULL), _tmp16 = (g_free (_tmp16), NULL), _tmp18);
 								if (inner_error != NULL) {
 									if (inner_error->domain == XML_ERROR) {
-										goto __catch2_xml_error;
+										goto __catch1_xml_error;
 									}
-									goto __finally2;
+									goto __finally1;
 								}
 								_tmp20 = NULL;
 								plist = (_tmp20 = _tmp19, (plist == NULL) ? NULL : (plist = (g_object_unref (plist), NULL)), _tmp20);
 							}
-							goto __finally2;
-							__catch2_xml_error:
+							goto __finally1;
+							__catch1_xml_error:
 							{
 								GError * e;
 								e = inner_error;
@@ -143,13 +143,13 @@ gint gtk_mate_load_bundles (void) {
 									(e == NULL) ? NULL : (e = (g_error_free (e), NULL));
 								}
 							}
-							__finally2:
+							__finally1:
 							if (inner_error != NULL) {
 								(d == NULL) ? NULL : (d = (g_dir_close (d), NULL));
 								if (inner_error->domain == G_FILE_ERROR) {
-									goto __catch1_g_file_error;
+									goto __catch0_g_file_error;
 								}
-								goto __finally1;
+								goto __finally0;
 							}
 							if (plist != NULL) {
 								GtkMateGrammar* _tmp23;
@@ -162,8 +162,8 @@ gint gtk_mate_load_bundles (void) {
 					}
 					(d == NULL) ? NULL : (d = (g_dir_close (d), NULL));
 				}
-				goto __finally1;
-				__catch1_g_file_error:
+				goto __finally0;
+				__catch0_g_file_error:
 				{
 					GError * e;
 					e = inner_error;
@@ -173,7 +173,7 @@ gint gtk_mate_load_bundles (void) {
 						(e == NULL) ? NULL : (e = (g_error_free (e), NULL));
 					}
 				}
-				__finally1:
+				__finally0:
 				if (inner_error != NULL) {
 					bundle_dir = (g_free (bundle_dir), NULL);
 					(_bundle_dir_it == NULL) ? NULL : (_bundle_dir_it = (g_object_unref (_bundle_dir_it), NULL));
@@ -242,9 +242,9 @@ void gtk_mate_load_themes (void) {
 				plist = plist_parse (fn, &inner_error);
 				if (inner_error != NULL) {
 					if (inner_error->domain == XML_ERROR) {
-						goto __catch3_xml_error;
+						goto __catch2_xml_error;
 					}
-					goto __finally3;
+					goto __finally2;
 				}
 				theme = gtk_mate_theme_create_from_plist (PLIST_DICT (plist));
 				if (theme != NULL) {
@@ -253,8 +253,8 @@ void gtk_mate_load_themes (void) {
 				(plist == NULL) ? NULL : (plist = (g_object_unref (plist), NULL));
 				(theme == NULL) ? NULL : (theme = (g_object_unref (theme), NULL));
 			}
-			goto __finally3;
-			__catch3_xml_error:
+			goto __finally2;
+			__catch2_xml_error:
 			{
 				GError * e;
 				e = inner_error;
@@ -264,7 +264,7 @@ void gtk_mate_load_themes (void) {
 					(e == NULL) ? NULL : (e = (g_error_free (e), NULL));
 				}
 			}
-			__finally3:
+			__finally2:
 			if (inner_error != NULL) {
 				fn = (g_free (fn), NULL);
 				(_fn_it == NULL) ? NULL : (_fn_it = (g_object_unref (_fn_it), NULL));
@@ -302,9 +302,9 @@ GeeArrayList* gtk_mate_bundle_dirs (void) {
 		d = (_tmp1 = g_dir_open (_tmp0 = g_strconcat (share_dir, "/Bundles", NULL), 0, &inner_error), _tmp0 = (g_free (_tmp0), NULL), _tmp1);
 		if (inner_error != NULL) {
 			if (inner_error->domain == G_FILE_ERROR) {
-				goto __catch4_g_file_error;
+				goto __catch3_g_file_error;
 			}
-			goto __finally4;
+			goto __finally3;
 		}
 		_tmp3 = NULL;
 		_tmp2 = NULL;
@@ -316,8 +316,8 @@ GeeArrayList* gtk_mate_bundle_dirs (void) {
 		_tmp4 = NULL;
 		return (_tmp4 = names, (d == NULL) ? NULL : (d = (g_dir_close (d), NULL)), name = (g_free (name), NULL), share_dir = (g_free (share_dir), NULL), _tmp4);
 	}
-	goto __finally4;
-	__catch4_g_file_error:
+	goto __finally3;
+	__catch3_g_file_error:
 	{
 		GError * e;
 		e = inner_error;
@@ -330,7 +330,7 @@ GeeArrayList* gtk_mate_bundle_dirs (void) {
 			(e == NULL) ? NULL : (e = (g_error_free (e), NULL));
 		}
 	}
-	__finally4:
+	__finally3:
 	if (inner_error != NULL) {
 		name = (g_free (name), NULL);
 		share_dir = (g_free (share_dir), NULL);

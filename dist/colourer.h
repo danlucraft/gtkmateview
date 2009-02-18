@@ -9,7 +9,7 @@
 #include <string.h>
 #include <gee/arraylist.h>
 #include <gdk/gdk.h>
-#include "view.h"
+#include "buffer.h"
 
 G_BEGIN_DECLS
 

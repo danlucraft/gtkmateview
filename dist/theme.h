@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gee/hashmap.h>
-#include "view.h"
+#include "buffer.h"
 #include "plist.h"
 #include "onig_wrap.h"
 

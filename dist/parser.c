@@ -9,7 +9,6 @@
 #include "theme.h"
 #include "colourer.h"
 #include "scope.h"
-#include "buffer.h"
 #include "pattern.h"
 
 

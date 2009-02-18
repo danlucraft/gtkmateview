@@ -5,7 +5,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include "theme.h"
-#include "buffer.h"
 #include "parser.h"
 #include "colourer.h"
 

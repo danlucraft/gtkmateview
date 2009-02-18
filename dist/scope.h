@@ -10,7 +10,7 @@
 #include <gee/arraylist.h>
 #include "pattern.h"
 #include "onig_wrap.h"
-#include "view.h"
+#include "buffer.h"
 
 G_BEGIN_DECLS
 

@@ -1,7 +1,6 @@
 
 #include "scope.h"
 #include <gee/collection.h>
-#include "buffer.h"
 #include "parser.h"
 
 
