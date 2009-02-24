@@ -87,6 +87,7 @@ void gtk_mate_parser_open_scope (GtkMateParser* self, GtkMateScanner* scanner, G
 void gtk_mate_parser_single_scope (GtkMateParser* self, GtkMateScanner* scanner, GtkMateScope* expected_scope, gint line_ix, const char* line, gint length, GtkMateMarker* m, GeeArrayList* all_scopes, GeeArrayList* closed_scopes, GeeArrayList* removed_scopes);
 void gtk_mate_parser_handle_captures (GtkMateParser* self, gint line_ix, gint length, const char* line, GtkMateScope* scope, GtkMateMarker* m, GeeArrayList* all_scopes, GeeArrayList* closed_scopes);
 OnigRx* gtk_mate_parser_make_closing_regex (GtkMateParser* self, const char* line, GtkMateScope* scope, GtkMateMarker* m);
+void gtk_mate_parser_set_start_mark_safely (GtkMateParser* self, GtkMateScope* scope, GtkMateMarker* m, gint line_ix, gint length, gint cap);
 void gtk_mate_parser_set_inner_start_mark_safely (GtkMateParser* self, GtkMateScope* scope, GtkMateMarker* m, gint line_ix, gint length, gint cap);
 void gtk_mate_parser_set_end_mark_safely (GtkMateParser* self, GtkMateScope* scope, GtkMateMarker* m, gint line_ix, gint length, gint cap);
 void gtk_mate_parser_collect_child_captures (GtkMateParser* self, gint line_ix, gint length, GtkMateScope* scope, GtkMateMarker* m, GeeArrayList* all_scopes, GeeArrayList* closed_scopes);

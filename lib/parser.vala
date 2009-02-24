@@ -161,7 +161,7 @@ namespace Gtk.Mate {
 			var removed_scopes = new ArrayList<Scope>();
 			all_scopes.add(start_scope);
 			foreach (Marker m in scanner) {
-//				stdout.printf("pretty:\n%s\n", root.pretty(2));
+				// stdout.printf("pretty:\n%s\n", root.pretty(2));
 				var expected_scope = get_expected_scope(scanner.current_scope, line_ix, scanner.position);
 				// if (expected_scope != null)
 				// 	stdout.printf("expected_scope: %s (%d, %d)\n", expected_scope.name, expected_scope.start_loc().line, 
@@ -170,17 +170,17 @@ namespace Gtk.Mate {
 				// 	stdout.printf("no expected scope\n");
 				// stdout.printf("  scope: %s (%d, %d) (line length: %d)\n", m.pattern.name, m.from, m.match.end(0), length);
 				if (m.is_close_scope) {
-					// stdout.printf("     (closing)\n");
+				// 	stdout.printf("     (closing)\n");
 					close_scope(scanner, expected_scope, line_ix, line, length, m, 
 								all_scopes, closed_scopes, removed_scopes);
 				}
 				else if (m.pattern is DoublePattern) {
-					// stdout.printf("     (opening)\n");
+				//	stdout.printf("     (opening)\n");
 					open_scope(scanner, expected_scope, line_ix, line, length, m, 
 							   all_scopes, closed_scopes, removed_scopes);
 				}
 				else {
-					// stdout.printf("     (single)\n");
+				//	stdout.printf("     (single)\n");
 					single_scope(scanner, expected_scope, line_ix, line, length, m, 
 								 all_scopes, closed_scopes, removed_scopes);
 				}
@@ -325,10 +325,9 @@ namespace Gtk.Mate {
 			var s = new Scope(this.buffer, m.pattern.name);
 			s.pattern = m.pattern;
 			s.open_match = m.match;
-			s.start_mark_set(line_ix, m.from, false);
+			set_start_mark_safely(s, m, line_ix, length, 0);
 			set_inner_start_mark_safely(s, m, line_ix, length, 0);
 			s.begin_match_string = line.substring(m.from, m.match.end(0)-m.from);
-			// stdout.printf("begin_match_string: '%s'\n", s.begin_match_string);
 			var end_iter = buffer.end_iter();
 			var end_line = end_iter.get_line();
 			var end_line_offset = end_iter.get_line_offset();
@@ -380,7 +379,7 @@ namespace Gtk.Mate {
 			var s = new Scope(this.buffer, m.pattern.name);
 			s.pattern = m.pattern;
 			s.open_match = m.match;
-			s.start_mark_set(line_ix, m.from, false);
+			set_start_mark_safely(s, m, line_ix, length, 0);
 			set_end_mark_safely(s, m, line_ix, length, 0);
 			s.is_open = false;
 			s.is_capture = false;
@@ -459,6 +458,14 @@ namespace Gtk.Mate {
 				scope.closing_regex = Onig.Rx.make1(src.str);
 			}
 			return null;
+		}
+		
+		public void set_start_mark_safely(Scope scope, Marker m, int line_ix, int length, int cap) {
+			int to = m.match.begin(cap);
+			if (to == length && this.buffer.get_line_count() > line_ix+1) 
+				scope.start_mark_set(line_ix+1, 0, false);
+			else
+				scope.start_mark_set(line_ix, int.min(to, length), false);
 		}
 
 		public void set_inner_start_mark_safely(Scope scope, Marker m, int line_ix, int length, int cap) {
