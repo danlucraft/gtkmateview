@@ -350,6 +350,7 @@ namespace Onig {
 	[CCode (cheader_filename = "onig_wrap.h")]
 	public class Match : GLib.Object {
 		public static int count;
+		public string text;
 		public int begin (int capture);
 		public int end (int capture);
 		public Match ();

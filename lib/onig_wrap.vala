@@ -15,6 +15,7 @@ namespace Onig {
 	public class Match : Object {
 		public RegexT rx {get; set;}
 		public Region rg {get; set;}
+		public string text;
 
 		public static int count = 0;
 
@@ -29,12 +30,16 @@ namespace Onig {
 		public int begin(int capture) {
 			if (capture >= this.rg.num_regs || capture < 0)
 				return -1;
+			int utf8 = Encoding.UTF8.strlen((char *) text, ((char *) text) + this.rg.beg[capture]);
+			stdout.printf("compare utf8: %d with ascii: %d\n ", utf8, this.rg.beg[capture]);
 			return this.rg.beg[capture];
 		}
 
 		public int end(int capture) {
 			if (capture >= this.rg.num_regs || capture < 0)
 				return -1;
+			int utf8 = Encoding.UTF8.strlen((char *) text, ((char *) text) + this.rg.end[capture]);
+			stdout.printf("compare utf8: %d with ascii: %d\n ", utf8, this.rg.end[capture]);
 			return this.rg.end[capture];
 		}
 	}
@@ -47,7 +52,7 @@ namespace Onig {
 
 			Region rg = new Region();
 			char* ctarget = (char *) target;
-			int r = rx.search(ctarget, (ctarget+target.size()), ctarget+start, (ctarget+end), rg, Option.NONE);
+			int r = rx.search(ctarget, (ctarget+target.size()), ctarget+start, ctarget+end, rg, Option.NONE);
 			if (r < 0) {
 				return null;
 			}
@@ -55,6 +60,7 @@ namespace Onig {
 				var md = new Match();
 				md.rg = rg;
 				md.rx = rx;
+				md.text = target;
 				return md;
 			}
 		}
@@ -67,7 +73,7 @@ namespace Onig {
 			int r = Oniguruma.onig_new(out rx1, 
 									   c_pattern, (c_pattern+pattern.size()), 
 									   options,
-									   Encoding.ASCII, *Syntax.DEFAULT, 
+									   Encoding.UTF8, *Syntax.DEFAULT, 
 									   ref err_info);
 			rx.matches_start_of_line = pattern.has_prefix("^");
 			if (r < 0) {

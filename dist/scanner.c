@@ -1,6 +1,7 @@
 
 #include "scanner.h"
 #include <gee/collection.h>
+#include <stdio.h>
 #include <gee/list.h>
 
 
@@ -264,8 +265,8 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 	OnigRx* closing_regex;
 	GtkMateMarker* _tmp20;
 	g_return_val_if_fail (self != NULL, NULL);
-	/* stdout.printf("find_next_marker (current_scope is %s)\n", current_scope.name);
-	 stdout.printf("scanning: '%s' from %d to %d\n", line, position, line_length);*/
+	fprintf (stdout, "find_next_marker (current_scope is %s)\n", gtk_mate_scope_get_name (gtk_mate_scanner_get_current_scope (self)));
+	fprintf (stdout, "scanning: '%s' from %d to %d\n", self->priv->_line, self->position, self->priv->_line_length);
 	m = NULL;
 	best_length = 0;
 	new_length = 0;
@@ -291,7 +292,7 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 			OnigMatch* _tmp5;
 			GtkMateMarker* _tmp8;
 			GtkMateMarker* _tmp7;
-			/*stdout.printf("closing match: %s (%d-%d)\n", current_scope.name, match.begin(0), match.end(0));*/
+			fprintf (stdout, "closing match: %s (%d-%d)\n", gtk_mate_scope_get_name (gtk_mate_scanner_get_current_scope (self)), onig_match_begin (match, 0), onig_match_end (match, 0));
 			nm = g_object_ref_sink (gtk_mate_marker_new ());
 			_tmp4 = NULL;
 			_tmp3 = NULL;
@@ -348,7 +349,7 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 				}
 				/* some regex's have zero width (meta.selector.css)*/
 				position_prev = position_now;
-				/* stdout.printf("matched: %s (%d-%d)\n", p.name, match.begin(0), match.end(0));*/
+				fprintf (stdout, "matched: %s (%d-%d)\n", p->name, onig_match_begin (match, 0), onig_match_end (match, 0));
 				nm = g_object_ref_sink (gtk_mate_marker_new ());
 				_tmp12 = NULL;
 				_tmp11 = NULL;
@@ -388,6 +389,7 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 					best_length = new_length;
 				}
 				position_now = onig_match_end (match, 0);
+				fprintf (stdout, "  new position: %d\n", position_now);
 				(nm == NULL) ? NULL : (nm = (g_object_unref (nm), NULL));
 			}
 			(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));

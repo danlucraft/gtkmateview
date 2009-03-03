@@ -19,6 +19,9 @@
 		</constructor>
 	</class>
 	<class name="Match" parent="GLib.Object" glib:type-name="OnigMatch" glib:get-type="onig_match_get_type">
+		<field name="text">
+			<type name="string"/>
+		</field>
 		<field name="onig_match_count">
 			<type name="int"/>
 		</field>

@@ -6713,6 +6713,40 @@ static VALUE rb_onig_match_set_count(VALUE self, VALUE count) {
     return Qnil;
 }
 
+static VALUE rb_onig_match_get_text(VALUE self) {
+    OnigMatch* onig_match = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // ValaMemberGet#body
+    char * _c_return = onig_match->text; 
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+          if (_c_return == NULL) {
+        _rb_return = Qnil;
+      }
+      else {
+        _rb_return = rb_str_new2(_c_return);
+      }
+
+    return _rb_return;
+}
+
+static VALUE rb_onig_match_set_text(VALUE self, VALUE text) {
+    OnigMatch* onig_match = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(text) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    // Method#argument_type_conversions
+    char * _c_text;
+    _c_text = g_strdup(STR2CSTR(text));
+    // ValaMemberSet#body
+    onig_match->text = _c_text;
+    // Method#return_type_conversion
+    return Qnil;
+}
+
 static VALUE rb_onig_match_begin(VALUE self, VALUE capture) {
     OnigMatch* onig_match = RVAL2GOBJ(self);
     // Method#type_checks
@@ -7662,6 +7696,8 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_onig_match, "initialize", onig_match_initialize, 0);
     rb_define_singleton_method(rbc_onig_match, "count", rb_onig_match_get_count, 0);
     rb_define_singleton_method(rbc_onig_match, "count=", rb_onig_match_set_count, 1);
+    rb_define_method(rbc_onig_match, "text", rb_onig_match_get_text, 0);
+    rb_define_method(rbc_onig_match, "text=", rb_onig_match_set_text, 1);
     rb_define_method(rbc_onig_match, "begin", rb_onig_match_begin, 1);
     rb_define_method(rbc_onig_match, "end", rb_onig_match_end, 1);
     rb_define_method(rbc_onig_match, "num_captures", rb_onig_match_num_captures, 0);

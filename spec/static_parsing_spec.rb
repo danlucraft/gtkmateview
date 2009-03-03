@@ -222,6 +222,14 @@ YAML
     @mb.set_grammar_by_name("Python")
     @mb.text = source
   end
+
+  it "should parse this Ruby without dying" do
+    source = <<-RUBY
+"–",
+    RUBY
+    @mb.set_grammar_by_name("Ruby")
+    @mb.text = source
+  end
 end
 
 
