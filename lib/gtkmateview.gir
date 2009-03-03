@@ -101,7 +101,7 @@
 					<type name="string"/>
 				</parameter>
 				<parameter name="options">
-					<type name="Oniguruma.OnigOptionType"/>
+					<type name="Oniguruma.OnigOptionType*"/>
 				</parameter>
 				<parameter name="error" direction="out" transfer-ownership="full">
 					<type name="Onig.OnigError"/>

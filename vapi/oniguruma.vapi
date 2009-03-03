@@ -1,9 +1,8 @@
 
 namespace Oniguruma {
-
 	[CCode (cname = "onig_new", cheader_filename = "oniguruma.h")]
 	public static int onig_new(out RegexT regex, char* pattern, char* pattern_end,
-							   OnigOptionType option, int enc, OnigSyntaxType syntax,
+							   OnigOptionType* option, OnigEncoding* enc, OnigSyntaxType syntax,
 							   ref OnigErrorInfo err_info);
 
 	[CCode (cname = "onig_error_code_to_str", cheader_filename = "oniguruma.h")]
@@ -13,7 +12,7 @@ namespace Oniguruma {
 	public class RegexT {
 		[CCode (cname = "onig_search", cheader_filename = "oniguruma.h")]
 		public int search(char* str, char* end, char* start,
-						  char* range, Region region, OnigOptionType option);
+						  char* range, Region region, OnigOptionType* option);
 		[CCode (cname = "onig_number_of_captures", cheader_filename = "oniguruma.h")]
 		public int number_of_captures();
 		[CCode (cname = "onig_number_of_names", cheader_filename = "oniguruma.h")]
@@ -45,11 +44,11 @@ namespace Oniguruma {
 		public CaptureTreeNode[] childs;
 	}
 
-	[CCode (cname="OnigOptionType*")]
-	public struct OnigOptionType : int { }
+	[CCode (cname="OnigOptionType")]
+	public struct OnigOptionType { }
 
-	[CCode (cname="OnigEncoding*")]
-	public struct OnigEncoding : int { }
+	[CCode (cname="OnigEncoding")]
+	public struct OnigEncoding { }
 
 	[CCode (cname="OnigSyntaxType")]
 	public struct OnigSyntaxType {

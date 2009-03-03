@@ -23,6 +23,7 @@ namespace :build do
   task :clean do
     puts "cleaning..."
     FileUtils.rm Dir.glob("lib/*.{o,h,c,so}")
+    FileUtils.rm Dir.glob("dist/*.{o,h,c,so}")
   end
 
   desc "build c files from vala"

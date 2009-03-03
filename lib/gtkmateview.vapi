@@ -366,7 +366,7 @@ namespace Onig {
 	[CCode (cheader_filename = "onig_wrap.h")]
 	public class Rx : GLib.Object {
 		public bool matches_start_of_line;
-		public static Onig.Rx? make (string pattern, Oniguruma.OnigOptionType options, out Onig.OnigError error);
+		public static Onig.Rx? make (string pattern, Oniguruma.OnigOptionType* options, out Onig.OnigError error);
 		public static Onig.Rx? make1 (string pattern);
 		public Rx ();
 		public Onig.Match? search (string target, int start, int end);

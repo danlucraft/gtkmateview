@@ -47,7 +47,7 @@ namespace Onig {
 
 			Region rg = new Region();
 			char* ctarget = (char *) target;
-			int r = rx.search(ctarget, (ctarget+target.size()), ctarget+start, (ctarget+end), rg, Option.NONE);
+			int r = rx.search(ctarget, (ctarget+target.size()), ctarget+start, (ctarget+end), rg, (Oniguruma.OnigOptionType*) Option.NONE);
 			if (r < 0) {
 				return null;
 			}
@@ -59,7 +59,7 @@ namespace Onig {
 			}
 		}
 
-		public static Rx? make(string pattern, OnigOptionType options, out OnigError error) {
+		public static Rx? make(string pattern, OnigOptionType* options, out OnigError error) {
 			var rx = new Rx();
 			char* c_pattern = (char *) pattern;
 			RegexT rx1;
@@ -67,7 +67,7 @@ namespace Onig {
 			int r = Oniguruma.onig_new(out rx1, 
 									   c_pattern, (c_pattern+pattern.size()), 
 									   options,
-									   Encoding.ASCII, *Syntax.DEFAULT, 
+									   (Oniguruma.OnigEncoding*) Encoding.ASCII, *Syntax.DEFAULT, 
 									   ref err_info);
 			rx.matches_start_of_line = pattern.has_prefix("^");
 			if (r < 0) {
@@ -82,7 +82,7 @@ namespace Onig {
 
 		public static Rx? make1(string pattern) {
 			OnigError e;
-			return make(pattern, Option.MULTILINE, out e);
+			return make(pattern, (Oniguruma.OnigOptionType*) Option.MULTILINE, out e);
 		}
 	}
 }
