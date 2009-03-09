@@ -329,6 +329,7 @@ namespace Gtk {
 		}
 		[CCode (cheader_filename = "view.h")]
 		public class View : Gtk.SourceView {
+			public int first_visible_line ();
 			public Gtk.Mate.Parser? get_parser ();
 			public int last_visible_line ();
 			public View ();

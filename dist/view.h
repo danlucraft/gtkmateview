@@ -35,6 +35,7 @@ gboolean gtk_mate_view_set_theme_by_name (GtkMateView* self, const char* name);
 void gtk_mate_view_set_global_theme_settings (GtkMateView* self);
 void gtk_mate_view_value_changed_handler (GtkMateView* self);
 GtkMateParser* gtk_mate_view_get_parser (GtkMateView* self);
+gint gtk_mate_view_first_visible_line (GtkMateView* self);
 gint gtk_mate_view_last_visible_line (GtkMateView* self);
 GtkMateView* gtk_mate_view_construct (GType object_type);
 GtkMateView* gtk_mate_view_new (void);

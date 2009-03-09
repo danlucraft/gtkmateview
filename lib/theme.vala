@@ -95,7 +95,7 @@ namespace Gtk.Mate {
 			if (is_initialized)
 				return;
 			is_initialized = true;
-			stdout.printf("initializing theme for use: %s\n", name);
+			// stdout.printf("initializing theme for use: %s\n", name);
 			this.cached_setting_for_scopes = new HashMap<string, ThemeSetting>(str_hash, str_equal);
 			foreach (var setting in settings) {
 				setting.compile_scope_matchers();

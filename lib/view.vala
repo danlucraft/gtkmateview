@@ -42,6 +42,16 @@ namespace Gtk.Mate {
 			return ((Gtk.Mate.Buffer) buffer).parser;
 		}
 		
+		public int first_visible_line() {
+			Gdk.Rectangle rect;
+			get_visible_rect(out rect);
+			int bufy = rect.y;
+			Gtk.TextIter iter;
+			get_line_at_y(out iter, bufy, null);
+			int line = iter.get_line();
+			return line;
+		}
+		
 		public int last_visible_line() {
 			Gdk.Rectangle rect;
 			get_visible_rect(out rect);

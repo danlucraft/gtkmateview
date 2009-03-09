@@ -266,7 +266,7 @@ void gtk_mate_theme_init_for_use (GtkMateTheme* self) {
 		return;
 	}
 	self->is_initialized = TRUE;
-	fprintf (stdout, "initializing theme for use: %s\n", self->name);
+	/* stdout.printf("initializing theme for use: %s\n", name);*/
 	_tmp0 = NULL;
 	self->cached_setting_for_scopes = (_tmp0 = gee_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, GTK_MATE_TYPE_THEME_SETTING, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_str_hash, g_str_equal, g_direct_equal), (self->cached_setting_for_scopes == NULL) ? NULL : (self->cached_setting_for_scopes = (g_object_unref (self->cached_setting_for_scopes), NULL)), _tmp0);
 	{

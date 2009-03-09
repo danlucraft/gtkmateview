@@ -4,7 +4,6 @@
 #include <pango/pango.h>
 #include <gee/iterable.h>
 #include <gee/iterator.h>
-#include <stdio.h>
 #include "theme.h"
 #include "scope.h"
 #include "parser.h"
@@ -58,7 +57,6 @@ void gtk_mate_colourer_set_global_settings (GtkMateColourer* self, GtkMateView* 
 		GdkColor _tmp2 = {0};
 		_tmp1 = NULL;
 		bg_colour = (_tmp1 = gtk_mate_colourer_merge_colour ("#FFFFFF", bg_colour), bg_colour = (g_free (bg_colour), NULL), _tmp1);
-		fprintf (stdout, "bg_colour: %s\n", bg_colour);
 		gtk_widget_modify_base (GTK_WIDGET (view), GTK_STATE_NORMAL, (_tmp2 = gtk_mate_colourer_parse_colour (self, bg_colour), &_tmp2));
 	}
 	/* ((Gtk.SourceView) view).background = bg_colour;*/

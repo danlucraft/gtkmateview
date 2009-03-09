@@ -90,6 +90,20 @@ GtkMateParser* gtk_mate_view_get_parser (GtkMateView* self) {
 }
 
 
+gint gtk_mate_view_first_visible_line (GtkMateView* self) {
+	GdkRectangle rect = {0};
+	gint bufy;
+	GtkTextIter iter = {0};
+	gint line;
+	g_return_val_if_fail (self != NULL, 0);
+	gtk_text_view_get_visible_rect ((GtkTextView*) self, &rect);
+	bufy = rect.y;
+	gtk_text_view_get_line_at_y ((GtkTextView*) self, &iter, bufy, NULL);
+	line = gtk_text_iter_get_line (&iter);
+	return line;
+}
+
+
 gint gtk_mate_view_last_visible_line (GtkMateView* self) {
 	GdkRectangle rect = {0};
 	gint bufy;

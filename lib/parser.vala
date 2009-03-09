@@ -697,7 +697,6 @@ namespace Gtk.Mate {
 		}
 
 		public void close() {
-			// stdout.printf("closing\n");
 			Parser.existing_parsers.remove(this);
 		}
 		
