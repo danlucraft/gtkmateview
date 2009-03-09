@@ -1,6 +1,5 @@
 
 #include "onig_wrap.h"
-#include <stdio.h>
 #include <string.h>
 
 
@@ -87,7 +86,6 @@ gint onig_match_num_captures (OnigMatch* self) {
 
 gint onig_match_begin (OnigMatch* self, gint capture) {
 	gboolean _tmp0;
-	gint utf8;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0 = FALSE;
 	if (capture >= self->priv->_rg->num_regs) {
@@ -98,15 +96,12 @@ gint onig_match_begin (OnigMatch* self, gint capture) {
 	if (_tmp0) {
 		return -1;
 	}
-	utf8 = onigenc_strlen (ONIG_ENCODING_UTF8, (gchar*) self->text, ((gchar*) self->text) + self->priv->_rg->beg[capture]);
-	fprintf (stdout, "compare utf8: %d with ascii: %d\n ", utf8, self->priv->_rg->beg[capture]);
 	return self->priv->_rg->beg[capture];
 }
 
 
 gint onig_match_end (OnigMatch* self, gint capture) {
 	gboolean _tmp0;
-	gint utf8;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0 = FALSE;
 	if (capture >= self->priv->_rg->num_regs) {
@@ -117,8 +112,6 @@ gint onig_match_end (OnigMatch* self, gint capture) {
 	if (_tmp0) {
 		return -1;
 	}
-	utf8 = onigenc_strlen (ONIG_ENCODING_UTF8, (gchar*) self->text, ((gchar*) self->text) + self->priv->_rg->end[capture]);
-	fprintf (stdout, "compare utf8: %d with ascii: %d\n ", utf8, self->priv->_rg->end[capture]);
 	return self->priv->_rg->end[capture];
 }
 
@@ -255,7 +248,7 @@ OnigMatch* onig_rx_search (OnigRx* self, const char* target, gint start, gint en
 	g_return_val_if_fail (target != NULL, NULL);
 	rg = onig_region_new ();
 	ctarget = (gchar*) target;
-	r = onig_search (self->priv->_rx, ctarget, (ctarget + strlen (target)), ctarget + start, ctarget + end, rg, ONIG_OPTION_NONE);
+	r = onig_search (self->priv->_rx, ctarget, ctarget + strlen (target), ctarget + start, ctarget + end, rg, ONIG_OPTION_NONE);
 	if (r < 0) {
 		return NULL;
 	} else {
@@ -286,7 +279,7 @@ OnigRx* onig_rx_make (const char* pattern, OnigOptionType* options, OnigOnigErro
 	c_pattern = (gchar*) pattern;
 	rx1 = NULL;
 	err_info = (memset (&_tmp0, 0, sizeof (OnigErrorInfo)), _tmp0);
-	r = onig_new (&rx1, c_pattern, (c_pattern + strlen (pattern)), options, (gint) ONIG_ENCODING_UTF8, ONIG_SYNTAX_DEFAULT, &err_info);
+	r = onig_new (&rx1, c_pattern, c_pattern + strlen (pattern), options, (gint) ONIG_ENCODING_UTF8, ONIG_SYNTAX_DEFAULT, &err_info);
 	rx->matches_start_of_line = g_str_has_prefix (pattern, "^");
 	if (r < 0) {
 		OnigOnigError* _tmp1;

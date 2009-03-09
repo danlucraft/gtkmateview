@@ -246,7 +246,7 @@ void gtk_mate_pattern_replace_base_and_self_includes (GeeArrayList* patlist, Gtk
 					} else {
 						_tmp1 = _vala_strcmp0 (p->name, "$base") == 0;
 					}
-					if ((_tmp1)) {
+					if (_tmp1) {
 						_tmp0 = !already_self;
 					} else {
 						_tmp0 = FALSE;
@@ -471,7 +471,7 @@ GtkMateSinglePattern* gtk_mate_single_pattern_create_from_plist (GeeArrayList* a
 		_tmp8 = FALSE;
 	}
 	if (_tmp8) {
-		_tmp7 = (PLIST_INTEGER (n))->value == 1;
+		_tmp7 = PLIST_INTEGER (n)->value == 1;
 	} else {
 		_tmp7 = FALSE;
 	}
@@ -488,7 +488,7 @@ GtkMateSinglePattern* gtk_mate_single_pattern_create_from_plist (GeeArrayList* a
 			_tmp10 = FALSE;
 		}
 		if (_tmp10) {
-			_tmp9 = _vala_strcmp0 ((PLIST_STRING (n))->str, "1") == 0;
+			_tmp9 = _vala_strcmp0 (PLIST_STRING (n)->str, "1") == 0;
 		} else {
 			_tmp9 = FALSE;
 		}
@@ -626,7 +626,7 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 	if (ps != NULL) {
 		{
 			GeeIterator* _p_it;
-			_p_it = gee_iterable_iterator ((GeeIterable*) (PLIST_ARRAY (ps))->array);
+			_p_it = gee_iterable_iterator ((GeeIterable*) PLIST_ARRAY (ps)->array);
 			while (gee_iterator_next (_p_it)) {
 				PListNode* p;
 				GtkMatePattern* _tmp19;
@@ -651,7 +651,7 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 		_tmp22 = FALSE;
 	}
 	if (_tmp22) {
-		_tmp21 = (PLIST_INTEGER (n))->value == 1;
+		_tmp21 = PLIST_INTEGER (n)->value == 1;
 	} else {
 		_tmp21 = FALSE;
 	}
@@ -668,7 +668,7 @@ GtkMateDoublePattern* gtk_mate_double_pattern_create_from_plist (GeeArrayList* a
 			_tmp24 = FALSE;
 		}
 		if (_tmp24) {
-			_tmp23 = _vala_strcmp0 ((PLIST_STRING (n))->str, "1") == 0;
+			_tmp23 = _vala_strcmp0 (PLIST_STRING (n)->str, "1") == 0;
 		} else {
 			_tmp23 = FALSE;
 		}

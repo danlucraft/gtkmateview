@@ -50,7 +50,7 @@ gint range_set_size (RangeSet* self) {
 
 gboolean range_set_is_empty (RangeSet* self) {
 	g_return_val_if_fail (self != NULL, FALSE);
-	return (gee_collection_get_size ((GeeCollection*) self->ranges) == 0);
+	return gee_collection_get_size ((GeeCollection*) self->ranges) == 0;
 }
 
 

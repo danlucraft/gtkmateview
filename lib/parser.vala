@@ -139,9 +139,9 @@ namespace Gtk.Mate {
 		// scope of the line has changed.
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line(line_ix);
-			int length = (int) line.length;//buffer.get_line_length(line_ix);
-			stdout.printf("p%d, ", line_ix);
-			stdout.flush();
+			int length = (int) line.size();//buffer.get_line_length(line_ix);
+			// stdout.printf("p%d, ", line_ix);
+			// stdout.flush();
 			if (line_ix > this.parsed_upto)
 				this.parsed_upto = line_ix;
 			// stdout.flush();
@@ -149,7 +149,7 @@ namespace Gtk.Mate {
 			if (start_scope != null) {
 				start_scope = start_scope.containing_double_scope();
 			}
-			stdout.printf("start_scope is: %s\n", start_scope.name);
+			// stdout.printf("start_scope is: %s\n", start_scope.name);
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
 			if (end_scope1 != null)
 				end_scope1 = end_scope1.containing_double_scope();
@@ -163,24 +163,24 @@ namespace Gtk.Mate {
 			foreach (Marker m in scanner) {
 				// stdout.printf("pretty:\n%s\n", root.pretty(2));
 				var expected_scope = get_expected_scope(scanner.current_scope, line_ix, scanner.position);
-				if (expected_scope != null)
-					stdout.printf("expected_scope: %s (%d, %d)\n", expected_scope.name, expected_scope.start_loc().line, 
-				 		expected_scope.start_loc().line_offset);
-				else
-					stdout.printf("no expected scope\n");
-				stdout.printf("  scope: %s (%d, %d) (line length: %d)\n", m.pattern.name, m.from, m.match.end(0), length);
+				// if (expected_scope != null)
+				// 	stdout.printf("expected_scope: %s (%d, %d)\n", expected_scope.name, expected_scope.start_loc().line, 
+				//  		expected_scope.start_loc().line_offset);
+				// else
+				// 	stdout.printf("no expected scope\n");
+				// stdout.printf("  scope: %s (%d, %d) (line length: %d)\n", m.pattern.name, m.from, m.match.end(0), length);
 				if (m.is_close_scope) {
-					stdout.printf("     (closing)\n");
+					// stdout.printf("     (closing)\n");
 					close_scope(scanner, expected_scope, line_ix, line, length, m, 
 								all_scopes, closed_scopes, removed_scopes);
 				}
 				else if (m.pattern is DoublePattern) {
-					stdout.printf("     (opening)\n");
+					// stdout.printf("     (opening)\n");
 					open_scope(scanner, expected_scope, line_ix, line, length, m, 
 							   all_scopes, closed_scopes, removed_scopes);
 				}
 				else {
-					stdout.printf("     (single)\n");
+					// stdout.printf("     (single)\n");
 					single_scope(scanner, expected_scope, line_ix, line, length, m, 
 								 all_scopes, closed_scopes, removed_scopes);
 				}
@@ -697,7 +697,7 @@ namespace Gtk.Mate {
 		}
 
 		public void close() {
-			stdout.printf("closing\n");
+			// stdout.printf("closing\n");
 			Parser.existing_parsers.remove(this);
 		}
 		

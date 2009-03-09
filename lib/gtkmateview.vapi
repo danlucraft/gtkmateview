@@ -21,6 +21,7 @@ namespace Gtk {
 			public string? get_line1 (int line_ix);
 			public int get_line_length (int line);
 			public Gtk.TextIter iter_ (int offset);
+			public Gtk.TextIter iter_at_line_index (int line, int line_offset);
 			public Gtk.TextIter iter_at_line_offset (int line, int line_offset);
 			public Gtk.TextIter iter_from_mark (Gtk.TextMark mark);
 			public Gtk.TextIter line_end_iter (int line);

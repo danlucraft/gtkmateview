@@ -90,13 +90,13 @@ void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self) {
 	g_return_if_fail (self != NULL);
 	nm = plist_dict_get (self->priv->_plist, "name");
 	if (nm != NULL) {
-		gtk_mate_grammar_set_name (self, (PLIST_STRING (nm))->str);
+		gtk_mate_grammar_set_name (self, PLIST_STRING (nm)->str);
 	}
 	flm = plist_dict_get (self->priv->_plist, "firstLineMatch");
 	if (flm != NULL) {
 		OnigRx* _tmp0;
 		_tmp0 = NULL;
-		self->first_line_match = (_tmp0 = onig_rx_make1 ((PLIST_STRING (flm))->str), (self->first_line_match == NULL) ? NULL : (self->first_line_match = (g_object_unref (self->first_line_match), NULL)), _tmp0);
+		self->first_line_match = (_tmp0 = onig_rx_make1 (PLIST_STRING (flm)->str), (self->first_line_match == NULL) ? NULL : (self->first_line_match = (g_object_unref (self->first_line_match), NULL)), _tmp0);
 	}
 	ke = plist_dict_get (self->priv->_plist, "keyEquivalent");
 	if (ke != NULL) {
@@ -104,7 +104,7 @@ void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self) {
 		const char* _tmp1;
 		_tmp2 = NULL;
 		_tmp1 = NULL;
-		self->key_equivalent = (_tmp2 = (_tmp1 = (PLIST_STRING (ke))->str, (_tmp1 == NULL) ? NULL : g_strdup (_tmp1)), self->key_equivalent = (g_free (self->key_equivalent), NULL), _tmp2);
+		self->key_equivalent = (_tmp2 = (_tmp1 = PLIST_STRING (ke)->str, (_tmp1 == NULL) ? NULL : g_strdup (_tmp1)), self->key_equivalent = (g_free (self->key_equivalent), NULL), _tmp2);
 	}
 	sn = plist_dict_get (self->priv->_plist, "scopeName");
 	if (sn != NULL) {
@@ -112,7 +112,7 @@ void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self) {
 		const char* _tmp3;
 		_tmp4 = NULL;
 		_tmp3 = NULL;
-		self->scope_name = (_tmp4 = (_tmp3 = (PLIST_STRING (sn))->str, (_tmp3 == NULL) ? NULL : g_strdup (_tmp3)), self->scope_name = (g_free (self->scope_name), NULL), _tmp4);
+		self->scope_name = (_tmp4 = (_tmp3 = PLIST_STRING (sn)->str, (_tmp3 == NULL) ? NULL : g_strdup (_tmp3)), self->scope_name = (g_free (self->scope_name), NULL), _tmp4);
 	}
 	cm = plist_dict_get (self->priv->_plist, "comment");
 	if (cm != NULL) {
@@ -120,7 +120,7 @@ void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self) {
 		const char* _tmp5;
 		_tmp6 = NULL;
 		_tmp5 = NULL;
-		self->comment = (_tmp6 = (_tmp5 = (PLIST_STRING (cm))->str, (_tmp5 == NULL) ? NULL : g_strdup (_tmp5)), self->comment = (g_free (self->comment), NULL), _tmp6);
+		self->comment = (_tmp6 = (_tmp5 = PLIST_STRING (cm)->str, (_tmp5 == NULL) ? NULL : g_strdup (_tmp5)), self->comment = (g_free (self->comment), NULL), _tmp6);
 	}
 	filetypes = plist_dict_get (self->priv->_plist, "fileTypes");
 	if (filetypes != NULL) {
@@ -146,7 +146,7 @@ void gtk_mate_grammar_init_for_reference (GtkMateGrammar* self) {
 				_tmp11 = NULL;
 				_tmp10 = NULL;
 				_tmp12 = i++;
-				self->file_types[_tmp12] = (_tmp11 = (_tmp10 = (PLIST_STRING (n))->str, (_tmp10 == NULL) ? NULL : g_strdup (_tmp10)), self->file_types[_tmp12] = (g_free (self->file_types[_tmp12]), NULL), _tmp11);
+				self->file_types[_tmp12] = (_tmp11 = (_tmp10 = PLIST_STRING (n)->str, (_tmp10 == NULL) ? NULL : g_strdup (_tmp10)), self->file_types[_tmp12] = (g_free (self->file_types[_tmp12]), NULL), _tmp11);
 				(n == NULL) ? NULL : (n = (g_object_unref (n), NULL));
 			}
 			(_n_it == NULL) ? NULL : (_n_it = (g_object_unref (_n_it), NULL));
@@ -186,13 +186,13 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 	if (fsm != NULL) {
 		OnigRx* _tmp0;
 		_tmp0 = NULL;
-		self->folding_start_marker = (_tmp0 = onig_rx_make1 ((PLIST_STRING (fsm))->str), (self->folding_start_marker == NULL) ? NULL : (self->folding_start_marker = (g_object_unref (self->folding_start_marker), NULL)), _tmp0);
+		self->folding_start_marker = (_tmp0 = onig_rx_make1 (PLIST_STRING (fsm)->str), (self->folding_start_marker == NULL) ? NULL : (self->folding_start_marker = (g_object_unref (self->folding_start_marker), NULL)), _tmp0);
 	}
 	ftm = plist_dict_get (self->priv->_plist, "foldingStopMarker");
 	if (ftm != NULL) {
 		OnigRx* _tmp1;
 		_tmp1 = NULL;
-		self->folding_stop_marker = (_tmp1 = onig_rx_make1 ((PLIST_STRING (ftm))->str), (self->folding_stop_marker == NULL) ? NULL : (self->folding_stop_marker = (g_object_unref (self->folding_stop_marker), NULL)), _tmp1);
+		self->folding_stop_marker = (_tmp1 = onig_rx_make1 (PLIST_STRING (ftm)->str), (self->folding_stop_marker == NULL) ? NULL : (self->folding_stop_marker = (g_object_unref (self->folding_stop_marker), NULL)), _tmp1);
 	}
 	_tmp2 = NULL;
 	self->all_patterns = (_tmp2 = gee_array_list_new (GTK_MATE_TYPE_PATTERN, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), (self->all_patterns == NULL) ? NULL : (self->all_patterns = (g_object_unref (self->all_patterns), NULL)), _tmp2);
@@ -204,7 +204,7 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 	if (ps != NULL) {
 		{
 			GeeIterator* _p_it;
-			_p_it = gee_iterable_iterator ((GeeIterable*) (PLIST_ARRAY (ps))->array);
+			_p_it = gee_iterable_iterator ((GeeIterable*) PLIST_ARRAY (ps)->array);
 			while (gee_iterator_next (_p_it)) {
 				PListNode* p;
 				GtkMatePattern* _tmp4;
@@ -271,7 +271,7 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 					if ((pa1 = (_tmp14 = plist_dict_get (pd1, "patterns"), (pa1 == NULL) ? NULL : (pa1 = (g_object_unref (pa1), NULL)), _tmp14)) != NULL) {
 						{
 							GeeIterator* _ps1_it;
-							_ps1_it = gee_iterable_iterator ((GeeIterable*) (PLIST_ARRAY (pa1))->array);
+							_ps1_it = gee_iterable_iterator ((GeeIterable*) PLIST_ARRAY (pa1)->array);
 							while (gee_iterator_next (_ps1_it)) {
 								PListNode* ps1;
 								GtkMatePattern* _tmp15;
@@ -306,7 +306,7 @@ void gtk_mate_grammar_init_for_use (GtkMateGrammar* self) {
 			/* stdout.printf("all_patterns: %d\n", all_patterns.size);*/
 			p = (GtkMatePattern*) gee_iterator_get (_p_it);
 			if (GTK_MATE_IS_DOUBLE_PATTERN (p)) {
-				gtk_mate_pattern_replace_include_patterns ((GTK_MATE_DOUBLE_PATTERN (p))->patterns, self);
+				gtk_mate_pattern_replace_include_patterns (GTK_MATE_DOUBLE_PATTERN (p)->patterns, self);
 			}
 			(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
 		}

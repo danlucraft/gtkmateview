@@ -30,16 +30,12 @@ namespace Onig {
 		public int begin(int capture) {
 			if (capture >= this.rg.num_regs || capture < 0)
 				return -1;
-			int utf8 = Encoding.UTF8.strlen((char *) text, ((char *) text) + this.rg.beg[capture]);
-			stdout.printf("compare utf8: %d with ascii: %d\n ", utf8, this.rg.beg[capture]);
 			return this.rg.beg[capture];
 		}
 
 		public int end(int capture) {
 			if (capture >= this.rg.num_regs || capture < 0)
 				return -1;
-			int utf8 = Encoding.UTF8.strlen((char *) text, ((char *) text) + this.rg.end[capture]);
-			stdout.printf("compare utf8: %d with ascii: %d\n ", utf8, this.rg.end[capture]);
 			return this.rg.end[capture];
 		}
 	}

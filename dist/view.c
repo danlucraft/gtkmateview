@@ -35,7 +35,7 @@ gboolean gtk_mate_view_set_theme_by_name (GtkMateView* self, const char* name) {
 			if (_vala_strcmp0 (theme->name, name) == 0) {
 				gboolean _tmp2;
 				gtk_mate_theme_init_for_use (theme);
-				gtk_mate_parser_change_theme ((GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self)))->parser, theme);
+				gtk_mate_parser_change_theme (GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self))->parser, theme);
 				gtk_mate_view_set_global_theme_settings (self);
 				return (_tmp2 = TRUE, (theme == NULL) ? NULL : (theme = (g_object_unref (theme), NULL)), (_theme_it == NULL) ? NULL : (_theme_it = (g_object_unref (_theme_it), NULL)), _tmp2);
 			}
@@ -51,13 +51,13 @@ void gtk_mate_view_set_global_theme_settings (GtkMateView* self) {
 	gboolean _tmp0;
 	g_return_if_fail (self != NULL);
 	_tmp0 = FALSE;
-	if ((GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self)))->parser != NULL) {
-		_tmp0 = gtk_mate_parser_get_colourer ((GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self)))->parser) != NULL;
+	if (GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self))->parser != NULL) {
+		_tmp0 = gtk_mate_parser_get_colourer (GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self))->parser) != NULL;
 	} else {
 		_tmp0 = FALSE;
 	}
 	if (_tmp0) {
-		gtk_mate_colourer_set_global_settings (gtk_mate_parser_get_colourer ((GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self)))->parser), self);
+		gtk_mate_colourer_set_global_settings (gtk_mate_parser_get_colourer (GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self))->parser), self);
 	}
 }
 
@@ -86,7 +86,7 @@ GtkMateParser* gtk_mate_view_get_parser (GtkMateView* self) {
 	GtkMateParser* _tmp0;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0 = NULL;
-	return (_tmp0 = (GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self)))->parser, (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0));
+	return (_tmp0 = GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self))->parser, (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0));
 }
 
 

@@ -112,7 +112,13 @@ namespace Gtk.Mate {
 			get_iter_at_line_offset(out i, line, line_offset);
 			return i;
 		}
-		
+
+		public TextIter iter_at_line_index(int line, int line_offset) {
+			TextIter i;
+			get_iter_at_line_index(out i, line, line_offset);
+			return i;
+		}
+
 		public TextIter line_start_iter(int line) {
 			TextIter i;
 			get_iter_at_line(out i, line);

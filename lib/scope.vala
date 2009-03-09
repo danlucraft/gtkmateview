@@ -327,19 +327,19 @@ namespace Gtk.Mate {
 		}
 
 		public void start_mark_set(int line, int line_offset, bool has_left_gravity) {
-			start_mark = buffer.create_mark(null, buffer.iter_at_line_offset(line, line_offset), has_left_gravity);
+			start_mark = buffer.create_mark(null, buffer.iter_at_line_index(line, line_offset), has_left_gravity);
 		}
 
 		public void inner_start_mark_set(int line, int line_offset, bool has_left_gravity) {
-			inner_start_mark = buffer.create_mark(null, buffer.iter_at_line_offset(line, line_offset), has_left_gravity);
+			inner_start_mark = buffer.create_mark(null, buffer.iter_at_line_index(line, line_offset), has_left_gravity);
 		}
 
 		public void inner_end_mark_set(int line, int line_offset, bool has_left_gravity) {
-			inner_end_mark = buffer.create_mark(null, buffer.iter_at_line_offset(line, line_offset), has_left_gravity);
+			inner_end_mark = buffer.create_mark(null, buffer.iter_at_line_index(line, line_offset), has_left_gravity);
 		}
 
 		public void end_mark_set(int line, int line_offset, bool has_left_gravity) {
-			end_mark = buffer.create_mark(null, buffer.iter_at_line_offset(line, line_offset), has_left_gravity);
+			end_mark = buffer.create_mark(null, buffer.iter_at_line_index(line, line_offset), has_left_gravity);
 		}
 
 		public TextIter start_iter() {
