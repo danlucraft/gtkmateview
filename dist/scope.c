@@ -300,7 +300,7 @@ GtkMateScope* gtk_mate_scope_containing_double_scope (GtkMateScope* self) {
 		} else {
 			_tmp2 = gtk_mate_scope_start_line_offset (scope) == 0;
 		}
-		if ((_tmp2)) {
+		if (_tmp2) {
 			_tmp1 = scope->parent != NULL;
 		} else {
 			_tmp1 = FALSE;
@@ -588,14 +588,14 @@ char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent) {
 		_tmp3 = FALSE;
 	}
 	if (_tmp3) {
-		_tmp2 = (GTK_MATE_DOUBLE_PATTERN (self->pattern))->content_name != NULL;
+		_tmp2 = GTK_MATE_DOUBLE_PATTERN (self->pattern)->content_name != NULL;
 	} else {
 		_tmp2 = FALSE;
 	}
 	if (_tmp2) {
 		char* _tmp4;
 		_tmp4 = NULL;
-		g_string_append (self->pretty_string, _tmp4 = g_strconcat (" ", (GTK_MATE_DOUBLE_PATTERN (self->pattern))->content_name, NULL));
+		g_string_append (self->pretty_string, _tmp4 = g_strconcat (" ", GTK_MATE_DOUBLE_PATTERN (self->pattern)->content_name, NULL));
 		_tmp4 = (g_free (_tmp4), NULL);
 	}
 	g_string_append (self->pretty_string, " (");
@@ -627,9 +627,9 @@ char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent) {
 	} else {
 		_tmp11 = " closed";
 	}
-	g_string_append (self->pretty_string, (_tmp11));
+	g_string_append (self->pretty_string, _tmp11);
 	g_string_append (self->pretty_string, "\n");
-	self->indent = self->indent + (1);
+	self->indent = self->indent + 1;
 	iter = g_sequence_get_begin_iter (gtk_mate_scope_get_children (self));
 	while (!g_sequence_iter_is_end (iter)) {
 		char* _tmp12;
@@ -638,7 +638,7 @@ char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent) {
 		_tmp12 = (g_free (_tmp12), NULL);
 		iter = g_sequence_iter_next (iter);
 	}
-	self->indent = self->indent - (1);
+	self->indent = self->indent - 1;
 	_tmp13 = NULL;
 	return (_tmp13 = self->pretty_string->str, (_tmp13 == NULL) ? NULL : g_strdup (_tmp13));
 }
@@ -651,7 +651,7 @@ void gtk_mate_scope_start_mark_set (GtkMateScope* self, gint line, gint line_off
 	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
-	self->start_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark ((GtkTextBuffer*) self->priv->_buffer, NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_offset (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL) ? NULL : g_object_ref (_tmp1)), (self->start_mark == NULL) ? NULL : (self->start_mark = (g_object_unref (self->start_mark), NULL)), _tmp2);
+	self->start_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark ((GtkTextBuffer*) self->priv->_buffer, NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_index (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL) ? NULL : g_object_ref (_tmp1)), (self->start_mark == NULL) ? NULL : (self->start_mark = (g_object_unref (self->start_mark), NULL)), _tmp2);
 }
 
 
@@ -662,7 +662,7 @@ void gtk_mate_scope_inner_start_mark_set (GtkMateScope* self, gint line, gint li
 	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
-	self->inner_start_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark ((GtkTextBuffer*) self->priv->_buffer, NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_offset (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL) ? NULL : g_object_ref (_tmp1)), (self->inner_start_mark == NULL) ? NULL : (self->inner_start_mark = (g_object_unref (self->inner_start_mark), NULL)), _tmp2);
+	self->inner_start_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark ((GtkTextBuffer*) self->priv->_buffer, NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_index (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL) ? NULL : g_object_ref (_tmp1)), (self->inner_start_mark == NULL) ? NULL : (self->inner_start_mark = (g_object_unref (self->inner_start_mark), NULL)), _tmp2);
 }
 
 
@@ -673,7 +673,7 @@ void gtk_mate_scope_inner_end_mark_set (GtkMateScope* self, gint line, gint line
 	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
-	self->inner_end_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark ((GtkTextBuffer*) self->priv->_buffer, NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_offset (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL) ? NULL : g_object_ref (_tmp1)), (self->inner_end_mark == NULL) ? NULL : (self->inner_end_mark = (g_object_unref (self->inner_end_mark), NULL)), _tmp2);
+	self->inner_end_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark ((GtkTextBuffer*) self->priv->_buffer, NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_index (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL) ? NULL : g_object_ref (_tmp1)), (self->inner_end_mark == NULL) ? NULL : (self->inner_end_mark = (g_object_unref (self->inner_end_mark), NULL)), _tmp2);
 }
 
 
@@ -684,7 +684,7 @@ void gtk_mate_scope_end_mark_set (GtkMateScope* self, gint line, gint line_offse
 	g_return_if_fail (self != NULL);
 	_tmp2 = NULL;
 	_tmp1 = NULL;
-	self->end_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark ((GtkTextBuffer*) self->priv->_buffer, NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_offset (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL) ? NULL : g_object_ref (_tmp1)), (self->end_mark == NULL) ? NULL : (self->end_mark = (g_object_unref (self->end_mark), NULL)), _tmp2);
+	self->end_mark = (_tmp2 = (_tmp1 = gtk_text_buffer_create_mark ((GtkTextBuffer*) self->priv->_buffer, NULL, (_tmp0 = gtk_mate_buffer_iter_at_line_index (self->priv->_buffer, line, line_offset), &_tmp0), has_left_gravity), (_tmp1 == NULL) ? NULL : g_object_ref (_tmp1)), (self->end_mark == NULL) ? NULL : (self->end_mark = (g_object_unref (self->end_mark), NULL)), _tmp2);
 }
 
 
@@ -915,7 +915,7 @@ char* gtk_mate_scope_hierarchy_names (GtkMateScope* self, gboolean inner) {
 	_tmp0 = FALSE;
 	_tmp1 = FALSE;
 	if (GTK_MATE_IS_DOUBLE_PATTERN (self->pattern)) {
-		_tmp1 = (GTK_MATE_DOUBLE_PATTERN (self->pattern))->content_name != NULL;
+		_tmp1 = GTK_MATE_DOUBLE_PATTERN (self->pattern)->content_name != NULL;
 	} else {
 		_tmp1 = FALSE;
 	}
@@ -930,7 +930,7 @@ char* gtk_mate_scope_hierarchy_names (GtkMateScope* self, gboolean inner) {
 		char* _tmp2;
 		_tmp3 = NULL;
 		_tmp2 = NULL;
-		self_name = (_tmp3 = g_strconcat (_tmp2 = g_strconcat (self->priv->_name, " ", NULL), (GTK_MATE_DOUBLE_PATTERN (self->pattern))->content_name, NULL), self_name = (g_free (self_name), NULL), _tmp3);
+		self_name = (_tmp3 = g_strconcat (_tmp2 = g_strconcat (self->priv->_name, " ", NULL), GTK_MATE_DOUBLE_PATTERN (self->pattern)->content_name, NULL), self_name = (g_free (self_name), NULL), _tmp3);
 		_tmp2 = (g_free (_tmp2), NULL);
 	} else {
 		char* _tmp5;

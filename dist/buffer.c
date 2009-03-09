@@ -146,7 +146,7 @@ char* gtk_mate_buffer_set_grammar_by_filename (GtkMateBuffer* self, const char* 
 									} else {
 										_tmp1 = string_get_length (ext) > best_length;
 									}
-									_tmp0 = (_tmp1);
+									_tmp0 = _tmp1;
 								} else {
 									_tmp0 = FALSE;
 								}
@@ -290,6 +290,13 @@ GtkTextIter gtk_mate_buffer_iter_from_mark (GtkMateBuffer* self, GtkTextMark* ma
 GtkTextIter gtk_mate_buffer_iter_at_line_offset (GtkMateBuffer* self, gint line, gint line_offset) {
 	GtkTextIter i = {0};
 	gtk_text_buffer_get_iter_at_line_offset ((GtkTextBuffer*) self, &i, line, line_offset);
+	return i;
+}
+
+
+GtkTextIter gtk_mate_buffer_iter_at_line_index (GtkMateBuffer* self, gint line, gint line_offset) {
+	GtkTextIter i = {0};
+	gtk_text_buffer_get_iter_at_line_index ((GtkTextBuffer*) self, &i, line, line_offset);
 	return i;
 }
 

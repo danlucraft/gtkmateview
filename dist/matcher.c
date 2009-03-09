@@ -186,7 +186,7 @@ gboolean gtk_mate_matcher_test_match (const char* selector_string, const char* s
 	g_return_val_if_fail (selector_string != NULL, FALSE);
 	g_return_val_if_fail (scope_string != NULL, FALSE);
 	m = gtk_mate_matcher_get_match (selector_string, scope_string);
-	return (_tmp0 = (m != NULL), (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp0);
+	return (_tmp0 = m != NULL, (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp0);
 }
 
 

@@ -59,7 +59,7 @@ void gtk_mate_colourer_set_global_settings (GtkMateColourer* self, GtkMateView* 
 		_tmp1 = NULL;
 		bg_colour = (_tmp1 = gtk_mate_colourer_merge_colour ("#FFFFFF", bg_colour), bg_colour = (g_free (bg_colour), NULL), _tmp1);
 		fprintf (stdout, "bg_colour: %s\n", bg_colour);
-		gtk_widget_modify_base ((GTK_WIDGET (view)), GTK_STATE_NORMAL, (_tmp2 = gtk_mate_colourer_parse_colour (self, bg_colour), &_tmp2));
+		gtk_widget_modify_base (GTK_WIDGET (view), GTK_STATE_NORMAL, (_tmp2 = gtk_mate_colourer_parse_colour (self, bg_colour), &_tmp2));
 	}
 	/* ((Gtk.SourceView) view).background = bg_colour;*/
 	fg_colour = (char*) gee_map_get ((GeeMap*) self->priv->_theme->global_settings, "foreground");
@@ -74,7 +74,7 @@ void gtk_mate_colourer_set_global_settings (GtkMateColourer* self, GtkMateView* 
 		GdkColor _tmp5 = {0};
 		_tmp4 = NULL;
 		fg_colour = (_tmp4 = gtk_mate_colourer_merge_colour ("#FFFFFF", fg_colour), fg_colour = (g_free (fg_colour), NULL), _tmp4);
-		gtk_widget_modify_text ((GTK_WIDGET (view)), GTK_STATE_NORMAL, (_tmp5 = gtk_mate_colourer_parse_colour (self, fg_colour), &_tmp5));
+		gtk_widget_modify_text (GTK_WIDGET (view), GTK_STATE_NORMAL, (_tmp5 = gtk_mate_colourer_parse_colour (self, fg_colour), &_tmp5));
 	}
 	bg_colour = (g_free (bg_colour), NULL);
 	fg_colour = (g_free (fg_colour), NULL);
@@ -135,9 +135,9 @@ void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayL
 				if (GTK_MATE_IS_SINGLE_PATTERN (scope->pattern)) {
 					_tmp2 = TRUE;
 				} else {
-					_tmp2 = (GTK_MATE_DOUBLE_PATTERN (scope->pattern))->content_name == NULL;
+					_tmp2 = GTK_MATE_DOUBLE_PATTERN (scope->pattern)->content_name == NULL;
 				}
-				_tmp0 = (_tmp2);
+				_tmp0 = _tmp2;
 			} else {
 				_tmp0 = FALSE;
 			}
@@ -154,7 +154,7 @@ void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayL
 			_tmp3 = FALSE;
 			_tmp4 = FALSE;
 			if (GTK_MATE_IS_DOUBLE_PATTERN (scope->pattern)) {
-				_tmp4 = (GTK_MATE_DOUBLE_PATTERN (scope->pattern))->content_name != NULL;
+				_tmp4 = GTK_MATE_DOUBLE_PATTERN (scope->pattern)->content_name != NULL;
 			} else {
 				_tmp4 = FALSE;
 			}

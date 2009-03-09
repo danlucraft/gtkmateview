@@ -47,8 +47,13 @@ namespace Oniguruma {
 	[CCode (cname="OnigOptionType")]
 	public struct OnigOptionType { }
 
-	[CCode (cname="OnigEncoding")]
-	public struct OnigEncoding { }
+	[CCode (cname="OnigEncoding*")]
+	public struct OnigEncoding : int { 
+		[CCode (cname = "onigenc_strlen", cheader_filename = "oniguruma.h")]
+		public int strlen(char* str, char* end);
+		[CCode (cname = "onigenc_strlen_null", cheader_filename = "oniguruma.h")]
+		public int strlen_null(char* str);
+	}
 
 	[CCode (cname="OnigSyntaxType")]
 	public struct OnigSyntaxType {
@@ -65,7 +70,7 @@ namespace Oniguruma {
 		[CCode (cname = "ONIG_OPTION_NONE", cheader_filename = "oniguruma.h")]
 		public const OnigOptionType NONE;
 		[CCode (cname = "ONIG_OPTION_IGNORECASE", cheader_filename = "oniguruma.h")]
-        public const OnigOptionType IGNORECASE;
+    public const OnigOptionType IGNORECASE;
 		[CCode (cname = "ONIG_OPTION_EXTEND", cheader_filename = "oniguruma.h")]
 		public const OnigOptionType EXTEND;
 		[CCode (cname = "ONIG_OPTION_MULTILINE", cheader_filename = "oniguruma.h")]
@@ -113,7 +118,7 @@ namespace Oniguruma {
 		// public const OnigEncoding ONIG_ENCODING_ISO_8859_15;
 		// public const OnigEncoding ONIG_ENCODING_ISO_8859_16;
 		[CCode (cname = "ONIG_ENCODING_UTF8", cheader_filename = "oniguruma.h")]
-		public const OnigEncoding ONIG_ENCODING_UTF8;
+		public const OnigEncoding UTF8;
 		// public const OnigEncoding ONIG_ENCODING_UTF16_BE;
 		// public const OnigEncoding ONIG_ENCODING_UTF16_LE;
 		// public const OnigEncoding ONIG_ENCODING_UTF32_BE;

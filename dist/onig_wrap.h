@@ -4,9 +4,9 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <oniguruma.h>
 #include <stdlib.h>
 #include <string.h>
+#include <oniguruma.h>
 
 G_BEGIN_DECLS
 
@@ -58,6 +58,7 @@ struct _OnigOnigErrorClass {
 struct _OnigMatch {
 	GObject parent_instance;
 	OnigMatchPrivate * priv;
+	char* text;
 };
 
 struct _OnigMatchClass {

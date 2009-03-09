@@ -111,7 +111,7 @@ namespace Gtk.Mate {
 			if (closing_regex != null) {
 				var match = closing_regex.search(line, position, line_length);
 				if (match != null) {
-					//stdout.printf("closing match: %s (%d-%d)\n", current_scope.name, match.begin(0), match.end(0));
+					// stdout.printf("closing match: %s (%d-%d)\n", current_scope.name, match.begin(0), match.end(0));
 					var nm = new Marker();
 					nm.pattern = current_scope.pattern;
 					nm.match = match;
@@ -145,6 +145,7 @@ namespace Gtk.Mate {
 						best_length = new_length;
 					}
 					position_now = match.end(0);
+					// stdout.printf("  new position: %d\n", position_now);
 				}
 			}
 			if (m != null) {

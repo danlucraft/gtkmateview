@@ -225,6 +225,7 @@ static void onig_match_instance_init (OnigMatch * self) {
 static void onig_match_finalize (GObject* obj) {
 	OnigMatch * self;
 	self = ONIG_MATCH (obj);
+	self->text = (g_free (self->text), NULL);
 	G_OBJECT_CLASS (onig_match_parent_class)->finalize (obj);
 }
 
@@ -247,14 +248,19 @@ OnigMatch* onig_rx_search (OnigRx* self, const char* target, gint start, gint en
 	g_return_val_if_fail (target != NULL, NULL);
 	rg = onig_region_new ();
 	ctarget = (gchar*) target;
-	r = onig_search (self->priv->_rx, ctarget, (ctarget + strlen (target)), ctarget + start, (ctarget + end), rg, (OnigOptionType*) ONIG_OPTION_NONE);
+	r = onig_search (self->priv->_rx, ctarget, ctarget + strlen (target), ctarget + start, ctarget + end, rg, (OnigOptionType*) ONIG_OPTION_NONE);
 	if (r < 0) {
 		return NULL;
 	} else {
 		OnigMatch* md;
+		char* _tmp2;
+		const char* _tmp1;
 		md = onig_match_new ();
 		onig_match_set_rg (md, rg);
 		onig_match_set_rx (md, self->priv->_rx);
+		_tmp2 = NULL;
+		_tmp1 = NULL;
+		md->text = (_tmp2 = (_tmp1 = target, (_tmp1 == NULL) ? NULL : g_strdup (_tmp1)), md->text = (g_free (md->text), NULL), _tmp2);
 		return md;
 	}
 }
@@ -273,7 +279,7 @@ OnigRx* onig_rx_make (const char* pattern, OnigOptionType* options, OnigOnigErro
 	c_pattern = (gchar*) pattern;
 	rx1 = NULL;
 	err_info = (memset (&_tmp0, 0, sizeof (OnigErrorInfo)), _tmp0);
-	r = onig_new (&rx1, c_pattern, (c_pattern + strlen (pattern)), options, (OnigEncoding*) ONIG_ENCODING_ASCII, ONIG_SYNTAX_DEFAULT, &err_info);
+	r = onig_new (&rx1, c_pattern, c_pattern + strlen (pattern), options, (OnigEncoding**) ONIG_ENCODING_UTF8, ONIG_SYNTAX_DEFAULT, &err_info);
 	rx->matches_start_of_line = g_str_has_prefix (pattern, "^");
 	if (r < 0) {
 		OnigOnigError* _tmp1;

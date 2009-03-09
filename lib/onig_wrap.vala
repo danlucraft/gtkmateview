@@ -15,6 +15,7 @@ namespace Onig {
 	public class Match : Object {
 		public RegexT rx {get; set;}
 		public Region rg {get; set;}
+		public string text;
 
 		public static int count = 0;
 
@@ -47,7 +48,7 @@ namespace Onig {
 
 			Region rg = new Region();
 			char* ctarget = (char *) target;
-			int r = rx.search(ctarget, (ctarget+target.size()), ctarget+start, (ctarget+end), rg, (Oniguruma.OnigOptionType*) Option.NONE);
+			int r = rx.search(ctarget, (ctarget+target.size()), ctarget+start, ctarget+end, rg, (Oniguruma.OnigOptionType*) Option.NONE);
 			if (r < 0) {
 				return null;
 			}
@@ -55,6 +56,7 @@ namespace Onig {
 				var md = new Match();
 				md.rg = rg;
 				md.rx = rx;
+				md.text = target;
 				return md;
 			}
 		}
@@ -67,7 +69,7 @@ namespace Onig {
 			int r = Oniguruma.onig_new(out rx1, 
 									   c_pattern, (c_pattern+pattern.size()), 
 									   options,
-									   (Oniguruma.OnigEncoding*) Encoding.ASCII, *Syntax.DEFAULT, 
+									   (Oniguruma.OnigEncoding*) Encoding.UTF8, *Syntax.DEFAULT, 
 									   ref err_info);
 			rx.matches_start_of_line = pattern.has_prefix("^");
 			if (r < 0) {

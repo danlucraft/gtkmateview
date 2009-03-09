@@ -139,9 +139,9 @@ namespace Gtk.Mate {
 		// scope of the line has changed.
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line(line_ix);
-			int length = (int) line.length;//buffer.get_line_length(line_ix);
-			stdout.printf("p%d, ", line_ix);
-			stdout.flush();
+			int length = (int) line.size();//buffer.get_line_length(line_ix);
+			// stdout.printf("p%d, ", line_ix);
+			// stdout.flush();
 			if (line_ix > this.parsed_upto)
 				this.parsed_upto = line_ix;
 			// stdout.flush();
@@ -170,17 +170,17 @@ namespace Gtk.Mate {
 				// 	stdout.printf("no expected scope\n");
 				// stdout.printf("  scope: %s (%d, %d) (line length: %d)\n", m.pattern.name, m.from, m.match.end(0), length);
 				if (m.is_close_scope) {
-				// 	stdout.printf("     (closing)\n");
+					// stdout.printf("     (closing)\n");
 					close_scope(scanner, expected_scope, line_ix, line, length, m, 
 								all_scopes, closed_scopes, removed_scopes);
 				}
 				else if (m.pattern is DoublePattern) {
-				//	stdout.printf("     (opening)\n");
+					// stdout.printf("     (opening)\n");
 					open_scope(scanner, expected_scope, line_ix, line, length, m, 
 							   all_scopes, closed_scopes, removed_scopes);
 				}
 				else {
-				//	stdout.printf("     (single)\n");
+					// stdout.printf("     (single)\n");
 					single_scope(scanner, expected_scope, line_ix, line, length, m, 
 								 all_scopes, closed_scopes, removed_scopes);
 				}
@@ -478,10 +478,12 @@ namespace Gtk.Mate {
 		
 		public void set_end_mark_safely(Scope scope, Marker m, int line_ix, int length, int cap) {
 			int to = m.match.end(cap);
-			if (to == length && this.buffer.get_line_count() > line_ix+1) 
+			if (to == length && this.buffer.get_line_count() > line_ix+1) {
 				scope.end_mark_set(line_ix+1, 0, true);
-			else
+			}
+			else {
 				scope.end_mark_set(line_ix, int.min(to, length), true);
+			}
 		}
 		
 		public void collect_child_captures(int line_ix, int length, Scope scope, Marker m, ArrayList<Scope> all_scopes, ArrayList<Scope> closed_scopes) {
@@ -695,7 +697,7 @@ namespace Gtk.Mate {
 		}
 
 		public void close() {
-			stdout.printf("closing\n");
+			// stdout.printf("closing\n");
 			Parser.existing_parsers.remove(this);
 		}
 		

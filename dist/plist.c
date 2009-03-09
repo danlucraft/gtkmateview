@@ -63,7 +63,7 @@ PListNode* plist_node_parse_xml_node (xmlNode* node) {
 		char* _tmp2;
 		int_node = plist_integer_new ();
 		_tmp2 = NULL;
-		int_node->value = atoi (_tmp2 = (xmlNodeGetContent (node)));
+		int_node->value = atoi (_tmp2 = xmlNodeGetContent (node));
 		_tmp2 = (g_free (_tmp2), NULL);
 		return (PListNode*) int_node;
 	}
@@ -310,7 +310,7 @@ char** plist_dict_keys (PListDict* self, int* result_length1) {
 			_tmp7 = NULL;
 			_tmp6 = NULL;
 			ks[i] = (_tmp7 = (_tmp6 = s, (_tmp6 == NULL) ? NULL : g_strdup (_tmp6)), ks[i] = (g_free (ks[i]), NULL), _tmp7);
-			i = i + (1);
+			i = i + 1;
 			s = (g_free (s), NULL);
 		}
 		(_s_it == NULL) ? NULL : (_s_it = (g_object_unref (_s_it), NULL));
@@ -515,7 +515,7 @@ void plist_print_plist (gint indent, PListNode* node) {
 	g_return_if_fail (node != NULL);
 	str_indent = g_strnfill ((gulong) (indent * 2), ' ');
 	if (PLIST_IS_STRING (node)) {
-		fprintf (stdout, "%s%s,\n", str_indent, (PLIST_STRING (node))->str);
+		fprintf (stdout, "%s%s,\n", str_indent, PLIST_STRING (node)->str);
 	}
 	if (PLIST_IS_DICT (node)) {
 		char* _tmp0;
@@ -529,15 +529,15 @@ void plist_print_plist (gint indent, PListNode* node) {
 			GeeIterator* _key_it;
 			_tmp1 = NULL;
 			_tmp2 = NULL;
-			_key_it = (_tmp2 = gee_iterable_iterator ((GeeIterable*) (_tmp1 = gee_map_get_keys ((GeeMap*) (PLIST_DICT (node))->map))), (_tmp1 == NULL) ? NULL : (_tmp1 = (g_object_unref (_tmp1), NULL)), _tmp2);
+			_key_it = (_tmp2 = gee_iterable_iterator ((GeeIterable*) (_tmp1 = gee_map_get_keys ((GeeMap*) PLIST_DICT (node)->map))), (_tmp1 == NULL) ? NULL : (_tmp1 = (g_object_unref (_tmp1), NULL)), _tmp2);
 			while (gee_iterator_next (_key_it)) {
 				char* key;
 				PListNode* value;
 				key = (char*) gee_iterator_get (_key_it);
 				fprintf (stdout, "%s%s => ", str_indent, key);
-				value = (PListNode*) gee_map_get ((GeeMap*) (PLIST_DICT (node))->map, key);
+				value = (PListNode*) gee_map_get ((GeeMap*) PLIST_DICT (node)->map, key);
 				if (PLIST_IS_STRING (value)) {
-					fprintf (stdout, "\"%s\",\n", (PLIST_STRING (value))->str);
+					fprintf (stdout, "\"%s\",\n", PLIST_STRING (value)->str);
 				} else {
 					fprintf (stdout, "\n");
 					plist_print_plist (indent + 1, value);
@@ -559,7 +559,7 @@ void plist_print_plist (gint indent, PListNode* node) {
 		str_indent = (_tmp4 = g_strnfill ((gulong) ((indent + 1) * 2), ' '), str_indent = (g_free (str_indent), NULL), _tmp4);
 		{
 			GeeIterator* _sub_node_it;
-			_sub_node_it = gee_iterable_iterator ((GeeIterable*) (PLIST_ARRAY (node))->array);
+			_sub_node_it = gee_iterable_iterator ((GeeIterable*) PLIST_ARRAY (node)->array);
 			while (gee_iterator_next (_sub_node_it)) {
 				PListNode* sub_node;
 				sub_node = (PListNode*) gee_iterator_get (_sub_node_it);

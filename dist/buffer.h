@@ -60,6 +60,7 @@ GtkTextIter gtk_mate_buffer_end_iter (GtkMateBuffer* self);
 GtkTextIter gtk_mate_buffer_cursor_iter (GtkMateBuffer* self);
 GtkTextIter gtk_mate_buffer_iter_from_mark (GtkMateBuffer* self, GtkTextMark* mark);
 GtkTextIter gtk_mate_buffer_iter_at_line_offset (GtkMateBuffer* self, gint line, gint line_offset);
+GtkTextIter gtk_mate_buffer_iter_at_line_index (GtkMateBuffer* self, gint line, gint line_offset);
 GtkTextIter gtk_mate_buffer_line_start_iter (GtkMateBuffer* self, gint line);
 GtkTextIter gtk_mate_buffer_line_end_iter (GtkMateBuffer* self, gint line);
 GtkTextIter gtk_mate_buffer_line_end_iter1 (GtkMateBuffer* self, gint line);

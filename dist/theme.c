@@ -42,7 +42,7 @@ GtkMateThemeSetting* gtk_mate_theme_setting_create_from_plist (PListDict* dict) 
 		const char* _tmp0;
 		_tmp1 = NULL;
 		_tmp0 = NULL;
-		tsetting->name = (_tmp1 = (_tmp0 = (PLIST_STRING (nm))->str, (_tmp0 == NULL) ? NULL : g_strdup (_tmp0)), tsetting->name = (g_free (tsetting->name), NULL), _tmp1);
+		tsetting->name = (_tmp1 = (_tmp0 = PLIST_STRING (nm)->str, (_tmp0 == NULL) ? NULL : g_strdup (_tmp0)), tsetting->name = (g_free (tsetting->name), NULL), _tmp1);
 	}
 	_tmp2 = NULL;
 	nm = (_tmp2 = plist_dict_get (dict, "scope"), (nm == NULL) ? NULL : (nm = (g_object_unref (nm), NULL)), _tmp2);
@@ -51,7 +51,7 @@ GtkMateThemeSetting* gtk_mate_theme_setting_create_from_plist (PListDict* dict) 
 		const char* _tmp3;
 		_tmp4 = NULL;
 		_tmp3 = NULL;
-		tsetting->selector = (_tmp4 = (_tmp3 = (PLIST_STRING (nm))->str, (_tmp3 == NULL) ? NULL : g_strdup (_tmp3)), tsetting->selector = (g_free (tsetting->selector), NULL), _tmp4);
+		tsetting->selector = (_tmp4 = (_tmp3 = PLIST_STRING (nm)->str, (_tmp3 == NULL) ? NULL : g_strdup (_tmp3)), tsetting->selector = (g_free (tsetting->selector), NULL), _tmp4);
 	}
 	_tmp5 = NULL;
 	tsetting->settings = (_tmp5 = gee_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_str_hash, g_str_equal, g_direct_equal), (tsetting->settings == NULL) ? NULL : (tsetting->settings = (g_object_unref (tsetting->settings), NULL)), _tmp5);
@@ -68,7 +68,7 @@ GtkMateThemeSetting* gtk_mate_theme_setting_create_from_plist (PListDict* dict) 
 			PListString* _tmp8;
 			key = (char*) gee_iterator_get (_key_it);
 			_tmp8 = NULL;
-			gee_map_set ((GeeMap*) tsetting->settings, key, (_tmp8 = (PLIST_STRING ((PListNode*) gee_map_get ((GeeMap*) pd->map, key))))->str);
+			gee_map_set ((GeeMap*) tsetting->settings, key, (_tmp8 = PLIST_STRING ((PListNode*) gee_map_get ((GeeMap*) pd->map, key)))->str);
 			(_tmp8 == NULL) ? NULL : (_tmp8 = (g_object_unref (_tmp8), NULL));
 			key = (g_free (key), NULL);
 		}
@@ -188,7 +188,7 @@ GtkMateTheme* gtk_mate_theme_create_from_plist (PListDict* dict) {
 		const char* _tmp0;
 		_tmp1 = NULL;
 		_tmp0 = NULL;
-		theme->name = (_tmp1 = (_tmp0 = (PLIST_STRING (nm))->str, (_tmp0 == NULL) ? NULL : g_strdup (_tmp0)), theme->name = (g_free (theme->name), NULL), _tmp1);
+		theme->name = (_tmp1 = (_tmp0 = PLIST_STRING (nm)->str, (_tmp0 == NULL) ? NULL : g_strdup (_tmp0)), theme->name = (g_free (theme->name), NULL), _tmp1);
 	}
 	_tmp2 = NULL;
 	nm = (_tmp2 = plist_dict_get (dict, "author"), (nm == NULL) ? NULL : (nm = (g_object_unref (nm), NULL)), _tmp2);
@@ -197,7 +197,7 @@ GtkMateTheme* gtk_mate_theme_create_from_plist (PListDict* dict) {
 		const char* _tmp3;
 		_tmp4 = NULL;
 		_tmp3 = NULL;
-		theme->author = (_tmp4 = (_tmp3 = (PLIST_STRING (nm))->str, (_tmp3 == NULL) ? NULL : g_strdup (_tmp3)), theme->author = (g_free (theme->author), NULL), _tmp4);
+		theme->author = (_tmp4 = (_tmp3 = PLIST_STRING (nm)->str, (_tmp3 == NULL) ? NULL : g_strdup (_tmp3)), theme->author = (g_free (theme->author), NULL), _tmp4);
 	}
 	_tmp5 = NULL;
 	theme->global_settings = (_tmp5 = gee_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_str_hash, g_str_equal, g_direct_equal), (theme->global_settings == NULL) ? NULL : (theme->global_settings = (g_object_unref (theme->global_settings), NULL)), _tmp5);
@@ -219,7 +219,7 @@ GtkMateTheme* gtk_mate_theme_create_from_plist (PListDict* dict) {
 			_tmp8 = NULL;
 			if ((_tmp9 = (_tmp8 = plist_dict_get (nd, "scope")) == NULL, (_tmp8 == NULL) ? NULL : (_tmp8 = (g_object_unref (_tmp8), NULL)), _tmp9)) {
 				PListDict* gsd;
-				gsd = (PLIST_DICT (plist_dict_get (nd, "settings")));
+				gsd = PLIST_DICT (plist_dict_get (nd, "settings"));
 				{
 					gint _tmp10;
 					char** key_collection;
@@ -235,7 +235,7 @@ GtkMateTheme* gtk_mate_theme_create_from_plist (PListDict* dict) {
 						{
 							PListString* _tmp11;
 							_tmp11 = NULL;
-							gee_map_set ((GeeMap*) theme->global_settings, key, (_tmp11 = (PLIST_STRING (plist_dict_get (gsd, key))))->str);
+							gee_map_set ((GeeMap*) theme->global_settings, key, (_tmp11 = PLIST_STRING (plist_dict_get (gsd, key)))->str);
 							(_tmp11 == NULL) ? NULL : (_tmp11 = (g_object_unref (_tmp11), NULL));
 							key = (g_free (key), NULL);
 						}

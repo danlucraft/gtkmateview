@@ -102,7 +102,7 @@ gint gtk_mate_load_bundles (void) {
 							} else {
 								_tmp15 = g_str_has_suffix (name, ".plist");
 							}
-							_tmp14 = (_tmp15);
+							_tmp14 = _tmp15;
 						} else {
 							_tmp14 = FALSE;
 						}
