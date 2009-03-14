@@ -6,7 +6,6 @@ namespace Gtk.Mate {
 		public static ArrayList<Mate.Bundle> bundles;
 		public static ArrayList<Mate.Theme>  themes;
 
-		// TODO: fix up valar to make this work.
 		public signal	void grammar_changed(string name);
 
 		public Parser parser;
@@ -34,6 +33,7 @@ namespace Gtk.Mate {
 						}
 						this.parser = Parser.create(gr, this);
 						this.parser.last_visible_line_changed(parsed_upto);
+						GLib.Signal.emit_by_name(this, "grammar_changed", gr.name);
 						if (theme != null)
 						  this.parser.change_theme(theme);
 						return true;
