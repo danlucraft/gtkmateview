@@ -230,6 +230,18 @@ YAML
     @mb.set_grammar_by_name("Ruby")
     @mb.text = source
   end
+  
+  it "should parse these C comments correctly" do
+    source = <<-C
+/* H
+*/
+Gtk gtk_ (Gtk* self) {
+    C
+    @mb.set_grammar_by_name("C")
+    @mb.text = source
+    puts @mb.parser.root.pretty(0)
+    @mb.parser.root.pretty(0).should_not include("invalid.illegal")
+  end
 end
 
 

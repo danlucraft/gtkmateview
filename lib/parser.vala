@@ -147,12 +147,13 @@ namespace Gtk.Mate {
 			// stdout.flush();
 			var start_scope = this.root.scope_at(line_ix, 0);
 			if (start_scope != null) {
-				start_scope = start_scope.containing_double_scope();
+				// stdout.printf("start_scope is: %s\n", start_scope.name);
+				start_scope = start_scope.containing_double_scope(line_ix);
 			}
 			// stdout.printf("start_scope is: %s\n", start_scope.name);
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
 			if (end_scope1 != null)
-				end_scope1 = end_scope1.containing_double_scope();
+				end_scope1 = end_scope1.containing_double_scope(line_ix);
 			// stdout.printf("end_scope1: %s\n", end_scope1.name);
 			var scanner = new Scanner(start_scope, line, length);
 			var all_scopes = new ArrayList<Scope>();
@@ -189,7 +190,7 @@ namespace Gtk.Mate {
 			clear_line(line_ix, start_scope, all_scopes, closed_scopes, removed_scopes);
 			var end_scope2 = this.root.scope_at(line_ix, int.MAX);
 			if (end_scope2 != null)
-				end_scope2 = end_scope2.containing_double_scope();
+				end_scope2 = end_scope2.containing_double_scope(line_ix);
 			// stdout.printf("end_scope2: %s\n", end_scope2.name);
 //			stdout.printf("%s\n", this.root.pretty(0));
 			if (colourer != null) {

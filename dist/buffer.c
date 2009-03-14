@@ -15,8 +15,8 @@
 
 
 
-static glong string_get_length (const char* self);
 static char* string_substring (const char* self, glong offset, glong len);
+static glong string_get_length (const char* self);
 enum  {
 	GTK_MATE_BUFFER_DUMMY_PROPERTY
 };
@@ -27,12 +27,6 @@ static gpointer gtk_mate_buffer_parent_class = NULL;
 static void gtk_mate_buffer_finalize (GObject* obj);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
-
-
-static glong string_get_length (const char* self) {
-	g_return_val_if_fail (self != NULL, 0L);
-	return g_utf8_strlen (self, -1);
-}
 
 
 static char* string_substring (const char* self, glong offset, glong len) {
@@ -52,6 +46,12 @@ static char* string_substring (const char* self, glong offset, glong len) {
 	g_return_val_if_fail ((offset + len) <= string_length, NULL);
 	start = g_utf8_offset_to_pointer (self, offset);
 	return g_strndup (start, ((gchar*) g_utf8_offset_to_pointer (start, len)) - ((gchar*) start));
+}
+
+
+static glong string_get_length (const char* self) {
+	g_return_val_if_fail (self != NULL, 0L);
+	return g_utf8_strlen (self, -1);
 }
 
 

@@ -232,7 +232,7 @@ namespace Gtk {
 			public void clear_after (int line_ix, int line_offset);
 			public static int compare (Gtk.Mate.Scope a, Gtk.Mate.Scope b, void* data);
 			public static int compare_by_loc (Gtk.Mate.Scope a, Gtk.Mate.Scope b, void* data);
-			public Gtk.Mate.Scope containing_double_scope ();
+			public Gtk.Mate.Scope containing_double_scope (int line_ix);
 			public bool contains_loc (Gtk.Mate.TextLoc loc);
 			public Gee.ArrayList<Gtk.Mate.Scope> delete_any_on_line_not_in (int line_ix, Gee.ArrayList<Gtk.Mate.Scope> scopes);
 			public void delete_child (Gtk.Mate.Scope s);

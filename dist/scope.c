@@ -275,7 +275,7 @@ GtkMateScope* gtk_mate_scope_scope_at (GtkMateScope* self, gint line, gint line_
 }
 
 
-GtkMateScope* gtk_mate_scope_containing_double_scope (GtkMateScope* self) {
+GtkMateScope* gtk_mate_scope_containing_double_scope (GtkMateScope* self, gint line_ix) {
 	GtkMateScope* _tmp0;
 	GtkMateScope* scope;
 	g_return_val_if_fail (self != NULL, NULL);
@@ -285,8 +285,8 @@ GtkMateScope* gtk_mate_scope_containing_double_scope (GtkMateScope* self) {
 		gboolean _tmp1;
 		gboolean _tmp2;
 		gboolean _tmp3;
+		GtkMateScope* _tmp6;
 		GtkMateScope* _tmp5;
-		GtkMateScope* _tmp4;
 		_tmp1 = FALSE;
 		_tmp2 = FALSE;
 		_tmp3 = FALSE;
@@ -298,7 +298,14 @@ GtkMateScope* gtk_mate_scope_containing_double_scope (GtkMateScope* self) {
 		if (_tmp3) {
 			_tmp2 = TRUE;
 		} else {
-			_tmp2 = gtk_mate_scope_start_line_offset (scope) == 0;
+			gboolean _tmp4;
+			_tmp4 = FALSE;
+			if (gtk_mate_scope_start_line (scope) == line_ix) {
+				_tmp4 = gtk_mate_scope_start_line_offset (scope) == 0;
+			} else {
+				_tmp4 = FALSE;
+			}
+			_tmp2 = _tmp4;
 		}
 		if (_tmp2) {
 			_tmp1 = scope->parent != NULL;
@@ -308,9 +315,9 @@ GtkMateScope* gtk_mate_scope_containing_double_scope (GtkMateScope* self) {
 		if (!_tmp1) {
 			break;
 		}
+		_tmp6 = NULL;
 		_tmp5 = NULL;
-		_tmp4 = NULL;
-		scope = (_tmp5 = (_tmp4 = scope->parent, (_tmp4 == NULL) ? NULL : g_object_ref (_tmp4)), (scope == NULL) ? NULL : (scope = (g_object_unref (scope), NULL)), _tmp5);
+		scope = (_tmp6 = (_tmp5 = scope->parent, (_tmp5 == NULL) ? NULL : g_object_ref (_tmp5)), (scope == NULL) ? NULL : (scope = (g_object_unref (scope), NULL)), _tmp6);
 	}
 	return scope;
 }

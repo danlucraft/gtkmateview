@@ -65,7 +65,7 @@ gint gtk_mate_scope_compare_by_loc (GtkMateScope* a, GtkMateScope* b, void* data
 gboolean gtk_mate_scope_surface_identical_to_modulo_ending (GtkMateScope* self, GtkMateScope* other);
 gboolean gtk_mate_scope_surface_identical_to (GtkMateScope* self, GtkMateScope* other);
 GtkMateScope* gtk_mate_scope_scope_at (GtkMateScope* self, gint line, gint line_offset);
-GtkMateScope* gtk_mate_scope_containing_double_scope (GtkMateScope* self);
+GtkMateScope* gtk_mate_scope_containing_double_scope (GtkMateScope* self, gint line_ix);
 GtkMateScope* gtk_mate_scope_first_child_after (GtkMateScope* self, GtkMateTextLoc* loc);
 gboolean gtk_mate_scope_contains_loc (GtkMateScope* self, GtkMateTextLoc* loc);
 gboolean gtk_mate_scope_overlaps_with (GtkMateScope* self, GtkMateScope* other);
