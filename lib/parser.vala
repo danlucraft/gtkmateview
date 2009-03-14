@@ -140,8 +140,8 @@ namespace Gtk.Mate {
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line(line_ix);
 			int length = (int) line.size();//buffer.get_line_length(line_ix);
-			stdout.printf("p%d, ", line_ix);
-			stdout.flush();
+			// stdout.printf("p%d, ", line_ix);
+			// stdout.flush();
 			if (line_ix > this.parsed_upto)
 				this.parsed_upto = line_ix;
 			// stdout.flush();
@@ -606,11 +606,11 @@ namespace Gtk.Mate {
 
 		public void last_visible_line_changed(int new_last_visible_line) {
 			this.last_visible_line = new_last_visible_line;
-			stdout.printf("last_visible_line: %d\n", last_visible_line);
-			stdout.printf("already_parsed_upto: %d\n", parsed_upto);
+			// stdout.printf("last_visible_line: %d\n", last_visible_line);
+			// stdout.printf("already_parsed_upto: %d\n", parsed_upto);
 			if (last_visible_line + look_ahead >= parsed_upto) {
 				int end_range = int.min(buffer.get_line_count() - 1, last_visible_line + look_ahead);
-				stdout.printf("parse_range(%d, %d)\n", parsed_upto, end_range);
+				// stdout.printf("parse_range(%d, %d)\n", parsed_upto, end_range);
 				parse_range(parsed_upto, end_range);
 			}
 		}

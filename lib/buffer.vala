@@ -18,7 +18,6 @@ namespace Gtk.Mate {
 
 		// Sets the grammar explicitly by name.
 		public bool set_grammar_by_name(string name) {
-			stdout.printf("set_grammar_by_name(%s)\n", name);
 			if (this.parser != null && this.parser.grammar.name == name)
 				return true;
 		  

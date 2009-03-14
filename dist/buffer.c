@@ -1,6 +1,5 @@
 
 #include "buffer.h"
-#include <stdio.h>
 #include <gee/iterable.h>
 #include <gee/iterator.h>
 #include <gee/collection.h>
@@ -60,7 +59,6 @@ gboolean gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* n
 	gboolean _tmp0;
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
-	fprintf (stdout, "set_grammar_by_name(%s)\n", name);
 	_tmp0 = FALSE;
 	if (self->parser != NULL) {
 		_tmp0 = _vala_strcmp0 (gtk_mate_grammar_get_name (gtk_mate_parser_get_grammar (self->parser)), name) == 0;
