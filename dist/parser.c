@@ -1,5 +1,6 @@
 
 #include "parser.h"
+#include <stdio.h>
 #include <gee/collection.h>
 #include <gee/iterable.h>
 #include <gee/iterator.h>
@@ -371,9 +372,9 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	g_return_val_if_fail (self != NULL, FALSE);
 	line = gtk_mate_buffer_get_line (self->priv->_buffer, line_ix);
 	length = (gint) strlen (line);
-	/*buffer.get_line_length(line_ix);
-	 stdout.printf("p%d, ", line_ix);
-	 stdout.flush();*/
+	/*buffer.get_line_length(line_ix);*/
+	fprintf (stdout, "p%d, ", line_ix);
+	fflush (stdout);
 	if (line_ix > self->parsed_upto) {
 		self->parsed_upto = line_ix;
 	}
@@ -1290,12 +1291,12 @@ void gtk_mate_parser_recolour_children (GtkMateParser* self, GtkMateScope* scope
 void gtk_mate_parser_last_visible_line_changed (GtkMateParser* self, gint new_last_visible_line) {
 	g_return_if_fail (self != NULL);
 	self->last_visible_line = new_last_visible_line;
-	/* stdout.printf("last_visible_line: %d\n", last_visible_line);
-	 stdout.printf("already_parsed_upto: %d\n", parsed_upto);*/
+	fprintf (stdout, "last_visible_line: %d\n", self->last_visible_line);
+	fprintf (stdout, "already_parsed_upto: %d\n", self->parsed_upto);
 	if ((self->last_visible_line + self->priv->_look_ahead) >= self->parsed_upto) {
 		gint end_range;
 		end_range = MIN (gtk_text_buffer_get_line_count ((GtkTextBuffer*) self->priv->_buffer) - 1, self->last_visible_line + self->priv->_look_ahead);
-		/* stdout.printf("parse_range(%d, %d)\n", parsed_upto, end_range);*/
+		fprintf (stdout, "parse_range(%d, %d)\n", self->parsed_upto, end_range);
 		gtk_mate_parser_parse_range (self, self->parsed_upto, end_range);
 	}
 }

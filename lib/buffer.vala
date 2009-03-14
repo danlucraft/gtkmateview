@@ -1,4 +1,3 @@
-
 using GLib;
 using Gee;
 
@@ -19,15 +18,21 @@ namespace Gtk.Mate {
 
 		// Sets the grammar explicitly by name.
 		public bool set_grammar_by_name(string name) {
+			stdout.printf("set_grammar_by_name(%s)\n", name);
 			if (this.parser != null && this.parser.grammar.name == name)
 				return true;
+		  
 			foreach (var bundle in Buffer.bundles) {
 				foreach (var gr in bundle.grammars) {
 					if (gr.name == name) {
+						int parsed_upto = 150;
 						if (this.parser != null) {
+							this.parser.colourer.uncolour_scope(this.parser.root, true);
+							parsed_upto = this.parser.parsed_upto;
 							this.parser.close();
 						}
 						this.parser = Parser.create(gr, this);
+						this.parser.last_visible_line_changed(parsed_upto);
 						return true;
 					}
 				}

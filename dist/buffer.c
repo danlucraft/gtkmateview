@@ -1,20 +1,22 @@
 
 #include "buffer.h"
+#include <stdio.h>
 #include <gee/iterable.h>
 #include <gee/iterator.h>
 #include <gee/collection.h>
 #include "parser.h"
 #include "grammar.h"
 #include "bundle.h"
-#include "onig_wrap.h"
+#include "colourer.h"
 #include "scope.h"
+#include "onig_wrap.h"
 #include "gtkmateview.h"
 
 
 
 
-static char* string_substring (const char* self, glong offset, glong len);
 static glong string_get_length (const char* self);
+static char* string_substring (const char* self, glong offset, glong len);
 enum  {
 	GTK_MATE_BUFFER_DUMMY_PROPERTY
 };
@@ -25,6 +27,12 @@ static gpointer gtk_mate_buffer_parent_class = NULL;
 static void gtk_mate_buffer_finalize (GObject* obj);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
+
+
+static glong string_get_length (const char* self) {
+	g_return_val_if_fail (self != NULL, 0L);
+	return g_utf8_strlen (self, -1);
+}
 
 
 static char* string_substring (const char* self, glong offset, glong len) {
@@ -47,17 +55,12 @@ static char* string_substring (const char* self, glong offset, glong len) {
 }
 
 
-static glong string_get_length (const char* self) {
-	g_return_val_if_fail (self != NULL, 0L);
-	return g_utf8_strlen (self, -1);
-}
-
-
 /* Sets the grammar explicitly by name.*/
 gboolean gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* name) {
 	gboolean _tmp0;
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
+	fprintf (stdout, "set_grammar_by_name(%s)\n", name);
 	_tmp0 = FALSE;
 	if (self->parser != NULL) {
 		_tmp0 = _vala_strcmp0 (gtk_mate_grammar_get_name (gtk_mate_parser_get_grammar (self->parser)), name) == 0;
@@ -80,13 +83,18 @@ gboolean gtk_mate_buffer_set_grammar_by_name (GtkMateBuffer* self, const char* n
 					GtkMateGrammar* gr;
 					gr = (GtkMateGrammar*) gee_iterator_get (_gr_it);
 					if (_vala_strcmp0 (gtk_mate_grammar_get_name (gr), name) == 0) {
+						gint parsed_upto;
 						GtkMateParser* _tmp2;
 						gboolean _tmp3;
+						parsed_upto = 150;
 						if (self->parser != NULL) {
+							gtk_mate_colourer_uncolour_scope (gtk_mate_parser_get_colourer (self->parser), self->parser->root, TRUE);
+							parsed_upto = self->parser->parsed_upto;
 							gtk_mate_parser_close (self->parser);
 						}
 						_tmp2 = NULL;
 						self->parser = (_tmp2 = gtk_mate_parser_create (gr, self), (self->parser == NULL) ? NULL : (self->parser = (g_object_unref (self->parser), NULL)), _tmp2);
+						gtk_mate_parser_last_visible_line_changed (self->parser, parsed_upto);
 						return (_tmp3 = TRUE, (gr == NULL) ? NULL : (gr = (g_object_unref (gr), NULL)), (_gr_it == NULL) ? NULL : (_gr_it = (g_object_unref (_gr_it), NULL)), (bundle == NULL) ? NULL : (bundle = (g_object_unref (bundle), NULL)), (_bundle_it == NULL) ? NULL : (_bundle_it = (g_object_unref (_bundle_it), NULL)), _tmp3);
 					}
 					(gr == NULL) ? NULL : (gr = (g_object_unref (gr), NULL));
