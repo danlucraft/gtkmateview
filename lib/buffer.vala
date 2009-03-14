@@ -25,13 +25,17 @@ namespace Gtk.Mate {
 				foreach (var gr in bundle.grammars) {
 					if (gr.name == name) {
 						int parsed_upto = 150;
+						Theme theme = null;
 						if (this.parser != null) {
+							theme = this.parser.colourer.theme;
 							this.parser.colourer.uncolour_scope(this.parser.root, true);
 							parsed_upto = this.parser.parsed_upto;
 							this.parser.close();
 						}
 						this.parser = Parser.create(gr, this);
 						this.parser.last_visible_line_changed(parsed_upto);
+						if (theme != null)
+						  this.parser.change_theme(theme);
 						return true;
 					}
 				}
@@ -43,22 +47,23 @@ namespace Gtk.Mate {
 		// a grammar, sets the grammar to null. Returns the grammar
 		// name or null.
 		public string? set_grammar_by_filename(string filename) {
-			Grammar best = null;
+			string best_name = null;
 			long best_length = 0;
 			foreach (var bundle in Buffer.bundles) {
 				foreach (var gr in bundle.grammars) {
 					foreach (var ext in gr.file_types) {
-						if (filename.has_suffix(ext) && (best == null || ext.length > best_length)) {
-							best = gr;
+						if (filename.has_suffix(ext) && (best_name == null || ext.length > best_length)) {
+							best_name = gr.name;
 							best_length = ext.length;
 						}
 					}
 				}
 			}
-			if (best != null) {
-				if (this.parser == null || this.parser.grammar.name != best.name)
-					this.parser = Parser.create(best, this);
-				return best.name;
+			if (best_name != null) {
+				if (this.parser == null || this.parser.grammar.name != best_name) {
+					set_grammar_by_name(best_name);
+				}
+				return best_name;
 			}
 			return null;
 		}
@@ -72,7 +77,7 @@ namespace Gtk.Mate {
 				foreach (var gr in bundle.grammars)
 					if ((re = gr.first_line_match) != null)
 						if (re.search(first_line, 0, (int) first_line.size()) != null) {
-							this.parser = Parser.create(gr, this);
+							set_grammar_by_name(gr.name);
 							return gr.name;
 						}
 			return null;
