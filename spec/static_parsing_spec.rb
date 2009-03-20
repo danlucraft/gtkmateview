@@ -242,6 +242,33 @@ Gtk gtk_ (Gtk* self) {
     puts @mb.parser.root.pretty(0)
     @mb.parser.root.pretty(0).should_not include("invalid.illegal")
   end
+
+  it "should prefer closing scopes to opening new ones" do
+    source = <<-RUBY
+require 'hoe' # gem
+    RUBY
+    @mb.set_grammar_by_name("Ruby")
+    @mb.text = source
+
+    @mb.parser.root.pretty(0).should == (t=<<END)
++ source.ruby (0,0)-(1,0) open
+  + meta.require.ruby (0,0)-(0,14) closed
+    c keyword.other.special-method.ruby (0,0)-(0,7) closed
+    + string.quoted.single.ruby (0,8)-(0,13) closed
+      c punctuation.definition.string.begin.ruby (0,8)-(0,9) closed
+      c punctuation.definition.string.end.ruby (0,12)-(0,13) closed
+  + comment.line.number-sign.ruby (0,14)-(1,0) closed
+    c punctuation.definition.comment.ruby (0,14)-(0,15) closed
+END
+  end
+
+  it "should parse this Ruby without dying" do
+    source = <<-RUBY
+require 'hoe' # gem
+    RUBY
+    @mb.set_grammar_by_name("Ruby")
+    @mb.text = source
+  end
 end
 
 

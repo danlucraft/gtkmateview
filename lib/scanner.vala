@@ -99,6 +99,7 @@ namespace Gtk.Mate {
 			Marker m;
 			int best_length = 0;
 			int new_length;
+			bool is_close_match = false;
 			if ((m = get_cached_marker()) != null) {
 				//stdout.printf("got cached marker\n");
 				cached_markers.remove(m);
@@ -120,6 +121,7 @@ namespace Gtk.Mate {
 					cached_markers.add(nm);
 					m = nm;
 					best_length = nm.match.end(0) - nm.from;
+					is_close_match = true;
 				}
 			}
 			foreach (var p in ((DoublePattern) current_scope.pattern).patterns) {
@@ -140,7 +142,7 @@ namespace Gtk.Mate {
 					nm.is_close_scope = false;
 					cached_markers.add(nm);
 					new_length = nm.match.end(0) - nm.from;
-					if (m == null || nm.from < m.from || (nm.from == m.from && new_length > best_length)) {
+					if (m == null || nm.from < m.from || (nm.from == m.from && new_length > best_length && !is_close_match)) {
 						m = nm;
 						best_length = new_length;
 					}

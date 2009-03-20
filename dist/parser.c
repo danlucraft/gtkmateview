@@ -13,8 +13,8 @@
 
 
 
-static glong string_get_length (const char* self);
 static char* string_substring (const char* self, glong offset, glong len);
+static glong string_get_length (const char* self);
 enum  {
 	GTK_MATE_TEXT_LOC_DUMMY_PROPERTY
 };
@@ -50,12 +50,6 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
-static glong string_get_length (const char* self) {
-	g_return_val_if_fail (self != NULL, 0L);
-	return g_utf8_strlen (self, -1);
-}
-
-
 static char* string_substring (const char* self, glong offset, glong len) {
 	glong string_length;
 	const char* start;
@@ -73,6 +67,12 @@ static char* string_substring (const char* self, glong offset, glong len) {
 	g_return_val_if_fail ((offset + len) <= string_length, NULL);
 	start = g_utf8_offset_to_pointer (self, offset);
 	return g_strndup (start, ((gchar*) g_utf8_offset_to_pointer (start, len)) - ((gchar*) start));
+}
+
+
+static glong string_get_length (const char* self) {
+	g_return_val_if_fail (self != NULL, 0L);
+	return g_utf8_strlen (self, -1);
 }
 
 
@@ -406,7 +406,6 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 			GtkMateMarker* m;
 			GtkMateScope* expected_scope;
 			m = (GtkMateMarker*) gee_iterator_get (_m_it);
-			/* stdout.printf("pretty:\n%s\n", root.pretty(2));*/
 			expected_scope = gtk_mate_parser_get_expected_scope (self, gtk_mate_scanner_get_current_scope (scanner), line_ix, scanner->position);
 			/* if (expected_scope != null)
 			 stdout.printf("expected_scope: %s (%d, %d)\n", expected_scope.name, expected_scope.start_loc().line, 
@@ -426,6 +425,7 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 					gtk_mate_parser_single_scope (self, scanner, expected_scope, line_ix, line, length, m, all_scopes, closed_scopes, removed_scopes);
 				}
 			}
+			/* stdout.printf("pretty:\n%s\n", root.pretty(2));*/
 			scanner->position = onig_match_end (m->match, 0);
 			(m == NULL) ? NULL : (m = (g_object_unref (m), NULL));
 			(expected_scope == NULL) ? NULL : (expected_scope = (g_object_unref (expected_scope), NULL));

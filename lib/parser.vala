@@ -162,7 +162,6 @@ namespace Gtk.Mate {
 			var removed_scopes = new ArrayList<Scope>();
 			all_scopes.add(start_scope);
 			foreach (Marker m in scanner) {
-				// stdout.printf("pretty:\n%s\n", root.pretty(2));
 				var expected_scope = get_expected_scope(scanner.current_scope, line_ix, scanner.position);
 				// if (expected_scope != null)
 				// 	stdout.printf("expected_scope: %s (%d, %d)\n", expected_scope.name, expected_scope.start_loc().line, 
@@ -185,6 +184,7 @@ namespace Gtk.Mate {
 					single_scope(scanner, expected_scope, line_ix, line, length, m, 
 								 all_scopes, closed_scopes, removed_scopes);
 				}
+				// stdout.printf("pretty:\n%s\n", root.pretty(2));
 				scanner.position = m.match.end(0);
 			}
 			clear_line(line_ix, start_scope, all_scopes, closed_scopes, removed_scopes);

@@ -259,16 +259,18 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 	GtkMateMarker* m;
 	gint best_length;
 	gint new_length;
+	gboolean is_close_match;
 	GtkMateMarker* _tmp0;
 	OnigRx* _tmp2;
 	OnigRx* closing_regex;
-	GtkMateMarker* _tmp20;
+	GtkMateMarker* _tmp21;
 	g_return_val_if_fail (self != NULL, NULL);
 	/* stdout.printf("find_next_marker (current_scope is %s)\n", current_scope.name);
 	 stdout.printf("scanning: '%s' from %d to %d\n", line, position, line_length);*/
 	m = NULL;
 	best_length = 0;
 	new_length = 0;
+	is_close_match = FALSE;
 	_tmp0 = NULL;
 	if ((m = (_tmp0 = gtk_mate_scanner_get_cached_marker (self), (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp0)) != NULL) {
 		/*stdout.printf("got cached marker\n");*/
@@ -306,6 +308,7 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 			_tmp7 = NULL;
 			m = (_tmp8 = (_tmp7 = nm, (_tmp7 == NULL) ? NULL : g_object_ref (_tmp7)), (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp8);
 			best_length = onig_match_end (nm->match, 0) - nm->from;
+			is_close_match = TRUE;
 			(nm == NULL) ? NULL : (nm = (g_object_unref (nm), NULL));
 		}
 		(match == NULL) ? NULL : (match = (g_object_unref (match), NULL));
@@ -371,20 +374,27 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 					_tmp15 = TRUE;
 				} else {
 					gboolean _tmp17;
+					gboolean _tmp18;
 					_tmp17 = FALSE;
+					_tmp18 = FALSE;
 					if (nm->from == m->from) {
-						_tmp17 = new_length > best_length;
+						_tmp18 = new_length > best_length;
+					} else {
+						_tmp18 = FALSE;
+					}
+					if (_tmp18) {
+						_tmp17 = !is_close_match;
 					} else {
 						_tmp17 = FALSE;
 					}
 					_tmp15 = _tmp17;
 				}
 				if (_tmp15) {
+					GtkMateMarker* _tmp20;
 					GtkMateMarker* _tmp19;
-					GtkMateMarker* _tmp18;
+					_tmp20 = NULL;
 					_tmp19 = NULL;
-					_tmp18 = NULL;
-					m = (_tmp19 = (_tmp18 = nm, (_tmp18 == NULL) ? NULL : g_object_ref (_tmp18)), (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp19);
+					m = (_tmp20 = (_tmp19 = nm, (_tmp19 == NULL) ? NULL : g_object_ref (_tmp19)), (m == NULL) ? NULL : (m = (g_object_unref (m), NULL)), _tmp20);
 					best_length = new_length;
 				}
 				position_now = onig_match_end (match, 0);
@@ -400,8 +410,8 @@ GtkMateMarker* gtk_mate_scanner_find_next_marker (GtkMateScanner* self) {
 		gee_collection_remove ((GeeCollection*) self->cached_markers, m);
 		gtk_mate_scanner_remove_preceding_cached_markers (self, m);
 	}
-	_tmp20 = NULL;
-	return (_tmp20 = m, (closing_regex == NULL) ? NULL : (closing_regex = (g_object_unref (closing_regex), NULL)), _tmp20);
+	_tmp21 = NULL;
+	return (_tmp21 = m, (closing_regex == NULL) ? NULL : (closing_regex = (g_object_unref (closing_regex), NULL)), _tmp21);
 }
 
 
