@@ -15,9 +15,45 @@ namespace Gtk.Mate {
 			result.append(html_header(title));
 			result.append(css());
 			result.append(body_start());
+			result.append(code());
 			result.append(body_end());
 			return result.str;
 		}
+
+    private void add_indent(StringBuilder sb, int indent) {
+ 			for(int i = 0; i < indent; i++) {
+				sb.append("\t");
+			}
+		}
+
+		private string code() {
+			var result = new StringBuilder();
+			add_indent(result, 1);
+			result.append("<pre class=\"textmate-source " + theme_name().down() + "\">\n");
+			scope_to_html(2, result, buffer().parser.root);
+			return result.str;
+		}		
+
+		private void scope_to_html(int indent, StringBuilder result, Scope scope) {
+			add_indent(result, indent);
+			result.append("<span class=\"\">\n");
+			GLib.SequenceIter iter = scope.children.get_begin_iter();
+			while (!iter.is_end()) {
+				scope_to_html(indent+1, result, scope.children.get(iter));
+				iter = iter.next();
+			}
+			add_indent(result, indent);
+			result.append("</span>\n");
+			return;
+		}
+
+		private Buffer buffer() {
+			return ((Gtk.Mate.Buffer) this.view.buffer);
+		}
+
+		private string theme_name() {
+			return buffer().parser.colourer.theme.name;
+		}		
 
 		private string html_header(string title) {
 			string header = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n" + 
@@ -29,7 +65,7 @@ namespace Gtk.Mate {
 		}
 		
 		private string body_start() {
-			string html = "\t</style>\n</head>\n\n<body>";
+			string html = "\t</style>\n</head>\n\n<body>\n";
 			return html;
 		}
 		

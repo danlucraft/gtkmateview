@@ -10,6 +10,7 @@
 #include "colourer.h"
 #include "theme.h"
 #include "string_helper.h"
+#include "scope.h"
 
 
 
@@ -18,6 +19,11 @@ static glong string_get_length (const char* self);
 enum  {
 	GTK_MATE_EXPORTER_DUMMY_PROPERTY
 };
+static void gtk_mate_exporter_add_indent (GtkMateExporter* self, GString* sb, gint indent);
+static char* gtk_mate_exporter_code (GtkMateExporter* self);
+static void gtk_mate_exporter_scope_to_html (GtkMateExporter* self, gint indent, GString* result, GtkMateScope* scope);
+static GtkMateBuffer* gtk_mate_exporter_buffer (GtkMateExporter* self);
+static char* gtk_mate_exporter_theme_name (GtkMateExporter* self);
 static char* gtk_mate_exporter_html_header (GtkMateExporter* self, const char* title);
 static char* gtk_mate_exporter_body_start (GtkMateExporter* self);
 static char* gtk_mate_exporter_body_end (GtkMateExporter* self);
@@ -60,8 +66,9 @@ char* gtk_mate_exporter_to_html (GtkMateExporter* self, const char* title) {
 	char* _tmp1;
 	char* _tmp2;
 	char* _tmp3;
-	const char* _tmp4;
-	char* _tmp5;
+	char* _tmp4;
+	const char* _tmp5;
+	char* _tmp6;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (title != NULL, NULL);
 	result = g_string_new ("");
@@ -75,11 +82,95 @@ char* gtk_mate_exporter_to_html (GtkMateExporter* self, const char* title) {
 	g_string_append (result, _tmp2 = gtk_mate_exporter_body_start (self));
 	_tmp2 = (g_free (_tmp2), NULL);
 	_tmp3 = NULL;
-	g_string_append (result, _tmp3 = gtk_mate_exporter_body_end (self));
+	g_string_append (result, _tmp3 = gtk_mate_exporter_code (self));
 	_tmp3 = (g_free (_tmp3), NULL);
 	_tmp4 = NULL;
+	g_string_append (result, _tmp4 = gtk_mate_exporter_body_end (self));
+	_tmp4 = (g_free (_tmp4), NULL);
 	_tmp5 = NULL;
-	return (_tmp5 = (_tmp4 = result->str, (_tmp4 == NULL) ? NULL : g_strdup (_tmp4)), (result == NULL) ? NULL : (result = (g_string_free (result, TRUE), NULL)), _tmp5);
+	_tmp6 = NULL;
+	return (_tmp6 = (_tmp5 = result->str, (_tmp5 == NULL) ? NULL : g_strdup (_tmp5)), (result == NULL) ? NULL : (result = (g_string_free (result, TRUE), NULL)), _tmp6);
+}
+
+
+static void gtk_mate_exporter_add_indent (GtkMateExporter* self, GString* sb, gint indent) {
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (sb != NULL);
+	{
+		gint i;
+		i = 0;
+		for (; i < indent; i++) {
+			g_string_append (sb, "\t");
+		}
+	}
+}
+
+
+static char* gtk_mate_exporter_code (GtkMateExporter* self) {
+	GString* result;
+	char* _tmp3;
+	char* _tmp2;
+	char* _tmp1;
+	char* _tmp0;
+	GtkMateBuffer* _tmp4;
+	const char* _tmp5;
+	char* _tmp6;
+	g_return_val_if_fail (self != NULL, NULL);
+	result = g_string_new ("");
+	gtk_mate_exporter_add_indent (self, result, 1);
+	_tmp3 = NULL;
+	_tmp2 = NULL;
+	_tmp1 = NULL;
+	_tmp0 = NULL;
+	g_string_append (result, _tmp3 = g_strconcat (_tmp2 = g_strconcat ("<pre class=\"textmate-source ", _tmp1 = g_utf8_strdown (_tmp0 = gtk_mate_exporter_theme_name (self), -1), NULL), "\">\n", NULL));
+	_tmp3 = (g_free (_tmp3), NULL);
+	_tmp2 = (g_free (_tmp2), NULL);
+	_tmp1 = (g_free (_tmp1), NULL);
+	_tmp0 = (g_free (_tmp0), NULL);
+	_tmp4 = NULL;
+	gtk_mate_exporter_scope_to_html (self, 2, result, (_tmp4 = gtk_mate_exporter_buffer (self))->parser->root);
+	(_tmp4 == NULL) ? NULL : (_tmp4 = (g_object_unref (_tmp4), NULL));
+	_tmp5 = NULL;
+	_tmp6 = NULL;
+	return (_tmp6 = (_tmp5 = result->str, (_tmp5 == NULL) ? NULL : g_strdup (_tmp5)), (result == NULL) ? NULL : (result = (g_string_free (result, TRUE), NULL)), _tmp6);
+}
+
+
+static void gtk_mate_exporter_scope_to_html (GtkMateExporter* self, gint indent, GString* result, GtkMateScope* scope) {
+	GSequenceIter* iter;
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (result != NULL);
+	g_return_if_fail (scope != NULL);
+	gtk_mate_exporter_add_indent (self, result, indent);
+	g_string_append (result, "<span class=\"\">\n");
+	iter = g_sequence_get_begin_iter (gtk_mate_scope_get_children (scope));
+	while (!g_sequence_iter_is_end (iter)) {
+		gtk_mate_exporter_scope_to_html (self, indent + 1, result, (GtkMateScope*) g_sequence_get (iter));
+		iter = g_sequence_iter_next (iter);
+	}
+	gtk_mate_exporter_add_indent (self, result, indent);
+	g_string_append (result, "</span>\n");
+	return;
+}
+
+
+static GtkMateBuffer* gtk_mate_exporter_buffer (GtkMateExporter* self) {
+	GtkMateBuffer* _tmp0;
+	g_return_val_if_fail (self != NULL, NULL);
+	_tmp0 = NULL;
+	return (_tmp0 = GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self->view)), (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0));
+}
+
+
+static char* gtk_mate_exporter_theme_name (GtkMateExporter* self) {
+	const char* _tmp1;
+	GtkMateBuffer* _tmp0;
+	char* _tmp2;
+	g_return_val_if_fail (self != NULL, NULL);
+	_tmp1 = NULL;
+	_tmp0 = NULL;
+	_tmp2 = NULL;
+	return (_tmp2 = (_tmp1 = gtk_mate_colourer_get_theme (gtk_mate_parser_get_colourer ((_tmp0 = gtk_mate_exporter_buffer (self))->parser))->name, (_tmp1 == NULL) ? NULL : g_strdup (_tmp1)), (_tmp0 == NULL) ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL)), _tmp2);
 }
 
 
@@ -101,7 +192,7 @@ static char* gtk_mate_exporter_html_header (GtkMateExporter* self, const char* t
 static char* gtk_mate_exporter_body_start (GtkMateExporter* self) {
 	char* html;
 	g_return_val_if_fail (self != NULL, NULL);
-	html = g_strdup ("\t</style>\n</head>\n\n<body>");
+	html = g_strdup ("\t</style>\n</head>\n\n<body>\n");
 	return html;
 }
 
