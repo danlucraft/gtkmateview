@@ -27,7 +27,7 @@ namespace :build do
   end
 
   desc "build c files from vala"
-  task :build_c => :clean do
+  task :build_c do
     puts "Getting to ./lib"
     FileUtils.cd("lib") do
       puts "compiling gtkmateview..."

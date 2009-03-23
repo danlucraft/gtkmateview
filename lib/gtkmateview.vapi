@@ -72,6 +72,12 @@ namespace Gtk {
 			public static Gtk.Mate.DoublePattern? create_from_plist (Gee.ArrayList<Gtk.Mate.Pattern> all_patterns, PList.Dict pd);
 			public DoublePattern ();
 		}
+		[CCode (cheader_filename = "exporter.h")]
+		public class Exporter : Gtk.Object {
+			public Gtk.Mate.View view;
+			public Exporter (Gtk.Mate.View v);
+			public string to_html (string title);
+		}
 		[CCode (cheader_filename = "grammar.h")]
 		public class Grammar : Gtk.Object {
 			public Gee.ArrayList<Gtk.Mate.Pattern> all_patterns;
