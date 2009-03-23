@@ -48,6 +48,9 @@ namespace Gtk {
 			public static int char_to_hex (unichar ch);
 			public void colour_line_with_scopes (Gee.ArrayList<Gtk.Mate.Scope> scopes);
 			public void colour_scope (Gtk.Mate.Scope scope, bool inner, bool force = true);
+			public string? global_background_colour ();
+			public string? global_foreground_colour ();
+			public static int hex_to_int (unichar ch1, unichar ch2);
 			public static string? merge_colour (string? parent_colour, string colour);
 			public Colourer (Gtk.Mate.Buffer buffer);
 			public Gdk.Color parse_colour (string colour);

@@ -37,14 +37,11 @@ static glong string_get_length (const char* self) {
 }
 
 
-void gtk_mate_colourer_set_global_settings (GtkMateColourer* self, GtkMateView* view) {
+char* gtk_mate_colourer_global_background_colour (GtkMateColourer* self) {
 	char* bg_colour;
 	gboolean _tmp0;
-	char* fg_colour;
-	gboolean _tmp3;
-	g_return_if_fail (self != NULL);
-	g_return_if_fail (view != NULL);
-	/*stdout.printf("set_theme_settings()\n");*/
+	char* _tmp3;
+	g_return_val_if_fail (self != NULL, NULL);
 	bg_colour = (char*) gee_map_get ((GeeMap*) self->priv->_theme->global_settings, "background");
 	_tmp0 = FALSE;
 	if (bg_colour != NULL) {
@@ -54,25 +51,52 @@ void gtk_mate_colourer_set_global_settings (GtkMateColourer* self, GtkMateView* 
 	}
 	if (_tmp0) {
 		char* _tmp1;
-		GdkColor _tmp2 = {0};
 		_tmp1 = NULL;
 		bg_colour = (_tmp1 = gtk_mate_colourer_merge_colour ("#FFFFFF", bg_colour), bg_colour = (g_free (bg_colour), NULL), _tmp1);
-		gtk_widget_modify_base (GTK_WIDGET (view), GTK_STATE_NORMAL, (_tmp2 = gtk_mate_colourer_parse_colour (self, bg_colour), &_tmp2));
+		return bg_colour;
 	}
-	/* ((Gtk.SourceView) view).background = bg_colour;*/
+	_tmp3 = NULL;
+	return (_tmp3 = NULL, bg_colour = (g_free (bg_colour), NULL), _tmp3);
+}
+
+
+char* gtk_mate_colourer_global_foreground_colour (GtkMateColourer* self) {
+	char* fg_colour;
+	gboolean _tmp0;
+	char* _tmp3;
+	g_return_val_if_fail (self != NULL, NULL);
 	fg_colour = (char*) gee_map_get ((GeeMap*) self->priv->_theme->global_settings, "foreground");
-	_tmp3 = FALSE;
+	_tmp0 = FALSE;
 	if (fg_colour != NULL) {
-		_tmp3 = _vala_strcmp0 (fg_colour, "") != 0;
+		_tmp0 = _vala_strcmp0 (fg_colour, "") != 0;
 	} else {
-		_tmp3 = FALSE;
+		_tmp0 = FALSE;
 	}
-	if (_tmp3) {
-		char* _tmp4;
-		GdkColor _tmp5 = {0};
-		_tmp4 = NULL;
-		fg_colour = (_tmp4 = gtk_mate_colourer_merge_colour ("#FFFFFF", fg_colour), fg_colour = (g_free (fg_colour), NULL), _tmp4);
-		gtk_widget_modify_text (GTK_WIDGET (view), GTK_STATE_NORMAL, (_tmp5 = gtk_mate_colourer_parse_colour (self, fg_colour), &_tmp5));
+	if (_tmp0) {
+		char* _tmp1;
+		_tmp1 = NULL;
+		fg_colour = (_tmp1 = gtk_mate_colourer_merge_colour ("#FFFFFF", fg_colour), fg_colour = (g_free (fg_colour), NULL), _tmp1);
+		return fg_colour;
+	}
+	_tmp3 = NULL;
+	return (_tmp3 = NULL, fg_colour = (g_free (fg_colour), NULL), _tmp3);
+}
+
+
+void gtk_mate_colourer_set_global_settings (GtkMateColourer* self, GtkMateView* view) {
+	char* bg_colour;
+	char* fg_colour;
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (view != NULL);
+	bg_colour = gtk_mate_colourer_global_background_colour (self);
+	if (bg_colour != NULL) {
+		GdkColor _tmp0 = {0};
+		gtk_widget_modify_base (GTK_WIDGET (view), GTK_STATE_NORMAL, (_tmp0 = gtk_mate_colourer_parse_colour (self, bg_colour), &_tmp0));
+	}
+	fg_colour = gtk_mate_colourer_global_foreground_colour (self);
+	if (fg_colour != NULL) {
+		GdkColor _tmp1 = {0};
+		gtk_widget_modify_text (GTK_WIDGET (view), GTK_STATE_NORMAL, (_tmp1 = gtk_mate_colourer_parse_colour (self, fg_colour), &_tmp1));
 	}
 	bg_colour = (g_free (bg_colour), NULL);
 	fg_colour = (g_free (fg_colour), NULL);
@@ -440,6 +464,11 @@ gint gtk_mate_colourer_char_to_hex (gunichar ch) {
 }
 
 
+gint gtk_mate_colourer_hex_to_int (gunichar ch1, gunichar ch2) {
+	return (gtk_mate_colourer_char_to_hex (ch1) * 16) + gtk_mate_colourer_char_to_hex (ch2);
+}
+
+
 /* Here parent_colour is like '#FFFFFF' and
  colour is like '#000000DD'.*/
 char* gtk_mate_colourer_merge_colour (const char* parent_colour, const char* colour) {
@@ -481,13 +510,13 @@ char* gtk_mate_colourer_merge_colour (const char* parent_colour, const char* col
 	}
 	if (string_get_length (colour) == 9) {
 		char* _tmp3;
-		pre_r = (gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 1))) * 16) + gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 2)));
-		pre_g = (gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 3))) * 16) + gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 4)));
-		pre_b = (gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 5))) * 16) + gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 6)));
-		post_r = (gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 1))) * 16) + gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 2)));
-		post_g = (gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 3))) * 16) + gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 4)));
-		post_b = (gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 5))) * 16) + gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 6)));
-		opacity = (gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 7))) * 16) + gtk_mate_colourer_char_to_hex (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 8)));
+		pre_r = gtk_mate_colourer_hex_to_int (g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 1)), g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 2)));
+		pre_g = gtk_mate_colourer_hex_to_int (g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 3)), g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 4)));
+		pre_b = gtk_mate_colourer_hex_to_int (g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 5)), g_utf8_get_char (g_utf8_offset_to_pointer (parent_colour, 6)));
+		post_r = gtk_mate_colourer_hex_to_int (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 1)), g_utf8_get_char (g_utf8_offset_to_pointer (colour, 2)));
+		post_g = gtk_mate_colourer_hex_to_int (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 3)), g_utf8_get_char (g_utf8_offset_to_pointer (colour, 4)));
+		post_b = gtk_mate_colourer_hex_to_int (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 5)), g_utf8_get_char (g_utf8_offset_to_pointer (colour, 6)));
+		opacity = gtk_mate_colourer_hex_to_int (g_utf8_get_char (g_utf8_offset_to_pointer (colour, 7)), g_utf8_get_char (g_utf8_offset_to_pointer (colour, 8)));
 		new_r = ((pre_r * (255 - opacity)) + (post_r * opacity)) / 255;
 		new_g = ((pre_g * (255 - opacity)) + (post_g * opacity)) / 255;
 		new_b = ((pre_b * (255 - opacity)) + (post_b * opacity)) / 255;

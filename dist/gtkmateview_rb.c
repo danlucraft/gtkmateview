@@ -878,6 +878,79 @@ static VALUE rb_gtk_mate_colourer_colour_scope(VALUE self, VALUE scope, VALUE in
     return Qnil;
 }
 
+static VALUE rb_gtk_mate_colourer_global_background_colour(VALUE self) {
+    GtkMateColourer* gtk_mate_colourer = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // Method#body
+    
+    char * _c_return;
+    _c_return = gtk_mate_colourer_global_background_colour(gtk_mate_colourer);
+    // Method#return_type_conversion
+    VALUE _rb_return;
+    if (_c_return == NULL)
+        _rb_return = Qnil;
+    else {
+              if (_c_return == NULL) {
+        _rb_return = Qnil;
+      }
+      else {
+        _rb_return = rb_str_new2(_c_return);
+      }
+
+    }
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_colourer_global_foreground_colour(VALUE self) {
+    GtkMateColourer* gtk_mate_colourer = RVAL2GOBJ(self);
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // Method#body
+    
+    char * _c_return;
+    _c_return = gtk_mate_colourer_global_foreground_colour(gtk_mate_colourer);
+    // Method#return_type_conversion
+    VALUE _rb_return;
+    if (_c_return == NULL)
+        _rb_return = Qnil;
+    else {
+              if (_c_return == NULL) {
+        _rb_return = Qnil;
+      }
+      else {
+        _rb_return = rb_str_new2(_c_return);
+      }
+
+    }
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_colourer_hex_to_int(VALUE self, VALUE ch1, VALUE ch2) {
+    // Method#type_checks
+    if (TYPE(ch1) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    if (TYPE(ch2) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    // Method#argument_type_conversions
+    gunichar _c_ch1;
+    _c_ch1 = *g_utf8_to_ucs4(STR2CSTR(ch1), RSTRING_LEN(ch1), NULL, NULL, NULL);
+    gunichar _c_ch2;
+    _c_ch2 = *g_utf8_to_ucs4(STR2CSTR(ch2), RSTRING_LEN(ch2), NULL, NULL, NULL);
+    // Method#body
+    
+    int _c_return;
+    _c_return = gtk_mate_colourer_hex_to_int(_c_ch1, _c_ch2);
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+    _rb_return = INT2FIX(_c_return);
+    return _rb_return;
+}
+
 static VALUE rb_gtk_mate_colourer_merge_colour(VALUE self, VALUE parent_colour, VALUE colour) {
     // Method#type_checks
     if (TYPE(parent_colour) != T_STRING && parent_colour != Qnil) {
@@ -8110,6 +8183,9 @@ void Init_gtkmateview_rb() {
     rb_define_singleton_method(rbc_gtk_mate_colourer, "char_to_hex", rb_gtk_mate_colourer_char_to_hex, 1);
     rb_define_method(rbc_gtk_mate_colourer, "colour_line_with_scopes", rb_gtk_mate_colourer_colour_line_with_scopes, 1);
     rb_define_method(rbc_gtk_mate_colourer, "colour_scope", rb_gtk_mate_colourer_colour_scope, 3);
+    rb_define_method(rbc_gtk_mate_colourer, "global_background_colour", rb_gtk_mate_colourer_global_background_colour, 0);
+    rb_define_method(rbc_gtk_mate_colourer, "global_foreground_colour", rb_gtk_mate_colourer_global_foreground_colour, 0);
+    rb_define_singleton_method(rbc_gtk_mate_colourer, "hex_to_int", rb_gtk_mate_colourer_hex_to_int, 2);
     rb_define_singleton_method(rbc_gtk_mate_colourer, "merge_colour", rb_gtk_mate_colourer_merge_colour, 2);
     rb_define_method(rbc_gtk_mate_colourer, "set_global_settings", rb_gtk_mate_colourer_set_global_settings, 1);
     rb_define_method(rbc_gtk_mate_colourer, "set_tag_properties", rb_gtk_mate_colourer_set_tag_properties, 3);

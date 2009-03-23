@@ -33,6 +33,8 @@ struct _GtkMateColourerClass {
 };
 
 
+char* gtk_mate_colourer_global_background_colour (GtkMateColourer* self);
+char* gtk_mate_colourer_global_foreground_colour (GtkMateColourer* self);
 void gtk_mate_colourer_set_global_settings (GtkMateColourer* self, GtkMateView* view);
 GtkMateColourer* gtk_mate_colourer_construct (GType object_type, GtkMateBuffer* buffer);
 GtkMateColourer* gtk_mate_colourer_new (GtkMateBuffer* buffer);
@@ -41,6 +43,7 @@ void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayL
 void gtk_mate_colourer_colour_scope (GtkMateColourer* self, GtkMateScope* scope, gboolean inner, gboolean force);
 void gtk_mate_colourer_set_tag_properties (GtkMateColourer* self, GtkMateScope* scope, GtkTextTag* tag, GtkMateThemeSetting* setting);
 gint gtk_mate_colourer_char_to_hex (gunichar ch);
+gint gtk_mate_colourer_hex_to_int (gunichar ch1, gunichar ch2);
 char* gtk_mate_colourer_merge_colour (const char* parent_colour, const char* colour);
 void gtk_mate_colourer_uncolour_scopes (GtkMateColourer* self, GeeArrayList* scopes);
 void gtk_mate_colourer_uncolour_scope (GtkMateColourer* self, GtkMateScope* scope, gboolean recurse);

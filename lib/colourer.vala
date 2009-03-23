@@ -7,18 +7,32 @@ namespace Gtk.Mate {
 		public Buffer buffer {get; set;}
 		public Theme theme {get; set;}
 		
-		public void set_global_settings(Gtk.Mate.View view) {
-			//stdout.printf("set_theme_settings()\n");
+		public string? global_background_colour() {
 			string bg_colour = theme.global_settings.get("background");
 			if (bg_colour != null && bg_colour != "") {
 				bg_colour = Colourer.merge_colour("#FFFFFF", bg_colour);
-				((Gtk.Widget) view).modify_base(Gtk.StateType.NORMAL, parse_colour(bg_colour));
-				// ((Gtk.SourceView) view).background = bg_colour;
+				return bg_colour;
 			}
-
+			return null;
+		}
+		
+		public string? global_foreground_colour() {
 			string fg_colour = theme.global_settings.get("foreground");
 			if (fg_colour != null && fg_colour != "") {
 				fg_colour = Colourer.merge_colour("#FFFFFF", fg_colour);
+				return fg_colour;
+			}
+			return null;
+		}
+		
+		public void set_global_settings(Gtk.Mate.View view) {
+			string bg_colour = global_background_colour();
+			if (bg_colour != null) {
+				((Gtk.Widget) view).modify_base(Gtk.StateType.NORMAL, parse_colour(bg_colour));
+			}
+
+			string fg_colour = global_foreground_colour();
+			if (fg_colour != null) {
 				((Gtk.Widget) view).modify_text(Gtk.StateType.NORMAL, parse_colour(fg_colour));
 			}
 		}
@@ -194,8 +208,12 @@ namespace Gtk.Mate {
 			return 0;
 		}
 		
-        // Here parent_colour is like '#FFFFFF' and
-        // colour is like '#000000DD'.
+		public static int hex_to_int(unichar ch1, unichar ch2) {
+			return char_to_hex(ch1)*16 + char_to_hex(ch2);
+		}
+		
+    // Here parent_colour is like '#FFFFFF' and
+    // colour is like '#000000DD'.
 		public static string? merge_colour(string? parent_colour, string colour) {
 			int pre_r, pre_g, pre_b;
 			int post_r, post_g, post_b;
@@ -207,14 +225,14 @@ namespace Gtk.Mate {
 			if (colour.length == 7)
 				return colour;
 			if (colour.length == 9) {
-				pre_r = char_to_hex(parent_colour[1])*16+char_to_hex(parent_colour[2]);
-				pre_g = char_to_hex(parent_colour[3])*16+char_to_hex(parent_colour[4]);
-				pre_b = char_to_hex(parent_colour[5])*16+char_to_hex(parent_colour[6]);
+				pre_r = hex_to_int(parent_colour[1], parent_colour[2]);
+				pre_g = hex_to_int(parent_colour[3], parent_colour[4]);
+				pre_b = hex_to_int(parent_colour[5], parent_colour[6]);
 				
-				post_r = char_to_hex(colour[1])*16+char_to_hex(colour[2]);
-				post_g = char_to_hex(colour[3])*16+char_to_hex(colour[4]);
-				post_b = char_to_hex(colour[5])*16+char_to_hex(colour[6]);
-				opacity = char_to_hex(colour[7])*16+char_to_hex(colour[8]);
+				post_r = hex_to_int(colour[1], colour[2]);
+				post_g = hex_to_int(colour[3], colour[4]);
+				post_b = hex_to_int(colour[5], colour[6]);
+				opacity = hex_to_int(colour[7], colour[8]);
 				
 				new_r = (pre_r*(255-opacity) + post_r*opacity)/255;
 				new_g = (pre_g*(255-opacity) + post_g*opacity)/255;
