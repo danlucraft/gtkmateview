@@ -1,0 +1,17 @@
+<html>
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<title>comparison.html</title>
+		
+	</head>
+	<body>
+		<% YAML.load(File.read("spec/fixtures/test_cases.yml")).each do |test_case| %>
+			<% test_case[:file] =~ /test_case_(.*)\./; name = $1 %>
+			<p>
+				<strong><%= name %></strong>, 	<%= test_case[:theme] %><br />
+				<iframe src="spec/fixtures/textmate_<%= name %>.html" width=600 height=300></iframe>
+				<iframe src="spec/fixtures/redcar_<%= name %>.html" width=600 height=300></iframe>
+			</p>
+		<% end %>
+	</body>
+</html>

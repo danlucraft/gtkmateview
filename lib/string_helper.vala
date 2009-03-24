@@ -41,15 +41,4 @@ public class StringHelper : Object {
 		}
 		return poss;
 	}
-		// string cs = s;
-		// int pos;
-		// var poss = new ArrayList<int>();
-		// while (cs != null) {
-		// 	cs = cs.chr(-1, c);
-		// 	pos = (int) s.pointer_to_offset(cs);
-		// 	stdout.printf("found occurrence at: %d\n", pos);
-		// 	poss.add(pos);
-		// }
-		// return poss;
-	// }
 }

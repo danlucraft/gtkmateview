@@ -11,6 +11,7 @@
 #include "theme.h"
 #include "string_helper.h"
 #include "scope.h"
+#include "pattern.h"
 
 
 
@@ -21,9 +22,12 @@ enum  {
 };
 static void gtk_mate_exporter_add_indent (GtkMateExporter* self, GString* sb, gint indent);
 static char* gtk_mate_exporter_code (GtkMateExporter* self);
-static void gtk_mate_exporter_scope_to_html (GtkMateExporter* self, gint indent, GString* result, GtkMateScope* scope);
+static char* gtk_mate_exporter_css_names (GtkMateExporter* self, GtkMateScope* scope, gboolean inner);
+static gboolean gtk_mate_exporter_scope_has_inner (GtkMateExporter* self, GtkMateScope* scope);
+static void gtk_mate_exporter_scope_to_html (GtkMateExporter* self, GString* result, GtkMateScope* scope);
 static GtkMateBuffer* gtk_mate_exporter_buffer (GtkMateExporter* self);
 static char* gtk_mate_exporter_theme_name (GtkMateExporter* self);
+static char* gtk_mate_exporter_theme_name_css (GtkMateExporter* self);
 static char* gtk_mate_exporter_html_header (GtkMateExporter* self, const char* title);
 static char* gtk_mate_exporter_body_start (GtkMateExporter* self);
 static char* gtk_mate_exporter_body_end (GtkMateExporter* self);
@@ -32,6 +36,8 @@ static char* gtk_mate_exporter_css (GtkMateExporter* self);
 static char* gtk_mate_exporter_html (GtkMateExporter* self);
 static gpointer gtk_mate_exporter_parent_class = NULL;
 static void gtk_mate_exporter_finalize (GObject* obj);
+static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
+static gint _vala_array_length (gpointer array);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
@@ -108,48 +114,264 @@ static void gtk_mate_exporter_add_indent (GtkMateExporter* self, GString* sb, gi
 
 static char* gtk_mate_exporter_code (GtkMateExporter* self) {
 	GString* result;
-	char* _tmp3;
 	char* _tmp2;
 	char* _tmp1;
 	char* _tmp0;
-	GtkMateBuffer* _tmp4;
-	const char* _tmp5;
-	char* _tmp6;
+	GtkMateBuffer* _tmp3;
+	const char* _tmp4;
+	char* _tmp5;
 	g_return_val_if_fail (self != NULL, NULL);
 	result = g_string_new ("");
 	gtk_mate_exporter_add_indent (self, result, 1);
-	_tmp3 = NULL;
 	_tmp2 = NULL;
 	_tmp1 = NULL;
 	_tmp0 = NULL;
-	g_string_append (result, _tmp3 = g_strconcat (_tmp2 = g_strconcat ("<pre class=\"textmate-source ", _tmp1 = g_utf8_strdown (_tmp0 = gtk_mate_exporter_theme_name (self), -1), NULL), "\">\n", NULL));
-	_tmp3 = (g_free (_tmp3), NULL);
+	g_string_append (result, _tmp2 = g_strconcat (_tmp1 = g_strconcat ("<pre class=\"textmate-source ", _tmp0 = gtk_mate_exporter_theme_name_css (self), NULL), "\">", NULL));
 	_tmp2 = (g_free (_tmp2), NULL);
 	_tmp1 = (g_free (_tmp1), NULL);
 	_tmp0 = (g_free (_tmp0), NULL);
+	_tmp3 = NULL;
+	gtk_mate_exporter_scope_to_html (self, result, (_tmp3 = gtk_mate_exporter_buffer (self))->parser->root);
+	(_tmp3 == NULL) ? NULL : (_tmp3 = (g_object_unref (_tmp3), NULL));
+	g_string_append (result, "</pre>\n");
 	_tmp4 = NULL;
-	gtk_mate_exporter_scope_to_html (self, 2, result, (_tmp4 = gtk_mate_exporter_buffer (self))->parser->root);
-	(_tmp4 == NULL) ? NULL : (_tmp4 = (g_object_unref (_tmp4), NULL));
 	_tmp5 = NULL;
-	_tmp6 = NULL;
-	return (_tmp6 = (_tmp5 = result->str, (_tmp5 == NULL) ? NULL : g_strdup (_tmp5)), (result == NULL) ? NULL : (result = (g_string_free (result, TRUE), NULL)), _tmp6);
+	return (_tmp5 = (_tmp4 = result->str, (_tmp4 == NULL) ? NULL : g_strdup (_tmp4)), (result == NULL) ? NULL : (result = (g_string_free (result, TRUE), NULL)), _tmp5);
 }
 
 
-static void gtk_mate_exporter_scope_to_html (GtkMateExporter* self, gint indent, GString* result, GtkMateScope* scope) {
-	GSequenceIter* iter;
+static char* gtk_mate_exporter_css_names (GtkMateExporter* self, GtkMateScope* scope, gboolean inner) {
+	char* this_name;
+	gboolean _tmp0;
+	gboolean _tmp1;
+	g_return_val_if_fail (self != NULL, NULL);
+	g_return_val_if_fail (scope != NULL, NULL);
+	this_name = NULL;
+	_tmp0 = FALSE;
+	_tmp1 = FALSE;
+	if (GTK_MATE_IS_DOUBLE_PATTERN (scope->pattern)) {
+		_tmp1 = GTK_MATE_DOUBLE_PATTERN (scope->pattern)->content_name != NULL;
+	} else {
+		_tmp1 = FALSE;
+	}
+	if (_tmp1) {
+		_tmp0 = inner;
+	} else {
+		_tmp0 = FALSE;
+	}
+	if (_tmp0) {
+		char* _tmp3;
+		const char* _tmp2;
+		_tmp3 = NULL;
+		_tmp2 = NULL;
+		this_name = (_tmp3 = (_tmp2 = GTK_MATE_DOUBLE_PATTERN (scope->pattern)->content_name, (_tmp2 == NULL) ? NULL : g_strdup (_tmp2)), this_name = (g_free (this_name), NULL), _tmp3);
+	} else {
+		char* _tmp5;
+		const char* _tmp4;
+		_tmp5 = NULL;
+		_tmp4 = NULL;
+		this_name = (_tmp5 = (_tmp4 = gtk_mate_scope_get_name (scope), (_tmp4 == NULL) ? NULL : g_strdup (_tmp4)), this_name = (g_free (this_name), NULL), _tmp5);
+	}
+	if (this_name != NULL) {
+		char** _tmp7;
+		gint bits_size;
+		gint bits_length1;
+		char** _tmp6;
+		char** bits;
+		const char* _tmp8;
+		char* current;
+		GString* result;
+		char* _tmp12;
+		const char* _tmp11;
+		_tmp7 = NULL;
+		_tmp6 = NULL;
+		bits = (_tmp7 = _tmp6 = g_strsplit (this_name, ".", 0), bits_length1 = _vala_array_length (_tmp6), bits_size = bits_length1, _tmp7);
+		/* bits == ["meta", "class", "ruby"]*/
+		_tmp8 = NULL;
+		current = (_tmp8 = bits[0], (_tmp8 == NULL) ? NULL : g_strdup (_tmp8));
+		result = g_string_new ("");
+		{
+			gint i;
+			i = 1;
+			for (; i < bits_length1; i++) {
+				char* _tmp10;
+				char* _tmp9;
+				g_string_append (result, current);
+				_tmp10 = NULL;
+				_tmp9 = NULL;
+				current = (_tmp10 = g_strconcat (_tmp9 = g_strconcat (current, "_", NULL), bits[i], NULL), current = (g_free (current), NULL), _tmp10);
+				_tmp9 = (g_free (_tmp9), NULL);
+				g_string_append (result, " ");
+			}
+		}
+		g_string_append (result, current);
+		_tmp12 = NULL;
+		_tmp11 = NULL;
+		this_name = (_tmp12 = (_tmp11 = result->str, (_tmp11 == NULL) ? NULL : g_strdup (_tmp11)), this_name = (g_free (this_name), NULL), _tmp12);
+		bits = (_vala_array_free (bits, bits_length1, (GDestroyNotify) g_free), NULL);
+		current = (g_free (current), NULL);
+		(result == NULL) ? NULL : (result = (g_string_free (result, TRUE), NULL));
+	}
+	return this_name;
+}
+
+
+static gboolean gtk_mate_exporter_scope_has_inner (GtkMateExporter* self, GtkMateScope* scope) {
+	gboolean _tmp0;
+	gboolean _tmp1;
+	g_return_val_if_fail (self != NULL, FALSE);
+	g_return_val_if_fail (scope != NULL, FALSE);
+	_tmp0 = FALSE;
+	_tmp1 = FALSE;
+	if (GTK_MATE_IS_DOUBLE_PATTERN (scope->pattern)) {
+		_tmp1 = GTK_MATE_DOUBLE_PATTERN (scope->pattern)->content_name != NULL;
+	} else {
+		_tmp1 = FALSE;
+	}
+	if (_tmp1) {
+		_tmp0 = _vala_strcmp0 (GTK_MATE_DOUBLE_PATTERN (scope->pattern)->content_name, "") != 0;
+	} else {
+		_tmp0 = FALSE;
+	}
+	return _tmp0;
+}
+
+
+static void gtk_mate_exporter_scope_to_html (GtkMateExporter* self, GString* result, GtkMateScope* scope) {
+	char* names;
+	gboolean _tmp0;
+	GtkTextIter position;
+	gboolean opened_inner;
+	gboolean closed_inner;
+	gboolean _tmp26;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (result != NULL);
 	g_return_if_fail (scope != NULL);
-	gtk_mate_exporter_add_indent (self, result, indent);
-	g_string_append (result, "<span class=\"\">\n");
-	iter = g_sequence_get_begin_iter (gtk_mate_scope_get_children (scope));
-	while (!g_sequence_iter_is_end (iter)) {
-		gtk_mate_exporter_scope_to_html (self, indent + 1, result, (GtkMateScope*) g_sequence_get (iter));
-		iter = g_sequence_iter_next (iter);
+	names = gtk_mate_exporter_css_names (self, scope, FALSE);
+	_tmp0 = FALSE;
+	if (_vala_strcmp0 (names, "") != 0) {
+		_tmp0 = names != NULL;
+	} else {
+		_tmp0 = FALSE;
 	}
-	gtk_mate_exporter_add_indent (self, result, indent);
-	g_string_append (result, "</span>\n");
+	if (_tmp0) {
+		char* _tmp2;
+		char* _tmp1;
+		_tmp2 = NULL;
+		_tmp1 = NULL;
+		g_string_append (result, _tmp2 = g_strconcat (_tmp1 = g_strconcat ("<span class=\"", names, NULL), "\">", NULL));
+		_tmp2 = (g_free (_tmp2), NULL);
+		_tmp1 = (g_free (_tmp1), NULL);
+	}
+	position = gtk_mate_scope_start_iter (scope);
+	opened_inner = FALSE;
+	closed_inner = FALSE;
+	if (g_sequence_get_length (gtk_mate_scope_get_children (scope)) > 0) {
+		GSequenceIter* iter;
+		GtkMateScope* child;
+		gboolean _tmp15;
+		iter = g_sequence_get_begin_iter (gtk_mate_scope_get_children (scope));
+		child = NULL;
+		while (!g_sequence_iter_is_end (iter)) {
+			GtkMateScope* _tmp8;
+			GtkMateScope* _tmp7;
+			GtkTextIter _tmp9 = {0};
+			if (gtk_mate_exporter_scope_has_inner (self, scope)) {
+				gboolean _tmp3;
+				GtkTextIter _tmp4 = {0};
+				_tmp3 = FALSE;
+				if (gtk_text_iter_compare (&position, (_tmp4 = gtk_mate_scope_inner_start_iter (scope), &_tmp4)) >= 0) {
+					_tmp3 = !opened_inner;
+				} else {
+					_tmp3 = FALSE;
+				}
+				if (_tmp3) {
+					char* inner_names;
+					char* _tmp6;
+					char* _tmp5;
+					inner_names = gtk_mate_exporter_css_names (self, scope, TRUE);
+					_tmp6 = NULL;
+					_tmp5 = NULL;
+					g_string_append (result, _tmp6 = g_strconcat (_tmp5 = g_strconcat ("<span class=\"", inner_names, NULL), "\">", NULL));
+					_tmp6 = (g_free (_tmp6), NULL);
+					_tmp5 = (g_free (_tmp5), NULL);
+					opened_inner = TRUE;
+					inner_names = (g_free (inner_names), NULL);
+				}
+			}
+			_tmp8 = NULL;
+			_tmp7 = NULL;
+			child = (_tmp8 = (_tmp7 = (GtkMateScope*) g_sequence_get (iter), (_tmp7 == NULL) ? NULL : g_object_ref (_tmp7)), (child == NULL) ? NULL : (child = (g_object_unref (child), NULL)), _tmp8);
+			if (gtk_text_iter_compare ((_tmp9 = gtk_mate_scope_start_iter (child), &_tmp9), &position) > 0) {
+				char* _tmp12;
+				GtkTextIter _tmp11 = {0};
+				GtkMateBuffer* _tmp10;
+				_tmp12 = NULL;
+				_tmp10 = NULL;
+				g_string_append (result, _tmp12 = g_markup_escape_text (gtk_text_buffer_get_slice ((GtkTextBuffer*) (_tmp10 = gtk_mate_exporter_buffer (self)), &position, (_tmp11 = gtk_mate_scope_start_iter (child), &_tmp11), TRUE), -1));
+				_tmp12 = (g_free (_tmp12), NULL);
+				(_tmp10 == NULL) ? NULL : (_tmp10 = (g_object_unref (_tmp10), NULL));
+				position = gtk_mate_scope_start_iter (child);
+			}
+			if (gtk_mate_exporter_scope_has_inner (self, scope)) {
+				gboolean _tmp13;
+				GtkTextIter _tmp14 = {0};
+				_tmp13 = FALSE;
+				if (gtk_text_iter_compare (&position, (_tmp14 = gtk_mate_scope_inner_end_iter (scope), &_tmp14)) >= 0) {
+					_tmp13 = !closed_inner;
+				} else {
+					_tmp13 = FALSE;
+				}
+				if (_tmp13) {
+					g_string_append (result, "</span>");
+					closed_inner = TRUE;
+				}
+			}
+			gtk_mate_exporter_scope_to_html (self, result, child);
+			position = gtk_mate_scope_end_iter (child);
+			iter = g_sequence_iter_next (iter);
+		}
+		_tmp15 = FALSE;
+		if (child != NULL) {
+			GtkTextIter _tmp17 = {0};
+			GtkTextIter _tmp16 = {0};
+			_tmp15 = gtk_text_iter_compare ((_tmp16 = gtk_mate_scope_end_iter (child), &_tmp16), (_tmp17 = gtk_mate_scope_end_iter (scope), &_tmp17)) < 0;
+		} else {
+			_tmp15 = FALSE;
+		}
+		if (_tmp15) {
+			char* _tmp21;
+			GtkTextIter _tmp20 = {0};
+			GtkTextIter _tmp19 = {0};
+			GtkMateBuffer* _tmp18;
+			_tmp21 = NULL;
+			_tmp18 = NULL;
+			g_string_append (result, _tmp21 = g_markup_escape_text (gtk_text_buffer_get_slice ((GtkTextBuffer*) (_tmp18 = gtk_mate_exporter_buffer (self)), (_tmp19 = gtk_mate_scope_end_iter (child), &_tmp19), (_tmp20 = gtk_mate_scope_end_iter (scope), &_tmp20), TRUE), -1));
+			_tmp21 = (g_free (_tmp21), NULL);
+			(_tmp18 == NULL) ? NULL : (_tmp18 = (g_object_unref (_tmp18), NULL));
+		}
+		(child == NULL) ? NULL : (child = (g_object_unref (child), NULL));
+	} else {
+		char* _tmp25;
+		GtkTextIter _tmp24 = {0};
+		GtkTextIter _tmp23 = {0};
+		GtkMateBuffer* _tmp22;
+		_tmp25 = NULL;
+		_tmp22 = NULL;
+		g_string_append (result, _tmp25 = g_markup_escape_text (gtk_text_buffer_get_slice ((GtkTextBuffer*) (_tmp22 = gtk_mate_exporter_buffer (self)), (_tmp23 = gtk_mate_scope_start_iter (scope), &_tmp23), (_tmp24 = gtk_mate_scope_end_iter (scope), &_tmp24), TRUE), -1));
+		_tmp25 = (g_free (_tmp25), NULL);
+		(_tmp22 == NULL) ? NULL : (_tmp22 = (g_object_unref (_tmp22), NULL));
+	}
+	_tmp26 = FALSE;
+	if (_vala_strcmp0 (names, "") != 0) {
+		_tmp26 = names != NULL;
+	} else {
+		_tmp26 = FALSE;
+	}
+	if (_tmp26) {
+		g_string_append (result, "</span>");
+	}
+	names = (g_free (names), NULL);
 	return;
 }
 
@@ -171,6 +393,18 @@ static char* gtk_mate_exporter_theme_name (GtkMateExporter* self) {
 	_tmp0 = NULL;
 	_tmp2 = NULL;
 	return (_tmp2 = (_tmp1 = gtk_mate_colourer_get_theme (gtk_mate_parser_get_colourer ((_tmp0 = gtk_mate_exporter_buffer (self))->parser))->name, (_tmp1 == NULL) ? NULL : g_strdup (_tmp1)), (_tmp0 == NULL) ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL)), _tmp2);
+}
+
+
+static char* gtk_mate_exporter_theme_name_css (GtkMateExporter* self) {
+	char* _tmp1;
+	GtkMateBuffer* _tmp0;
+	char* _tmp2;
+	g_return_val_if_fail (self != NULL, NULL);
+	_tmp1 = NULL;
+	_tmp0 = NULL;
+	_tmp2 = NULL;
+	return (_tmp2 = string_helper_gsub (_tmp1 = g_utf8_strdown (gtk_mate_colourer_get_theme (gtk_mate_parser_get_colourer ((_tmp0 = gtk_mate_exporter_buffer (self))->parser))->name, -1), " ", "_"), _tmp1 = (g_free (_tmp1), NULL), (_tmp0 == NULL) ? NULL : (_tmp0 = (g_object_unref (_tmp0), NULL)), _tmp2);
 }
 
 
@@ -200,7 +434,7 @@ static char* gtk_mate_exporter_body_start (GtkMateExporter* self) {
 static char* gtk_mate_exporter_body_end (GtkMateExporter* self) {
 	char* html;
 	g_return_val_if_fail (self != NULL, NULL);
-	html = g_strdup ("</body>\n</html>");
+	html = g_strdup ("</body>\n</html>\n");
 	return html;
 }
 
@@ -261,10 +495,9 @@ static char* gtk_mate_exporter_css (GtkMateExporter* self) {
 	GtkMateColourer* _tmp0;
 	GtkMateColourer* colourer;
 	GString* result;
-	const char* _tmp1;
-	char* theme_name;
 	char* _tmp3;
 	char* _tmp2;
+	char* _tmp1;
 	char* _tmp13;
 	char* _tmp12;
 	char* _tmp11;
@@ -280,19 +513,19 @@ static char* gtk_mate_exporter_css (GtkMateExporter* self) {
 	char* _tmp14;
 	char* selection_colour;
 	gboolean _tmp17;
-	const char* _tmp43;
-	char* _tmp44;
+	const char* _tmp44;
+	char* _tmp45;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0 = NULL;
 	colourer = (_tmp0 = gtk_mate_parser_get_colourer (GTK_MATE_BUFFER (gtk_text_view_get_buffer ((GtkTextView*) self->view))->parser), (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0));
 	result = g_string_new ("");
-	_tmp1 = NULL;
-	theme_name = (_tmp1 = gtk_mate_colourer_get_theme (colourer)->name, (_tmp1 == NULL) ? NULL : g_strdup (_tmp1));
 	_tmp3 = NULL;
 	_tmp2 = NULL;
-	g_string_append (result, _tmp3 = g_strconcat (_tmp2 = g_strconcat ("/* Stylesheet generated from theme: ", theme_name, NULL), " */\n\n", NULL));
+	_tmp1 = NULL;
+	g_string_append (result, _tmp3 = g_strconcat (_tmp2 = g_strconcat ("/* Stylesheet generated from theme: ", _tmp1 = gtk_mate_exporter_theme_name (self), NULL), " */\n\n", NULL));
 	_tmp3 = (g_free (_tmp3), NULL);
 	_tmp2 = (g_free (_tmp2), NULL);
+	_tmp1 = (g_free (_tmp1), NULL);
 	g_string_append (result, "body {\n\tmargin: 0;\n\tpadding: 0;\n}\n\n");
 	g_string_append (result, "pre.textmate-source {\n\tmargin: 0;\n\tpadding: 0 0 0 2px;\n\tfont-family: Monaco, monospace;\n" "\tfont-size: 11px;\n\tline-height: 1.3em;\n\tword-wrap: break-word;\n\twhite-space: pre;\n" "\twhite-space: pre-wrap;\n\twhite-space: -moz-pre-wrap;\n\twhite-space: -o-pre-wrap;\n}\n\n");
 	_tmp13 = NULL;
@@ -305,7 +538,7 @@ static char* gtk_mate_exporter_css (GtkMateExporter* self) {
 	_tmp6 = NULL;
 	_tmp5 = NULL;
 	_tmp4 = NULL;
-	g_string_append (result, _tmp13 = g_strconcat (_tmp12 = g_strconcat (_tmp10 = g_strconcat (_tmp9 = g_strconcat (_tmp7 = g_strconcat (_tmp6 = g_strconcat (_tmp5 = g_strconcat ("pre.textmate-source.", _tmp4 = g_utf8_strdown (theme_name, -1), NULL), " {\n", NULL), "\tcolor: ", NULL), _tmp8 = gtk_mate_colourer_global_foreground_colour (colourer), NULL), ";\n\tbackground-color: ", NULL), _tmp11 = gtk_mate_colourer_global_background_colour (colourer), NULL), ";\n}\n\n", NULL));
+	g_string_append (result, _tmp13 = g_strconcat (_tmp12 = g_strconcat (_tmp10 = g_strconcat (_tmp9 = g_strconcat (_tmp7 = g_strconcat (_tmp6 = g_strconcat (_tmp5 = g_strconcat ("pre.textmate-source.", _tmp4 = gtk_mate_exporter_theme_name_css (self), NULL), " {\n", NULL), "\tcolor: ", NULL), _tmp8 = gtk_mate_colourer_global_foreground_colour (colourer), NULL), ";\n\tbackground-color: ", NULL), _tmp11 = gtk_mate_colourer_global_background_colour (colourer), NULL), ";\n}\n\n", NULL));
 	_tmp13 = (g_free (_tmp13), NULL);
 	_tmp12 = (g_free (_tmp12), NULL);
 	_tmp11 = (g_free (_tmp11), NULL);
@@ -325,7 +558,7 @@ static char* gtk_mate_exporter_css (GtkMateExporter* self) {
 	_tmp16 = NULL;
 	_tmp15 = NULL;
 	_tmp14 = NULL;
-	g_string_append (result, _tmp16 = g_strconcat (_tmp15 = g_strconcat ("pre.textmate-source.", _tmp14 = g_utf8_strdown (theme_name, -1), NULL), " span {\n", NULL));
+	g_string_append (result, _tmp16 = g_strconcat (_tmp15 = g_strconcat ("pre.textmate-source.", _tmp14 = gtk_mate_exporter_theme_name_css (self), NULL), " span {\n", NULL));
 	_tmp16 = (g_free (_tmp16), NULL);
 	_tmp15 = (g_free (_tmp15), NULL);
 	_tmp14 = (g_free (_tmp14), NULL);
@@ -347,7 +580,7 @@ static char* gtk_mate_exporter_css (GtkMateExporter* self) {
 		_tmp20 = NULL;
 		_tmp19 = NULL;
 		_tmp18 = NULL;
-		g_string_append (result, _tmp20 = g_strconcat (_tmp19 = g_strconcat ("pre.textmate-source.", _tmp18 = g_utf8_strdown (theme_name, -1), NULL), " ::selection {\n", NULL));
+		g_string_append (result, _tmp20 = g_strconcat (_tmp19 = g_strconcat ("pre.textmate-source.", _tmp18 = gtk_mate_exporter_theme_name_css (self), NULL), " ::selection {\n", NULL));
 		_tmp20 = (g_free (_tmp20), NULL);
 		_tmp19 = (g_free (_tmp19), NULL);
 		_tmp18 = (g_free (_tmp18), NULL);
@@ -376,8 +609,10 @@ static char* gtk_mate_exporter_css (GtkMateExporter* self) {
 			char* _tmp24;
 			char* _tmp35;
 			gboolean _tmp36;
-			char* _tmp40;
+			char* font_style;
+			gboolean _tmp40;
 			gboolean _tmp41;
+			gboolean _tmp42;
 			char* bg_colour;
 			setting = (GtkMateThemeSetting*) gee_iterator_get (_setting_it);
 			_tmp23 = NULL;
@@ -396,7 +631,7 @@ static char* gtk_mate_exporter_css (GtkMateExporter* self) {
 			_tmp26 = NULL;
 			_tmp25 = NULL;
 			_tmp24 = NULL;
-			g_string_append (result, _tmp34 = g_strconcat (_tmp33 = g_strconcat (_tmp26 = g_strconcat (_tmp25 = g_strconcat ("pre.textmate-source.", _tmp24 = g_utf8_strdown (theme_name, -1), NULL), " .", NULL), _tmp32 = string_helper_gsub (_tmp28 = string_helper_gsub (_tmp27 = string_helper_gsub (setting->selector, ".", "_"), " ", " ."), ", ", _tmp31 = g_strconcat (_tmp30 = g_strconcat (", pre.textmate-source.", _tmp29 = g_utf8_strdown (theme_name, -1), NULL), " ", NULL)), NULL), " {\n", NULL));
+			g_string_append (result, _tmp34 = g_strconcat (_tmp33 = g_strconcat (_tmp26 = g_strconcat (_tmp25 = g_strconcat ("pre.textmate-source.", _tmp24 = gtk_mate_exporter_theme_name_css (self), NULL), " .", NULL), _tmp32 = string_helper_gsub (_tmp28 = string_helper_gsub (_tmp27 = string_helper_gsub (setting->selector, ".", "_"), " ", " ."), ", ", _tmp31 = g_strconcat (_tmp30 = g_strconcat (", pre.textmate-source.", _tmp29 = gtk_mate_exporter_theme_name_css (self), NULL), " ", NULL)), NULL), " {\n", NULL));
 			_tmp34 = (g_free (_tmp34), NULL);
 			_tmp33 = (g_free (_tmp33), NULL);
 			_tmp32 = (g_free (_tmp32), NULL);
@@ -421,26 +656,51 @@ static char* gtk_mate_exporter_css (GtkMateExporter* self) {
 				_tmp38 = (g_free (_tmp38), NULL);
 				_tmp37 = (g_free (_tmp37), NULL);
 			}
-			_tmp40 = NULL;
-			if ((_tmp41 = _vala_strcmp0 (_tmp40 = (char*) gee_map_get ((GeeMap*) setting->settings, "fontStyle"), "italic") == 0, _tmp40 = (g_free (_tmp40), NULL), _tmp41)) {
+			font_style = (char*) gee_map_get ((GeeMap*) setting->settings, "fontStyle");
+			_tmp40 = FALSE;
+			if (font_style != NULL) {
+				_tmp40 = strstr (font_style, "italic") != NULL;
+			} else {
+				_tmp40 = FALSE;
+			}
+			if (_tmp40) {
 				g_string_append (result, "\tfont-style: italic;\n");
+			}
+			_tmp41 = FALSE;
+			if (font_style != NULL) {
+				_tmp41 = strstr (font_style, "underline") != NULL;
+			} else {
+				_tmp41 = FALSE;
+			}
+			if (_tmp41) {
+				g_string_append (result, "\ttext-decoration: underline;\n");
+			}
+			_tmp42 = FALSE;
+			if (font_style != NULL) {
+				_tmp42 = strstr (font_style, "bold") != NULL;
+			} else {
+				_tmp42 = FALSE;
+			}
+			if (_tmp42) {
+				g_string_append (result, "\tfont-weight: bold;\n");
 			}
 			bg_colour = (char*) gee_map_get ((GeeMap*) setting->settings, "background");
 			if (bg_colour != NULL) {
-				char* _tmp42;
-				_tmp42 = NULL;
-				g_string_append (result, _tmp42 = gtk_mate_exporter_colour (self, bg_colour));
-				_tmp42 = (g_free (_tmp42), NULL);
+				char* _tmp43;
+				_tmp43 = NULL;
+				g_string_append (result, _tmp43 = gtk_mate_exporter_colour (self, bg_colour));
+				_tmp43 = (g_free (_tmp43), NULL);
 			}
 			g_string_append (result, "}\n\n");
 			(setting == NULL) ? NULL : (setting = (g_object_unref (setting), NULL));
+			font_style = (g_free (font_style), NULL);
 			bg_colour = (g_free (bg_colour), NULL);
 		}
 		(_setting_it == NULL) ? NULL : (_setting_it = (g_object_unref (_setting_it), NULL));
 	}
-	_tmp43 = NULL;
 	_tmp44 = NULL;
-	return (_tmp44 = (_tmp43 = result->str, (_tmp43 == NULL) ? NULL : g_strdup (_tmp43)), (colourer == NULL) ? NULL : (colourer = (g_object_unref (colourer), NULL)), (result == NULL) ? NULL : (result = (g_string_free (result, TRUE), NULL)), theme_name = (g_free (theme_name), NULL), selection_colour = (g_free (selection_colour), NULL), _tmp44);
+	_tmp45 = NULL;
+	return (_tmp45 = (_tmp44 = result->str, (_tmp44 == NULL) ? NULL : g_strdup (_tmp44)), (colourer == NULL) ? NULL : (colourer = (g_object_unref (colourer), NULL)), (result == NULL) ? NULL : (result = (g_string_free (result, TRUE), NULL)), selection_colour = (g_free (selection_colour), NULL), _tmp45);
 }
 
 
@@ -475,6 +735,31 @@ GType gtk_mate_exporter_get_type (void) {
 		gtk_mate_exporter_type_id = g_type_register_static (GTK_TYPE_OBJECT, "GtkMateExporter", &g_define_type_info, 0);
 	}
 	return gtk_mate_exporter_type_id;
+}
+
+
+static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
+	if ((array != NULL) && (destroy_func != NULL)) {
+		int i;
+		for (i = 0; i < array_length; i = i + 1) {
+			if (((gpointer*) array)[i] != NULL) {
+				destroy_func (((gpointer*) array)[i]);
+			}
+		}
+	}
+	g_free (array);
+}
+
+
+static gint _vala_array_length (gpointer array) {
+	int length;
+	length = 0;
+	if (array) {
+		while (((gpointer*) array)[length]) {
+			length++;
+		}
+	}
+	return length;
 }
 
 

@@ -1,4 +1,3 @@
-
 class Redcar < Editor
   include Textmate
   include Ruby
