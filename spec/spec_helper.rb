@@ -2,6 +2,7 @@
 require 'gtk2'
 require 'gtksourceview2'
 require 'dist/gtkmateview_rb'
+require 'yaml'
 
 class Gtk::Mate::Buffer
   def type(line, line_offset, text)

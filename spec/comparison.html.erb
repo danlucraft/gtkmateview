@@ -1,10 +1,12 @@
 <html>
 	<head>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<title>comparison.html</title>
+		<title>Redcar v Textmate</title>
 		
 	</head>
 	<body>
+		
+		<p>Textmate on the left, Redcar on the right.</p>
 		<% YAML.load(File.read("spec/fixtures/test_cases.yml")).each do |test_case| %>
 			<% test_case[:file] =~ /test_case_(.*)\./; name = $1 %>
 			<p>
