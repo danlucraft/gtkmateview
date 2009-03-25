@@ -3,3 +3,10 @@
   :theme: Twilight
 - :file: test_case_html.html
   :theme: Mac Classic
+- :file: test_case_perl.pl
+  :theme: SpaceCadet
+- :file: test_case_markdown.md
+  :theme: Espresso Libre
+- :file: test_case_html2.html
+  :theme: Espresso Libre
+  

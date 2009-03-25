@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>untitled</title>
+	<style type="text/css">
+/* Stylesheet generated from theme: SpaceCadet */
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+pre.textmate-source {
+	margin: 0;
+	padding: 0 0 0 2px;
+	font-family: Monaco, monospace;
+	font-size: 11px;
+	line-height: 1.3em;
+	word-wrap: break-word;
+	white-space: pre;
+	white-space: pre-wrap;
+	white-space: -moz-pre-wrap;
+	white-space: -o-pre-wrap;
+}
+
+pre.textmate-source.spacecadet {
+	color: #DDE6CF;
+	background-color: #0D0D0D;
+}
+
+pre.textmate-source .linenum {
+	width: 75px;
+	padding: 0.1em 1em 0.2em 0;
+	color: #888;
+	background-color: #eee;
+}
+
+pre.textmate-source.spacecadet span {
+	padding-top: 0.2em;
+	padding-bottom: 0.1em;
+}
+
+pre.textmate-source.spacecadet ::selection {
+	background-color: #40002F;
+}
+
+/* Comment */
+pre.textmate-source.spacecadet .comment {
+	color: #473C45;
+}
+
+/* String */
+pre.textmate-source.spacecadet .string {
+	color: #805978;
+}
+
+/* Constant */
+pre.textmate-source.spacecadet .constant {
+	color: #A8885A;
+}
+
+/* Variable */
+pre.textmate-source.spacecadet .variable_parameter, pre.textmate-source.spacecadet .variable_other {
+	color: #596380;
+}
+
+/* Keyword */
+pre.textmate-source.spacecadet .keyword .- .keyword_operator, pre.textmate-source.spacecadet .keyword_operator_logical {
+	color: #728059;
+}
+
+/* Storage */
+pre.textmate-source.spacecadet .storage {
+	color: #9EBF60;
+}
+
+/* Entity */
+pre.textmate-source.spacecadet .entity {
+	color: #6078BF;
+}
+
+/* Inherited class */
+pre.textmate-source.spacecadet .entity_other_inherited-class {
+	font-style: italic;
+}
+
+/* Support */
+pre.textmate-source.spacecadet .support {
+	color: #8A4B66;
+}
+
+/* Exception */
+pre.textmate-source.spacecadet .support_type_exception {
+	color: #893062;
+}
+
+/* Tag name */
+pre.textmate-source.spacecadet .entity_name_tag {
+}
+
+/* Tag attribute */
+pre.textmate-source.spacecadet .entity_other_attribute-name {
+}
+
+/* Library constant */
+pre.textmate-source.spacecadet .support_constant {
+}
+
+/* Library class/type */
+pre.textmate-source.spacecadet .support_type, pre.textmate-source.spacecadet .support_class {
+}
+
+/* Library variable */
+pre.textmate-source.spacecadet .support_other_variable {
+}
+
+/* Invalid */
+pre.textmate-source.spacecadet .invalid {
+	background-color: #5F0047;
+}
+
+/*   function.section */
+pre.textmate-source.spacecadet .meta_function_section {
+	background-color: #371D28;
+}
+
+	</style>
+</head>
+
+<body><pre class="textmate-source spacecadet"><span class="source source_perl"><span class="keyword keyword_control keyword_control_perl">use</span> chilkat;
+
+<span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_perl"><span class="punctuation punctuation_definition punctuation_definition_variable punctuation_definition_variable_perl">$</span>rss</span> = new chilkat::CkRss();
+
+<span class="meta meta_comment meta_comment_full-line meta_comment_full-line_perl"><span class="comment comment_line comment_line_number-sign comment_line_number-sign_perl"><span class="punctuation punctuation_definition punctuation_definition_comment punctuation_definition_comment_perl">#</span>  Download from the feed URL:
+</span></span><span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_perl"><span class="punctuation punctuation_definition punctuation_definition_variable punctuation_definition_variable_perl">$</span>success</span> = <span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_perl"><span class="punctuation punctuation_definition punctuation_definition_variable punctuation_definition_variable_perl">$</span>rss</span><span class="keyword keyword_operator keyword_operator_comparison keyword_operator_comparison_perl">-&gt;</span>DownloadRss(<span class="string string_quoted string_quoted_double string_quoted_double_perl"><span class="punctuation punctuation_definition punctuation_definition_string punctuation_definition_string_begin punctuation_definition_string_begin_perl">"</span>http://blog.chilkatsoft.com/?feed=rss2<span class="punctuation punctuation_definition punctuation_definition_string punctuation_definition_string_end punctuation_definition_string_end_perl">"</span></span>);
+<span class="keyword keyword_control keyword_control_perl">if</span> (<span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_perl"><span class="punctuation punctuation_definition punctuation_definition_variable punctuation_definition_variable_perl">$</span>success</span> != 1) {
+<span class="meta meta_leading-tabs"><span class="meta meta_odd-tab">    </span></span><span class="support support_function support_function_perl">print</span> <span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_perl"><span class="punctuation punctuation_definition punctuation_definition_variable punctuation_definition_variable_perl">$</span>rss</span><span class="keyword keyword_operator keyword_operator_comparison keyword_operator_comparison_perl">-&gt;</span>lastErrorText() . <span class="string string_quoted string_quoted_double string_quoted_double_perl"><span class="punctuation punctuation_definition punctuation_definition_string punctuation_definition_string_begin punctuation_definition_string_begin_perl">"</span><span class="constant constant_character constant_character_escape constant_character_escape_perl">\n</span><span class="punctuation punctuation_definition punctuation_definition_string punctuation_definition_string_end punctuation_definition_string_end_perl">"</span></span>;
+<span class="meta meta_leading-tabs"><span class="meta meta_odd-tab">    </span></span><span class="keyword keyword_control keyword_control_perl">exit</span>;
+}
+
+<span class="meta meta_comment meta_comment_full-line meta_comment_full-line_perl"><span class="comment comment_line comment_line_number-sign comment_line_number-sign_perl"><span class="punctuation punctuation_definition punctuation_definition_comment punctuation_definition_comment_perl">#</span>  Get the 1st channel.
+</span></span>
+<span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_perl"><span class="punctuation punctuation_definition punctuation_definition_variable punctuation_definition_variable_perl">$</span>rssChannel</span> = <span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_perl"><span class="punctuation punctuation_definition punctuation_definition_variable punctuation_definition_variable_perl">$</span>rss</span><span class="keyword keyword_operator keyword_operator_comparison keyword_operator_comparison_perl">-&gt;</span>GetChannel(0);
+<span class="keyword keyword_control keyword_control_perl">if</span> (<span class="variable variable_other variable_other_readwrite variable_other_readwrite_global variable_other_readwrite_global_perl"><span class="punctuation punctuation_definition punctuation_definition_variable punctuation_definition_variable_perl">$</span>rssChannel</span> <span class="support support_function support_function_perl">eq</span> null ) {
+<span class="meta meta_leading-tabs"><span class="meta meta_odd-tab">    </span></span><span class="support support_function support_function_perl">print</span> <span class="string string_quoted string_quoted_double string_quoted_double_perl"><span class="punctuation punctuation_definition punctuation_definition_string punctuation_definition_string_begin punctuation_definition_string_begin_perl">"</span>No channel found in RSS feed.<span class="punctuation punctuation_definition punctuation_definition_string punctuation_definition_string_end punctuation_definition_string_end_perl">"</span></span> . <span class="string string_quoted string_quoted_double string_quoted_double_perl"><span class="punctuation punctuation_definition punctuation_definition_string punctuation_definition_string_begin punctuation_definition_string_begin_perl">"</span><span class="constant constant_character constant_character_escape constant_character_escape_perl">\n</span><span class="punctuation punctuation_definition punctuation_definition_string punctuation_definition_string_end punctuation_definition_string_end_perl">"</span></span>;
+<span class="meta meta_leading-tabs"><span class="meta meta_odd-tab">    </span></span><span class="keyword keyword_control keyword_control_perl">exit</span>;
+}</span></pre>
+</body>
+</html>
