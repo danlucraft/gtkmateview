@@ -28,6 +28,7 @@ static VALUE rbc_gtk;
 
 #define _GTK_MATE_SELF(s) GTK_MATE(RVAL2GOBJ(s))
 static VALUE rbc_gtk_mate;
+char * gtk_mate_textmate_dir;
 
 /****  Gtk.Mate.Buffer wrapper *****/
 
@@ -195,6 +196,38 @@ static VALUE rbc_string_helper;
 
 
 /****  Gtk.Mate methods *****/
+
+static VALUE rb_gtk_mate_get_textmate_dir(VALUE self) {
+    // Method#type_checks
+    // Method#argument_type_conversions
+    // StaticMemberGet#body
+    char * _c_return = gtk_mate_textmate_dir;
+    // Method#return_type_conversion
+    VALUE _rb_return; 
+          if (_c_return == NULL) {
+        _rb_return = Qnil;
+      }
+      else {
+        _rb_return = rb_str_new2(_c_return);
+      }
+
+    return _rb_return;
+}
+
+static VALUE rb_gtk_mate_set_textmate_dir(VALUE self, VALUE textmate_dir) {
+    // Method#type_checks
+    if (TYPE(textmate_dir) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    // Method#argument_type_conversions
+    char * _c_textmate_dir;
+    _c_textmate_dir = g_strdup(STR2CSTR(textmate_dir));
+    // StaticMemberSet#body
+    gtk_mate_textmate_dir = _c_textmate_dir; 
+    // Method#return_type_conversion
+    return Qnil;
+}
 
 static VALUE rb_gtk_mate_bundle_dirs(VALUE self) {
     // Method#type_checks
@@ -7868,6 +7901,8 @@ void Init_gtkmateview_rb() {
     rb_define_singleton_method(rbc_onig_rx, "make1", rb_onig_rx_make1, 1);
     rb_define_method(rbc_onig_rx, "search", rb_onig_rx_search, 3);
     rbc_gtk_mate = rb_define_class_under(rbc_gtk, "Mate", rb_cObject);
+    rb_define_singleton_method(rbc_gtk_mate, "textmate_dir", rb_gtk_mate_get_textmate_dir, 0);
+    rb_define_singleton_method(rbc_gtk_mate, "textmate_dir=", rb_gtk_mate_set_textmate_dir, 1);
     rb_define_singleton_method(rbc_gtk_mate, "bundle_dirs", rb_gtk_mate_bundle_dirs, 0);
     rb_define_singleton_method(rbc_gtk_mate, "load_bundles", rb_gtk_mate_load_bundles, 0);
     rb_define_singleton_method(rbc_gtk_mate, "load_themes", rb_gtk_mate_load_themes, 0);

@@ -347,6 +347,8 @@ namespace Gtk {
 			public void value_changed_handler ();
 		}
 		[CCode (cheader_filename = "gtkmateview.h")]
+		public static string textmate_dir;
+		[CCode (cheader_filename = "gtkmateview.h")]
 		public static Gee.ArrayList<string>? bundle_dirs ();
 		[CCode (cheader_filename = "gtkmateview.h")]
 		public static int load_bundles ();

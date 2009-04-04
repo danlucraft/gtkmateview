@@ -14,6 +14,7 @@
 
 
 
+char* gtk_mate_textmate_dir = NULL;
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static gint _vala_array_length (gpointer array);
 static int _vala_strcmp0 (const char * str1, const char * str2);
@@ -21,7 +22,8 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 /* Loads bundles (in particular, grammars) from 
- /usr/share/textmate/Bundles*/
+ /usr/share/textmate/Bundles or from the location in
+ textmate_dir*/
 gint gtk_mate_load_bundles (void) {
 	GError * inner_error;
 	GeeArrayList* _tmp1;
@@ -348,20 +350,25 @@ GeeArrayList* gtk_mate_bundle_dirs (void) {
  e.g. /usr/share/textmate*/
 char* gtk_mate_textmate_share_dir (void) {
 	char* share_dir;
-	char* _tmp1;
 	char* _tmp3;
+	char* _tmp5;
+	if (gtk_mate_textmate_dir != NULL) {
+		const char* _tmp0;
+		_tmp0 = NULL;
+		return (_tmp0 = gtk_mate_textmate_dir, (_tmp0 == NULL) ? NULL : g_strdup (_tmp0));
+	}
 	share_dir = g_strdup ("/usr/local/share/textmate");
 	if (g_file_test (share_dir, G_FILE_TEST_EXISTS)) {
 		return share_dir;
 	}
-	_tmp1 = NULL;
-	share_dir = (_tmp1 = g_strdup ("/usr/share/textmate"), share_dir = (g_free (share_dir), NULL), _tmp1);
+	_tmp3 = NULL;
+	share_dir = (_tmp3 = g_strdup ("/usr/share/textmate"), share_dir = (g_free (share_dir), NULL), _tmp3);
 	if (g_file_test (share_dir, G_FILE_TEST_EXISTS)) {
 		return share_dir;
 	}
 	fprintf (stdout, "couldn't find /usr/share/textmate or /usr/local/share/textmate\n");
-	_tmp3 = NULL;
-	return (_tmp3 = NULL, share_dir = (g_free (share_dir), NULL), _tmp3);
+	_tmp5 = NULL;
+	return (_tmp5 = NULL, share_dir = (g_free (share_dir), NULL), _tmp5);
 }
 
 

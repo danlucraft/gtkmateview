@@ -12,6 +12,7 @@ G_BEGIN_DECLS
 
 
 
+extern char* gtk_mate_textmate_dir;
 gint gtk_mate_load_bundles (void);
 void gtk_mate_load_themes (void);
 GeeArrayList* gtk_mate_bundle_dirs (void);
