@@ -1,13 +1,15 @@
 
-
 using GLib;
 using Gtk;
 using Gee;
 
 namespace Gtk {
 	namespace Mate {
+    public static string textmate_dir = null;
+
 		// Loads bundles (in particular, grammars) from 
-		// /usr/share/textmate/Bundles
+		// /usr/share/textmate/Bundles or from the location in
+    // textmate_dir
 		public static int load_bundles() {
 			if (Buffer.bundles != null)
 				return 1;
@@ -96,6 +98,8 @@ namespace Gtk {
 		// Return the textmate assets directory path,
 		// e.g. /usr/share/textmate
 		public static string? textmate_share_dir() {
+      if (Gtk.Mate.textmate_dir != null) 
+        return Gtk.Mate.textmate_dir;
 			string share_dir = "/usr/local/share/textmate";
 			if (FileUtils.test(share_dir, FileTest.EXISTS)) {
 				return share_dir;

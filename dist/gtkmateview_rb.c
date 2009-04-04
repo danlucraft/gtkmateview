@@ -7108,6 +7108,36 @@ static VALUE rb_onig_rx_search(VALUE self, VALUE target, VALUE start, VALUE end)
 
 /****  PList methods *****/
 
+static VALUE rb_plist_parse(VALUE self, VALUE filename) {
+    // Method#type_checks
+    if (TYPE(filename) != T_STRING) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a string");
+    }
+    // Method#argument_type_conversions
+    char * _c_filename;
+    _c_filename = g_strdup(STR2CSTR(filename));
+    // Method#body
+    GError* inner_error;
+    inner_error = NULL;
+    
+    PListDict* _c_return;
+    _c_return = plist_parse(_c_filename, &inner_error);
+    if (inner_error != NULL) {
+        if (inner_error->domain == G_FILE_ERROR) {
+            rb_raise(rb_vala_error, "[GLib.FileError]: %s", inner_error->message);
+        }
+    }
+    // Method#return_type_conversion
+    VALUE _rb_return;
+    if (_c_return == NULL)
+        _rb_return = Qnil;
+    else {
+        _rb_return = GOBJ2RVAL(_c_return);
+    }
+    return _rb_return;
+}
+
 static VALUE rb_plist_print_plist(VALUE self, VALUE indent, VALUE node) {
     // Method#type_checks
     if (TYPE(indent) != T_FIXNUM) {
@@ -7829,6 +7859,7 @@ void Init_gtkmateview_rb() {
     rbc_gtk = rb_eval_string("Gtk");
     rbc_onig = rb_define_class("Onig", rb_cObject);
     rbc_plist = rb_define_class("PList", rb_cObject);
+    rb_define_singleton_method(rbc_plist, "parse", rb_plist_parse, 1);
     rb_define_singleton_method(rbc_plist, "print_plist", rb_plist_print_plist, 2);
     rbc_onig_rx = G_DEF_CLASS(onig_rx_get_type(), "Rx", rbc_onig);
     rb_define_method(rbc_onig_rx, "initialize", onig_rx_initialize, 0);
