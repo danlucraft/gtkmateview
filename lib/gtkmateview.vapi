@@ -166,6 +166,7 @@ namespace Gtk {
 			public void remove_tags ();
 			public void reset_table_priorities ();
 			public void set_end_mark_safely (Gtk.Mate.Scope scope, Gtk.Mate.Marker m, int line_ix, int length, int cap);
+			public void set_inner_end_mark_safely (Gtk.Mate.Scope scope, Gtk.Mate.Marker m, int line_ix, int length, int cap);
 			public void set_inner_start_mark_safely (Gtk.Mate.Scope scope, Gtk.Mate.Marker m, int line_ix, int length, int cap);
 			public void set_start_mark_safely (Gtk.Mate.Scope scope, Gtk.Mate.Marker m, int line_ix, int length, int cap);
 			public void single_scope (Gtk.Mate.Scanner scanner, Gtk.Mate.Scope? expected_scope, int line_ix, string line, int length, Gtk.Mate.Marker m, Gee.ArrayList<Gtk.Mate.Scope> all_scopes, Gee.ArrayList<Gtk.Mate.Scope> closed_scopes, Gee.ArrayList<Gtk.Mate.Scope> removed_scopes);

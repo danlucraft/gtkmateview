@@ -3521,6 +3521,39 @@ static VALUE rb_gtk_mate_parser_set_end_mark_safely(VALUE self, VALUE scope, VAL
     return Qnil;
 }
 
+static VALUE rb_gtk_mate_parser_set_inner_end_mark_safely(VALUE self, VALUE scope, VALUE m, VALUE line_ix, VALUE length, VALUE cap) {
+    GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
+    // Method#type_checks
+    if (TYPE(line_ix) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    if (TYPE(length) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    if (TYPE(cap) != T_FIXNUM) {
+        VALUE rb_arg_error = rb_eval_string("ArgumentError");
+        rb_raise(rb_arg_error, "expected a small integer");
+    }
+    // Method#argument_type_conversions
+    GtkMateScope* _c_scope;
+    _c_scope = _GTK_MATE_SCOPE_SELF(scope);
+    GtkMateMarker* _c_m;
+    _c_m = _GTK_MATE_MARKER_SELF(m);
+    int _c_line_ix;
+    _c_line_ix = FIX2INT(line_ix);
+    int _c_length;
+    _c_length = FIX2INT(length);
+    int _c_cap;
+    _c_cap = FIX2INT(cap);
+    // Method#body
+    
+    gtk_mate_parser_set_inner_end_mark_safely(gtk_mate_parser, _c_scope, _c_m, _c_line_ix, _c_length, _c_cap);
+    // Method#return_type_conversion
+    return Qnil;
+}
+
 static VALUE rb_gtk_mate_parser_set_inner_start_mark_safely(VALUE self, VALUE scope, VALUE m, VALUE line_ix, VALUE length, VALUE cap) {
     GtkMateParser* gtk_mate_parser = RVAL2GOBJ(self);
     // Method#type_checks
@@ -7141,36 +7174,6 @@ static VALUE rb_onig_rx_search(VALUE self, VALUE target, VALUE start, VALUE end)
 
 /****  PList methods *****/
 
-static VALUE rb_plist_parse(VALUE self, VALUE filename) {
-    // Method#type_checks
-    if (TYPE(filename) != T_STRING) {
-        VALUE rb_arg_error = rb_eval_string("ArgumentError");
-        rb_raise(rb_arg_error, "expected a string");
-    }
-    // Method#argument_type_conversions
-    char * _c_filename;
-    _c_filename = g_strdup(STR2CSTR(filename));
-    // Method#body
-    GError* inner_error;
-    inner_error = NULL;
-    
-    PListDict* _c_return;
-    _c_return = plist_parse(_c_filename, &inner_error);
-    if (inner_error != NULL) {
-        if (inner_error->domain == G_FILE_ERROR) {
-            rb_raise(rb_vala_error, "[GLib.FileError]: %s", inner_error->message);
-        }
-    }
-    // Method#return_type_conversion
-    VALUE _rb_return;
-    if (_c_return == NULL)
-        _rb_return = Qnil;
-    else {
-        _rb_return = GOBJ2RVAL(_c_return);
-    }
-    return _rb_return;
-}
-
 static VALUE rb_plist_print_plist(VALUE self, VALUE indent, VALUE node) {
     // Method#type_checks
     if (TYPE(indent) != T_FIXNUM) {
@@ -7892,7 +7895,6 @@ void Init_gtkmateview_rb() {
     rbc_gtk = rb_eval_string("Gtk");
     rbc_onig = rb_define_class("Onig", rb_cObject);
     rbc_plist = rb_define_class("PList", rb_cObject);
-    rb_define_singleton_method(rbc_plist, "parse", rb_plist_parse, 1);
     rb_define_singleton_method(rbc_plist, "print_plist", rb_plist_print_plist, 2);
     rbc_onig_rx = G_DEF_CLASS(onig_rx_get_type(), "Rx", rbc_onig);
     rb_define_method(rbc_onig_rx, "initialize", onig_rx_initialize, 0);
@@ -8123,6 +8125,7 @@ void Init_gtkmateview_rb() {
     rb_define_method(rbc_gtk_mate_parser, "remove_tags", rb_gtk_mate_parser_remove_tags, 0);
     rb_define_method(rbc_gtk_mate_parser, "reset_table_priorities", rb_gtk_mate_parser_reset_table_priorities, 0);
     rb_define_method(rbc_gtk_mate_parser, "set_end_mark_safely", rb_gtk_mate_parser_set_end_mark_safely, 5);
+    rb_define_method(rbc_gtk_mate_parser, "set_inner_end_mark_safely", rb_gtk_mate_parser_set_inner_end_mark_safely, 5);
     rb_define_method(rbc_gtk_mate_parser, "set_inner_start_mark_safely", rb_gtk_mate_parser_set_inner_start_mark_safely, 5);
     rb_define_method(rbc_gtk_mate_parser, "set_start_mark_safely", rb_gtk_mate_parser_set_start_mark_safely, 5);
     rb_define_method(rbc_gtk_mate_parser, "single_scope", rb_gtk_mate_parser_single_scope, 9);

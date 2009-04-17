@@ -4,6 +4,7 @@ require 'spec/spec_helper'
 
 describe Gtk::Mate::Parser, "when parsing Ruby from scratch" do
   before(:each) do
+    Gtk::Mate.textmate_dir = File.join(File.dirname(__FILE__), %w(.. .. .. textmate))
     @mb = Gtk::Mate::Buffer.new
     @mb.set_grammar_by_name("Ruby")
   end
@@ -99,7 +100,6 @@ END
   
   it "creates multiple levels of scopes" do
     @mb.text = "\"william \#{:joseph} adama\""
-    puts @mb.parser.root.pretty(0)
     @mb.parser.root.pretty(0).should == (t=<<END)
 + source.ruby (0,0)-(0,26) open
   + string.quoted.double.ruby (0,0)-(0,26) closed
@@ -239,7 +239,6 @@ Gtk gtk_ (Gtk* self) {
     C
     @mb.set_grammar_by_name("C")
     @mb.text = source
-    puts @mb.parser.root.pretty(0)
     @mb.parser.root.pretty(0).should_not include("invalid.illegal")
   end
 
@@ -267,6 +266,19 @@ END
 require 'hoe' # gem
     RUBY
     @mb.set_grammar_by_name("Ruby")
+    @mb.text = source
+  end
+
+  it "should parse this PHP without dying" do
+    source = <<-PHP
+<?php
+/**
+*
+*/
+class ClassName extends AnotherClass
+{
+    PHP
+    @mb.set_grammar_by_name("PHP")
     @mb.text = source
   end
 end
