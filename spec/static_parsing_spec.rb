@@ -4,7 +4,6 @@ require 'spec/spec_helper'
 
 describe Gtk::Mate::Parser, "when parsing Ruby from scratch" do
   before(:each) do
-    Gtk::Mate.textmate_dir = File.join(File.dirname(__FILE__), %w(.. .. .. textmate))
     @mb = Gtk::Mate::Buffer.new
     @mb.set_grammar_by_name("Ruby")
   end
@@ -280,6 +279,11 @@ class ClassName extends AnotherClass
     PHP
     @mb.set_grammar_by_name("PHP")
     @mb.text = source
+  end
+
+  it "should not have any problem with Japanese UTF-8 characters" do
+    @mb.set_grammar_by_name("Plain Text")
+    @mb.text = "日本"
   end
 end
 

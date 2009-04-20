@@ -4,6 +4,8 @@ require 'gtksourceview2'
 require 'dist/gtkmateview_rb'
 require 'yaml'
 
+Gtk::Mate.textmate_dir = File.join(File.dirname(__FILE__), %w(.. .. .. textmate))
+
 class Gtk::Mate::Buffer
   def type(line, line_offset, text)
     insert(get_iter_at_line_offset(line, line_offset), text)

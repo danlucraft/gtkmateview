@@ -59,7 +59,7 @@ namespace Gtk.Mate {
 			this.root = new Scope(this.buffer, this.grammar.scope_name);
 			this.root.is_open = true;
 			this.root.start_mark_set(0, 0, true);
-			this.root.end_mark_set(buffer.end_iter().get_line(), buffer.end_iter().get_line_offset(), false);
+			this.root.end_mark_set(buffer.end_iter().get_line(), buffer.end_iter().get_line_index(), false);
 			var dp = new DoublePattern();
 			dp.name = this.grammar.name;
 			dp.patterns = this.grammar.patterns;
@@ -140,7 +140,7 @@ namespace Gtk.Mate {
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line(line_ix);
 			int length = (int) line.size();//buffer.get_line_length(line_ix);
-			//stdout.printf("p%d, ", line_ix);
+			// stdout.printf("p%d, ", line_ix);
 			// stdout.flush();
 			if (line_ix > this.parsed_upto)
 				this.parsed_upto = line_ix;
@@ -150,7 +150,7 @@ namespace Gtk.Mate {
 				// stdout.printf("start_scope is: %s\n", start_scope.name);
 				start_scope = start_scope.containing_double_scope(line_ix);
 			}
-			//stdout.printf("start_scope is: %s\n", start_scope.name);
+			// stdout.printf("start_scope is: %s\n", start_scope.name);
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
 			if (end_scope1 != null)
 				end_scope1 = end_scope1.containing_double_scope(line_ix);
@@ -163,28 +163,28 @@ namespace Gtk.Mate {
 			all_scopes.add(start_scope);
 			foreach (Marker m in scanner) {
 				var expected_scope = get_expected_scope(scanner.current_scope, line_ix, scanner.position);
-//				if (expected_scope != null)
-//					stdout.printf("expected_scope: %s (%d, %d)\n", expected_scope.name, expected_scope.start_loc().line, 
-//				 		expected_scope.start_loc().line_offset);
-//				else
-//					stdout.printf("no expected scope\n");
-//				stdout.printf("  scope: %s (%d, %d) (line length: %d)\n", m.pattern.name, m.from, m.match.end(0), length);
+				// if (expected_scope != null)
+				// 	stdout.printf("expected_scope: %s (%d, %d)\n", expected_scope.name, expected_scope.start_loc().line, 
+				//  		expected_scope.start_loc().line_offset);
+				// else
+				// 	stdout.printf("no expected scope\n");
+				// stdout.printf("  scope: %s (%d, %d) (line length: %d)\n", m.pattern.name, m.from, m.match.end(0), length);
 				if (m.is_close_scope) {
-//					stdout.printf("     (closing)\n");
+					// stdout.printf("     (closing)\n");
 					close_scope(scanner, expected_scope, line_ix, line, length, m, 
 								all_scopes, closed_scopes, removed_scopes);
 				}
 				else if (m.pattern is DoublePattern) {
-//					stdout.printf("     (opening)\n");
+					// stdout.printf("     (opening)\n");
 					open_scope(scanner, expected_scope, line_ix, line, length, m, 
 							   all_scopes, closed_scopes, removed_scopes);
 				}
 				else {
-//					stdout.printf("     (single)\n");
+					// stdout.printf("     (single)\n");
 					single_scope(scanner, expected_scope, line_ix, line, length, m, 
 								 all_scopes, closed_scopes, removed_scopes);
 				}
-//				stdout.printf("pretty:\n%s\n", root.pretty(2));
+				//stdout.printf("pretty:\n%s\n", root.pretty(2));
 				scanner.position = m.match.end(0);
 			}
 			clear_line(line_ix, start_scope, all_scopes, closed_scopes, removed_scopes);
@@ -249,9 +249,9 @@ namespace Gtk.Mate {
 						// s.is_open = true;
 						var end_iter = buffer.end_iter();
 						var end_line = end_iter.get_line();
-						var end_line_offset = end_iter.get_line_offset();
-						s.inner_end_mark_set(end_line, end_line_offset, false);
-						s.end_mark_set(end_line, end_line_offset, false);
+						var end_line_index = end_iter.get_line_index();
+						s.inner_end_mark_set(end_line, end_line_index, false);
+						s.end_mark_set(end_line, end_line_index, false);
 						s.is_open = true;
 					}
 				}
@@ -331,9 +331,9 @@ namespace Gtk.Mate {
 			s.begin_match_string = line.substring(m.from, m.match.end(0)-m.from);
 			var end_iter = buffer.end_iter();
 			var end_line = end_iter.get_line();
-			var end_line_offset = end_iter.get_line_offset();
-			s.inner_end_mark_set(end_line, end_line_offset, false);
-			s.end_mark_set(end_line, end_line_offset, false);
+			var end_line_index = end_iter.get_line_index();
+			s.inner_end_mark_set(end_line, end_line_index, false);
+			s.end_mark_set(end_line, end_line_index, false);
 			s.is_open = true;
 			s.is_capture = false;
 			s.parent = scanner.current_scope;
