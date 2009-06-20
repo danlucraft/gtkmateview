@@ -7,27 +7,19 @@ namespace Gtk.Mate {
 		public Onig.Rx pos_rx;
 		public ArrayList<Onig.Rx> neg_rxs;
 
+		// returns 1 if m1 is better than m2, -1 if m1 is worse than m2, 0 if equally good
 		public static int compare_match(string scope_string, Onig.Match m1, Onig.Match m2) {
 			var space_ixs = StringHelper.occurrences(scope_string, " ");
-			// foreach (var ix in space_ixs) {
-				//stdout.printf("space at %d\n", ix);
-			// }
 			int max_cap1 = m1.num_captures();
 			int max_cap2 = m2.num_captures();
-			//stdout.printf("m1 has %d matches\n", m1.num_captures());
-			//stdout.printf("m2 has %d matches\n", m2.num_captures());
 			int cap1_ix, cap1_el_ix, len1;
 			int cap2_ix, cap2_el_ix, len2;
 			for (var i = 0; i < int.min(max_cap1, max_cap2); i++) {
 				// first try element depth:
 				cap1_ix = m1.begin(max_cap1-1-i);
 				cap2_ix = m2.begin(max_cap2-1-i);
-				//stdout.printf("m1 capture %d at %d\n", max_cap1-1-i, cap1_ix);
-				//stdout.printf("m2 capture %d at %d\n", max_cap2-1-i, cap2_ix);
 				cap1_el_ix = Matcher.sorted_ix(space_ixs, cap1_ix);
 				cap2_el_ix = Matcher.sorted_ix(space_ixs, cap2_ix);
-				//stdout.printf("m1 capture %d at el %d\n", max_cap1-1-i, cap1_el_ix);
-				//stdout.printf("m2 capture %d at el %d\n", max_cap2-1-i, cap2_el_ix);
 				if (cap1_el_ix > cap2_el_ix) {
 					return 1;
 				}
