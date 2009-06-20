@@ -181,12 +181,13 @@ foo=<<-HTML
 </style>
 HTML
 END
-    @mb.parser.root.pretty(0).should == (t=<<END)
+    t1 = @mb.parser.root.pretty(0)
+    t1.should == (t=<<END)
 + source.ruby (0,0)-(7,0) open
   + keyword.operator.assignment.ruby (0,3)-(0,4) closed
   + string.unquoted.embedded.html.ruby text.html.embedded.ruby (0,4)-(6,4) closed
     c punctuation.definition.string.begin.ruby (0,4)-(0,11) closed
-    + source.css.embedded.html (1,0)-(6,0) closed
+    + source.css.embedded.html (1,0)-(5,8) closed
       c punctuation.definition.tag.html (1,0)-(1,1) closed
       c entity.name.tag.style.html (1,1)-(1,6) closed
       +  (1,6)-(5,0) closed
@@ -255,7 +256,7 @@ require 'hoe' # gem
     + string.quoted.single.ruby (0,8)-(0,13) closed
       c punctuation.definition.string.begin.ruby (0,8)-(0,9) closed
       c punctuation.definition.string.end.ruby (0,12)-(0,13) closed
-  + comment.line.number-sign.ruby (0,14)-(1,0) closed
+  + comment.line.number-sign.ruby (0,14)-(0,19) closed
     c punctuation.definition.comment.ruby (0,14)-(0,15) closed
 END
   end

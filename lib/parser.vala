@@ -140,21 +140,21 @@ namespace Gtk.Mate {
 		private bool parse_line(int line_ix) {
 			string? line = buffer.get_line(line_ix);
 			int length = (int) line.size();//buffer.get_line_length(line_ix);
-			stdout.printf("p%d, ", line_ix);
-			stdout.flush();
+			// stdout.printf("p%d, ", line_ix);
+			// stdout.flush();
 			if (line_ix > this.parsed_upto)
 				this.parsed_upto = line_ix;
 			// stdout.flush();
 			var start_scope = this.root.scope_at(line_ix, 0);
 			if (start_scope != null) {
-				stdout.printf("start_scope is: %s\n", start_scope.name);
+				// stdout.printf("start_scope is: %s\n", start_scope.name);
 				start_scope = start_scope.containing_double_scope(line_ix);
 			}
-			stdout.printf("start_scope is: %s\n", start_scope.name);
+			// stdout.printf("start_scope is: %s\n", start_scope.name);
 			var end_scope1 = this.root.scope_at(line_ix, int.MAX);
 			if (end_scope1 != null)
 				end_scope1 = end_scope1.containing_double_scope(line_ix);
-			stdout.printf("end_scope1: %s\n", end_scope1.name);
+			// stdout.printf("end_scope1: %s\n", end_scope1.name);
 			var scanner = new Scanner(start_scope, line, length);
 			var all_scopes = new ArrayList<Scope>();
 			all_scopes.add(start_scope);
@@ -163,24 +163,24 @@ namespace Gtk.Mate {
 			all_scopes.add(start_scope);
 			foreach (Marker m in scanner) {
 				var expected_scope = get_expected_scope(scanner.current_scope, line_ix, scanner.position);
-				if (expected_scope != null)
-					stdout.printf("expected_scope: %s (%d, %d)\n", expected_scope.name, expected_scope.start_loc().line, 
-				 		expected_scope.start_loc().line_offset);
-				else
-					stdout.printf("no expected scope\n");
-				stdout.printf("  scope: %s (%d, %d) (line length: %d)\n", m.pattern.name, m.from, m.match.end(0), length);
+				// if (expected_scope != null)
+				// 	stdout.printf("expected_scope: %s (%d, %d)\n", expected_scope.name, expected_scope.start_loc().line, 
+				//  		expected_scope.start_loc().line_offset);
+				// else
+				// 	stdout.printf("no expected scope\n");
+				// stdout.printf("  scope: %s (%d, %d) (line length: %d)\n", m.pattern.name, m.from, m.match.end(0), length);
 				if (m.is_close_scope) {
-					stdout.printf("     (closing)\n");
+					// stdout.printf("     (closing)\n");
 					close_scope(scanner, expected_scope, line_ix, line, length, m, 
 								all_scopes, closed_scopes, removed_scopes);
 				}
 				else if (m.pattern is DoublePattern) {
-					stdout.printf("     (opening)\n");
+					// stdout.printf("     (opening)\n");
 					open_scope(scanner, expected_scope, line_ix, line, length, m, 
 							   all_scopes, closed_scopes, removed_scopes);
 				}
 				else {
-					stdout.printf("     (single)\n");
+					// stdout.printf("     (single)\n");
 					single_scope(scanner, expected_scope, line_ix, line, length, m, 
 								 all_scopes, closed_scopes, removed_scopes);
 				}
@@ -191,8 +191,8 @@ namespace Gtk.Mate {
 			var end_scope2 = this.root.scope_at(line_ix, int.MAX);
 			if (end_scope2 != null)
 				end_scope2 = end_scope2.containing_double_scope(line_ix);
-			stdout.printf("end_scope2: %s\n", end_scope2.name);
-			stdout.printf("%s\n", this.root.pretty(0));
+			// stdout.printf("end_scope2: %s\n", end_scope2.name);
+			// stdout.printf("%s\n", this.root.pretty(0));
 			if (colourer != null) {
 				//stdout.printf("before_uncolour_scopes\n");
 				colourer.uncolour_scopes(removed_scopes);
@@ -211,7 +211,7 @@ namespace Gtk.Mate {
 			// delete them:
 			var cs = start_scope;
 			while (cs != null) {
-				stdout.printf("  removing_scopes from: %s\n", cs.name);
+				// stdout.printf("  removing_scopes from: %s\n", cs.name);
 				var removed = cs.delete_any_on_line_not_in(line_ix, all_scopes);
 				foreach (var rs in removed) {
 					removed_scopes.add(rs);
@@ -226,9 +226,9 @@ namespace Gtk.Mate {
 			var scopes_that_closed_on_line = new ArrayList<Scope>();
 			var ts = start_scope;
 			while (ts.parent != null) {
-				stdout.printf("checking for closing scope: %s (%d)\n", ts.name, ts.inner_end_line());
+				// stdout.printf("checking for closing scope: %s (%d)\n", ts.name, ts.inner_end_line());
 				if (ts.inner_end_line() == line_ix) {
-					stdout.printf("scope that closed on line: %s\n", ts.name);
+					// stdout.printf("scope that closed on line: %s\n", ts.name);
 					scopes_that_closed_on_line.add(ts);
 				}
 				ts = ts.parent;
@@ -276,6 +276,14 @@ namespace Gtk.Mate {
 
 		public void close_scope(Scanner scanner, Scope? expected_scope, int line_ix, string line, int length, Marker m, ArrayList<Scope> all_scopes, ArrayList<Scope> closed_scopes, ArrayList<Scope> removed_scopes) {
 			var end_match_string = line.substring(m.from, m.match.end(0)-m.from);
+			// stdout.printf("checking for already closed: %s, (%d,%d)-(%d,%d) (%d,%d)-(%d,%d) '%s' '%s'\n",
+//         scanner.current_scope.name,
+// 			  scanner.current_scope.end_line(), scanner.current_scope.end_line_offset(),
+// 			  line_ix, m.match.end(0), 
+// 			  scanner.current_scope.inner_end_line(), scanner.current_scope.inner_end_line_offset(),
+// 				line_ix, m.from,
+// 				scanner.current_scope.end_match_string, end_match_string);
+// 		  
 			if (scanner.current_scope.end_mark != null &&
 					TextLoc.equal(scanner.current_scope.end_loc(), TextLoc.make(line_ix, m.match.end(0))) &&
 					TextLoc.equal(scanner.current_scope.inner_end_loc(), TextLoc.make(line_ix, m.from)) &&
@@ -474,15 +482,17 @@ namespace Gtk.Mate {
 			if (to == length && this.buffer.get_line_count() > line_ix+1) 
 				scope.inner_start_mark_set(line_ix+1, 0, true);
 			else
-				scope.inner_start_mark_set(line_ix, int.min(to, length), true);
+				scope.inner_start_mark_set(line_ix, int.min(to, length-1), true);
 		}
 
 		public void set_inner_end_mark_safely(Scope scope, Marker m, int line_ix, int length, int cap) {
-			int to = m.match.end(cap);
-			if (to == length && this.buffer.get_line_count() > line_ix+1) 
-				scope.inner_end_mark_set(line_ix, length-1, true);
-			else
+			int to = m.match.begin(cap);
+			if (to == length && this.buffer.get_line_count() > line_ix+1) {
+   			scope.inner_end_mark_set(line_ix, length-1, true);
+			}
+			else {
 				scope.inner_end_mark_set(line_ix, int.min(to, length), true);
+			}
 		}
 		
 		public void set_end_mark_safely(Scope scope, Marker m, int line_ix, int length, int cap) {

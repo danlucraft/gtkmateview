@@ -10,7 +10,6 @@
 #include <gee/iterable.h>
 #include <gee/iterator.h>
 #include <gee/collection.h>
-#include <stdio.h>
 #include <gee/map.h>
 
 
@@ -439,7 +438,6 @@ static void gtk_mate_parser_remove_colour_after (GtkMateParser* self, gint line_
 GtkTextIter gtk_mate_buffer_iter_at_line_offset (GtkMateBuffer* self, gint line, gint line_offset);
 char* gtk_mate_buffer_get_line (GtkMateBuffer* self, gint line);
 GtkMateScope* gtk_mate_scope_scope_at (GtkMateScope* self, gint line, gint line_offset);
-const char* gtk_mate_scope_get_name (GtkMateScope* self);
 GtkMateScope* gtk_mate_scope_containing_double_scope (GtkMateScope* self, gint line_ix);
 GtkMateScanner* gtk_mate_scanner_new (GtkMateScope* s, const char* line, gint line_length);
 GtkMateScanner* gtk_mate_scanner_construct (GType object_type, GtkMateScope* s, const char* line, gint line_length);
@@ -447,13 +445,11 @@ GType gtk_mate_scanner_get_type (void);
 GType gtk_mate_marker_get_type (void);
 GtkMateScope* gtk_mate_parser_get_expected_scope (GtkMateParser* self, GtkMateScope* current_scope, gint line, gint line_offset);
 GtkMateScope* gtk_mate_scanner_get_current_scope (GtkMateScanner* self);
-GtkMateTextLoc* gtk_mate_scope_start_loc (GtkMateScope* self);
-gint onig_match_end (OnigMatch* self, gint capture);
 void gtk_mate_parser_close_scope (GtkMateParser* self, GtkMateScanner* scanner, GtkMateScope* expected_scope, gint line_ix, const char* line, gint length, GtkMateMarker* m, GeeArrayList* all_scopes, GeeArrayList* closed_scopes, GeeArrayList* removed_scopes);
 void gtk_mate_parser_open_scope (GtkMateParser* self, GtkMateScanner* scanner, GtkMateScope* expected_scope, gint line_ix, const char* line, gint length, GtkMateMarker* m, GeeArrayList* all_scopes, GeeArrayList* closed_scopes, GeeArrayList* removed_scopes);
 void gtk_mate_parser_single_scope (GtkMateParser* self, GtkMateScanner* scanner, GtkMateScope* expected_scope, gint line_ix, const char* line, gint length, GtkMateMarker* m, GeeArrayList* all_scopes, GeeArrayList* closed_scopes, GeeArrayList* removed_scopes);
+gint onig_match_end (OnigMatch* self, gint capture);
 void gtk_mate_parser_clear_line (GtkMateParser* self, gint line_ix, GtkMateScope* start_scope, GeeArrayList* all_scopes, GeeArrayList* closed_scopes, GeeArrayList* removed_scopes);
-char* gtk_mate_scope_pretty (GtkMateScope* self, gint indent);
 GtkMateColourer* gtk_mate_parser_get_colourer (GtkMateParser* self);
 void gtk_mate_colourer_uncolour_scopes (GtkMateColourer* self, GeeArrayList* scopes);
 void gtk_mate_colourer_colour_line_with_scopes (GtkMateColourer* self, GeeArrayList* scopes);
@@ -825,14 +821,13 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	GeeArrayList* closed_scopes;
 	GeeArrayList* removed_scopes;
 	GtkMateScope* end_scope2;
-	char* _tmp5_;
-	gboolean _tmp6_;
+	gboolean _tmp3_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	line = gtk_mate_buffer_get_line (self->priv->_buffer, line_ix);
 	length = (gint) strlen (line);
-	/*buffer.get_line_length(line_ix);*/
-	fprintf (stdout, "p%d, ", line_ix);
-	fflush (stdout);
+	/*buffer.get_line_length(line_ix);
+	 stdout.printf("p%d, ", line_ix);
+	 stdout.flush();*/
 	if (line_ix > self->parsed_upto) {
 		self->parsed_upto = line_ix;
 	}
@@ -840,18 +835,18 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	start_scope = gtk_mate_scope_scope_at (self->root, line_ix, 0);
 	if (start_scope != NULL) {
 		GtkMateScope* _tmp0_;
-		fprintf (stdout, "start_scope is: %s\n", gtk_mate_scope_get_name (start_scope));
+		/* stdout.printf("start_scope is: %s\n", start_scope.name);*/
 		_tmp0_ = NULL;
 		start_scope = (_tmp0_ = gtk_mate_scope_containing_double_scope (start_scope, line_ix), (start_scope == NULL) ? NULL : (start_scope = (g_object_unref (start_scope), NULL)), _tmp0_);
 	}
-	fprintf (stdout, "start_scope is: %s\n", gtk_mate_scope_get_name (start_scope));
+	/* stdout.printf("start_scope is: %s\n", start_scope.name);*/
 	end_scope1 = gtk_mate_scope_scope_at (self->root, line_ix, G_MAXINT);
 	if (end_scope1 != NULL) {
 		GtkMateScope* _tmp1_;
 		_tmp1_ = NULL;
 		end_scope1 = (_tmp1_ = gtk_mate_scope_containing_double_scope (end_scope1, line_ix), (end_scope1 == NULL) ? NULL : (end_scope1 = (g_object_unref (end_scope1), NULL)), _tmp1_);
 	}
-	fprintf (stdout, "end_scope1: %s\n", gtk_mate_scope_get_name (end_scope1));
+	/* stdout.printf("end_scope1: %s\n", end_scope1.name);*/
 	scanner = g_object_ref_sink (gtk_mate_scanner_new (start_scope, line, length));
 	all_scopes = gee_array_list_new (GTK_MATE_TYPE_SCOPE, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal);
 	gee_collection_add ((GeeCollection*) all_scopes, start_scope);
@@ -866,27 +861,21 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 			GtkMateScope* expected_scope;
 			m = (GtkMateMarker*) gee_iterator_get (_m_it);
 			expected_scope = gtk_mate_parser_get_expected_scope (self, gtk_mate_scanner_get_current_scope (scanner), line_ix, scanner->position);
-			if (expected_scope != NULL) {
-				GtkMateTextLoc* _tmp3_;
-				GtkMateTextLoc* _tmp2_;
-				_tmp3_ = NULL;
-				_tmp2_ = NULL;
-				fprintf (stdout, "expected_scope: %s (%d, %d)\n", gtk_mate_scope_get_name (expected_scope), (_tmp2_ = gtk_mate_scope_start_loc (expected_scope))->line, (_tmp3_ = gtk_mate_scope_start_loc (expected_scope))->line_offset);
-				(_tmp3_ == NULL) ? NULL : (_tmp3_ = (g_object_unref (_tmp3_), NULL));
-				(_tmp2_ == NULL) ? NULL : (_tmp2_ = (g_object_unref (_tmp2_), NULL));
-			} else {
-				fprintf (stdout, "no expected scope\n");
-			}
-			fprintf (stdout, "  scope: %s (%d, %d) (line length: %d)\n", m->pattern->name, m->from, onig_match_end (m->match, 0), length);
+			/* if (expected_scope != null)
+			 stdout.printf("expected_scope: %s (%d, %d)\n", expected_scope.name, expected_scope.start_loc().line, 
+			  expected_scope.start_loc().line_offset);
+			 else
+			 stdout.printf("no expected scope\n");
+			 stdout.printf("  scope: %s (%d, %d) (line length: %d)\n", m.pattern.name, m.from, m.match.end(0), length);*/
 			if (m->is_close_scope) {
-				fprintf (stdout, "     (closing)\n");
+				/* stdout.printf("     (closing)\n");*/
 				gtk_mate_parser_close_scope (self, scanner, expected_scope, line_ix, line, length, m, all_scopes, closed_scopes, removed_scopes);
 			} else {
 				if (GTK_MATE_IS_DOUBLE_PATTERN (m->pattern)) {
-					fprintf (stdout, "     (opening)\n");
+					/* stdout.printf("     (opening)\n");*/
 					gtk_mate_parser_open_scope (self, scanner, expected_scope, line_ix, line, length, m, all_scopes, closed_scopes, removed_scopes);
 				} else {
-					fprintf (stdout, "     (single)\n");
+					/* stdout.printf("     (single)\n");*/
 					gtk_mate_parser_single_scope (self, scanner, expected_scope, line_ix, line, length, m, all_scopes, closed_scopes, removed_scopes);
 				}
 			}
@@ -900,14 +889,12 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	gtk_mate_parser_clear_line (self, line_ix, start_scope, all_scopes, closed_scopes, removed_scopes);
 	end_scope2 = gtk_mate_scope_scope_at (self->root, line_ix, G_MAXINT);
 	if (end_scope2 != NULL) {
-		GtkMateScope* _tmp4_;
-		_tmp4_ = NULL;
-		end_scope2 = (_tmp4_ = gtk_mate_scope_containing_double_scope (end_scope2, line_ix), (end_scope2 == NULL) ? NULL : (end_scope2 = (g_object_unref (end_scope2), NULL)), _tmp4_);
+		GtkMateScope* _tmp2_;
+		_tmp2_ = NULL;
+		end_scope2 = (_tmp2_ = gtk_mate_scope_containing_double_scope (end_scope2, line_ix), (end_scope2 == NULL) ? NULL : (end_scope2 = (g_object_unref (end_scope2), NULL)), _tmp2_);
 	}
-	fprintf (stdout, "end_scope2: %s\n", gtk_mate_scope_get_name (end_scope2));
-	_tmp5_ = NULL;
-	fprintf (stdout, "%s\n", _tmp5_ = gtk_mate_scope_pretty (self->root, 0));
-	_tmp5_ = (g_free (_tmp5_), NULL);
+	/* stdout.printf("end_scope2: %s\n", end_scope2.name);
+	 stdout.printf("%s\n", this.root.pretty(0));*/
 	if (self->priv->_colourer != NULL) {
 		/*stdout.printf("before_uncolour_scopes\n");*/
 		gtk_mate_colourer_uncolour_scopes (self->priv->_colourer, removed_scopes);
@@ -917,7 +904,7 @@ static gboolean gtk_mate_parser_parse_line (GtkMateParser* self, gint line_ix) {
 	}
 	/*stdout.printf("after_colour_line_with_scopes\n");
 	 stdout.printf("no colourer");*/
-	return (_tmp6_ = end_scope1 != end_scope2, line = (g_free (line), NULL), (start_scope == NULL) ? NULL : (start_scope = (g_object_unref (start_scope), NULL)), (end_scope1 == NULL) ? NULL : (end_scope1 = (g_object_unref (end_scope1), NULL)), (scanner == NULL) ? NULL : (scanner = (g_object_unref (scanner), NULL)), (all_scopes == NULL) ? NULL : (all_scopes = (g_object_unref (all_scopes), NULL)), (closed_scopes == NULL) ? NULL : (closed_scopes = (g_object_unref (closed_scopes), NULL)), (removed_scopes == NULL) ? NULL : (removed_scopes = (g_object_unref (removed_scopes), NULL)), (end_scope2 == NULL) ? NULL : (end_scope2 = (g_object_unref (end_scope2), NULL)), _tmp6_);
+	return (_tmp3_ = end_scope1 != end_scope2, line = (g_free (line), NULL), (start_scope == NULL) ? NULL : (start_scope = (g_object_unref (start_scope), NULL)), (end_scope1 == NULL) ? NULL : (end_scope1 = (g_object_unref (end_scope1), NULL)), (scanner == NULL) ? NULL : (scanner = (g_object_unref (scanner), NULL)), (all_scopes == NULL) ? NULL : (all_scopes = (g_object_unref (all_scopes), NULL)), (closed_scopes == NULL) ? NULL : (closed_scopes = (g_object_unref (closed_scopes), NULL)), (removed_scopes == NULL) ? NULL : (removed_scopes = (g_object_unref (removed_scopes), NULL)), (end_scope2 == NULL) ? NULL : (end_scope2 = (g_object_unref (end_scope2), NULL)), _tmp3_);
 }
 
 
@@ -940,7 +927,7 @@ void gtk_mate_parser_clear_line (GtkMateParser* self, gint line_ix, GtkMateScope
 		GeeArrayList* removed;
 		GtkMateScope* _tmp2_;
 		GtkMateScope* _tmp1_;
-		fprintf (stdout, "  removing_scopes from: %s\n", gtk_mate_scope_get_name (cs));
+		/* stdout.printf("  removing_scopes from: %s\n", cs.name);*/
 		removed = gtk_mate_scope_delete_any_on_line_not_in (cs, line_ix, all_scopes);
 		{
 			GeeIterator* _rs_it;
@@ -968,9 +955,9 @@ void gtk_mate_parser_clear_line (GtkMateParser* self, gint line_ix, GtkMateScope
 	while (ts->parent != NULL) {
 		GtkMateScope* _tmp5_;
 		GtkMateScope* _tmp4_;
-		fprintf (stdout, "checking for closing scope: %s (%d)\n", gtk_mate_scope_get_name (ts), gtk_mate_scope_inner_end_line (ts));
+		/* stdout.printf("checking for closing scope: %s (%d)\n", ts.name, ts.inner_end_line());*/
 		if (gtk_mate_scope_inner_end_line (ts) == line_ix) {
-			fprintf (stdout, "scope that closed on line: %s\n", gtk_mate_scope_get_name (ts));
+			/* stdout.printf("scope that closed on line: %s\n", ts.name);*/
 			gee_collection_add ((GeeCollection*) scopes_that_closed_on_line, ts);
 		}
 		_tmp5_ = NULL;
@@ -1120,6 +1107,14 @@ void gtk_mate_parser_close_scope (GtkMateParser* self, GtkMateScanner* scanner, 
 	} else {
 		_tmp0_ = FALSE;
 	}
+	/* stdout.printf("checking for already closed: %s, (%d,%d)-(%d,%d) (%d,%d)-(%d,%d) '%s' '%s'\n",
+	         scanner.current_scope.name,
+	   scanner.current_scope.end_line(), scanner.current_scope.end_line_offset(),
+	   line_ix, m.match.end(0), 
+	   scanner.current_scope.inner_end_line(), scanner.current_scope.inner_end_line_offset(),
+	 line_ix, m.from,
+	 scanner.current_scope.end_match_string, end_match_string);
+	   */
 	if (_tmp0_) {
 		GSequenceIter* iter;
 		/* we have already parsed this line and this scope ends here
@@ -1483,7 +1478,7 @@ void gtk_mate_parser_set_inner_start_mark_safely (GtkMateParser* self, GtkMateSc
 	if (_tmp0_) {
 		gtk_mate_scope_inner_start_mark_set (scope, line_ix + 1, 0, TRUE);
 	} else {
-		gtk_mate_scope_inner_start_mark_set (scope, line_ix, MIN (to, length), TRUE);
+		gtk_mate_scope_inner_start_mark_set (scope, line_ix, MIN (to, length - 1), TRUE);
 	}
 }
 
@@ -1494,7 +1489,7 @@ void gtk_mate_parser_set_inner_end_mark_safely (GtkMateParser* self, GtkMateScop
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (scope != NULL);
 	g_return_if_fail (m != NULL);
-	to = onig_match_end (m->match, cap);
+	to = onig_match_begin (m->match, cap);
 	_tmp0_ = FALSE;
 	if (to == length) {
 		_tmp0_ = gtk_text_buffer_get_line_count ((GtkTextBuffer*) self->priv->_buffer) > (line_ix + 1);

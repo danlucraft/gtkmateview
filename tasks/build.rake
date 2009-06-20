@@ -6,7 +6,7 @@ require 'spec/rake/spectask'
 VALA_SOURCES = Dir["lib/*.vala"].map {|n| n =~ /lib\/(.*)\.vala/; $1}
 
 def fix_vala_c_sources
-  Dir.glob ('*.{c,h}').each do |srcname|
+  Dir.glob('*.{c,h}').each do |srcname|
     source = File.read("#{srcname}")
     VALA_SOURCES.each do |srcname2|
       source.gsub!("#include <#{srcname2}.h>", "#include \"#{srcname2}.h\"")

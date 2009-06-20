@@ -87,11 +87,8 @@ HTML
 p :asdf
 END
     4.times { |i| @mb.backspace(4, 10-i)}
-    puts @mb.text
     t1=@mb.clean_reparse
-    puts t1
     t2=@mb.pretty
-    puts t2
     t2.should == t1
   end
 
@@ -112,7 +109,9 @@ END
   it "should reparse strings correctly" do
     @mb.text = "bus(\"les/\#{name}\").data = self\n\n"
     @mb.type(0, 30, " ")
-    @mb.pretty.should == @mb.clean_reparse
+    t1 = @mb.pretty
+    t2 = @mb.clean_reparse
+    t1.should == t2
   end
 end
 

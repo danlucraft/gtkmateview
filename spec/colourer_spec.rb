@@ -22,6 +22,5 @@ describe Gtk::Mate::Colourer do
     @mb.parser.stop_parsing
     @mb.insert(@mb.get_iter_at_offset(1), "]")
     @mb.parser.start_parsing
-    p @mb.text
   end
 end
