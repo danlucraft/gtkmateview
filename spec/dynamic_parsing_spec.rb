@@ -87,8 +87,11 @@ HTML
 p :asdf
 END
     4.times { |i| @mb.backspace(4, 10-i)}
+    puts @mb.text
     t1=@mb.clean_reparse
+    puts t1
     t2=@mb.pretty
+    puts t2
     t2.should == t1
   end
 

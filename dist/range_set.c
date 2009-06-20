@@ -1,20 +1,87 @@
 
-#include "range_set.h"
+#include <glib.h>
+#include <glib-object.h>
+#include <gee/iterable.h>
+#include <gee/arraylist.h>
 #include <gee/collection.h>
+#include <gee/iterator.h>
 #include <gee/list.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+#define TYPE_RANGE_SET (range_set_get_type ())
+#define RANGE_SET(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_RANGE_SET, RangeSet))
+#define RANGE_SET_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_RANGE_SET, RangeSetClass))
+#define IS_RANGE_SET(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_RANGE_SET))
+#define IS_RANGE_SET_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), TYPE_RANGE_SET))
+#define RANGE_SET_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_RANGE_SET, RangeSetClass))
+
+typedef struct _RangeSet RangeSet;
+typedef struct _RangeSetClass RangeSetClass;
+typedef struct _RangeSetPrivate RangeSetPrivate;
+
+#define RANGE_SET_TYPE_RANGE (range_set_range_get_type ())
+#define RANGE_SET_RANGE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RANGE_SET_TYPE_RANGE, RangeSetRange))
+#define RANGE_SET_RANGE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RANGE_SET_TYPE_RANGE, RangeSetRangeClass))
+#define RANGE_SET_IS_RANGE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RANGE_SET_TYPE_RANGE))
+#define RANGE_SET_IS_RANGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RANGE_SET_TYPE_RANGE))
+#define RANGE_SET_RANGE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RANGE_SET_TYPE_RANGE, RangeSetRangeClass))
+
+typedef struct _RangeSetRange RangeSetRange;
+typedef struct _RangeSetRangeClass RangeSetRangeClass;
+typedef struct _RangeSetRangePrivate RangeSetRangePrivate;
+
+/* This data structure stores sets of ranges 
+ like 1, 4-8, 10, 12, 15-20*/
+struct _RangeSet {
+	GObject parent_instance;
+	RangeSetPrivate * priv;
+	GeeArrayList* ranges;
+};
+
+struct _RangeSetClass {
+	GObjectClass parent_class;
+};
+
+struct _RangeSetRange {
+	GObject parent_instance;
+	RangeSetRangePrivate * priv;
+	gint a;
+	gint b;
+};
+
+struct _RangeSetRangeClass {
+	GObjectClass parent_class;
+};
 
 
 
-
+GType range_set_get_type (void);
+GType range_set_range_get_type (void);
 enum  {
 	RANGE_SET_DUMMY_PROPERTY
 };
+gint range_set_length (RangeSet* self);
+gint range_set_size (RangeSet* self);
+gboolean range_set_is_empty (RangeSet* self);
+RangeSetRange* range_set_range_new (void);
+RangeSetRange* range_set_range_construct (GType object_type);
+void range_set_merge (RangeSet* self, gint ix);
+void range_set_add (RangeSet* self, gint a, gint b);
+gint range_set_max (RangeSet* self, gint a, gint b);
+gint range_set_min (RangeSet* self, gint a, gint b);
+char* range_set_present (RangeSet* self);
+RangeSet* range_set_new (void);
+RangeSet* range_set_construct (GType object_type);
+RangeSet* range_set_new (void);
 static GType range_set_real_get_element_type (GeeIterable* base);
 static GeeIterator* range_set_real_iterator (GeeIterable* base);
 static GObject * range_set_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 enum  {
 	RANGE_SET_RANGE_DUMMY_PROPERTY
 };
+RangeSetRange* range_set_range_new (void);
 static gpointer range_set_range_parent_class = NULL;
 static void range_set_range_finalize (GObject* obj);
 static gpointer range_set_parent_class = NULL;
@@ -92,13 +159,13 @@ void range_set_merge (RangeSet* self, gint ix) {
 		x = (RangeSetRange*) gee_list_get ((GeeList*) self->ranges, ix - 1);
 		/* stdout.printf("x: %d..%d, n: %d..%d\n", x.a, x.b, n.a, n.b);*/
 		if (n->a <= (x->b + 1)) {
-			RangeSetRange* _tmp0;
+			RangeSetRange* _tmp0_;
 			gee_list_remove_at ((GeeList*) self->ranges, ix);
 			x->b = range_set_max (self, x->b, n->b);
 			gee_list_set ((GeeList*) self->ranges, ix - 1, x);
 			ix--;
-			_tmp0 = NULL;
-			n = (_tmp0 = (RangeSetRange*) gee_list_get ((GeeList*) self->ranges, ix), (n == NULL) ? NULL : (n = (g_object_unref (n), NULL)), _tmp0);
+			_tmp0_ = NULL;
+			n = (_tmp0_ = (RangeSetRange*) gee_list_get ((GeeList*) self->ranges, ix), (n == NULL) ? NULL : (n = (g_object_unref (n), NULL)), _tmp0_);
 		}
 		(x == NULL) ? NULL : (x = (g_object_unref (x), NULL));
 	}
@@ -107,14 +174,14 @@ void range_set_merge (RangeSet* self, gint ix) {
 		/* stdout.printf("ix < %d\n", ranges.size-1);*/
 		y = (RangeSetRange*) gee_list_get ((GeeList*) self->ranges, ix + 1);
 		while (TRUE) {
-			gboolean _tmp1;
-			_tmp1 = FALSE;
+			gboolean _tmp1_;
+			_tmp1_ = FALSE;
 			if (ix < (gee_collection_get_size ((GeeCollection*) self->ranges) - 1)) {
-				_tmp1 = n->b >= (y->a - 1);
+				_tmp1_ = n->b >= (y->a - 1);
 			} else {
-				_tmp1 = FALSE;
+				_tmp1_ = FALSE;
 			}
-			if (!_tmp1) {
+			if (!_tmp1_) {
 				break;
 			}
 			/* stdout.printf("n: %d..%d, y: %d..%d\n", n.a, n.b, y.a, y.b);*/
@@ -125,9 +192,9 @@ void range_set_merge (RangeSet* self, gint ix) {
 			gee_list_set ((GeeList*) self->ranges, ix + 1, y);
 			gee_list_remove_at ((GeeList*) self->ranges, ix);
 			if (ix < (gee_collection_get_size ((GeeCollection*) self->ranges) - 1)) {
-				RangeSetRange* _tmp2;
-				_tmp2 = NULL;
-				y = (_tmp2 = (RangeSetRange*) gee_list_get ((GeeList*) self->ranges, ix + 1), (y == NULL) ? NULL : (y = (g_object_unref (y), NULL)), _tmp2);
+				RangeSetRange* _tmp2_;
+				_tmp2_ = NULL;
+				y = (_tmp2_ = (RangeSetRange*) gee_list_get ((GeeList*) self->ranges, ix + 1), (y == NULL) ? NULL : (y = (g_object_unref (y), NULL)), _tmp2_);
 			}
 		}
 		(y == NULL) ? NULL : (y = (g_object_unref (y), NULL));
@@ -138,8 +205,8 @@ void range_set_merge (RangeSet* self, gint ix) {
 
 char* range_set_present (RangeSet* self) {
 	GString* sb;
-	const char* _tmp3;
-	char* _tmp4;
+	const char* _tmp3_;
+	char* _tmp4_;
 	g_return_val_if_fail (self != NULL, NULL);
 	sb = g_string_new ("");
 	{
@@ -149,30 +216,30 @@ char* range_set_present (RangeSet* self) {
 			RangeSetRange* p;
 			p = (RangeSetRange*) gee_iterator_get (_p_it);
 			if ((p->b - p->a) == 0) {
-				char* _tmp0;
-				_tmp0 = NULL;
-				g_string_append (sb, _tmp0 = g_strdup_printf ("%i", p->a));
-				_tmp0 = (g_free (_tmp0), NULL);
+				char* _tmp0_;
+				_tmp0_ = NULL;
+				g_string_append (sb, _tmp0_ = g_strdup_printf ("%i", p->a));
+				_tmp0_ = (g_free (_tmp0_), NULL);
 				g_string_append (sb, ", ");
 			} else {
-				char* _tmp1;
-				char* _tmp2;
-				_tmp1 = NULL;
-				g_string_append (sb, _tmp1 = g_strdup_printf ("%i", p->a));
-				_tmp1 = (g_free (_tmp1), NULL);
+				char* _tmp1_;
+				char* _tmp2_;
+				_tmp1_ = NULL;
+				g_string_append (sb, _tmp1_ = g_strdup_printf ("%i", p->a));
+				_tmp1_ = (g_free (_tmp1_), NULL);
 				g_string_append (sb, "..");
-				_tmp2 = NULL;
-				g_string_append (sb, _tmp2 = g_strdup_printf ("%i", p->b));
-				_tmp2 = (g_free (_tmp2), NULL);
+				_tmp2_ = NULL;
+				g_string_append (sb, _tmp2_ = g_strdup_printf ("%i", p->b));
+				_tmp2_ = (g_free (_tmp2_), NULL);
 				g_string_append (sb, ", ");
 			}
 			(p == NULL) ? NULL : (p = (g_object_unref (p), NULL));
 		}
 		(_p_it == NULL) ? NULL : (_p_it = (g_object_unref (_p_it), NULL));
 	}
-	_tmp3 = NULL;
-	_tmp4 = NULL;
-	return (_tmp4 = (_tmp3 = sb->str, (_tmp3 == NULL) ? NULL : g_strdup (_tmp3)), (sb == NULL) ? NULL : (sb = (g_string_free (sb, TRUE), NULL)), _tmp4);
+	_tmp3_ = NULL;
+	_tmp4_ = NULL;
+	return (_tmp4_ = (_tmp3_ = sb->str, (_tmp3_ == NULL) ? NULL : g_strdup (_tmp3_)), (sb == NULL) ? NULL : (sb = (g_string_free (sb, TRUE), NULL)), _tmp4_);
 }
 
 
@@ -232,9 +299,9 @@ static GObject * range_set_constructor (GType type, guint n_construct_properties
 	obj = parent_class->constructor (type, n_construct_properties, construct_properties);
 	self = RANGE_SET (obj);
 	{
-		GeeArrayList* _tmp0;
-		_tmp0 = NULL;
-		self->ranges = (_tmp0 = gee_array_list_new (RANGE_SET_TYPE_RANGE, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), (self->ranges == NULL) ? NULL : (self->ranges = (g_object_unref (self->ranges), NULL)), _tmp0);
+		GeeArrayList* _tmp0_;
+		_tmp0_ = NULL;
+		self->ranges = (_tmp0_ = gee_array_list_new (RANGE_SET_TYPE_RANGE, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), (self->ranges == NULL) ? NULL : (self->ranges = (g_object_unref (self->ranges), NULL)), _tmp0_);
 	}
 	return obj;
 }

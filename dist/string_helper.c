@@ -1,111 +1,142 @@
 /* Vala string utility functions*/
 
-#include "string_helper.h"
+#include <glib.h>
+#include <glib-object.h>
+#include <stdlib.h>
+#include <string.h>
+#include <gee/arraylist.h>
 #include <gee/collection.h>
 
 
+#define TYPE_STRING_HELPER (string_helper_get_type ())
+#define STRING_HELPER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_STRING_HELPER, StringHelper))
+#define STRING_HELPER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_STRING_HELPER, StringHelperClass))
+#define IS_STRING_HELPER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_STRING_HELPER))
+#define IS_STRING_HELPER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), TYPE_STRING_HELPER))
+#define STRING_HELPER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_STRING_HELPER, StringHelperClass))
+
+typedef struct _StringHelper StringHelper;
+typedef struct _StringHelperClass StringHelperClass;
+typedef struct _StringHelperPrivate StringHelperPrivate;
+
+/* Started: 30 Aug 08*/
+struct _StringHelper {
+	GObject parent_instance;
+	StringHelperPrivate * priv;
+};
+
+struct _StringHelperClass {
+	GObjectClass parent_class;
+};
 
 
+
+GType string_helper_get_type (void);
 enum  {
 	STRING_HELPER_DUMMY_PROPERTY
 };
+char* string_helper_gsub (const char* start_string, const char* match_string, const char* replacement_string);
+GeeArrayList* string_helper_occurrences (const char* s, const char* t);
+StringHelper* string_helper_new (void);
+StringHelper* string_helper_construct (GType object_type);
+StringHelper* string_helper_new (void);
 static gpointer string_helper_parent_class = NULL;
 
 
 
 /* Replace all occurences of match_string with replacement_string inside start_string.*/
 char* string_helper_gsub (const char* start_string, const char* match_string, const char* replacement_string) {
-	GError * inner_error;
+	GError * _inner_error_;
 	GRegex* grx;
-	char* result;
-	char* _tmp5;
+	char* _result_;
+	char* _tmp5_;
 	g_return_val_if_fail (start_string != NULL, NULL);
 	g_return_val_if_fail (match_string != NULL, NULL);
 	g_return_val_if_fail (replacement_string != NULL, NULL);
-	inner_error = NULL;
+	_inner_error_ = NULL;
 	grx = NULL;
-	result = NULL;
+	_result_ = NULL;
 	{
-		GRegex* _tmp1;
-		char* _tmp0;
-		char* _tmp2;
-		char* _tmp3;
-		_tmp1 = NULL;
-		_tmp0 = NULL;
-		grx = (_tmp1 = g_regex_new (_tmp0 = g_regex_escape_string (match_string, -1), 0, 0, &inner_error), (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), _tmp1);
-		if (inner_error != NULL) {
-			if (inner_error->domain == G_REGEX_ERROR) {
+		GRegex* _tmp1_;
+		char* _tmp0_;
+		char* _tmp2_;
+		char* _tmp3_;
+		_tmp1_ = NULL;
+		_tmp0_ = NULL;
+		grx = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (match_string, -1), 0, 0, &_inner_error_), (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), _tmp1_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == G_REGEX_ERROR) {
 				goto __catch4_g_regex_error;
 			}
 			goto __finally4;
 		}
-		_tmp0 = (g_free (_tmp0), NULL);
-		_tmp2 = g_regex_replace_literal (grx, start_string, strlen (start_string), 0, replacement_string, 0, &inner_error);
-		if (inner_error != NULL) {
-			if (inner_error->domain == G_REGEX_ERROR) {
+		_tmp0_ = (g_free (_tmp0_), NULL);
+		_tmp2_ = g_regex_replace_literal (grx, start_string, strlen (start_string), 0, replacement_string, 0, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == G_REGEX_ERROR) {
 				goto __catch4_g_regex_error;
 			}
 			goto __finally4;
 		}
-		_tmp3 = NULL;
-		result = (_tmp3 = _tmp2, result = (g_free (result), NULL), _tmp3);
+		_tmp3_ = NULL;
+		_result_ = (_tmp3_ = _tmp2_, _result_ = (g_free (_result_), NULL), _tmp3_);
 	}
 	goto __finally4;
 	__catch4_g_regex_error:
 	{
 		GError * e;
-		e = inner_error;
-		inner_error = NULL;
+		e = _inner_error_;
+		_inner_error_ = NULL;
 		{
-			char* _tmp4;
-			_tmp4 = NULL;
-			return (_tmp4 = g_strdup (""), (e == NULL) ? NULL : (e = (g_error_free (e), NULL)), (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), result = (g_free (result), NULL), _tmp4);
+			char* _tmp4_;
+			_tmp4_ = NULL;
+			return (_tmp4_ = g_strdup (""), (e == NULL) ? NULL : (e = (g_error_free (e), NULL)), (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), _result_ = (g_free (_result_), NULL), _tmp4_);
 		}
 	}
 	__finally4:
-	if (inner_error != NULL) {
+	if (_inner_error_ != NULL) {
 		(grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL));
-		result = (g_free (result), NULL);
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
-		g_clear_error (&inner_error);
+		_result_ = (g_free (_result_), NULL);
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-	_tmp5 = NULL;
-	return (_tmp5 = result, (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), _tmp5);
+	_tmp5_ = NULL;
+	return (_tmp5_ = _result_, (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), _tmp5_);
 }
 
 
 GeeArrayList* string_helper_occurrences (const char* s, const char* t) {
-	GError * inner_error;
+	GError * _inner_error_;
 	GRegex* grx;
 	GeeArrayList* poss;
 	GMatchInfo* m;
-	GeeArrayList* _tmp7;
+	GeeArrayList* _tmp7_;
 	g_return_val_if_fail (s != NULL, NULL);
 	g_return_val_if_fail (t != NULL, NULL);
-	inner_error = NULL;
+	_inner_error_ = NULL;
 	grx = NULL;
 	poss = gee_array_list_new (G_TYPE_INT, NULL, NULL, g_direct_equal);
 	m = NULL;
 	{
-		GRegex* _tmp1;
-		char* _tmp0;
-		GMatchInfo* _tmp4;
-		gboolean _tmp3;
-		GMatchInfo* _tmp2;
-		_tmp1 = NULL;
-		_tmp0 = NULL;
-		grx = (_tmp1 = g_regex_new (_tmp0 = g_regex_escape_string (t, -1), 0, 0, &inner_error), (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), _tmp1);
-		if (inner_error != NULL) {
-			if (inner_error->domain == G_REGEX_ERROR) {
+		GRegex* _tmp1_;
+		char* _tmp0_;
+		GMatchInfo* _tmp4_;
+		gboolean _tmp3_;
+		GMatchInfo* _tmp2_;
+		_tmp1_ = NULL;
+		_tmp0_ = NULL;
+		grx = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (t, -1), 0, 0, &_inner_error_), (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), _tmp1_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == G_REGEX_ERROR) {
 				goto __catch5_g_regex_error;
 			}
 			goto __finally5;
 		}
-		_tmp0 = (g_free (_tmp0), NULL);
-		_tmp4 = NULL;
-		_tmp2 = NULL;
-		if ((_tmp3 = g_regex_match (grx, s, 0, &_tmp2), m = (_tmp4 = _tmp2, (m == NULL) ? NULL : (m = (g_match_info_free (m), NULL)), _tmp4), _tmp3)) {
+		_tmp0_ = (g_free (_tmp0_), NULL);
+		_tmp4_ = NULL;
+		_tmp2_ = NULL;
+		if ((_tmp3_ = g_regex_match (grx, s, 0, &_tmp2_), m = (_tmp4_ = _tmp2_, (m == NULL) ? NULL : (m = (g_match_info_free (m), NULL)), _tmp4_), _tmp3_)) {
 			gint spos;
 			gint epos;
 			spos = 0;
@@ -113,17 +144,17 @@ GeeArrayList* string_helper_occurrences (const char* s, const char* t) {
 			g_match_info_fetch_pos (m, 0, &spos, &epos);
 			gee_collection_add ((GeeCollection*) poss, GINT_TO_POINTER (spos));
 			while (TRUE) {
-				gboolean _tmp5;
+				gboolean _tmp5_;
 				gint mspos;
 				gint mepos;
-				_tmp5 = g_match_info_next (m, &inner_error);
-				if (inner_error != NULL) {
-					if (inner_error->domain == G_REGEX_ERROR) {
+				_tmp5_ = g_match_info_next (m, &_inner_error_);
+				if (_inner_error_ != NULL) {
+					if (_inner_error_->domain == G_REGEX_ERROR) {
 						goto __catch5_g_regex_error;
 					}
 					goto __finally5;
 				}
-				if (!_tmp5) {
+				if (!_tmp5_) {
 					break;
 				}
 				mspos = 0;
@@ -137,25 +168,25 @@ GeeArrayList* string_helper_occurrences (const char* s, const char* t) {
 	__catch5_g_regex_error:
 	{
 		GError * e;
-		e = inner_error;
-		inner_error = NULL;
+		e = _inner_error_;
+		_inner_error_ = NULL;
 		{
-			GeeArrayList* _tmp6;
-			_tmp6 = NULL;
-			return (_tmp6 = gee_array_list_new (G_TYPE_INT, NULL, NULL, g_direct_equal), (e == NULL) ? NULL : (e = (g_error_free (e), NULL)), (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), (poss == NULL) ? NULL : (poss = (g_object_unref (poss), NULL)), (m == NULL) ? NULL : (m = (g_match_info_free (m), NULL)), _tmp6);
+			GeeArrayList* _tmp6_;
+			_tmp6_ = NULL;
+			return (_tmp6_ = gee_array_list_new (G_TYPE_INT, NULL, NULL, g_direct_equal), (e == NULL) ? NULL : (e = (g_error_free (e), NULL)), (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), (poss == NULL) ? NULL : (poss = (g_object_unref (poss), NULL)), (m == NULL) ? NULL : (m = (g_match_info_free (m), NULL)), _tmp6_);
 		}
 	}
 	__finally5:
-	if (inner_error != NULL) {
+	if (_inner_error_ != NULL) {
 		(grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL));
 		(poss == NULL) ? NULL : (poss = (g_object_unref (poss), NULL));
 		(m == NULL) ? NULL : (m = (g_match_info_free (m), NULL));
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, inner_error->message);
-		g_clear_error (&inner_error);
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-	_tmp7 = NULL;
-	return (_tmp7 = poss, (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), (m == NULL) ? NULL : (m = (g_match_info_free (m), NULL)), _tmp7);
+	_tmp7_ = NULL;
+	return (_tmp7_ = poss, (grx == NULL) ? NULL : (grx = (g_regex_unref (grx), NULL)), (m == NULL) ? NULL : (m = (g_match_info_free (m), NULL)), _tmp7_);
 }
 
 
