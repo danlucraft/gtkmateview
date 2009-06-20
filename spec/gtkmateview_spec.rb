@@ -3,7 +3,7 @@ require 'spec/spec_helper'
 
 describe Gtk::Mate::View, "initialization" do
   it "returns textmate_share_dir" do
-    Gtk::Mate.textmate_share_dir.should =~ /\/usr\/local\/(share\/)?textmate/
+    Gtk::Mate.textmate_share_dir.should == "./spec/../../../textmate"
   end
 
   it "returns a list of bundle_dirs" do
