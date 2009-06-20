@@ -8,8 +8,8 @@ describe Gtk::Mate::Theme do
   end
   
   it "knows where to find themes" do
-    Gtk::Mate::Theme.theme_filenames.should include("/usr/local/share/textmate/Themes/Twilight.tmTheme")
-    Gtk::Mate::Theme.theme_filenames.should include("/usr/local/share/textmate/Themes/Amy.tmTheme")
+    Gtk::Mate::Theme.theme_filenames.should include("./spec/../../../textmate/Themes/Twilight.tmTheme")
+    Gtk::Mate::Theme.theme_filenames.should include("./spec/../../../textmate/Themes/Amy.tmTheme")
   end
   
   it "loads all themes" do
