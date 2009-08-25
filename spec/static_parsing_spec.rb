@@ -288,4 +288,77 @@ class ClassName extends AnotherClass
   end
 end
 
+describe Gtk::Mate::Parser, "when parsing Perl from scratch" do
+  before(:each) do
+    @mb = Gtk::Mate::Buffer.new
+    @mb.set_grammar_by_name("Perl")
+  end
+  
+  it "Parses simple perl comment line" do
 
+    source = <<-Perl
+# Comment line with enter
+Perl
+    @mb.text = source
+    @mb.parser.root.pretty(0).should == (t=<<END)
++ source.perl (0,0)-(1,0) open
+  + meta.comment.full-line.perl (0,0)-(1,0) closed
+    c comment.line.number-sign.perl (0,0)-(1,0) closed
+      c punctuation.definition.comment.perl (0,0)-(0,1) closed
+END
+  end
+  
+  it "Parses single perl declaration" do
+    @mb.text = "my $a;"
+    @mb.parser.root.pretty(0).should == (t=<<END)
++ source.perl (0,0)-(0,6) open
+  + storage.modifier.perl (0,0)-(0,2) closed
+  + variable.other.predefined.perl (0,3)-(0,5) closed
+    c punctuation.definition.variable.perl (0,3)-(0,4) closed
+END
+  end
+
+  it "Parses some Perl code correctly" do
+  @mb.text = <<END
+sub RedCar {
+ my $car = shift;
+ my $color = "red";
+ my $i = 1;
+
+ while ( $i == 1 ) {
+   print "My car is $car, its color is $color\n"; 
+ }
+}
+END
+  @mb.parser.root.pretty(0).should == (t=<<END)
++ source.perl (0,0)-(10,0) open
+  + meta.function.perl (0,0)-(0,11) closed
+    c storage.type.sub.perl (0,0)-(0,3) closed
+    c entity.name.function.perl (0,4)-(0,10) closed
+  + storage.modifier.perl (1,1)-(1,3) closed
+  + variable.other.readwrite.global.perl (1,4)-(1,8) closed
+    c punctuation.definition.variable.perl (1,4)-(1,5) closed
+  + support.function.perl (1,11)-(1,16) closed
+  + storage.modifier.perl (2,1)-(2,3) closed
+  + variable.other.readwrite.global.perl (2,4)-(2,10) closed
+    c punctuation.definition.variable.perl (2,4)-(2,5) closed
+  + string.quoted.double.perl (2,13)-(2,18) closed
+    c punctuation.definition.string.begin.perl (2,13)-(2,14) closed
+    c punctuation.definition.string.end.perl (2,17)-(2,18) closed
+  + storage.modifier.perl (3,1)-(3,3) closed
+  + variable.other.readwrite.global.perl (3,4)-(3,6) closed
+    c punctuation.definition.variable.perl (3,4)-(3,5) closed
+  + keyword.control.perl (5,1)-(5,6) closed
+  + variable.other.readwrite.global.perl (5,9)-(5,11) closed
+    c punctuation.definition.variable.perl (5,9)-(5,10) closed
+  + support.function.perl (6,3)-(6,8) closed
+  + string.quoted.double.perl (6,9)-(7,1) closed
+    c punctuation.definition.string.begin.perl (6,9)-(6,10) closed
+    + variable.other.readwrite.global.perl (6,20)-(6,24) closed
+      c punctuation.definition.variable.perl (6,20)-(6,21) closed
+    + variable.other.readwrite.global.perl (6,39)-(6,45) closed
+      c punctuation.definition.variable.perl (6,39)-(6,40) closed
+    c punctuation.definition.string.end.perl (7,0)-(7,1) closed
+END
+  end
+end
