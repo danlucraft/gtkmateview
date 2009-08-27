@@ -1,24 +1,18 @@
 
 require 'spec/spec_helper'
 
-describe Gtk::Mate::Parser, "when parsing PHP embedded from scratch" do
+describe Gtk::Mate::Parser, "When parsing PHP embedded: " do
 
   before(:each) do
     @mb = Gtk::Mate::Buffer.new
+    @mb1 = Gtk::Mate::Buffer.new
     @mb.set_grammar_by_name("HTML")
+    @mb1.set_grammar_by_name("HTML")
   end
 
-  it "Parses embedded PHP at the beginning of the line" do
+  it "Compare 2 embedded php strings. One begins at the beginning of the line, other is not" do
     @mb.text = "<? print(\"Asdf\") ?>"
-    @mb.parser.root.pretty(0).should == (t=<<END)
-+ source.html (0,0)-(0,21) open
-END
-  end
-
-  it "Parses embedded PHP" do
-    @mb.text = " <? print(\"Asdf\") ?>"
-    @mb.parser.root.pretty(0).should == (t=<<END)
-+ source.html (0,0)-(0,21) open
-END
+    @mb1.text = " <? print(\"Asdf\") ?>"
+    @mb.parser.root.pretty(0).should == @mb1.parser.root.pretty(0)
   end
 end
