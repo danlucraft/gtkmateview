@@ -142,7 +142,7 @@ namespace Gtk.Mate {
 					nm.is_close_scope = false;
 					cached_markers.add(nm);
 					new_length = nm.match.end(0) - nm.from;
-					if (m == null || nm.from < m.from || (nm.from == m.from && new_length > best_length && !is_close_match)) {
+					if (m == null || nm.from < m.from || new_length == 0 || (nm.from == m.from && new_length > best_length && best_length != 0 && !is_close_match)) {
 						m = nm;
 						best_length = new_length;
 					}
